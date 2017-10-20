@@ -18,6 +18,7 @@ import org.pl.android.navimee.R;
 import org.pl.android.navimee.data.SyncService;
 import org.pl.android.navimee.data.model.Ribot;
 import org.pl.android.navimee.ui.base.BaseActivity;
+import org.pl.android.navimee.ui.intro.IntroActivity;
 import org.pl.android.navimee.util.DialogFactory;
 
 public class MainActivity extends BaseActivity implements MainMvpView {
@@ -48,6 +49,8 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        checkAppIntro();
+
         mRecyclerView.setAdapter(mRibotsAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mMainPresenter.attachView(this);
@@ -63,6 +66,33 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         super.onDestroy();
 
         mMainPresenter.detachView();
+    }
+
+    private void checkAppIntro() {
+        //  Declare a new thread to do a preference check
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                //  If the activity has never started before...
+                if (mMainPresenter.checkAppIntro()) {
+
+                    //  Launch app intro
+                    final Intent i = new Intent(MainActivity.this, IntroActivity.class);
+
+                    runOnUiThread(new Runnable() {
+                        @Override public void run() {
+                            startActivity(i);
+                        }
+                    });
+                    mMainPresenter.setAppIntroShowed();
+
+                }
+            }
+        });
+
+        // Start the thread
+        t.start();
     }
 
     /***** MVP View methods implementation *****/

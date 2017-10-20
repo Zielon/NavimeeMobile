@@ -24,4 +24,21 @@ public class PreferencesHelper {
         mPref.edit().clear().apply();
     }
 
+    public boolean getValue(String name) {
+       return  mPref.getBoolean(name, true);
+    }
+
+    public void setValue(String name, boolean value) {
+        //  Make a new preferences editor
+        SharedPreferences.Editor e = mPref.edit();
+
+        //  Edit preference to make it false because we don't want this to run again
+        e.putBoolean(name, value);
+
+        //  Apply changes
+        e.apply();
+    }
+
+
+
 }

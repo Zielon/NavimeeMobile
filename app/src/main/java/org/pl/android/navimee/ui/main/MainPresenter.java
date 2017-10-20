@@ -72,4 +72,13 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
                 });
     }
 
+    public boolean checkAppIntro() {
+        return mDataManager.getPreferencesHelper().getValue("firstStart");
+    }
+
+    public void setAppIntroShowed() {
+         mDataManager.getPreferencesHelper().setValue("firstStart",false);
+    }
+
+
 }
