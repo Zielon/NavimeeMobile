@@ -9,4 +9,11 @@
 
     <string name="empty_ribots">There aren\'t any ribots</string>
     <string name="error_loading_ribots">There was a problem loading the ribots</string>
+
+    <string name="events">Wydarzenia</string>
+    <string name="flights">Przyloty</string>
+    <string name="day_schedule">Plan dnia</string>
+    <string name="radar">Radar</string>
+    <string name="chat">Chat</string>
+
 </resources>
