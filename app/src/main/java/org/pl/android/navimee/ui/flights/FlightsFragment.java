@@ -1,4 +1,4 @@
-package org.pl.android.navimee.ui.main.fragment;
+package org.pl.android.navimee.ui.flights;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

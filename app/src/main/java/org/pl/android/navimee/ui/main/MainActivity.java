@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.roughike.bottombar.BottomBar;
@@ -18,18 +16,16 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import org.pl.android.navimee.R;
-import org.pl.android.navimee.data.SyncService;
 import org.pl.android.navimee.data.model.Ribot;
 import org.pl.android.navimee.ui.base.BaseActivity;
 import org.pl.android.navimee.ui.intro.IntroActivity;
-import org.pl.android.navimee.ui.main.fragment.ChatFragment;
-import org.pl.android.navimee.ui.main.fragment.DayScheduleFragment;
-import org.pl.android.navimee.ui.main.fragment.EventsFragment;
-import org.pl.android.navimee.ui.main.fragment.FlightsFragment;
-import org.pl.android.navimee.ui.main.fragment.RadarFragment;
+import org.pl.android.navimee.ui.chat.ChatFragment;
+import org.pl.android.navimee.ui.dayschedule.DayScheduleFragment;
+import org.pl.android.navimee.ui.events.EventsFragment;
+import org.pl.android.navimee.ui.flights.FlightsFragment;
+import org.pl.android.navimee.ui.radar.RadarFragment;
 import org.pl.android.navimee.util.DialogFactory;
 
 public class MainActivity extends BaseActivity implements MainMvpView {

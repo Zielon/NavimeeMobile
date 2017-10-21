@@ -1,4 +1,4 @@
-package org.pl.android.navimee.ui.main.fragment;
+package org.pl.android.navimee.ui.radar;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,9 +12,9 @@ import org.pl.android.navimee.R;
  * Created by Wojtek on 2017-10-21.
  */
 
-public class ChatFragment extends Fragment {
-    public static ChatFragment newInstance() {
-        ChatFragment fragment = new ChatFragment();
+public class RadarFragment extends Fragment {
+    public static RadarFragment newInstance() {
+        RadarFragment fragment = new RadarFragment();
         return fragment;
     }
 
@@ -26,6 +26,6 @@ public class ChatFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.chat_fragment, container, false);
+        return inflater.inflate(R.layout.radar_fragment, container, false);
     }
 }

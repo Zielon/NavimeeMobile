@@ -8,6 +8,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import org.pl.android.navimee.data.DataManager;
+import org.pl.android.navimee.data.remote.EventsService;
 import org.pl.android.navimee.data.remote.RibotsService;
 import org.pl.android.navimee.injection.ApplicationContext;
 
@@ -49,6 +50,12 @@ public class ApplicationTestModule {
     @Singleton
     RibotsService provideRibotsService() {
         return mock(RibotsService.class);
+    }
+
+    @Provides
+    @Singleton
+    EventsService provideEventsService() {
+        return EventsService.Creator.newEventsService();
     }
 
 }

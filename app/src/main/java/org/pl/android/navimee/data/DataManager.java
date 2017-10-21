@@ -11,20 +11,24 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
 import org.pl.android.navimee.data.local.DatabaseHelper;
 import org.pl.android.navimee.data.local.PreferencesHelper;
+import org.pl.android.navimee.data.model.Event;
 import org.pl.android.navimee.data.model.Ribot;
+import org.pl.android.navimee.data.remote.EventsService;
 import org.pl.android.navimee.data.remote.RibotsService;
 
 @Singleton
 public class DataManager {
 
     private final RibotsService mRibotsService;
+    private final EventsService mEventsService;
     private final DatabaseHelper mDatabaseHelper;
     private final PreferencesHelper mPreferencesHelper;
 
     @Inject
-    public DataManager(RibotsService ribotsService, PreferencesHelper preferencesHelper,
+    public DataManager(RibotsService ribotsService, EventsService eventsService, PreferencesHelper preferencesHelper,
                        DatabaseHelper databaseHelper) {
         mRibotsService = ribotsService;
+        mEventsService = eventsService;
         mPreferencesHelper = preferencesHelper;
         mDatabaseHelper = databaseHelper;
     }
@@ -43,6 +47,12 @@ public class DataManager {
                     }
                 });
     }
+
+
+    public Observable<List<Event>> loadEvents() {
+        return mEventsService.getEvents();
+    }
+
 
     public Observable<List<Ribot>> getRibots() {
         return mDatabaseHelper.getRibots().distinct();
