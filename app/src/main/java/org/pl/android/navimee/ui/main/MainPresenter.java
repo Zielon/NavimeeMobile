@@ -76,6 +76,11 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
         return mDataManager.getPreferencesHelper().getValue("firstStart");
     }
 
+    public boolean checkLogin() {
+        return mDataManager.getPreferencesHelper().getValue("notlogged");
+    }
+
+
     public void setAppIntroShowed() {
          mDataManager.getPreferencesHelper().setValue("firstStart",false);
     }

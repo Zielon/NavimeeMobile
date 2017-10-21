@@ -26,6 +26,7 @@ import org.pl.android.navimee.ui.dayschedule.DayScheduleFragment;
 import org.pl.android.navimee.ui.events.EventsFragment;
 import org.pl.android.navimee.ui.flights.FlightsFragment;
 import org.pl.android.navimee.ui.radar.RadarFragment;
+import org.pl.android.navimee.ui.signin.SignInActivity;
 import org.pl.android.navimee.util.DialogFactory;
 
 public class MainActivity extends BaseActivity implements MainMvpView {
@@ -58,6 +59,8 @@ public class MainActivity extends BaseActivity implements MainMvpView {
 
         checkAppIntro();
 
+
+        checkLogin();
        // mRecyclerView.setAdapter(mRibotsAdapter);
         //mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mMainPresenter.attachView(this);
@@ -129,6 +132,13 @@ public class MainActivity extends BaseActivity implements MainMvpView {
 
         // Start the thread
         t.start();
+    }
+
+    private void checkLogin() {
+        if (mMainPresenter.checkLogin()) {
+            Intent intent = new Intent(this, SignInActivity.class);
+            startActivity(intent);
+        }
     }
 
     /***** MVP View methods implementation *****/
