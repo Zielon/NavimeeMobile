@@ -9,8 +9,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import org.joda.time.format.DateTimeFormat;
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.data.model.Event;
+import org.pl.android.navimee.util.ViewUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,10 +40,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
     @Override
     public void onBindViewHolder(final EventsHolder holder, final int position) {
         Event event = mEvents.get(position);
-        holder.hexColorView.setBackgroundColor(Color.parseColor(event.profile().hexColor()));
-        holder.nameTextView.setText(String.format("%s %s",
-                event.profile().name().first(), event.profile().name().last()));
-        holder.emailTextView.setText(event.profile().email());
+        holder.nameTextView.setText(event.name());
+        holder.addressTextView.setText(event.place().name());
+        holder.countTextView.setText(event.attending());
+        holder.timeTextView.setText((ViewUtil.string2Date(event.endDate()).toString(DateTimeFormat.forPattern("HH:mm"))));
+        holder.maybeTextView.setText(event.maybe());
+
     }
 
     @Override
@@ -55,9 +59,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
 
     class EventsHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.view_hex_color) View hexColorView;
         @BindView(R.id.text_name) TextView nameTextView;
-        @BindView(R.id.text_email) TextView emailTextView;
+        @BindView(R.id.text_address) TextView addressTextView;
+        @BindView(R.id.viewTextCount) TextView countTextView;
+        @BindView(R.id.viewTextTime) TextView timeTextView;
+        @BindView(R.id.viewTextMaybe) TextView maybeTextView;
 
         public EventsHolder(View itemView) {
             super(itemView);

@@ -7,4 +7,6 @@
     <color name="accent">#FFFFFF</color>
     <color name="white">#FFFFFF</color>
     <color name="iron">#ffdfdfdf</color>
+    <color name="background">#1e1b66</color>
+    <color name="background_accent">#77d0a0</color>
 </resources>

@@ -17,9 +17,9 @@ import retrofit2.http.GET;
 
 public interface EventsService {
 
-    String ENDPOINT = "https://api.ribot.io/";
+    String ENDPOINT = "http://navimeeapi.azurewebsites.net/";
 
-    @GET("ribots")
+    @GET("/api/events")
     Observable<List<Event>> getEvents();
 
     /******** Helper class that sets up a new services *******/

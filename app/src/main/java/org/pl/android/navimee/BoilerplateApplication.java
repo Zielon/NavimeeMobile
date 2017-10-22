@@ -5,6 +5,8 @@ import android.content.Context;
 
 import com.crashlytics.android.Crashlytics;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 import org.pl.android.navimee.injection.component.ApplicationComponent;
@@ -18,7 +20,7 @@ public class BoilerplateApplication extends Application  {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        JodaTimeAndroid.init(this);
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
             Fabric.with(this, new Crashlytics());

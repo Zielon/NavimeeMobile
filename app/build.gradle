@@ -128,6 +128,8 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
         transitive = true;
     }
+    compile 'net.danlew:android.joda:2.9.9'
+
 
     compile 'com.jakewharton.timber:timber:4.1.2'
     compile "com.jakewharton:butterknife:$BUTTERKNIFE_VERSION"

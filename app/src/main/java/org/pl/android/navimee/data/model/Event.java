@@ -13,10 +13,20 @@ import com.google.gson.TypeAdapter;
 @AutoValue
 public abstract class Event implements Comparable<Event>, Parcelable {
 
-    public abstract Profile profile();
+    public abstract String fbId();
+    public abstract String id();
+    public abstract String startDate();
+    public abstract String maybe();
+    public abstract String name();
+    public abstract String endDate();
+    public abstract Place place();
+    public abstract String type();
+    public abstract String attending();
+    public abstract String placeRefId();
+    public abstract String pictureHttp();
 
-    public static Event create(Profile profile) {
-        return new AutoValue_Event(profile);
+    public static Event create(String fbId, String id, String startDate, String maybe, String name, String endDate, Place place, String type, String attending, String placeRefId, String pictureHttp) {
+        return new AutoValue_Event(fbId,id,startDate,maybe,name,endDate,place,type,attending,placeRefId,pictureHttp);
     }
 
     public static TypeAdapter<Event> typeAdapter(Gson gson) {
@@ -25,6 +35,6 @@ public abstract class Event implements Comparable<Event>, Parcelable {
 
     @Override
     public int compareTo(@NonNull Event another) {
-        return profile().name().first().compareToIgnoreCase(another.profile().name().first());
+        return id().compareToIgnoreCase(another.id());
     }
 }

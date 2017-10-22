@@ -16,30 +16,109 @@
         android:layout_height="wrap_content"
         android:padding="10dp">
 
-        <View
-            android:id="@+id/view_hex_color"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginRight="10dp"
-            android:background="@android:color/holo_blue_dark" />
+        <RelativeLayout
+            android:id="@+id/content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/text_name"
+
+            <TextView
+                android:id="@+id/text_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_body"
+                tools:text="Antony Ribot" />
+
+            <TextView
+                android:id="@+id/text_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_name"
+                android:layout_marginTop="5dp"
+                android:textSize="@dimen/text_small_body"
+                tools:text="developer" />
+            <Button
+                android:id="@+id/driveButton"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_height="wrap_content"
+                android:text="@string/drive_now"
+                android:background="@null"
+                android:textColor="@color/background_accent"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/buttons"
+            android:background="@color/background"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/view_hex_color"
-            android:textSize="@dimen/text_body"
-            tools:text="Antony Ribot" />
+            android:layout_below="@+id/content"
+            android:layout_marginTop="10dp">
 
-        <TextView
-            android:id="@+id/text_email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/text_name"
-            android:layout_marginTop="5dp"
-            android:layout_toRightOf="@id/view_hex_color"
-            android:textSize="@dimen/text_small_body"
-            tools:text="developer" />
+            <ImageView
+                android:id="@+id/imageCount"
+                android:layout_width="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_favorites" />
+
+            <TextView
+                android:id="@+id/viewTextCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_margin="1dp"
+                android:layout_toRightOf="@+id/imageCount"
+                android:text="1000"
+                android:textColor="#FFFFFF" />
+
+            <ImageView
+                android:id="@+id/imageTime"
+                android:layout_toRightOf="@+id/viewTextCount"
+                android:layout_width="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_favorites" />
+
+            <TextView
+                android:id="@+id/viewTextTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/imageTime"
+                android:text="18:30"
+                android:textColor="#FFFFFF" />
+
+            <ImageView
+                android:id="@+id/imageMaybe"
+                android:layout_toRightOf="@+id/viewTextTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_favorites" />
+
+            <TextView
+                android:id="@+id/viewTextMaybe"
+                android:layout_width="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/imageMaybe"
+                android:layout_margin="1dp"
+                android:text="18:30"
+                android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/addButton"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_height="wrap_content"
+                android:text="@string/add"
+                android:background="@null"
+                android:textColor="@color/background_accent" />
+        </RelativeLayout>
+
 
     </RelativeLayout>
 
