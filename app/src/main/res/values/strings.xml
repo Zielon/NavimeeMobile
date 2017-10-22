@@ -22,6 +22,9 @@
     <string name="facebook_app_id">221623114699507</string>
     <string name="add">Dodaj</string>
     <string name="drive_now">Jedz teraz</string>
+    <string name="today">Dziś</string>
+    <string name="tommorow">Jutro</string>
+    <string name="twodayslater">Za 2 dni</string>
 
 
 </resources>
