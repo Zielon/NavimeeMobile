@@ -1,8 +1,14 @@
 package org.pl.android.navimee.injection.component;
 
+import android.content.Context;
+
 import dagger.Subcomponent;
+
+import org.pl.android.navimee.injection.ActivityContext;
+import org.pl.android.navimee.injection.ApplicationContext;
 import org.pl.android.navimee.injection.PerActivity;
 import org.pl.android.navimee.injection.module.ActivityModule;
+import org.pl.android.navimee.ui.events.EventsAdapter;
 import org.pl.android.navimee.ui.events.EventsFragment;
 import org.pl.android.navimee.ui.main.MainActivity;
 import org.pl.android.navimee.ui.signin.SignInActivity;
@@ -17,5 +23,10 @@ public interface ActivityComponent {
     void inject(MainActivity mainActivity);
     void inject(EventsFragment eventsFragment);
     void inject(SignInActivity signInActivity);
+
+    @ActivityContext
+    Context provideContext();
+
+
 
 }
