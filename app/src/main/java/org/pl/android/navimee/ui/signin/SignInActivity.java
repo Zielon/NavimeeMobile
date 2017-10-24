@@ -13,6 +13,7 @@ import android.widget.Toast;
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
 import org.pl.android.navimee.ui.main.MainPresenter;
+import org.pl.android.navimee.ui.signup.SignUpActivity;
 
 import javax.inject.Inject;
 
@@ -34,6 +35,7 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
     @BindView(R.id.btn_login) Button _loginButton;
     @BindView(R.id.link_signup)
     TextView _signupLink;
+    private static final int REQUEST_SIGNUP = 0;
 
 
     @Override
@@ -48,6 +50,16 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
             @Override
             public void onClick(View v) {
                 login();
+            }
+        });
+
+        _signupLink.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // Start the Signup activity
+                Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
+                startActivityForResult(intent, REQUEST_SIGNUP);
             }
         });
 
@@ -87,12 +99,34 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_SIGNUP) {
+            if (resultCode == RESULT_OK) {
+
+                // TODO: Implement successful signup logic here
+                // By default we just finish the Activity and log them in automatically
+                this.finish();
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        // disable going back to the MainActivity
+        moveTaskToBack(true);
+    }
+
+    public void onLoginSuccess() {
+        _loginButton.setEnabled(true);
+        finish();
+    }
+
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
 
         _loginButton.setEnabled(true);
     }
-
 
     public boolean validate() {
         boolean valid = true;
@@ -116,12 +150,5 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
 
         return valid;
     }
-
-
-    public void onLoginSuccess() {
-        _loginButton.setEnabled(true);
-
-        finish();
-    }
-
 }
+

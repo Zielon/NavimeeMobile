@@ -14,6 +14,7 @@ import org.pl.android.navimee.data.local.PreferencesHelper;
 import org.pl.android.navimee.data.model.Event;
 import org.pl.android.navimee.data.model.Ribot;
 import org.pl.android.navimee.data.remote.EventsService;
+import org.pl.android.navimee.data.remote.FirebaseService;
 import org.pl.android.navimee.data.remote.RibotsService;
 
 @Singleton
@@ -23,19 +24,26 @@ public class DataManager {
     private final EventsService mEventsService;
     private final DatabaseHelper mDatabaseHelper;
     private final PreferencesHelper mPreferencesHelper;
+    private final FirebaseService mFirebaseService;
 
     @Inject
     public DataManager(RibotsService ribotsService, EventsService eventsService, PreferencesHelper preferencesHelper,
-                       DatabaseHelper databaseHelper) {
+                       DatabaseHelper databaseHelper,FirebaseService firebaseService) {
         mRibotsService = ribotsService;
         mEventsService = eventsService;
         mPreferencesHelper = preferencesHelper;
         mDatabaseHelper = databaseHelper;
+        mFirebaseService = firebaseService;
     }
 
     public PreferencesHelper getPreferencesHelper() {
         return mPreferencesHelper;
     }
+
+    public  FirebaseService getFirebaseService() {
+        return mFirebaseService;
+    }
+
 
     public Observable<Ribot> syncRibots() {
         return mRibotsService.getRibots()

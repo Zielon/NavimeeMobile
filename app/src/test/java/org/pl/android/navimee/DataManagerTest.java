@@ -17,6 +17,7 @@ import org.pl.android.navimee.data.local.DatabaseHelper;
 import org.pl.android.navimee.data.local.PreferencesHelper;
 import org.pl.android.navimee.data.model.Ribot;
 import org.pl.android.navimee.data.remote.EventsService;
+import org.pl.android.navimee.data.remote.FirebaseService;
 import org.pl.android.navimee.data.remote.RibotsService;
 import org.pl.android.navimee.test.common.TestDataFactory;
 
@@ -39,12 +40,13 @@ public class DataManagerTest {
     @Mock PreferencesHelper mMockPreferencesHelper;
     @Mock RibotsService mMockRibotsService;
     @Mock EventsService mMockEventsService;
+    @Mock FirebaseService mFirebaseService;
     private DataManager mDataManager;
 
     @Before
     public void setUp() {
         mDataManager = new DataManager(mMockRibotsService,mMockEventsService, mMockPreferencesHelper,
-                mMockDatabaseHelper);
+                mMockDatabaseHelper,mFirebaseService);
     }
 
     @Test

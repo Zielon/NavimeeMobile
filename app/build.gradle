@@ -1,3 +1,12 @@
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+apply from: '../config/quality/quality.gradle'
+apply plugin: 'com.github.triplet.play'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -7,15 +16,8 @@ buildscript {
         classpath 'io.fabric.tools:gradle:1.+'
     }
 }
-apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
-repositories {
-    maven { url 'https://maven.fabric.io/public' }
-}
 
-apply from: '../config/quality/quality.gradle'
-apply plugin: 'com.github.triplet.play'
-apply plugin: 'com.google.gms.google-services'
+
 
 android {
     compileSdkVersion 25
@@ -30,6 +32,7 @@ android {
         // Major -> Millions, Minor -> Thousands, Bugfix -> Hundreds. E.g 1.3.72 == 1,003,072
         versionName '0.1.0'
     }
+
 
     signingConfigs {
         // You must set up an environment var before release signing
@@ -91,7 +94,7 @@ play {
 }
 
 dependencies {
-    final PLAY_SERVICES_VERSION = '9.0.0'
+    final PLAY_SERVICES_VERSION = '11.0.2'
     final SUPPORT_LIBRARY_VERSION = '25.3.1'
     final RETROFIT_VERSION = '2.3.0'
     final DAGGER_VERSION = '2.5'
@@ -104,6 +107,7 @@ dependencies {
     final AUTO_VALUE_GSON_VERSION = '0.4.2'
     final APP_INTRO_VERSION = 'v4.2.2'
     final BOTTOM_BAR_VERSION = '2.3.1'
+    final FIREBASE_VERSION = '11.0.2'
 
     def daggerCompiler = "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
     def jUnit = "junit:junit:4.12"
@@ -136,7 +140,10 @@ dependencies {
     compile "com.jakewharton:butterknife:$BUTTERKNIFE_VERSION"
     annotationProcessor "com.jakewharton:butterknife-compiler:$BUTTERKNIFE_VERSION"
 
-
+    //firebase
+    compile "com.google.firebase:firebase-auth:$FIREBASE_VERSION"
+    compile "com.google.firebase:firebase-core:${FIREBASE_VERSION}"
+    compile "com.google.firebase:firebase-database:${FIREBASE_VERSION}"
     //gui
     compile "com.github.apl-devs:appintro:$APP_INTRO_VERSION"
     compile "com.roughike:bottom-bar:$BOTTOM_BAR_VERSION"

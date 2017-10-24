@@ -31,6 +31,8 @@
             android:theme="@style/AppTheme.Dark"
             />
 
+        <activity android:name="org.pl.android.navimee.ui.signup.SignUpActivity" android:theme="@style/AppTheme.Dark" />
+
         <service android:name="org.pl.android.navimee.data.SyncService"/>
 
         <receiver

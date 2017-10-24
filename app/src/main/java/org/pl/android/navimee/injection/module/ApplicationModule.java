@@ -3,6 +3,9 @@ package org.pl.android.navimee.injection.module;
 import android.app.Application;
 import android.content.Context;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -44,6 +47,21 @@ public class ApplicationModule {
     @Singleton
     EventsService provideEventsService() {
         return EventsService.Creator.newEventsService();
+    }
+
+    @Provides
+    @Singleton
+    public FirebaseDatabase provideFirebaseDatabase() {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        firebaseDatabase.setPersistenceEnabled(true);
+        return firebaseDatabase;
+    }
+
+    @Provides
+    @Singleton
+    public FirebaseAuth provideFirebaseAuth() {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        return firebaseAuth;
     }
 
 }
