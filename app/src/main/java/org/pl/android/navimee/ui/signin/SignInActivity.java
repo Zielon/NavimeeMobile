@@ -3,7 +3,6 @@ package org.pl.android.navimee.ui.signin;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,7 +11,6 @@ import android.widget.Toast;
 
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
-import org.pl.android.navimee.ui.main.MainPresenter;
 import org.pl.android.navimee.ui.signup.SignUpActivity;
 
 import javax.inject.Inject;
@@ -44,7 +42,7 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityComponent().inject(this);
-        setContentView(R.layout.sign_in);
+        setContentView(R.layout.activity_sign_in);
         ButterKnife.bind(this);
 
         mSignInPresenter.attachView(this);
@@ -82,7 +80,7 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
         progressDialog = new ProgressDialog(this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Authenticating...");
+        progressDialog.setMessage(getResources().getString(R.string.login_progress));
         progressDialog.show();
 
         String email = _emailText.getText().toString();
@@ -90,6 +88,10 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
 
         // TODO: Implement your own authentication logic here.
         mSignInPresenter.loginIn(email,password);
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 
 
@@ -107,7 +109,7 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
 
 
     public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), getResources().getString(R.string.login_failed), Toast.LENGTH_LONG).show();
 
         _loginButton.setEnabled(true);
     }
@@ -119,14 +121,14 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
         String password = _passwordText.getText().toString();
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _emailText.setError("enter a valid email address");
+            _emailText.setError(getResources().getString(R.string.valid_email_address));
             valid = false;
         } else {
             _emailText.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 6 || password.length() > 10) {
-            _passwordText.setError("between 6 and 10 alphanumeric characters");
+            _passwordText.setError(getResources().getString(R.string.valid_password));
             valid = false;
         } else {
             _passwordText.setError(null);
@@ -144,7 +146,7 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
 
     @Override
     public void onError() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), getResources().getString(R.string.login_failed), Toast.LENGTH_LONG).show();
         progressDialog.dismiss();
         _loginButton.setEnabled(true);
     }

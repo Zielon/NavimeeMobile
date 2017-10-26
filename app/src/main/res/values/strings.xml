@@ -25,6 +25,16 @@
     <string name="today">Dziś</string>
     <string name="tommorow">Jutro</string>
     <string name="twodayslater">Za 2 dni</string>
-
-
+    <string name="create_account_progress">Tworzę konto...</string>
+    <string name="valid_email_address">Podaj poprawny adres email</string>
+    <string name="valid_password">Hasło powinno zawierać od 6 do 10 znaków</string>
+    <string name="register_failed">Rejestracja nie powiodła się</string>
+    <string name="login_failed">Logowanie nie powiodło się</string>
+    <string name="login_progress">Trwa logowanie...</string>
+    <string name="email">Email</string>
+    <string name="password">Hasło</string>
+    <string name="create_account">Utwórz konto</string>
+    <string name="already_member_login">Masz już konto ? Zaloguj się</string>
+    <string name="login">Zaloguj się</string>
+    <string name="no_account_yet">Nie masz jeszcze konta ? Stwórz je</string>
 </resources>

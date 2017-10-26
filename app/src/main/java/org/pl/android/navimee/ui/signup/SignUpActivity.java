@@ -72,7 +72,7 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
         progressDialog = new ProgressDialog(SignUpActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Creating Account...");
+        progressDialog.setMessage(getResources().getString(R.string.create_account_progress));
         progressDialog.show();
 
         String email = _emailText.getText().toString();
@@ -90,14 +90,14 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
         String password = _passwordText.getText().toString();
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _emailText.setError("enter a valid email address");
+            _emailText.setError(getResources().getString(R.string.valid_email_address));
             valid = false;
         } else {
             _emailText.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 6 || password.length() > 10) {
-            _passwordText.setError("between 6 and 10 alphanumeric characters");
+            _passwordText.setError(getResources().getString(R.string.valid_password));
             valid = false;
         } else {
             _passwordText.setError(null);
@@ -116,7 +116,7 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
 
     @Override
     public void onError() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(),getResources().getString(R.string.register_failed), Toast.LENGTH_LONG).show();
 
         _signupButton.setEnabled(true);
 
