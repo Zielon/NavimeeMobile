@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
@@ -135,7 +136,8 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     }
 
     private void checkLogin() {
-        if (mMainPresenter.checkLogin()) {
+        FirebaseUser user = mMainPresenter.checkLogin();
+        if (user == null) {
             Intent intent = new Intent(this, SignInActivity.class);
             startActivity(intent);
         }

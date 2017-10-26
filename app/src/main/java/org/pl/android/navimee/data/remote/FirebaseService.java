@@ -26,6 +26,13 @@ public class FirebaseService {
     private FirebaseDatabase firebaseDatabase;
     private FirebaseAuth firebaseAuth;
 
+    public FirebaseDatabase getFirebaseDatabase() {
+        return firebaseDatabase;
+    }
+
+    public FirebaseAuth getFirebaseAuth() {
+        return firebaseAuth;
+    }
 
     @Inject
     public FirebaseService(FirebaseAuth firebaseAuth, FirebaseDatabase firebaseDatabase) {

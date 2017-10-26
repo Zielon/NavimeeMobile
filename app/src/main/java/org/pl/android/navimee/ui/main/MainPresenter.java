@@ -1,5 +1,7 @@
 package org.pl.android.navimee.ui.main;
 
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -76,8 +78,8 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
         return mDataManager.getPreferencesHelper().getValue("firstStart");
     }
 
-    public boolean checkLogin() {
-        return mDataManager.getPreferencesHelper().getValue("notlogged");
+    public FirebaseUser checkLogin() {
+        return mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
     }
 
 

@@ -6,7 +6,6 @@ package org.pl.android.navimee.ui.signup;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,7 +14,6 @@ import android.widget.Toast;
 
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
-import org.pl.android.navimee.ui.signin.SignInMvpView;
 
 import javax.inject.Inject;
 
@@ -23,7 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-public class SignUpActivity extends BaseActivity implements SignInMvpView {
+public class SignUpActivity extends BaseActivity implements SignUpMvpView {
 
     @Inject
     SignUpPresenter mSignUpPresenter;
@@ -35,12 +33,15 @@ public class SignUpActivity extends BaseActivity implements SignInMvpView {
     @BindView(R.id.btn_signup) Button _signupButton;
     @BindView(R.id.link_login) TextView _loginLink;
 
+    ProgressDialog progressDialog;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityComponent().inject(this);
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
+        mSignUpPresenter.attachView(this);
 
         _signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,13 +63,13 @@ public class SignUpActivity extends BaseActivity implements SignInMvpView {
         Timber.d(TAG, "Signup");
 
         if (!validate()) {
-            onSignupFailed();
+            onError();
             return;
         }
 
         _signupButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(SignUpActivity.this,
+        progressDialog = new ProgressDialog(SignUpActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Creating Account...");
@@ -80,30 +81,6 @@ public class SignUpActivity extends BaseActivity implements SignInMvpView {
         // TODO: Implement your own signup logic here.
         mSignUpPresenter.register(email,password);
 
-
-        /*new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
-                        onSignupSuccess();
-                        // onSignupFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);*/
-    }
-
-
-    public void onSignupSuccess() {
-        _signupButton.setEnabled(true);
-        setResult(RESULT_OK, null);
-        finish();
-    }
-
-    public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
-        _signupButton.setEnabled(true);
     }
 
     public boolean validate() {
@@ -119,13 +96,30 @@ public class SignUpActivity extends BaseActivity implements SignInMvpView {
             _emailText.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+        if (password.isEmpty() || password.length() < 6 || password.length() > 10) {
+            _passwordText.setError("between 6 and 10 alphanumeric characters");
             valid = false;
         } else {
             _passwordText.setError(null);
         }
 
         return valid;
+    }
+
+    @Override
+    public void onSuccess() {
+        _signupButton.setEnabled(true);
+        setResult(RESULT_OK, null);
+        finish();
+        progressDialog.dismiss();
+    }
+
+    @Override
+    public void onError() {
+        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+
+        _signupButton.setEnabled(true);
+
+        progressDialog.dismiss();
     }
 }

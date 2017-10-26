@@ -37,6 +37,8 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
     TextView _signupLink;
     private static final int REQUEST_SIGNUP = 0;
 
+    ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,8 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
         activityComponent().inject(this);
         setContentView(R.layout.sign_in);
         ButterKnife.bind(this);
+
+        mSignInPresenter.attachView(this);
 
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
@@ -75,7 +79,7 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
 
         _loginButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(this,
+        progressDialog = new ProgressDialog(this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Authenticating...");
@@ -85,17 +89,7 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
         String password = _passwordText.getText().toString();
 
         // TODO: Implement your own authentication logic here.
-
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onLoginSuccess or onLoginFailed
-                        onLoginSuccess();
-                        // onLoginFailed();
-                        mSignInPresenter.setLogin();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
+        mSignInPresenter.loginIn(email,password);
     }
 
 
@@ -111,16 +105,6 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        // disable going back to the MainActivity
-        moveTaskToBack(true);
-    }
-
-    public void onLoginSuccess() {
-        _loginButton.setEnabled(true);
-        finish();
-    }
 
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
@@ -141,14 +125,28 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
             _emailText.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+        if (password.isEmpty() || password.length() < 6 || password.length() > 10) {
+            _passwordText.setError("between 6 and 10 alphanumeric characters");
             valid = false;
         } else {
             _passwordText.setError(null);
         }
 
         return valid;
+    }
+
+    @Override
+    public void onSuccess() {
+        _loginButton.setEnabled(true);
+        progressDialog.dismiss();
+        finish();
+    }
+
+    @Override
+    public void onError() {
+        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+        progressDialog.dismiss();
+        _loginButton.setEnabled(true);
     }
 }
 
