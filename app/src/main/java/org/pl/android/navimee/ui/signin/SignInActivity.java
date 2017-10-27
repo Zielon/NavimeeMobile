@@ -28,8 +28,7 @@ import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
 import org.pl.android.navimee.ui.signup.SignUpActivity;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+
 
 import javax.inject.Inject;
 
@@ -64,7 +63,7 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
         setContentView(R.layout.activity_sign_in);
         ButterKnife.bind(this);
 
-        //FacebookSdk.sdkInitialize(getApplicationContext());
+        FacebookSdk.sdkInitialize(getApplicationContext());
 
         mSignInPresenter.attachView(this);
 
@@ -99,7 +98,7 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
 
         //        FACEBOOK BUTTON
         mCallbackManager = CallbackManager.Factory.create();
-        //facebookButton.setReadPermissions("email", "public_profile");
+        facebookButton.setReadPermissions("email", "public_profile");
         facebookButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -110,6 +109,7 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
             @Override
             public void onCancel() {
                 Timber.d(TAG, "facebook:onCancel");
+                onErrorFacebook();
                 // [START_EXCLUDE]
                // updateUI(null);
                 // [END_EXCLUDE]
@@ -117,7 +117,8 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
 
             @Override
             public void onError(FacebookException error) {
-                Log.d(TAG, "facebook:onError", error);
+                Timber.d(TAG, "facebook:onError", error);
+                onErrorFacebook();
                 // [START_EXCLUDE]
                 //updateUI(null);
                 // [END_EXCLUDE]
@@ -153,12 +154,19 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Timber.d("Facebook");
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
 
                 // TODO: Implement successful signup logic here
                 // By default we just finish the Activity and log them in automatically
                 this.finish();
+            }
+        } else {
+            //facebook
+            if (resultCode == RESULT_OK) {
+                super.onActivityResult(requestCode, resultCode, data);
+                mCallbackManager.onActivityResult(requestCode, resultCode, data);
             }
         }
     }
@@ -214,6 +222,11 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
         Toast.makeText(getBaseContext(), getResources().getString(R.string.login_failed), Toast.LENGTH_LONG).show();
         progressDialog.dismiss();
         _loginButton.setEnabled(true);
+    }
+
+    public void onErrorFacebook() {
+        Toast.makeText(getBaseContext(), getResources().getString(R.string.login_failed), Toast.LENGTH_LONG).show();
+        progressDialog.dismiss();
     }
 }
 

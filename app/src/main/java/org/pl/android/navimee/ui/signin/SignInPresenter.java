@@ -61,7 +61,6 @@ public class SignInPresenter extends BasePresenter<SignInMvpView> {
 
 
     public void loginInWithFacebook(AuthCredential credential) {
-        //  mDataManager.getFirebaseService().signUp(email, password);
         RxFirebaseAuth.signInWithCredential(mDataManager.getFirebaseService().getFirebaseAuth(),credential)
                 .flatMap(x -> RxFirebaseUser.getToken(mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser(), false))
                 .subscribe(token -> {
