@@ -125,6 +125,7 @@ dependencies {
 
     // App Dependencies
     compile "com.google.android.gms:play-services-gcm:$PLAY_SERVICES_VERSION"
+    compile "com.google.android.gms:play-services-maps:$PLAY_SERVICES_VERSION"
     compile "com.android.support:appcompat-v7:$SUPPORT_LIBRARY_VERSION"
     compile "com.android.support:recyclerview-v7:$SUPPORT_LIBRARY_VERSION"
     compile "com.android.support:cardview-v7:$SUPPORT_LIBRARY_VERSION"

@@ -14,7 +14,7 @@
     <string name="flights">Przyloty</string>
     <string name="day_schedule">Plan dnia</string>
     <string name="radar">Radar</string>
-    <string name="chat">Chat</string>
+    <string name="hotspot">Hotspot</string>
     <string name="user_exists">User already logged in</string>
     <string name="sign_in_facebook">Sign in with Facebook</string>
     <string name="sign_in_google">Sign in with Google</string>
@@ -38,4 +38,5 @@
     <string name="no_account_yet">Nie masz jeszcze konta ? Stwórz je</string>
     <string name="facebook_app_id">490316121339159</string>
     <string name="fb_login_protocol_scheme">fb490316121339159</string>
+    <string name="google_maps_key">AIzaSyCm3VEK4jjMA6jl0QkyfCn-qO3LYwoOKOs</string>
 </resources>

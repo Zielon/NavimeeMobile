@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tabs>
     <tab
+        id="@+id/tab_hotspot"
+        icon="@drawable/ic_friends"
+        title="@string/hotspot" />
+    <tab
         id="@+id/tab_events"
         icon="@drawable/ic_favorites"
         title="@string/events" />
@@ -16,8 +20,5 @@
         id="@+id/tab_radar"
         icon="@drawable/ic_friends"
         title="@string/radar" />
-    <tab
-        id="@+id/tab_chat"
-        icon="@drawable/ic_friends"
-        title="@string/chat" />
+
 </tabs>
