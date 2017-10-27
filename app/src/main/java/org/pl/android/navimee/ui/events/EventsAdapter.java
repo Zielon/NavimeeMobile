@@ -51,17 +51,17 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
     @Override
     public void onBindViewHolder(final EventsHolder holder, final int position) {
         final Event event = mEvents.get(position);
-        holder.nameTextView.setText(event.name());
-        holder.addressTextView.setText(event.place().name());
-        holder.countTextView.setText(event.attending());
-        holder.timeTextView.setText((ViewUtil.string2Date(event.endDate()).toString(DateTimeFormat.forPattern("HH:mm"))));
-        holder.maybeTextView.setText(event.maybe());
+        holder.nameTextView.setText(event.name);
+        holder.addressTextView.setText(event.place.name);
+        holder.countTextView.setText(String.valueOf(event.attending));
+        holder.timeTextView.setText((ViewUtil.string2Date(event.endDate).toString(DateTimeFormat.forPattern("HH:mm"))));
+        holder.maybeTextView.setText(String.valueOf(event.maybe));
         holder.driveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (event.place().latitude() != null && event.place().latitude() != null) {
-                    Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + String.valueOf(event.place().latitude()) + "," +
-                            String.valueOf(event.place().longitude()) + "( " + event.place().name() + ")");
+                if (event.place.latitude != null && event.place.latitude != null) {
+                    Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + String.valueOf(event.place.latitude) + "," +
+                            String.valueOf(event.place.longitude) + "( " + event.place.name + ")");
 
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                     mapIntent.setPackage("com.google.android.apps.maps");

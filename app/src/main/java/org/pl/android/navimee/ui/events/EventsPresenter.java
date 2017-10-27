@@ -1,5 +1,8 @@
 package org.pl.android.navimee.ui.events;
 
+import com.kelvinapps.rxfirebase.DataSnapshotMapper;
+import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
+
 import org.pl.android.navimee.data.DataManager;
 import org.pl.android.navimee.data.model.Event;
 import org.pl.android.navimee.data.model.Ribot;
@@ -15,12 +18,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+
 import timber.log.Timber;
 
 /**
@@ -49,35 +47,17 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
 
 
     public void loadEvents(boolean allowMemoryCacheVersion) {
-        mDataManager.loadEvents()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<Event>>() {
 
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
+        RxFirebaseDatabase.observeSingleValueEvent(mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child("events"),DataSnapshotMapper.listOf(Event.class))
+                .subscribe(event -> {
+                    if (!event.isEmpty()) {
+                        Collections.sort(event);
+                        getMvpView().showEvents(event);
+                    } else {
+                        getMvpView().showEventsEmpty();
                     }
-
-                    @Override
-                    public void onNext(List<Event> events) {
-                        if (!events.isEmpty()) {
-                            Collections.sort(events);
-                            getMvpView().showEvents(events);
-                        } else {
-                            getMvpView().showEventsEmpty();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        getMvpView().showError();
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
+                }, throwable -> {
+                    Timber.e("RxFirebaseDatabase", throwable.toString());
                 });
     }
 
