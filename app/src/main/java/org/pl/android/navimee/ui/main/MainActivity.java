@@ -62,14 +62,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
 
 
         checkLogin();
-       // mRecyclerView.setAdapter(mRibotsAdapter);
-        //mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mMainPresenter.attachView(this);
-       // mMainPresenter.loadRibots();
-
-     //   if (getIntent().getBooleanExtra(EXTRA_TRIGGER_SYNC_FLAG, true)) {
-         //   startService(SyncService.getStartIntent(this));
-      //  }
 
 
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);

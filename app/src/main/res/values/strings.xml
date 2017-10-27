@@ -19,7 +19,6 @@
     <string name="sign_in_facebook">Sign in with Facebook</string>
     <string name="sign_in_google">Sign in with Google</string>
     <string name="logout_text">Sign out</string>
-    <string name="facebook_app_id">221623114699507</string>
     <string name="add">Dodaj</string>
     <string name="drive_now">Jedz teraz</string>
     <string name="today">Dziś</string>
@@ -37,4 +36,6 @@
     <string name="already_member_login">Masz już konto ? Zaloguj się</string>
     <string name="login">Zaloguj się</string>
     <string name="no_account_yet">Nie masz jeszcze konta ? Stwórz je</string>
+    <string name="facebook_app_id">490316121339159</string>
+    <string name="fb_login_protocol_scheme">fb490316121339159</string>
 </resources>

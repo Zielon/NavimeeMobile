@@ -44,6 +44,13 @@
 # OkHttp rules
 -dontwarn okio.**
 -dontwarn com.squareup.okhttp.**
+-dontwarn javax.xml.stream.events.**
+-dontwarn com.kelvinapps.rxfirebase.**
+-dontwarn com.squareup.okhttp3.**
+-dontwarn retrofit2.**
+-dontwarn okhttp3.**
+-dontwarn com.roughike.bottombar.**
+
 
 # Otto rules
 -keepclassmembers class ** {

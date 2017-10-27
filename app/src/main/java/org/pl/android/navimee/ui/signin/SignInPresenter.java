@@ -2,9 +2,14 @@ package org.pl.android.navimee.ui.signin;
 
 
 
+import android.util.Log;
+import android.widget.Toast;
+
+import com.google.firebase.auth.AuthCredential;
 import com.kelvinapps.rxfirebase.RxFirebaseAuth;
 import com.kelvinapps.rxfirebase.RxFirebaseUser;
 
+import org.pl.android.navimee.R;
 import org.pl.android.navimee.data.DataManager;
 import org.pl.android.navimee.ui.base.BasePresenter;
 import org.reactivestreams.Subscription;
@@ -52,6 +57,21 @@ public class SignInPresenter extends BasePresenter<SignInMvpView> {
                     Timber.e("RxFirebaseSample", throwable.toString());
                     mMvpView.onError();
                 });
+    }
+
+
+    public void loginInWithFacebook(AuthCredential credential) {
+        //  mDataManager.getFirebaseService().signUp(email, password);
+        RxFirebaseAuth.signInWithCredential(mDataManager.getFirebaseService().getFirebaseAuth(),credential)
+                .flatMap(x -> RxFirebaseUser.getToken(mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser(), false))
+                .subscribe(token -> {
+                    Timber.i("RxFirebaseSample", "user token: " + token.getToken());
+                    mMvpView.onSuccess();
+                }, throwable -> {
+                    Timber.e("RxFirebaseSample", throwable.toString());
+                    mMvpView.onError();
+                });
+
     }
 
 }

@@ -45,9 +45,9 @@ android {
         // TODO Add your release keystore in /keystore folder
         release {
             storeFile file('keystore/release.keystore')
-            keyAlias 'alias'
-            storePassword "$System.env.APP_KEY"
-            keyPassword "$System.env.APP_KEY"
+            keyAlias 'releasekey'
+            storePassword "navimee"
+            keyPassword "haslo123"
         }
 
         debug {
@@ -157,6 +157,9 @@ dependencies {
     //gui
     compile "com.github.apl-devs:appintro:$APP_INTRO_VERSION"
     compile "com.roughike:bottom-bar:$BOTTOM_BAR_VERSION"
+
+    //facebook
+    compile 'com.facebook.android:facebook-login:[4,5)'
 
     // Replace provided dependency below with official AutoValue once this issue is fixed
     // https://github.com/google/auto/issues/268
