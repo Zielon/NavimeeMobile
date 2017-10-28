@@ -19,6 +19,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 
+import io.reactivex.functions.Consumer;
 import timber.log.Timber;
 
 /**
@@ -48,17 +49,17 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
 
     public void loadEvents(boolean allowMemoryCacheVersion) {
 
-        RxFirebaseDatabase.observeSingleValueEvent(mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child("events"),DataSnapshotMapper.listOf(Event.class))
-                .subscribe(event -> {
-                    if (!event.isEmpty()) {
-                        Collections.sort(event);
-                        getMvpView().showEvents(event);
-                    } else {
-                        getMvpView().showEventsEmpty();
-                    }
-                }, throwable -> {
-                    Timber.e("RxFirebaseDatabase", throwable.toString());
-                });
+    RxFirebaseDatabase.observeValueEvent(mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child("events"),DataSnapshotMapper.listOf(Event.class))
+              .subscribe(event -> {
+                  if (!event.isEmpty()) {
+                      Collections.sort(event);
+                      getMvpView().showEvents(event);
+                  } else {
+                      getMvpView().showEventsEmpty();
+                  }
+              }, throwable -> {
+                  Timber.e("RxFirebaseDatabase", throwable.toString());
+              });
     }
 
 }
