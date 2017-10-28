@@ -50,6 +50,7 @@
 -dontwarn retrofit2.**
 -dontwarn okhttp3.**
 -dontwarn com.roughike.bottombar.**
+-dontwarn pl.charmas.**
 
 
 # Otto rules

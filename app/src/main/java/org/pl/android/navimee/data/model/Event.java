@@ -134,6 +134,6 @@ public  class Event implements Comparable<Event>, Serializable {
 
     @Override
     public int compareTo(@NonNull Event another) {
-        return fbId.compareToIgnoreCase(another.fbId);
+        return attending.compareTo(another.attending);
     }
 }
