@@ -9,37 +9,22 @@ import java.io.Serializable;
 
 
 public class Place implements Serializable {
-    public  String fbId;
     public  String id;
-    public  String category;
-    public  String street;
     public  String name;
     public  Double longitude;
     public  Double latitude;
     public  String country;
-    public  String city;
-
+    public  String zip;
     public Place() {
     }
 
-    public Place(String fbId, String id, String category, String street, String name, Double longitude, Double latitude, String country, String city) {
-        this.fbId = fbId;
+    public Place(String id, String name, Double longitude, Double latitude, String country, String zip) {
         this.id = id;
-        this.category = category;
-        this.street = street;
         this.name = name;
         this.longitude = longitude;
         this.latitude = latitude;
         this.country = country;
-        this.city = city;
-    }
-
-    public String getFbId() {
-        return fbId;
-    }
-
-    public void setFbId(String fbId) {
-        this.fbId = fbId;
+        this.zip = zip;
     }
 
     public String getId() {
@@ -48,22 +33,6 @@ public class Place implements Serializable {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
     }
 
     public String getName() {
@@ -98,11 +67,11 @@ public class Place implements Serializable {
         this.country = country;
     }
 
-    public String getCity() {
-        return city;
+    public String getZip() {
+        return zip;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setZip(String zip) {
+        this.zip = zip;
     }
 }

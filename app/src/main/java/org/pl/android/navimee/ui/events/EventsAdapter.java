@@ -52,10 +52,14 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
     public void onBindViewHolder(final EventsHolder holder, final int position) {
         final Event event = mEvents.get(position);
         holder.nameTextView.setText(event.name);
-        holder.addressTextView.setText(event.place.name);
-        holder.countTextView.setText(String.valueOf(event.attending));
-        holder.timeTextView.setText((ViewUtil.string2Date(event.endDate).toString(DateTimeFormat.forPattern("HH:mm"))));
-        holder.maybeTextView.setText(String.valueOf(event.maybe));
+        if(event.place != null && event.place.name != null) {
+            holder.addressTextView.setText(event.place.name);
+        }
+        holder.countTextView.setText(String.valueOf(event.attending_count));
+        if(event.end_time != null) {
+            holder.timeTextView.setText((ViewUtil.string2Date(event.end_time).toString(DateTimeFormat.forPattern("HH:mm"))));
+        }
+        holder.maybeTextView.setText(String.valueOf(event.maybe_count));
         holder.driveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.location.Location;
 import android.view.inputmethod.InputMethodManager;
 
 import org.joda.time.DateTime;
@@ -15,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 public final class ViewUtil {
 
@@ -36,7 +38,7 @@ public final class ViewUtil {
 
     public static DateTime string2Date(String dateString) {
 
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ");
         DateTime dt = formatter.parseDateTime(dateString);
         return  dt;
     }
