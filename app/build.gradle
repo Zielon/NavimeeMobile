@@ -62,7 +62,6 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
-
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
@@ -150,6 +149,10 @@ dependencies {
     compile 'com.jakewharton.timber:timber:4.1.2'
     compile "com.jakewharton:butterknife:$BUTTERKNIFE_VERSION"
     annotationProcessor "com.jakewharton:butterknife-compiler:$BUTTERKNIFE_VERSION"
+
+    //rx permissions
+    compile 'com.tbruyelle.rxpermissions:rxpermissions:0.9.4@aar'
+    compile 'pl.charmas.android:android-reactive-location2:2.0@aar'
 
     //firebase
     compile "com.google.firebase:firebase-auth:$FIREBASE_VERSION"
