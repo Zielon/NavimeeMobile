@@ -57,7 +57,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         }
         holder.countTextView.setText(String.valueOf(event.attending_count));
         if(event.end_time != null) {
-            holder.timeTextView.setText((ViewUtil.string2Date(event.end_time).toString(DateTimeFormat.forPattern("HH:mm"))));
+            holder.timeTextView.setText(event.end_time.getHours()+":"+String.format("%02d", event.end_time.getMinutes()));
         }
         holder.maybeTextView.setText(String.valueOf(event.maybe_count));
         holder.driveButton.setOnClickListener(new View.OnClickListener() {

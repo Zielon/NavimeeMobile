@@ -47,7 +47,7 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
     }
 
 
-    public void loadEvents(boolean allowMemoryCacheVersion) {
+    public void loadEvents() {
 
     RxFirebaseDatabase.observeValueEvent(mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child("events"),DataSnapshotMapper.listOf(Event.class))
               .subscribe(event -> {

@@ -16,10 +16,10 @@ import java.io.Serializable;
 public  class Event implements Comparable<Event>, Serializable {
     
     public  String id;
-    public  String start_time;
+    public  Date start_time;
     public  Long maybe_count;
     public  String name;
-    public  String end_time;
+    public  Date end_time;
     public  Place place;
     public  String type;
     public  Long attending_count;
@@ -28,7 +28,7 @@ public  class Event implements Comparable<Event>, Serializable {
     public Event() {
     }
 
-    public Event(String id, String start_time, Long maybe_count, String name, String end_time, Place place, String type, Long attending_count) {
+    public Event(String id, Date start_time, Long maybe_count, String name, Date end_time, Place place, String type, Long attending_count) {
         this.id = id;
         this.start_time = start_time;
         this.maybe_count = maybe_count;
@@ -47,12 +47,20 @@ public  class Event implements Comparable<Event>, Serializable {
         this.id = id;
     }
 
-    public String getStart_time() {
+    public Date getStart_time() {
         return start_time;
     }
 
-    public void setStart_time(String start_time) {
+    public void setStart_time(Date start_time) {
         this.start_time = start_time;
+    }
+
+    public Date getEnd_time() {
+        return end_time;
+    }
+
+    public void setEnd_time(Date end_time) {
+        this.end_time = end_time;
     }
 
     public Long getMaybe_count() {
@@ -71,13 +79,6 @@ public  class Event implements Comparable<Event>, Serializable {
         this.name = name;
     }
 
-    public String getEnd_time() {
-        return end_time;
-    }
-
-    public void setEnd_time(String end_time) {
-        this.end_time = end_time;
-    }
 
     public Place getPlace() {
         return place;

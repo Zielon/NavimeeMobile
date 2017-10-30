@@ -59,7 +59,7 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
     @Override
     public void onStart() {
         super.onStart();
-        mEventsPresenter.loadEvents(false);
+        mEventsPresenter.loadEvents();
     }
 
 
