@@ -1,4 +1,4 @@
-package org.pl.android.navimee.ui.events;
+package org.pl.android.navimee.ui.dayschedule;
 
 import org.pl.android.navimee.data.model.Event;
 import org.pl.android.navimee.ui.base.MvpView;
@@ -6,10 +6,10 @@ import org.pl.android.navimee.ui.base.MvpView;
 import java.util.List;
 
 /**
- * Created by Wojtek on 2017-10-21.
+ * Created by Wojtek on 2017-10-30.
  */
 
-public interface EventsMvpView extends MvpView {
+public interface DayScheduleMvpView  extends MvpView {
 
     void showEvents(List<Event> events);
 
@@ -17,5 +17,5 @@ public interface EventsMvpView extends MvpView {
 
     void showError();
 
-    void onSuccessSave();
+    void onSuccessDelete();
 }

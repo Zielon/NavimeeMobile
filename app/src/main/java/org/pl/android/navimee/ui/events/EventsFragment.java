@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.data.model.Event;
@@ -83,5 +84,10 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
     @Override
     public void showError() {
 
+    }
+
+    @Override
+    public void onSuccessSave() {
+        Toast.makeText(getActivity(),getResources().getString(R.string.save_day_schedule), Toast.LENGTH_SHORT).show();
     }
 }

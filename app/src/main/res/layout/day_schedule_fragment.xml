@@ -5,12 +5,13 @@
     android:layout_height="match_parent"
     tools:context="org.pl.android.navimee.ui.dayschedule.DayScheduleFragment">
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="Day Schedule Fragment"
-        android:textSize="30sp"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view_day_schedule"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="6dp"
+        android:paddingTop="6dp"
+        android:scrollbars="vertical" />
 
 </RelativeLayout>

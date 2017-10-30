@@ -1,57 +1,53 @@
-package org.pl.android.navimee.ui.events;
+package org.pl.android.navimee.ui.dayschedule;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-
-import org.joda.time.format.DateTimeFormat;
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.data.model.Event;
 import org.pl.android.navimee.injection.ActivityContext;
-import org.pl.android.navimee.injection.ApplicationContext;
-import org.pl.android.navimee.injection.ConfigPersistent;
-import org.pl.android.navimee.util.ViewUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
-public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHolder> {
+/**
+ * Created by Wojtek on 2017-10-30.
+ */
+
+public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.DayScheduleHolder> {
     private List<Event> mEvents;
     private Context mContext;
 
-   @Inject EventsPresenter mEventsPresenter;
+    @Inject
+    DaySchedulePresenter mDaySchedulePresenter;
+
 
     @Inject
-    public EventsAdapter(@ActivityContext Context context) {
+    public DayScheduleAdapter(@ActivityContext Context context) {
         this.mEvents = new ArrayList<>();
         mContext = context;
     }
 
     @Override
-    public EventsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public DayScheduleHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view =
-                LayoutInflater.from(parent.getContext()).inflate(R.layout.item_event, parent, false);
-        return new EventsHolder(view);
+                LayoutInflater.from(parent.getContext()).inflate(R.layout.item_day_schedule, parent, false);
+        return new DayScheduleHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final EventsHolder holder, final int position) {
+    public void onBindViewHolder(final DayScheduleHolder holder, final int position) {
         final Event event = mEvents.get(position);
         holder.nameTextView.setText(event.name);
         if(event.place != null && event.place.name != null) {
@@ -78,10 +74,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
             }
         });
 
-        holder.addButton.setOnClickListener(new View.OnClickListener() {
+        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mEventsPresenter.saveEvent(event);
+                mDaySchedulePresenter.deleteEvent(event);
             }
         });
 
@@ -97,7 +93,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         mEvents = list;
     }
 
-    class EventsHolder extends RecyclerView.ViewHolder {
+    class DayScheduleHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.text_name) TextView nameTextView;
         @BindView(R.id.text_address) TextView addressTextView;
@@ -105,9 +101,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         @BindView(R.id.viewTextTime) TextView timeTextView;
         @BindView(R.id.viewTextMaybe) TextView maybeTextView;
         @BindView(R.id.driveButton) TextView driveButton;
-        @BindView(R.id.addButton) TextView addButton;
+        @BindView(R.id.deleteButton) TextView deleteButton;
 
-        public EventsHolder(View itemView) {
+        public DayScheduleHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

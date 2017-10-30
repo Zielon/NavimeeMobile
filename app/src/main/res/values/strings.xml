@@ -20,6 +20,7 @@
     <string name="sign_in_google">Sign in with Google</string>
     <string name="logout_text">Sign out</string>
     <string name="add">Dodaj</string>
+    <string name="delete">Usuń</string>
     <string name="drive_now">Jedz teraz</string>
     <string name="today">Dziś</string>
     <string name="tommorow">Jutro</string>
@@ -28,6 +29,8 @@
     <string name="valid_email_address">Podaj poprawny adres email</string>
     <string name="valid_password">Hasło powinno zawierać od 6 do 10 znaków</string>
     <string name="register_failed">Rejestracja nie powiodła się</string>
+    <string name="save_day_schedule">Dodano do planu dnia</string>
+    <string name="delete_day_schedule">Usunięto z planu dnia</string>
     <string name="login_failed">Logowanie nie powiodło się</string>
     <string name="login_progress">Trwa logowanie...</string>
     <string name="email">Email</string>

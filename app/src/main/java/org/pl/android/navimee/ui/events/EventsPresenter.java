@@ -1,5 +1,13 @@
 package org.pl.android.navimee.ui.events;
 
+import android.support.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.kelvinapps.rxfirebase.DataSnapshotMapper;
 import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 
@@ -14,7 +22,9 @@ import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -60,6 +70,21 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
               }, throwable -> {
                   Timber.e("RxFirebaseDatabase", throwable.toString());
               });
+    }
+
+
+    public void saveEvent(Event event) {
+        String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put(event.getId(), event);
+        mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child("day_schedule").child(userId).updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                getMvpView().onSuccessSave();
+            }
+        });
+
     }
 
 }

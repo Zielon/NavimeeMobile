@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="6dp"
+    android:layout_marginLeft="12dp"
+    android:layout_marginRight="12dp"
+    android:layout_marginTop="6dp"
+    card_view:cardCornerRadius="2dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+
+        <RelativeLayout
+            android:padding="10dp"
+            android:id="@+id/content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:id="@+id/text_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_body"
+                tools:text="Antony Ribot"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@+id/driveButton"
+                android:layout_toStartOf="@+id/driveButton" />
+
+            <TextView
+                android:id="@+id/text_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_name"
+                android:layout_marginTop="5dp"
+                android:textSize="@dimen/text_small_body"
+                tools:text="developer"
+                android:layout_toLeftOf="@+id/driveButton"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <Button
+                android:id="@+id/driveButton"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/drive_now"
+                android:background="@null"
+                android:textColor="@color/background_accent"
+                android:layout_alignParentTop="true" />
+            <TextView
+                android:id="@+id/viewTimeToDrive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/driveButton"
+                android:layout_alignParentRight="true"
+                android:layout_margin="1dp"
+                android:text="8 min."
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/buttons"
+            android:background="@color/background"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/content"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:id="@+id/imageCount"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_friends" />
+
+            <TextView
+                android:id="@+id/viewTextCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_margin="1dp"
+                android:layout_toRightOf="@+id/imageCount"
+                android:text="1000"
+                android:textColor="#FFFFFF" />
+
+            <ImageView
+                android:id="@+id/imageTime"
+                android:layout_toRightOf="@+id/viewTextCount"
+                android:layout_width="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_favorites" />
+
+            <TextView
+                android:id="@+id/viewTextTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/imageTime"
+                android:text="18:30"
+                android:textColor="#FFFFFF" />
+
+            <ImageView
+                android:id="@+id/imageMaybe"
+                android:layout_toRightOf="@+id/viewTextTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_favorites" />
+
+            <TextView
+                android:id="@+id/viewTextMaybe"
+                android:layout_width="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/imageMaybe"
+                android:layout_margin="1dp"
+                android:text="18:30"
+                android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/deleteButton"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_height="wrap_content"
+                android:text="@string/delete"
+                android:background="@null"
+                android:textColor="@color/background_accent" />
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>
