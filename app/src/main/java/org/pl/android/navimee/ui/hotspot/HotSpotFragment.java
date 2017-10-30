@@ -3,6 +3,7 @@ package org.pl.android.navimee.ui.hotspot;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.IntentSender;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,6 +26,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.tbruyelle.rxpermissions.RxPermissions;
@@ -163,6 +165,20 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView{
                     public void accept(LatLng latLng) throws Exception {
                         CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 10);
                         googleMap.animateCamera(yourLocation);
+                        //mock
+                        LatLng latLng1 = new LatLng(latLng.latitude+0.04,latLng.longitude+0.05);
+                        LatLng latLng2 = new LatLng(latLng.latitude-0.04,latLng.longitude-0.05);
+                        googleMap.addCircle(new CircleOptions()
+                                .center(latLng1)
+                                .radius(2000)
+                                .strokeColor(Color.BLUE)
+                                .fillColor(Color.RED));
+
+                        googleMap.addCircle(new CircleOptions()
+                                .center(latLng2)
+                                .radius(1500)
+                                .strokeColor(Color.BLUE)
+                                .fillColor(Color.RED));
                     }
                 }, new ErrorHandler());
 
@@ -178,6 +194,21 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView{
                     public void accept(LatLng latLng) throws Exception {
                         CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 10);
                         googleMap.animateCamera(yourLocation);
+                        //mock
+                        LatLng latLng1 = new LatLng(latLng.latitude+0.04,latLng.longitude+0.05);
+                        LatLng latLng2 = new LatLng(latLng.latitude-0.04,latLng.longitude-0.05);
+                        googleMap.addCircle(new CircleOptions()
+                                .center(latLng1)
+                                .radius(1000)
+                                .strokeColor(Color.BLUE)
+                                .fillColor(Color.RED));
+
+                        googleMap.addCircle(new CircleOptions()
+                                .center(latLng2)
+                                .radius(1500)
+                                .strokeColor(Color.BLUE)
+                                .fillColor(Color.RED));
+
                     }
                 }, new ErrorHandler());
 
