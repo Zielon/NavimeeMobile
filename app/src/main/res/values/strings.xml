@@ -10,7 +10,7 @@
     <string name="empty_ribots">There aren\'t any ribots</string>
     <string name="error_loading_ribots">There was a problem loading the ribots</string>
 
-    <string name="events">Wydarzenia</string>
+    <string name="events">Eventy</string>
     <string name="flights">Przyloty</string>
     <string name="day_schedule">Plan dnia</string>
     <string name="radar">Radar</string>
@@ -21,7 +21,7 @@
     <string name="logout_text">Sign out</string>
     <string name="add">Dodaj</string>
     <string name="delete">Usuń</string>
-    <string name="drive_now">Jedz teraz</string>
+    <string name="drive_now">Jedź teraz</string>
     <string name="today">Dziś</string>
     <string name="tommorow">Jutro</string>
     <string name="twodayslater">Za 2 dni</string>
@@ -36,9 +36,9 @@
     <string name="email">Email</string>
     <string name="password">Hasło</string>
     <string name="create_account">Utwórz konto</string>
-    <string name="already_member_login">Masz już konto ? Zaloguj się</string>
+    <string name="already_member_login">Masz już konto? Zaloguj się</string>
     <string name="login">Zaloguj się</string>
-    <string name="no_account_yet">Nie masz jeszcze konta ? Stwórz je</string>
+    <string name="no_account_yet">Nie masz jeszcze konta? Stwórz je</string>
     <string name="facebook_app_id">490316121339159</string>
     <string name="fb_login_protocol_scheme">fb490316121339159</string>
     <string name="google_maps_key">AIzaSyCm3VEK4jjMA6jl0QkyfCn-qO3LYwoOKOs</string>

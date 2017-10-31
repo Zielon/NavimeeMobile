@@ -80,7 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_friends" />
+                android:src="@drawable/ic_people_black_24dp" />
 
             <TextView
                 android:id="@+id/viewTextCount"
@@ -98,7 +98,7 @@
                 android:layout_width="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_favorites" />
+                android:src="@drawable/ic_schedule_black_24dp" />
 
             <TextView
                 android:id="@+id/viewTextTime"
@@ -115,7 +115,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_favorites" />
+                android:src="@drawable/ic_remove_red_eye_black_24dp" />
 
             <TextView
                 android:id="@+id/viewTextMaybe"
@@ -135,7 +135,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/add"
                 android:background="@null"
-                android:textColor="@color/background_accent" />
+                android:drawableTop="@drawable/ic_add_circle_outline_black_24dp" />
         </RelativeLayout>
 
 

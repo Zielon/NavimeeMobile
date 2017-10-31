@@ -12,7 +12,7 @@
     <tab
         id="@+id/tab_events"
         icon="@drawable/ic_action_place"
-        title="Eventy" />
+        title="@string/events" />
     <tab
         id="@+id/tab_flights"
         icon="@drawable/ic_action_flight_land"
