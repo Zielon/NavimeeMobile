@@ -5,9 +5,14 @@
         icon="@drawable/ic_friends"
         title="@string/hotspot" />
     <tab
+    id="@+id/tab_radar"
+    icon="@drawable/ic_friends"
+    title="@string/radar" />
+
+    <tab
         id="@+id/tab_events"
         icon="@drawable/ic_favorites"
-        title="@string/events" />
+        title="Eventy" />
     <tab
         id="@+id/tab_flights"
         icon="@drawable/ic_nearby"
@@ -16,9 +21,6 @@
         id="@+id/tab_day_schedule"
         icon="@drawable/ic_friends"
         title="@string/day_schedule" />
-    <tab
-        id="@+id/tab_radar"
-        icon="@drawable/ic_friends"
-        title="@string/radar" />
+
 
 </tabs>
