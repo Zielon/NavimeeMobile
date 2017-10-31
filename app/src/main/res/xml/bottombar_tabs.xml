@@ -2,24 +2,24 @@
 <tabs>
     <tab
         id="@+id/tab_hotspot"
-        icon="@drawable/ic_friends"
+        icon="@drawable/ic_action_whatshot"
         title="@string/hotspot" />
     <tab
     id="@+id/tab_radar"
-    icon="@drawable/ic_friends"
+    icon="@drawable/ic_action_explore"
     title="@string/radar" />
 
     <tab
         id="@+id/tab_events"
-        icon="@drawable/ic_favorites"
+        icon="@drawable/ic_action_place"
         title="Eventy" />
     <tab
         id="@+id/tab_flights"
-        icon="@drawable/ic_nearby"
+        icon="@drawable/ic_action_flight_land"
         title="@string/flights" />
     <tab
         id="@+id/tab_day_schedule"
-        icon="@drawable/ic_friends"
+        icon="@drawable/ic_action_today"
         title="@string/day_schedule" />
 
 
