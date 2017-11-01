@@ -4,9 +4,9 @@
     <color name="primary_dark">#000000</color>
     <color name="primary_darker">#CC1D1D</color>
     <color name="gray">#eeeeee</color>
-    <color name="accent">#69e2ff</color>
-    <color name="white">#0081cb</color>
-    <color name="iron">#263238</color>
-    <color name="background">#263238</color>
-    <color name="background_accent">#69e2ff</color>
+    <color name="accent">#ff8f00</color>
+    <color name="white">#ff8f00</color>
+    <color name="iron">#eeeeee</color>
+    <color name="background">#ffc046</color>
+    <color name="background_accent">#ff8f00</color>
 </resources>
