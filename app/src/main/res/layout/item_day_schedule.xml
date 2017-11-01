@@ -135,6 +135,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/delete"
                 android:background="@null"
+                android:drawableStart="@drawable/ic_delete_black_24dp"
                 android:textColor="@color/background_accent" />
         </RelativeLayout>
 
