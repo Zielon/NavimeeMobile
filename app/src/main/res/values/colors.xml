@@ -6,7 +6,7 @@
     <color name="gray">#eeeeee</color>
     <color name="accent">#69e2ff</color>
     <color name="white">#0081cb</color>
-    <color name="iron">#0081cb</color>
-    <color name="background">#69e2ff</color>
+    <color name="iron">#263238</color>
+    <color name="background">#263238</color>
     <color name="background_accent">#69e2ff</color>
 </resources>
