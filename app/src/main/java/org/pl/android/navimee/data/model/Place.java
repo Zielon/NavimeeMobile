@@ -9,22 +9,23 @@ import java.io.Serializable;
 
 
 public class Place implements Serializable {
-    public  String id;
-    public  String name;
-    public  Double longitude;
-    public  Double latitude;
-    public  String country;
-    public  String zip;
-    public Place() {
-    }
+    private String id;
+    private String name;
+    private String longitude;
+    private String latitude;
+    private String city;
+    private String country;
 
-    public Place(String id, String name, Double longitude, Double latitude, String country, String zip) {
+    public Place(String id, String name, String longitude, String latitude, String city, String country) {
         this.id = id;
         this.name = name;
         this.longitude = longitude;
         this.latitude = latitude;
+        this.city = city;
         this.country = country;
-        this.zip = zip;
+    }
+
+    public Place() {
     }
 
     public String getId() {
@@ -43,20 +44,28 @@ public class Place implements Serializable {
         this.name = name;
     }
 
-    public Double getLongitude() {
+    public String getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(Double longitude) {
+    public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
 
-    public Double getLatitude() {
+    public String getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(Double latitude) {
+    public void setLatitude(String latitude) {
         this.latitude = latitude;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public String getCountry() {
@@ -65,13 +74,5 @@ public class Place implements Serializable {
 
     public void setCountry(String country) {
         this.country = country;
-    }
-
-    public String getZip() {
-        return zip;
-    }
-
-    public void setZip(String zip) {
-        this.zip = zip;
     }
 }

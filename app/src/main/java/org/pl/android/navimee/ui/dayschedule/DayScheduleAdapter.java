@@ -49,21 +49,21 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
     @Override
     public void onBindViewHolder(final DayScheduleHolder holder, final int position) {
         final Event event = mEvents.get(position);
-        holder.nameTextView.setText(event.name);
-        if(event.place != null && event.place.name != null) {
-            holder.addressTextView.setText(event.place.name);
+        holder.nameTextView.setText(event.getName());
+        if(event.getPlace() != null && event.getPlace().getName() != null) {
+            holder.addressTextView.setText(event.getPlace().getName());
         }
-        holder.countTextView.setText(String.valueOf(event.attending_count));
-        if(event.end_time != null) {
-            holder.timeTextView.setText(event.end_time.getHours()+":"+String.format("%02d", event.end_time.getMinutes()));
+        holder.countTextView.setText(String.valueOf(event.getAttending_count()));
+        if(event.getEnd_time() != null) {
+            holder.timeTextView.setText(event.getEnd_time()/*+":"+String.format("%02d", event.end_time.getMinutes())*/);
         }
-        holder.maybeTextView.setText(String.valueOf(event.maybe_count));
+        holder.maybeTextView.setText(String.valueOf(event.getMaybe_count()));
         holder.driveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (event.place.latitude != null && event.place.latitude != null) {
-                    Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + String.valueOf(event.place.latitude) + "," +
-                            String.valueOf(event.place.longitude) + "( " + event.place.name + ")");
+                if (event.getPlace().getLatitude() != null && event.getPlace().getLongitude() != null) {
+                    Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + String.valueOf(event.getPlace().getLatitude()) + "," +
+                            String.valueOf(event.getPlace().getLongitude()) + "( " + event.getPlace().getName() + ")");
 
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                     mapIntent.setPackage("com.google.android.apps.maps");

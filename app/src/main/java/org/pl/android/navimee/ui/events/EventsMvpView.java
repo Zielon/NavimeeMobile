@@ -4,6 +4,7 @@ import org.pl.android.navimee.data.model.Event;
 import org.pl.android.navimee.ui.base.MvpView;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Wojtek on 2017-10-21.
@@ -11,7 +12,7 @@ import java.util.List;
 
 public interface EventsMvpView extends MvpView {
 
-    void showEvents(List<Event> events);
+    void showEvents(Map<String, Object> events);
 
     void showEventsEmpty();
 

@@ -14,6 +14,7 @@ import org.pl.android.navimee.data.model.Event;
 import org.pl.android.navimee.ui.base.BaseActivity;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -71,7 +72,7 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
     }
 
     @Override
-    public void showEvents(List<Event> events) {
+    public void showEvents(Map<String, Object> events) {
         mEventsAdapter.setEvents(events);
         mEventsAdapter.notifyDataSetChanged();
     }

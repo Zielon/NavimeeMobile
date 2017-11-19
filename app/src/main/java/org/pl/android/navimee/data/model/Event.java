@@ -14,29 +14,39 @@ import java.io.Serializable;
  */
 
 public  class Event implements Comparable<Event>, Serializable {
-    
-    public  String id;
-    public  Date start_time;
-    public  Long maybe_count;
-    public  String name;
-    public  Date end_time;
-    public  Place place;
-    public  String type;
-    public  Long attending_count;
+
+    private String id;
+
+    private String attending_count;
+
+    private String end_time;
+
+    private String name;
+
+    private String maybe_count;
+
+    private SearchPlace searchPlace;
+
+    private String start_time;
+
+    private String type;
+
+    private Place place;
 
 
     public Event() {
     }
 
-    public Event(String id, Date start_time, Long maybe_count, String name, Date end_time, Place place, String type, Long attending_count) {
+    public Event(String id, String attending_count, String end_time, String name, String maybe_count, SearchPlace searchPlace, String start_time, String type, Place place) {
         this.id = id;
-        this.start_time = start_time;
-        this.maybe_count = maybe_count;
-        this.name = name;
-        this.end_time = end_time;
-        this.place = place;
-        this.type = type;
         this.attending_count = attending_count;
+        this.end_time = end_time;
+        this.name = name;
+        this.maybe_count = maybe_count;
+        this.searchPlace = searchPlace;
+        this.start_time = start_time;
+        this.type = type;
+        this.place = place;
     }
 
     public String getId() {
@@ -47,28 +57,20 @@ public  class Event implements Comparable<Event>, Serializable {
         this.id = id;
     }
 
-    public Date getStart_time() {
-        return start_time;
+    public String getAttending_count() {
+        return attending_count;
     }
 
-    public void setStart_time(Date start_time) {
-        this.start_time = start_time;
+    public void setAttending_count(String attending_count) {
+        this.attending_count = attending_count;
     }
 
-    public Date getEnd_time() {
+    public String getEnd_time() {
         return end_time;
     }
 
-    public void setEnd_time(Date end_time) {
+    public void setEnd_time(String end_time) {
         this.end_time = end_time;
-    }
-
-    public Long getMaybe_count() {
-        return maybe_count;
-    }
-
-    public void setMaybe_count(Long maybe_count) {
-        this.maybe_count = maybe_count;
     }
 
     public String getName() {
@@ -79,13 +81,28 @@ public  class Event implements Comparable<Event>, Serializable {
         this.name = name;
     }
 
-
-    public Place getPlace() {
-        return place;
+    public String getMaybe_count() {
+        return maybe_count;
     }
 
-    public void setPlace(Place place) {
-        this.place = place;
+    public void setMaybe_count(String maybe_count) {
+        this.maybe_count = maybe_count;
+    }
+
+    public SearchPlace getSearchPlace() {
+        return searchPlace;
+    }
+
+    public void setSearchPlace(SearchPlace searchPlace) {
+        this.searchPlace = searchPlace;
+    }
+
+    public String getStart_time() {
+        return start_time;
+    }
+
+    public void setStart_time(String start_time) {
+        this.start_time = start_time;
     }
 
     public String getType() {
@@ -96,16 +113,16 @@ public  class Event implements Comparable<Event>, Serializable {
         this.type = type;
     }
 
-    public Long getAttending_count() {
-        return attending_count;
+    public Place getPlace() {
+        return place;
     }
 
-    public void setAttending_count(Long attending_count) {
-        this.attending_count = attending_count;
+    public void setPlace(Place place) {
+        this.place = place;
     }
 
     @Override
-    public int compareTo(@NonNull Event another) {
-        return attending_count.compareTo(another.attending_count);
+    public int compareTo(@NonNull Event o) {
+        return 0;
     }
 }

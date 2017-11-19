@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import javax.inject.Singleton;
 
@@ -62,6 +63,14 @@ public class ApplicationModule {
     public FirebaseAuth provideFirebaseAuth() {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         return firebaseAuth;
+    }
+
+
+    @Provides
+    @Singleton
+    public FirebaseFirestore provideFirebaseFirestore() {
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        return firebaseFirestore;
     }
 
 }

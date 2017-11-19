@@ -4,32 +4,23 @@ import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-import com.kelvinapps.rxfirebase.DataSnapshotMapper;
-import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import org.pl.android.navimee.data.DataManager;
 import org.pl.android.navimee.data.model.Event;
-import org.pl.android.navimee.data.model.Ribot;
 import org.pl.android.navimee.injection.ConfigPersistent;
 import org.pl.android.navimee.ui.base.BasePresenter;
-import org.pl.android.navimee.ui.base.Presenter;
-import org.pl.android.navimee.util.RxUtil;
-import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
 
-import io.reactivex.functions.Consumer;
 import timber.log.Timber;
 
 /**
@@ -40,6 +31,8 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
     private final DataManager mDataManager;
 
     public Subscription mSubscription;
+
+    private ListenerRegistration mListener;
 
     @Inject
     public EventsPresenter(DataManager dataManager) {
@@ -59,7 +52,22 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
 
     public void loadEvents() {
 
-    RxFirebaseDatabase.observeValueEvent(mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child("events"),DataSnapshotMapper.listOf(Event.class))
+
+        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("events").document("GDANSK").addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                if (e != null) {
+                    Timber.e(e.getMessage());
+                }
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    getMvpView().showEvents(documentSnapshot.getData());
+                }
+
+
+            }
+        });
+
+       /* RxFirebaseDatabase.observeValueEvent(mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child("events"),DataSnapshotMapper.listOf(Event.class))
               .subscribe(event -> {
                   if (!event.isEmpty()) {
                       Collections.sort(event);
@@ -69,7 +77,7 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
                   }
               }, throwable -> {
                   Timber.e("RxFirebaseDatabase", throwable.toString());
-              });
+              });*/
     }
 
 

@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
 import org.joda.time.format.DateTimeFormat;
 import org.pl.android.navimee.R;
@@ -22,7 +24,9 @@ import org.pl.android.navimee.injection.ConfigPersistent;
 import org.pl.android.navimee.util.ViewUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -39,7 +43,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
 
     @Inject
     public EventsAdapter(@ActivityContext Context context) {
-        this.mEvents = new ArrayList<>();
+        this.mEvents = new ArrayList<Event>();
         mContext = context;
     }
 
@@ -52,22 +56,24 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
 
     @Override
     public void onBindViewHolder(final EventsHolder holder, final int position) {
-        final Event event = mEvents.get(position);
-        holder.nameTextView.setText(event.name);
-        if(event.place != null && event.place.name != null) {
-            holder.addressTextView.setText(event.place.name);
+        Gson gson = new Gson();
+        JsonElement jsonElement = gson.toJsonTree(mEvents.get(position));
+        Event event = gson.fromJson(jsonElement, Event.class);
+        holder.nameTextView.setText(event.getName());
+        if(event.getPlace() != null && event.getPlace().getName() != null) {
+            holder.addressTextView.setText(event.getPlace().getName());
         }
-        holder.countTextView.setText(String.valueOf(event.attending_count));
-        if(event.end_time != null) {
-            holder.timeTextView.setText(event.end_time.getHours()+":"+String.format("%02d", event.end_time.getMinutes()));
+        holder.countTextView.setText(String.valueOf(event.getAttending_count()));
+        if(event.getEnd_time() != null) {
+            holder.timeTextView.setText(event.getEnd_time()/*+":"+String.format("%02d", event.end_time.getMinutes())*/);
         }
-        holder.maybeTextView.setText(String.valueOf(event.maybe_count));
+        holder.maybeTextView.setText(String.valueOf(event.getMaybe_count()));
         holder.driveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (event.place.latitude != null && event.place.latitude != null) {
-                    Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + String.valueOf(event.place.latitude) + "," +
-                            String.valueOf(event.place.longitude) + "( " + event.place.name + ")");
+                if (event.getPlace().getLongitude() != null && event.getPlace().getLatitude() != null) {
+                    Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + String.valueOf(event.getPlace().getLatitude()) + "," +
+                            String.valueOf(event.getPlace().getLongitude()) + "( " + event.getPlace().getName() + ")");
 
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                     mapIntent.setPackage("com.google.android.apps.maps");
@@ -93,8 +99,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         return mEvents.size();
     }
 
-    public void setEvents(List<Event> list) {
-        mEvents = list;
+    public void setEvents(Map<String, Object> events) {
+        mEvents = new ArrayList(events.values());
     }
 
     class EventsHolder extends RecyclerView.ViewHolder {

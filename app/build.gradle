@@ -103,7 +103,7 @@ play {
 }
 
 dependencies {
-    final PLAY_SERVICES_VERSION = '11.0.2'
+    final PLAY_SERVICES_VERSION = '11.6.0'
     final SUPPORT_LIBRARY_VERSION = '25.3.1'
     final RETROFIT_VERSION = '2.3.0'
     final DAGGER_VERSION = '2.5'
@@ -116,7 +116,7 @@ dependencies {
     final AUTO_VALUE_GSON_VERSION = '0.4.2'
     final APP_INTRO_VERSION = 'v4.2.2'
     final BOTTOM_BAR_VERSION = '2.3.1'
-    final FIREBASE_VERSION = '11.0.2'
+    final FIREBASE_VERSION = '11.6.0'
 
     def daggerCompiler = "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
     def jUnit = "junit:junit:4.12"
@@ -161,6 +161,7 @@ dependencies {
     compile "com.google.firebase:firebase-core:${FIREBASE_VERSION}"
     compile "com.google.firebase:firebase-database:${FIREBASE_VERSION}"
     compile "com.google.firebase:firebase-messaging:${FIREBASE_VERSION}"
+    compile "com.google.firebase:firebase-firestore:${FIREBASE_VERSION}"
     compile 'com.kelvinapps:rxfirebase:0.0.15'
     //gui
     compile "com.github.apl-devs:appintro:$APP_INTRO_VERSION"

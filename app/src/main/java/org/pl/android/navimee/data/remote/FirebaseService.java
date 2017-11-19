@@ -8,6 +8,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 import java.util.concurrent.Executor;
@@ -23,6 +24,7 @@ import timber.log.Timber;
 @Singleton
 public class FirebaseService {
 
+    private FirebaseFirestore firebaseFirestore;
     private FirebaseDatabase firebaseDatabase;
     private FirebaseAuth firebaseAuth;
 
@@ -34,10 +36,15 @@ public class FirebaseService {
         return firebaseAuth;
     }
 
+    public FirebaseFirestore getFirebaseFirestore() {
+        return firebaseFirestore;
+    }
+
     @Inject
-    public FirebaseService(FirebaseAuth firebaseAuth, FirebaseDatabase firebaseDatabase) {
+    public FirebaseService(FirebaseAuth firebaseAuth, FirebaseDatabase firebaseDatabase,FirebaseFirestore firebaseFirestore) {
         this.firebaseDatabase = firebaseDatabase;
         this.firebaseAuth = firebaseAuth;
+        this.firebaseFirestore = firebaseFirestore;
     }
 
     public void signUp(String email, String password) {
