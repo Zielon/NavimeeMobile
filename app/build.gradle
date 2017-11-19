@@ -160,6 +160,7 @@ dependencies {
     compile "com.google.firebase:firebase-auth:$FIREBASE_VERSION"
     compile "com.google.firebase:firebase-core:${FIREBASE_VERSION}"
     compile "com.google.firebase:firebase-database:${FIREBASE_VERSION}"
+    compile "com.google.firebase:firebase-messaging:${FIREBASE_VERSION}"
     compile 'com.kelvinapps:rxfirebase:0.0.15'
     //gui
     compile "com.github.apl-devs:appintro:$APP_INTRO_VERSION"
