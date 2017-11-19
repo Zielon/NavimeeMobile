@@ -28,12 +28,28 @@ public class PreferencesHelper {
        return  mPref.getBoolean(name, true);
     }
 
+    public String getValueString(String name) {
+        return  mPref.getString(name,"");
+    }
+
+
     public void setValue(String name, boolean value) {
         //  Make a new preferences editor
         SharedPreferences.Editor e = mPref.edit();
 
         //  Edit preference to make it false because we don't want this to run again
         e.putBoolean(name, value);
+
+        //  Apply changes
+        e.apply();
+    }
+
+    public void setValue(String name, String value) {
+        //  Make a new preferences editor
+        SharedPreferences.Editor e = mPref.edit();
+
+        //  Edit preference to make it false because we don't want this to run again
+        e.putString(name, value);
 
         //  Apply changes
         e.apply();

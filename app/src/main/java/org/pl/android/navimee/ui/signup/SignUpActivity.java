@@ -109,6 +109,7 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
     @Override
     public void onSuccess() {
         _signupButton.setEnabled(true);
+        mSignUpPresenter.registerMessagingToken();
         setResult(RESULT_OK, null);
         finish();
         progressDialog.dismiss();

@@ -16,15 +16,37 @@
 
 package org.pl.android.navimee.notifications;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
+
+import org.pl.android.navimee.BoilerplateApplication;
+import org.pl.android.navimee.data.DataManager;
+import org.pl.android.navimee.util.Const;
+
+import javax.inject.Inject;
 
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
     private static final String TAG = "MyFirebaseIIDService";
+
+    @Inject
+    DataManager dataManager;
+
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        BoilerplateApplication.get(this).getComponent().inject(this);
+    }
+
 
     /**
      * Called if InstanceID token is updated. This may occur if the security of
@@ -36,6 +58,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     public void onTokenRefresh() {
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        dataManager.getPreferencesHelper().setValue(Const.MESSAGING_TOKEN,refreshedToken);
         Log.d(TAG, "Refreshed token: " + refreshedToken);
 
         // If you want to send messages to this application instance or
@@ -55,5 +78,21 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
      */
     private void sendRegistrationToServer(String token) {
         // TODO: Implement this method to send token to your app server.
+        // Get a reference to the restaurants collection
+        if(dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() != null) {
+            String userId = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+            dataManager.getFirebaseService().getFirebaseFirestore().collection("users").document(userId).set(token).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d(TAG, "DocumentSnapshot successfully written!");
+                }
+            })
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.w(TAG, "Error writing document", e);
+                }
+            });
+        }
     }
 }

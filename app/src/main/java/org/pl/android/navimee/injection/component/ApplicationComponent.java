@@ -14,6 +14,7 @@ import org.pl.android.navimee.data.remote.EventsService;
 import org.pl.android.navimee.data.remote.RibotsService;
 import org.pl.android.navimee.injection.ApplicationContext;
 import org.pl.android.navimee.injection.module.ApplicationModule;
+import org.pl.android.navimee.notifications.MyFirebaseInstanceIDService;
 import org.pl.android.navimee.util.RxEventBus;
 
 @Singleton
@@ -21,6 +22,7 @@ import org.pl.android.navimee.util.RxEventBus;
 public interface ApplicationComponent {
 
     void inject(SyncService syncService);
+    void inject(MyFirebaseInstanceIDService myFirebaseInstanceIDService);
 
     @ApplicationContext Context context();
     Application application();
