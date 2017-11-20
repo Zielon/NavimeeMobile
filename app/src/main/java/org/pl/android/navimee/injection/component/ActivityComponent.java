@@ -13,6 +13,7 @@ import org.pl.android.navimee.ui.events.EventsAdapter;
 import org.pl.android.navimee.ui.events.EventsFragment;
 import org.pl.android.navimee.ui.hotspot.HotSpotFragment;
 import org.pl.android.navimee.ui.main.MainActivity;
+import org.pl.android.navimee.ui.settings.SettingsActivity;
 import org.pl.android.navimee.ui.signin.SignInActivity;
 import org.pl.android.navimee.ui.signup.SignUpActivity;
 
@@ -28,6 +29,7 @@ public interface ActivityComponent {
     void inject(HotSpotFragment hotSpotFragment);
     void inject(DayScheduleFragment dayScheduleFragment);
     void inject(SignInActivity signInActivity);
+   // void inject(SettingsActivity settingsActivity);
     void inject(SignUpActivity signUpActivity);
 
     @ActivityContext
