@@ -168,6 +168,7 @@ dependencies {
     compile "com.roughike:bottom-bar:$BOTTOM_BAR_VERSION"
     compile 'com.fnp:material-preferences:0.1.4'
     compile 'devs.mulham.horizontalcalendar:horizontalcalendar:1.2.0'
+    compile 'com.ethanhua:skeleton:1.0.0'
 
     //facebook
     compile 'com.facebook.android:facebook-login:[4,5)'

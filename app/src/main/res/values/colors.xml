@@ -9,4 +9,5 @@
     <color name="iron">#eeeeee</color>
     <color name="background">#ffc046</color>
     <color name="background_accent">#ff8f00</color>
+    <color name="colorLine">#dfdfdf</color>
 </resources>

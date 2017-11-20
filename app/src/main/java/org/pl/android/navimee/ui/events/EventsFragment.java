@@ -10,6 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.SkeletonScreen;
+
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
 
@@ -40,6 +43,7 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
     RecyclerView mEventsRecycler;
 
     Date today;
+    SkeletonScreen skeletonScreen;
 
     public static EventsFragment newInstance() {
         EventsFragment fragment = new EventsFragment();
@@ -81,6 +85,7 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Date date, int position) {
+                skeletonScreen.show();
                 mEventsPresenter.loadEvents(date);
             }
 
@@ -97,10 +102,18 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
         });
 
         ButterKnife.bind(this, fragmentView);
+
         mEventsPresenter.attachView(this);
         mEventsRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mEventsRecycler.setHasFixedSize(true);
         mEventsRecycler.setAdapter(mEventsAdapter);
+
+       skeletonScreen = Skeleton.bind(mEventsRecycler)
+                .adapter(mEventsAdapter)
+                .shimmer(true)
+                .angle(20)
+                .duration(1200)
+                .count(10).show();
         return fragmentView;
     }
 
@@ -122,14 +135,17 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
     public void showEvents(Map<String, Object> events) {
         mEventsAdapter.setEvents(events);
         mEventsAdapter.notifyDataSetChanged();
+        skeletonScreen.hide();
     }
 
     @Override
     public void showEventsEmpty() {
+        skeletonScreen.hide();
     }
 
     @Override
     public void showError() {
+        skeletonScreen.hide();
     }
 
 
