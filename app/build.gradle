@@ -167,6 +167,7 @@ dependencies {
     compile "com.github.apl-devs:appintro:$APP_INTRO_VERSION"
     compile "com.roughike:bottom-bar:$BOTTOM_BAR_VERSION"
     compile 'com.fnp:material-preferences:0.1.4'
+    compile 'devs.mulham.horizontalcalendar:horizontalcalendar:1.2.0'
 
     //facebook
     compile 'com.facebook.android:facebook-login:[4,5)'

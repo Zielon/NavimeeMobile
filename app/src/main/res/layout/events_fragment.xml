@@ -3,37 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="org.pl.android.navimee.ui.events.EventsFragment">
-    <LinearLayout
-        android:id="@+id/buttonLayout"
-        android:layout_width="fill_parent"
+    <devs.mulham.horizontalcalendar.HorizontalCalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="horizontal">
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@null"
-            android:text="@string/today"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_weight="1"
-            android:background="@null"
-            android:layout_height="wrap_content"
-            android:text="@string/tommorow"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_weight="1"
-            android:background="@null"
-            android:layout_height="wrap_content"
-            android:text="@string/twodayslater"/>
-    </LinearLayout>
+        android:background="@color/accent"
+        app:textColorSelected="#FFFF"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_events"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/buttonLayout"
+        android:layout_below="@+id/calendarView"
         android:clipToPadding="false"
         android:paddingBottom="6dp"
         android:paddingTop="6dp"

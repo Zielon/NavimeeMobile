@@ -15,6 +15,7 @@ import org.pl.android.navimee.injection.ConfigPersistent;
 import org.pl.android.navimee.ui.base.BasePresenter;
 import org.reactivestreams.Subscription;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,10 +51,25 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
     }
 
 
-    public void loadEvents() {
+    public void loadEvents(Date date) {
+        String day = "";
+        if(date.getDay() == 1) {
+            day = "firstDay";
+        } else if (date.getDay() == 2) {
+            day = "secondDay";
+        } else if (date.getDay() == 3) {
+            day = "thirdDay";
+        } else if (date.getDay() == 4) {
+            day = "fourthDay";
+        } else if (date.getDay() == 5) {
+            day = "fifthDay";
+        } else if (date.getDay() == 6) {
+            day = "sixthDay";
+        } else if (date.getDay() == 7) {
+            day = "seventhDay";
+        }
 
-
-        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("events").document("GDANSK").addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("segregatedEvents").document("GDANSK").collection(day).document("events").addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
                 if (e != null) {
