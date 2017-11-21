@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.IntentSender;
 import android.graphics.Color;
+import android.location.Address;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -34,12 +35,15 @@ import com.tbruyelle.rxpermissions.RxPermissions;
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
 import org.pl.android.navimee.ui.main.MainActivity;
+import org.pl.android.navimee.util.AddressToStringFunc;
 import org.pl.android.navimee.util.DetectedActivityToString;
 import org.pl.android.navimee.util.DisplayTextOnViewAction;
 import org.pl.android.navimee.util.LocationToStringFunc;
 import org.pl.android.navimee.util.ToMostProbableActivity;
 import org.reactivestreams.Subscription;
 import org.xml.sax.ErrorHandler;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -48,6 +52,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 import pl.charmas.android.reactivelocation2.ReactiveLocationProvider;
 import timber.log.Timber;
 
@@ -68,10 +73,13 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView{
     private Observable<Location> locationUpdatesObservable;
     private Observable<Location> lastKnownLocationObservable;
     private Observable<ActivityRecognitionResult> activityObservable;
+    private Observable<String> addressObservable;
 
     private Disposable lastKnownLocationDisposable;
     private Disposable updatableLocationDisposable;
     private Disposable activityDisposable;
+    private Disposable addressDisposable;
+
 
     private final static int REQUEST_CHECK_SETTINGS = 0;
 
@@ -150,6 +158,23 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView{
         activityObservable = locationProvider
                 .getDetectedActivity(50)
                 .observeOn(AndroidSchedulers.mainThread());
+
+        addressObservable = locationProvider.getUpdatedLocation(locationRequest)
+                .flatMap(new Function<Location, Observable<List<Address>>>() {
+                    @Override
+                    public Observable<List<Address>> apply(Location location) {
+                        return locationProvider.getReverseGeocodeObservable(location.getLatitude(), location.getLongitude(), 1);
+                    }
+                })
+                .map(new Function<List<Address>, Address>() {
+                    @Override
+                    public Address apply(List<Address> addresses) {
+                        return addresses != null && !addresses.isEmpty() ? addresses.get(0) : null;
+                    }
+                })
+                .map(new AddressToStringFunc())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     protected void onLocationPermissionGranted() {
@@ -218,6 +243,16 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView{
                 .map(new ToMostProbableActivity())
                 .map(new DetectedActivityToString())
                 .subscribe(new DisplayTextOnViewAction(), new ErrorHandler());
+
+        addressDisposable = addressObservable
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String address) throws Exception {
+                        mHotspotPresenter.setLastLocation(address);
+                        Timber.d("address "+address);
+                    }
+                }, new ErrorHandler());
+
     }
 
 
@@ -279,6 +314,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView{
         dispose(updatableLocationDisposable);
         dispose(lastKnownLocationDisposable);
         dispose(activityDisposable);
+        dispose(addressDisposable);
     }
 
     @Override
