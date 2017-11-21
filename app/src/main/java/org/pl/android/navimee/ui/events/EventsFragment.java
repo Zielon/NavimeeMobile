@@ -64,7 +64,7 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
         View fragmentView = inflater.inflate(R.layout.events_fragment, container, false);
 
         Calendar endDate = Calendar.getInstance();
-        endDate.add(Calendar.DAY_OF_WEEK, 7);
+        endDate.add(Calendar.DAY_OF_WEEK, 6);
         Calendar startDate = Calendar.getInstance();
         startDate.add(Calendar.DAY_OF_WEEK, 0);
 
