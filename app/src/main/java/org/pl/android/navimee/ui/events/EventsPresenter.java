@@ -9,6 +9,8 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.pl.android.navimee.data.DataManager;
 import org.pl.android.navimee.data.model.Event;
 import org.pl.android.navimee.injection.ConfigPersistent;
@@ -16,6 +18,7 @@ import org.pl.android.navimee.ui.base.BasePresenter;
 import org.pl.android.navimee.util.Const;
 import org.reactivestreams.Subscription;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,19 +57,23 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
 
     public void loadEvents(Date date) {
         String day = "";
-        if(date.getDay() == 1) {
+        Date today = Calendar.getInstance().getTime();
+        DateTime selectedTime = new DateTime(date);
+        DateTime todayTime = new DateTime(today);
+        int compare =  Days.daysBetween(todayTime.toLocalDate(), selectedTime.toLocalDate()).getDays();
+        if(compare == 0) {
             day = "firstDay";
-        } else if (date.getDay() == 2) {
+        } else if (compare == 1) {
             day = "secondDay";
-        } else if (date.getDay() == 3) {
+        } else if (compare == 2) {
             day = "thirdDay";
-        } else if (date.getDay() == 4) {
+        } else if (compare == 3) {
             day = "fourthDay";
-        } else if (date.getDay() == 5) {
+        } else if (compare == 4) {
             day = "fifthDay";
-        } else if (date.getDay() == 6) {
+        } else if (compare == 5) {
             day = "sixthDay";
-        } else if (date.getDay() == 7) {
+        } else if (compare == 6) {
             day = "seventhDay";
         }
         String city = mDataManager.getPreferencesHelper().getValueString(Const.LAST_LOCATION);
@@ -111,5 +118,7 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
         });
 
     }
+
+
 
 }
