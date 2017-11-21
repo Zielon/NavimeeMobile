@@ -52,6 +52,8 @@
 -dontwarn com.roughike.bottombar.**
 -dontwarn pl.charmas.**
 
+-keep class com.google.android.gms.** { *; }
+-dontwarn com.google.android.gms.**
 
 # Otto rules
 -keepclassmembers class ** {
