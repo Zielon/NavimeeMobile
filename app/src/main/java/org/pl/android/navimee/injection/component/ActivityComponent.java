@@ -29,7 +29,7 @@ public interface ActivityComponent {
     void inject(HotSpotFragment hotSpotFragment);
     void inject(DayScheduleFragment dayScheduleFragment);
     void inject(SignInActivity signInActivity);
-   // void inject(SettingsActivity settingsActivity);
+    void inject(SettingsActivity settingsActivity);
     void inject(SignUpActivity signUpActivity);
 
     @ActivityContext

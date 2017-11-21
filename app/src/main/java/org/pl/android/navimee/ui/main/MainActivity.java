@@ -163,6 +163,12 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        checkLogin();
+    }
+
+    @Override
     public void showRibotsEmpty() {
         mRibotsAdapter.setRibots(Collections.<Ribot>emptyList());
         mRibotsAdapter.notifyDataSetChanged();
