@@ -164,7 +164,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView{
                 .flatMap(new Function<Location, Observable<List<Address>>>() {
                     @Override
                     public Observable<List<Address>> apply(Location location) {
-                        return locationProvider.getReverseGeocodeObservable(Locale.US,location.getLatitude(), location.getLongitude(), 1);
+                        return locationProvider.getReverseGeocodeObservable(location.getLatitude(), location.getLongitude(), 1);
                     }
                 })
                 .map(new Function<List<Address>, Address>() {
