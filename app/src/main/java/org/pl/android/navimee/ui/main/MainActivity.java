@@ -165,7 +165,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     @Override
     public void onResume() {
         super.onResume();
-        checkLogin();
+      //  checkLogin();
     }
 
     @Override
