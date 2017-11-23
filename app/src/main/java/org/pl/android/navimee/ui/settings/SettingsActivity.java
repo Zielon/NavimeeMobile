@@ -1,6 +1,8 @@
 package org.pl.android.navimee.ui.settings;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.BaseBundle;
 import android.os.Bundle;
@@ -54,6 +56,8 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
 
     @Override
     public void onLogout() {
+        Intent returnIntent = new Intent();
+        setResult(Activity.RESULT_OK);
         finish();
     }
 

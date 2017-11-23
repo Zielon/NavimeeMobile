@@ -31,6 +31,7 @@ import org.pl.android.navimee.ui.settings.SettingsActivity;
 public class BaseActivity extends AppCompatActivity {
 
     private static final String KEY_ACTIVITY_ID = "KEY_ACTIVITY_ID";
+    static final int SETTINGS_REQUEST = 1;  // The request code
     private static final AtomicLong NEXT_ID = new AtomicLong(0);
     private static final LongSparseArray<ConfigPersistentComponent>
             sComponentsMap = new LongSparseArray<>();
@@ -104,7 +105,7 @@ public class BaseActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.user_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, SETTINGS_REQUEST);
             return true;
         }
 

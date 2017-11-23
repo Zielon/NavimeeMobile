@@ -19,6 +19,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.firebase.auth.AuthCredential;
@@ -64,6 +65,7 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
         ButterKnife.bind(this);
 
         FacebookSdk.sdkInitialize(getApplicationContext());
+        LoginManager.getInstance().logOut();
 
         mSignInPresenter.attachView(this);
 

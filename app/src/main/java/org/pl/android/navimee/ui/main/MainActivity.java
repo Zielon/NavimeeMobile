@@ -39,6 +39,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
 
     @Inject MainPresenter mMainPresenter;
     @Inject RibotsAdapter mRibotsAdapter;
+    static final int SETTINGS_REQUEST = 1;  // The request code
 
    // @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
 
@@ -165,7 +166,6 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     @Override
     public void onResume() {
         super.onResume();
-      //  checkLogin();
     }
 
     @Override
@@ -173,6 +173,21 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         mRibotsAdapter.setRibots(Collections.<Ribot>emptyList());
         mRibotsAdapter.notifyDataSetChanged();
         Toast.makeText(this, R.string.empty_ribots, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == SETTINGS_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                checkLogin();
+                // The user picked a contact.
+                // The Intent's data Uri identifies which contact was selected.
+
+                // Do something with the contact here (bigger example below)
+            }
+        }
     }
 
 

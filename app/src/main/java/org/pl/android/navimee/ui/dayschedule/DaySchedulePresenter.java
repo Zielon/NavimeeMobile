@@ -89,6 +89,7 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
                 }
             }
 
+            @SuppressLint("TimberArgCount")
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Timber.e("onCancelled", databaseError.toException());
