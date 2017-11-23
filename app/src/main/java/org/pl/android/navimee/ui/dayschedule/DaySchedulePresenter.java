@@ -40,7 +40,7 @@ import timber.log.Timber;
 public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
     private final DataManager mDataManager;
 
-    private Task<QuerySnapshot> mListener;
+    private ListenerRegistration mListener;
 
 
     @Inject
@@ -63,34 +63,17 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
 
         mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("users").document(userId).collection("userEvents").whereGreaterThan("time", date)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @SuppressLint("TimberArgCount")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (DocumentSnapshot document : task.getResult()) {
-                                Timber.d(document.getId() + " => " + document.getData());
+                    public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                        for (DocumentSnapshot document : documentSnapshots) {
+                            Timber.d(document.getId() + " => " + document.getData());
 
-                            }
-                            getMvpView().showEvents(task.getResult().toObjects(Event.class));
-                        } else {
-                            Timber.e( "Error getting documents: ", task.getException());
                         }
+                        getMvpView().showEvents(documentSnapshots.toObjects(Event.class));
                     }
-                })
-               .addOnFailureListener(new OnFailureListener() {
-                   @SuppressLint("TimberArgCount")
-                   @Override
-                   public void onFailure(@NonNull Exception e) {
-                       Timber.e( "Error getting documents: ", e);
-                   }
-               })
-        ;
-
-
-
-    }
+                });
+    };
 
     public void deleteEvent(Event event) {
         String key = mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child("day_schedule").push().getKey();

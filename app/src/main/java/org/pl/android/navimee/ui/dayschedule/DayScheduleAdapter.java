@@ -12,9 +12,11 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
+import org.joda.time.format.DateTimeFormat;
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.data.model.Event;
 import org.pl.android.navimee.injection.ActivityContext;
+import org.pl.android.navimee.util.ViewUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +61,7 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
         }
         holder.countTextView.setText(String.valueOf(event.getAttending_count()));
         if(event.getEnd_time() != null) {
-            holder.timeTextView.setText(event.getEnd_time()/*+":"+String.format("%02d", event.end_time.getMinutes())*/);
+            holder.timeTextView.setText(ViewUtil.string2Date(event.getEnd_time()).toString(DateTimeFormat.forPattern("HH:mm")));
         }
         holder.maybeTextView.setText(String.valueOf(event.getMaybe_count()));
         holder.driveButton.setOnClickListener(new View.OnClickListener() {
