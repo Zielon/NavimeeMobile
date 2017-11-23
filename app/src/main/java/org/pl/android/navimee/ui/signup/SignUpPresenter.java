@@ -64,6 +64,7 @@ public class SignUpPresenter extends BasePresenter<SignUpMvpView> {
             String token = mDataManager.getPreferencesHelper().getValueString(Const.MESSAGING_TOKEN);
             Map<String, Object> user = new HashMap<>();
             user.put("token", token);
+            user.put("name", mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getDisplayName());
             mDataManager.getFirebaseService().getFirebaseFirestore().collection("users").document(userId).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {

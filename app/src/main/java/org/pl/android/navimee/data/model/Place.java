@@ -2,27 +2,27 @@ package org.pl.android.navimee.data.model;
 
 
 
+import com.google.firebase.firestore.IgnoreExtraProperties;
+
 import java.io.Serializable;
 /**
  * Created by Wojtek on 2017-10-22.
  */
 
-
+@IgnoreExtraProperties
 public class Place implements Serializable {
     private String id;
     private String name;
-    private String longitude;
-    private String latitude;
+    private String lon;
+    private String lat;
     private String city;
-    private String country;
 
-    public Place(String id, String name, String longitude, String latitude, String city, String country) {
+    public Place(String id, String name, String lon, String lat, String city) {
         this.id = id;
         this.name = name;
-        this.longitude = longitude;
-        this.latitude = latitude;
+        this.lon = lon;
+        this.lat = lat;
         this.city = city;
-        this.country = country;
     }
 
     public Place() {
@@ -44,22 +44,6 @@ public class Place implements Serializable {
         this.name = name;
     }
 
-    public String getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
-    }
-
-    public String getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
-
     public String getCity() {
         return city;
     }
@@ -68,11 +52,19 @@ public class Place implements Serializable {
         this.city = city;
     }
 
-    public String getCountry() {
-        return country;
+    public String getLon() {
+        return lon;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setLon(String lon) {
+        this.lon = lon;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
     }
 }

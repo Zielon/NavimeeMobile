@@ -3,12 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="org.pl.android.navimee.ui.dayschedule.DayScheduleFragment">
+
+    <devs.mulham.horizontalcalendar.HorizontalCalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/accent"
+        app:textColorSelected="#FFFF"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_day_schedule"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/calendarView"
         android:clipToPadding="false"
         android:paddingBottom="6dp"
         android:paddingTop="6dp"

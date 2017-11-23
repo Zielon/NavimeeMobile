@@ -9,12 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.data.model.Event;
 import org.pl.android.navimee.injection.ActivityContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -48,7 +52,7 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
 
     @Override
     public void onBindViewHolder(final DayScheduleHolder holder, final int position) {
-        final Event event = mEvents.get(position);
+        Event event = mEvents.get(position);
         holder.nameTextView.setText(event.getName());
         if(event.getPlace() != null && event.getPlace().getName() != null) {
             holder.addressTextView.setText(event.getPlace().getName());
@@ -61,9 +65,9 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
         holder.driveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (event.getPlace().getLatitude() != null && event.getPlace().getLongitude() != null) {
-                    Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + String.valueOf(event.getPlace().getLatitude()) + "," +
-                            String.valueOf(event.getPlace().getLongitude()) + "( " + event.getPlace().getName() + ")");
+                if (event.getPlace().getLat() != null && event.getPlace().getLon() != null) {
+                    Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + String.valueOf(event.getPlace().getLat()) + "," +
+                            String.valueOf(event.getPlace().getLon()) + "( " + event.getPlace().getName() + ")");
 
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                     mapIntent.setPackage("com.google.android.apps.maps");
@@ -89,8 +93,8 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
         return mEvents.size();
     }
 
-    public void setEvents(List<Event> list) {
-        mEvents = list;
+    public void setEvents(List<Event> events) {
+        mEvents = events;
     }
 
     class DayScheduleHolder extends RecyclerView.ViewHolder {

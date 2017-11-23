@@ -1,9 +1,10 @@
 package org.pl.android.navimee.ui.events;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -108,12 +109,20 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
     public void saveEvent(Event event) {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
 
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put(event.getId(), event);
-        mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child("day_schedule").child(userId).updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+        Map<String, Object> eventMap = new HashMap<>();
+        eventMap.put("event", event);
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection("users").document(userId).collection("userEvents").document(event.getId()).set(event).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
+            public void onSuccess(Void aVoid) {
+                Timber.i("Event saved");
                 getMvpView().onSuccessSave();
+            }
+        })
+        .addOnFailureListener(new OnFailureListener() {
+            @SuppressLint("TimberArgCount")
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Timber.e("Error saving event", e);
             }
         });
 

@@ -30,6 +30,9 @@ import org.pl.android.navimee.BoilerplateApplication;
 import org.pl.android.navimee.data.DataManager;
 import org.pl.android.navimee.util.Const;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 
@@ -81,7 +84,10 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         // Get a reference to the restaurants collection
         if(dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() != null) {
             String userId = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-            dataManager.getFirebaseService().getFirebaseFirestore().collection("users").document(userId).set(token).addOnSuccessListener(new OnSuccessListener<Void>() {
+            Map<String, Object> user = new HashMap<>();
+            user.put("token", token);
+            user.put("name", dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getDisplayName());
+            dataManager.getFirebaseService().getFirebaseFirestore().collection("users").document(userId).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Log.d(TAG, "DocumentSnapshot successfully written!");

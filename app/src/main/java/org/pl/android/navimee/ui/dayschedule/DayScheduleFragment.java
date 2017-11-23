@@ -9,16 +9,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.SkeletonScreen;
+
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.data.model.Event;
 import org.pl.android.navimee.ui.base.BaseActivity;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import devs.mulham.horizontalcalendar.HorizontalCalendar;
+import devs.mulham.horizontalcalendar.HorizontalCalendarListener;
+import devs.mulham.horizontalcalendar.HorizontalCalendarView;
 
 /**
  * Created by Wojtek on 2017-10-21.
@@ -33,6 +42,9 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
 
     @BindView(R.id.recycler_view_day_schedule)
     RecyclerView mDayScheduleRecycler;
+
+    Date today;
+    SkeletonScreen skeletonScreen;
     
     
     public static DayScheduleFragment newInstance() {
@@ -50,11 +62,55 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(R.layout.day_schedule_fragment, container, false);
+
+        Calendar endDate = Calendar.getInstance();
+        endDate.add(Calendar.DAY_OF_WEEK, 6);
+        Calendar startDate = Calendar.getInstance();
+        startDate.add(Calendar.DAY_OF_WEEK, 0);
+
+        today = Calendar.getInstance().getTime();
+
+        HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(fragmentView, R.id.calendarView)
+                .startDate(startDate.getTime())
+                .endDate(endDate.getTime())
+                .datesNumberOnScreen(5)   // Number of Dates cells shown on screen (Recommended 5)
+                .dayNameFormat("EEE")	  // WeekDay text format
+                .dayNumberFormat("dd")// Date format
+                .monthFormat("MMM") 	  // Month format
+                .showDayName(true)	  // Show or Hide dayName text
+                .showMonthName(false)	  // Show or Hide month text
+                .defaultSelectedDate(today)  // Date to be seleceted at start (default to Today)
+                .build();
+
+        horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
+            @Override
+            public void onDateSelected(Date date, int position) {
+                mDaySchedulePresenter.loadEvents(date);
+            }
+
+            @Override
+            public void onCalendarScroll(HorizontalCalendarView calendarView,
+                                         int dx, int dy) {
+
+            }
+
+            @Override
+            public boolean onDateLongClicked(Date date, int position) {
+                return true;
+            }
+        });
         ButterKnife.bind(this, fragmentView);
         mDaySchedulePresenter.attachView(this);
         mDayScheduleRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mDayScheduleRecycler.setHasFixedSize(true);
         mDayScheduleRecycler.setAdapter(mDayScheduleAdapter);
+
+        skeletonScreen = Skeleton.bind(mDayScheduleRecycler)
+                .adapter(mDayScheduleAdapter)
+                .shimmer(true)
+                .angle(20)
+                .duration(1200)
+                .count(10).show();
         return fragmentView;
     }
 
@@ -62,7 +118,6 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
     @Override
     public void onStart() {
         super.onStart();
-        mDaySchedulePresenter.loadEvents();
     }
 
 
@@ -76,16 +131,18 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
     public void showEvents(List<Event> events) {
         mDayScheduleAdapter.setEvents(events);
         mDayScheduleAdapter.notifyDataSetChanged();
+        skeletonScreen.hide();
     }
+
 
     @Override
     public void showEventsEmpty() {
-
+        skeletonScreen.hide();
     }
 
     @Override
     public void showError() {
-
+        skeletonScreen.hide();
     }
 
     @Override

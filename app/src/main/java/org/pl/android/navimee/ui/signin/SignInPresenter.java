@@ -2,6 +2,7 @@ package org.pl.android.navimee.ui.signin;
 
 
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
@@ -86,6 +87,7 @@ public class SignInPresenter extends BasePresenter<SignInMvpView> {
             String token = mDataManager.getPreferencesHelper().getValueString(Const.MESSAGING_TOKEN);
             Map<String, Object> user = new HashMap<>();
             user.put("token", token);
+            user.put("name", mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getDisplayName());
             mDataManager.getFirebaseService().getFirebaseFirestore().collection("users").document(userId).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
@@ -93,9 +95,10 @@ public class SignInPresenter extends BasePresenter<SignInMvpView> {
                 }
             })
             .addOnFailureListener(new OnFailureListener() {
+                @SuppressLint("TimberArgCount")
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Timber.w("Error writing document", e);
+                    Timber.e("Error writing document", e);
                 }
             });
         }

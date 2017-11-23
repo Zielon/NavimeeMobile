@@ -1,49 +1,35 @@
 package org.pl.android.navimee.data.model;
-
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-import com.google.auto.value.AutoValue;
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
+import com.google.firebase.firestore.Exclude;
+import com.google.firebase.firestore.IgnoreExtraProperties;
 
 import java.io.Serializable;
 
 /**
  * Created by Wojtek on 2017-10-21.
  */
-
+@IgnoreExtraProperties
 public  class Event implements Comparable<Event>, Serializable {
 
     private String id;
-
     private String attending_count;
-
     private String end_time;
-
     private String name;
-
     private String maybe_count;
-
-    private SearchPlace searchPlace;
-
     private String start_time;
-
     private String type;
-
     private Place place;
-
 
     public Event() {
     }
 
-    public Event(String id, String attending_count, String end_time, String name, String maybe_count, SearchPlace searchPlace, String start_time, String type, Place place) {
+    public Event(String id, String attending_count, String end_time, String name, String maybe_count, String start_time, String type, Place place) {
         this.id = id;
         this.attending_count = attending_count;
         this.end_time = end_time;
         this.name = name;
         this.maybe_count = maybe_count;
-        this.searchPlace = searchPlace;
         this.start_time = start_time;
         this.type = type;
         this.place = place;
@@ -87,14 +73,6 @@ public  class Event implements Comparable<Event>, Serializable {
 
     public void setMaybe_count(String maybe_count) {
         this.maybe_count = maybe_count;
-    }
-
-    public SearchPlace getSearchPlace() {
-        return searchPlace;
-    }
-
-    public void setSearchPlace(SearchPlace searchPlace) {
-        this.searchPlace = searchPlace;
     }
 
     public String getStart_time() {

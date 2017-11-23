@@ -71,9 +71,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         holder.driveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (event.getPlace().getLongitude() != null && event.getPlace().getLatitude() != null) {
-                    Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + String.valueOf(event.getPlace().getLatitude()) + "," +
-                            String.valueOf(event.getPlace().getLongitude()) + "( " + event.getPlace().getName() + ")");
+                if (event.getPlace().getLon() != null && event.getPlace().getLat() != null) {
+                    Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + String.valueOf(event.getPlace().getLat()) + "," +
+                            String.valueOf(event.getPlace().getLon()) + "( " + event.getPlace().getName() + ")");
 
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                     mapIntent.setPackage("com.google.android.apps.maps");
