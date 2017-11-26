@@ -61,7 +61,7 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
         }
         holder.countTextView.setText(String.valueOf(event.getattendingCount()));
         if(event.getendTime() != null) {
-            holder.timeTextView.setText(ViewUtil.string2Date(event.getendTime()).toString(DateTimeFormat.forPattern("HH:mm")));
+            holder.timeTextView.setText(event.getendTime().getHours()+":"+String.format("%02d",event.getendTime().getMinutes()));
         }
         holder.maybeTextView.setText(String.valueOf(event.getmaybeCount()));
         holder.driveButton.setOnClickListener(new View.OnClickListener() {

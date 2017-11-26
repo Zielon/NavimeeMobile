@@ -22,6 +22,7 @@ import org.reactivestreams.Subscription;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,28 +59,21 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
 
 
     public void loadEvents(Date date) {
-        String day = "";
-        Date today = Calendar.getInstance().getTime();
-        DateTime selectedTime = new DateTime(date);
-        DateTime todayTime = new DateTime(today);
-        int compare =  Days.daysBetween(todayTime.toLocalDate(), selectedTime.toLocalDate()).getDays();
-        if(compare == 0) {
-            day = "FIRST_DAY";
-        } else if (compare == 1) {
-            day = "SECOND_DAY";
-        } else if (compare == 2) {
-            day = "THIRD_DAY";
-        } else if (compare == 3) {
-            day = "FOURTH_DAY";
-        } else if (compare == 4) {
-            day = "FIFTH_DAY";
-        } else if (compare == 5) {
-            day = "SIXTH_DAY";
-        } else if (compare == 6) {
-            day = "SEVENTH_DAY";
-        }
+
+        // today
+        Calendar dt = new GregorianCalendar();
+// reset hour, minutes, seconds and millis
+        dt.setTime(date);
+        dt.set(Calendar.HOUR_OF_DAY, 0);
+        dt.set(Calendar.MINUTE, 0);
+        dt.set(Calendar.SECOND, 0);
+        dt.set(Calendar.MILLISECOND, 0);
+
+// next day
+        dt.add(Calendar.DAY_OF_MONTH, 1);
         String city = mDataManager.getPreferencesHelper().getValueString(Const.LAST_LOCATION);
-        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("SEGREGATED_EVENTS").document("BY_CITY").collection(city).document(day).collection("EVENTS").addSnapshotListener(new EventListener<QuerySnapshot>() {
+
+        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("EVENTS").document("BY_CITY").collection(city).whereGreaterThan("endTime",date).whereLessThan("endTime", dt.getTime()).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                 for (DocumentSnapshot document : documentSnapshots) {

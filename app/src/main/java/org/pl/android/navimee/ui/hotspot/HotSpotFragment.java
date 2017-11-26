@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.directions.route.AbstractRouting;
@@ -33,8 +34,10 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -73,7 +76,8 @@ import static org.pl.android.navimee.util.RxUtil.dispose;
  * Created by Wojtek on 2017-10-21.
  */
 
-public class HotSpotFragment extends Fragment  implements HotSpotMvpView,RoutingListener {
+public class HotSpotFragment extends Fragment  implements HotSpotMvpView, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapLongClickListener,
+        AdapterView.OnItemSelectedListener,RoutingListener {
 
 
     MapView mMapView;
@@ -91,6 +95,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView,Routing
     private Disposable addressDisposable;
 
     private List<Polyline> polylines;
+    LatLng latLngCurrent,latLngEnd;
     LatLng start;
     LatLng waypoint;
     LatLng end;
@@ -214,13 +219,15 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView,Routing
                                 .center(latLng1)
                                 .radius(2000)
                                 .strokeColor(Color.BLUE)
-                                .fillColor(Color.RED));
+                                .fillColor(Color.RED))
+                                .setClickable(true);
 
                         googleMap.addCircle(new CircleOptions()
                                 .center(latLng2)
                                 .radius(1500)
                                 .strokeColor(Color.BLUE)
-                                .fillColor(Color.RED));
+                                .fillColor(Color.RED))
+                                .setClickable(true);
                     }
                 }, new ErrorHandler());
 
@@ -236,6 +243,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView,Routing
                     public void accept(LatLng latLng) throws Exception {
                         CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 10);
                         googleMap.animateCamera(yourLocation);
+                        latLngCurrent = latLng;
                         //mock
                         LatLng latLng1 = new LatLng(latLng.latitude+0.04,latLng.longitude+0.05);
                         LatLng latLng2 = new LatLng(latLng.latitude-0.04,latLng.longitude-0.05);
@@ -243,13 +251,15 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView,Routing
                                 .center(latLng1)
                                 .radius(1000)
                                 .strokeColor(Color.BLUE)
-                                .fillColor(Color.RED));
+                                .fillColor(Color.RED))
+                                .setClickable(true);
 
                         googleMap.addCircle(new CircleOptions()
                                 .center(latLng2)
                                 .radius(1500)
                                 .strokeColor(Color.BLUE)
-                                .fillColor(Color.RED));
+                                .fillColor(Color.RED))
+                                .setClickable(true);
 
                     }
                 }, new ErrorHandler());
@@ -297,7 +307,15 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView,Routing
                                     // For showing a move to my location button
                                     googleMap.setMyLocationEnabled(true);
                                     googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-                                    route();
+                                    googleMap.setOnCircleClickListener(new GoogleMap.OnCircleClickListener() {
+                                        @Override
+                                        public void onCircleClick(Circle circle) {
+                                            // Flip the red, green and blue components of the circle's stroke color.
+                                            circle.setStrokeColor(circle.getStrokeColor() ^ 0x00ffffff);
+                                            route( latLngCurrent, circle.getCenter());
+                                        }
+                                    });
+
                                 }
                             });
                         } else {
@@ -357,7 +375,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView,Routing
 
     @Override
     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
-        CameraUpdate center = CameraUpdateFactory.newLatLng(start);
+        CameraUpdate center = CameraUpdateFactory.newLatLng(latLngCurrent);
         CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
 
         googleMap.moveCamera(center);
@@ -387,14 +405,14 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView,Routing
         }
 
         // Start marker
-        MarkerOptions options = new MarkerOptions();
-        options.position(start);
+      //  MarkerOptions options = new MarkerOptions();
+      //  options.position(start);
         //options.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_calendar_plus));
-        googleMap.addMarker(options);
+      //  googleMap.addMarker(options);
 
         // End marker
-        options = new MarkerOptions();
-        options.position(end);
+        MarkerOptions options = new MarkerOptions();
+        options.position(latLngEnd);
         //options.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_calendar_plus));
         googleMap.addMarker(options);
     }
@@ -402,6 +420,36 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView,Routing
     @Override
     public void onRoutingCancelled() {
         Timber.i("Routing was cancelled.");
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+
+    }
+
+    @Override
+    public void onMarkerDragStart(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDrag(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDragEnd(Marker marker) {
+
     }
 
     private class ErrorHandler implements Consumer<Throwable> {
@@ -414,12 +462,9 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView,Routing
 
 
 
-    public void route()
+    public void route(LatLng start,LatLng end)
     {
-        start = new LatLng(54.4448, 18.5593);
-        end = new LatLng(54.5448, 18.1593);
-
-
+        latLngEnd = end;
         Routing routing = new Routing.Builder()
                 .travelMode(Routing.TravelMode.DRIVING)
                 .withListener(this)

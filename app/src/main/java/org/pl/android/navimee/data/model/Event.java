@@ -5,6 +5,7 @@ import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.IgnoreExtraProperties;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by Wojtek on 2017-10-21.
@@ -14,17 +15,17 @@ public  class Event implements Comparable<Event>, Serializable {
 
     private String id;
     private long attendingCount;
-    private String endTime;
+    private Date endTime;
     private String name;
     private long maybeCount;
-    private String startTime;
+    private Date startTime;
     private String type;
     private Place place;
 
     public Event() {
     }
 
-    public Event(String id, long attendingCount, String endTime, String name, long maybeCount, String startTime, String type, Place place) {
+    public Event(String id, long attendingCount, Date endTime, String name, long maybeCount, Date startTime, String type, Place place) {
         this.id = id;
         this.attendingCount = attendingCount;
         this.endTime = endTime;
@@ -51,11 +52,11 @@ public  class Event implements Comparable<Event>, Serializable {
         this.attendingCount = attendingCount;
     }
 
-    public String getendTime() {
+    public Date getendTime() {
         return endTime;
     }
 
-    public void setendTime(String endTime) {
+    public void setendTime(Date endTime) {
         this.endTime = endTime;
     }
 
@@ -75,11 +76,11 @@ public  class Event implements Comparable<Event>, Serializable {
         this.maybeCount = maybeCount;
     }
 
-    public String getstartTime() {
+    public Date getstartTime() {
         return startTime;
     }
 
-    public void setstartTime(String startTime) {
+    public void setstartTime(Date startTime) {
         this.startTime = startTime;
     }
 

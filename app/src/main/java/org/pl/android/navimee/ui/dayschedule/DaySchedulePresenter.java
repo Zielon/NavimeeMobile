@@ -23,8 +23,10 @@ import org.pl.android.navimee.data.model.Event;
 import org.pl.android.navimee.injection.ConfigPersistent;
 import org.pl.android.navimee.ui.base.BasePresenter;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,9 +62,21 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
 
 
     public void loadEvents(Date date) {
+
+        // today
+        Calendar dt = new GregorianCalendar();
+// reset hour, minutes, seconds and millis
+        dt.setTime(date);
+        dt.set(Calendar.HOUR_OF_DAY, 0);
+        dt.set(Calendar.MINUTE, 0);
+        dt.set(Calendar.SECOND, 0);
+        dt.set(Calendar.MILLISECOND, 0);
+
+// next day
+        dt.add(Calendar.DAY_OF_MONTH, 1);
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
 
-        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("users").document(userId).collection("userEvents").whereGreaterThan("time", date)
+        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("users").document(userId).collection("userEvents").whereGreaterThan("endTime",date).whereLessThan("endTime", dt.getTime())
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
