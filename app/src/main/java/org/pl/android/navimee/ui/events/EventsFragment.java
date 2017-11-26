@@ -14,6 +14,7 @@ import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
 
 import org.pl.android.navimee.R;
+import org.pl.android.navimee.data.model.Event;
 import org.pl.android.navimee.ui.base.BaseActivity;
 
 import java.util.Calendar;
@@ -131,7 +132,7 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
     }
 
     @Override
-    public void showEvents(Map<String, Object> events) {
+    public void showEvents(List<Event> events) {
         mEventsAdapter.setEvents(events);
         mEventsAdapter.notifyDataSetChanged();
         skeletonScreen.hide();

@@ -59,15 +59,14 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
         if(event.getPlace() != null && event.getPlace().getName() != null) {
             holder.addressTextView.setText(event.getPlace().getName());
         }
-        holder.countTextView.setText(String.valueOf(event.getAttending_count()));
-        if(event.getEnd_time() != null) {
-            holder.timeTextView.setText(ViewUtil.string2Date(event.getEnd_time()).toString(DateTimeFormat.forPattern("HH:mm")));
+        holder.countTextView.setText(String.valueOf(event.getattendingCount()));
+        if(event.getendTime() != null) {
+            holder.timeTextView.setText(ViewUtil.string2Date(event.getendTime()).toString(DateTimeFormat.forPattern("HH:mm")));
         }
-        holder.maybeTextView.setText(String.valueOf(event.getMaybe_count()));
+        holder.maybeTextView.setText(String.valueOf(event.getmaybeCount()));
         holder.driveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (event.getPlace().getLat() != null && event.getPlace().getLon() != null) {
                     Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + String.valueOf(event.getPlace().getLat()) + "," +
                             String.valueOf(event.getPlace().getLon()) + "( " + event.getPlace().getName() + ")");
 
@@ -77,7 +76,6 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
                         mContext.startActivity(mapIntent);
                     }
                 }
-            }
         });
 
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {

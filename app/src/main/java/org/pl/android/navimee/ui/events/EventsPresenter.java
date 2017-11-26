@@ -9,6 +9,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -63,32 +64,29 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
         DateTime todayTime = new DateTime(today);
         int compare =  Days.daysBetween(todayTime.toLocalDate(), selectedTime.toLocalDate()).getDays();
         if(compare == 0) {
-            day = "firstDay";
+            day = "FIRST_DAY";
         } else if (compare == 1) {
-            day = "secondDay";
+            day = "SECOND_DAY";
         } else if (compare == 2) {
-            day = "thirdDay";
+            day = "THIRD_DAY";
         } else if (compare == 3) {
-            day = "fourthDay";
+            day = "FOURTH_DAY";
         } else if (compare == 4) {
-            day = "fifthDay";
+            day = "FIFTH_DAY";
         } else if (compare == 5) {
-            day = "sixthDay";
+            day = "SIXTH_DAY";
         } else if (compare == 6) {
-            day = "seventhDay";
+            day = "SEVENTH_DAY";
         }
         String city = mDataManager.getPreferencesHelper().getValueString(Const.LAST_LOCATION);
-        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("segregatedEvents").document(city).collection(day).document("events").addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("SEGREGATED_EVENTS").document("BY_CITY").collection(city).document(day).collection("EVENTS").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                if (e != null) {
-                    Timber.e(e.getMessage());
-                }
-                if (documentSnapshot != null && documentSnapshot.exists()) {
-                    getMvpView().showEvents(documentSnapshot.getData());
-                }
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                for (DocumentSnapshot document : documentSnapshots) {
+                    Timber.d(document.getId() + " => " + document.getData());
 
-
+                }
+                getMvpView().showEvents(documentSnapshots.toObjects(Event.class));
             }
         });
 

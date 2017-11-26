@@ -12,7 +12,7 @@ import java.util.Map;
 
 public interface EventsMvpView extends MvpView {
 
-    void showEvents(Map<String, Object> events);
+    void showEvents(List<Event> events);
 
     void showEventsEmpty();
 

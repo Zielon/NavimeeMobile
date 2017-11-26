@@ -38,7 +38,7 @@ public final class ViewUtil {
 
     public static DateTime string2Date(String dateString) {
 
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ");
         DateTime dt = formatter.parseDateTime(dateString);
         return  dt;
     }

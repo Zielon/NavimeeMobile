@@ -13,11 +13,11 @@ import java.io.Serializable;
 public class Place implements Serializable {
     private String id;
     private String name;
-    private String lon;
-    private String lat;
+    private double lon;
+    private double lat;
     private String city;
 
-    public Place(String id, String name, String lon, String lat, String city) {
+    public Place(String id, String name, double lon, double lat, String city) {
         this.id = id;
         this.name = name;
         this.lon = lon;
@@ -52,19 +52,19 @@ public class Place implements Serializable {
         this.city = city;
     }
 
-    public String getLon() {
+    public double getLon() {
         return lon;
     }
 
-    public void setLon(String lon) {
+    public void setLon(double lon) {
         this.lon = lon;
     }
 
-    public String getLat() {
+    public double getLat() {
         return lat;
     }
 
-    public void setLat(String lat) {
+    public void setLat(double lat) {
         this.lat = lat;
     }
 }

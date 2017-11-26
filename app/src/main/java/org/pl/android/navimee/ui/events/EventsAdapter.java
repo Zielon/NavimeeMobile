@@ -56,22 +56,19 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
 
     @Override
     public void onBindViewHolder(final EventsHolder holder, final int position) {
-        Gson gson = new Gson();
-        JsonElement jsonElement = gson.toJsonTree(mEvents.get(position));
-        Event event = gson.fromJson(jsonElement, Event.class);
+        Event event = mEvents.get(position);
         holder.nameTextView.setText(event.getName());
         if(event.getPlace() != null && event.getPlace().getName() != null) {
             holder.addressTextView.setText(event.getPlace().getName());
         }
-        holder.countTextView.setText(String.valueOf(event.getAttending_count()));
-        if(event.getEnd_time() != null) {
-            holder.timeTextView.setText(ViewUtil.string2Date(event.getEnd_time()).toString(DateTimeFormat.forPattern("HH:mm")));
+        holder.countTextView.setText(String.valueOf(event.getattendingCount()));
+        if(event.getendTime() != null) {
+            holder.timeTextView.setText(ViewUtil.string2Date(event.getendTime()).toString(DateTimeFormat.forPattern("HH:mm")));
         }
-        holder.maybeTextView.setText(String.valueOf(event.getMaybe_count()));
+        holder.maybeTextView.setText(String.valueOf(event.getmaybeCount()));
         holder.driveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (event.getPlace().getLon() != null && event.getPlace().getLat() != null) {
                     Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + String.valueOf(event.getPlace().getLat()) + "," +
                             String.valueOf(event.getPlace().getLon()) + "( " + event.getPlace().getName() + ")");
 
@@ -81,7 +78,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
                         mContext.startActivity(mapIntent);
                     }
                 }
-            }
         });
 
         holder.addButton.setOnClickListener(new View.OnClickListener() {
@@ -99,8 +95,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         return mEvents.size();
     }
 
-    public void setEvents(Map<String, Object> events) {
-        mEvents = new ArrayList(events.values());
+    public void setEvents(List<Event> events) {
+        mEvents = events;
     }
 
     class EventsHolder extends RecyclerView.ViewHolder {

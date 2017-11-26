@@ -14,6 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.directions.route.AbstractRouting;
+import com.directions.route.Route;
+import com.directions.route.RouteException;
+import com.directions.route.Routing;
+import com.directions.route.RoutingListener;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.LocationRequest;
@@ -26,10 +31,13 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
 import org.pl.android.navimee.R;
@@ -43,6 +51,7 @@ import org.pl.android.navimee.util.ToMostProbableActivity;
 import org.reactivestreams.Subscription;
 import org.xml.sax.ErrorHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -64,7 +73,7 @@ import static org.pl.android.navimee.util.RxUtil.dispose;
  * Created by Wojtek on 2017-10-21.
  */
 
-public class HotSpotFragment extends Fragment  implements HotSpotMvpView{
+public class HotSpotFragment extends Fragment  implements HotSpotMvpView,RoutingListener {
 
 
     MapView mMapView;
@@ -80,6 +89,12 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView{
     private Disposable updatableLocationDisposable;
     private Disposable activityDisposable;
     private Disposable addressDisposable;
+
+    private List<Polyline> polylines;
+    LatLng start;
+    LatLng waypoint;
+    LatLng end;
+    private static final int[] COLORS = new int[]{R.color.primary_dark,R.color.primary,R.color.primary_light,R.color.accent,R.color.primary_dark_material_light};
 
 
     private final static int REQUEST_CHECK_SETTINGS = 0;
@@ -120,6 +135,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView{
     private void initGeolocation() {
         rxPermissions = new RxPermissions(getActivity());
         locationProvider = new ReactiveLocationProvider(getApplicationContext());
+        polylines = new ArrayList<>();
         lastKnownLocationObservable = locationProvider
                 .getLastKnownLocation()
                 .observeOn(AndroidSchedulers.mainThread());
@@ -281,6 +297,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView{
                                     // For showing a move to my location button
                                     googleMap.setMyLocationEnabled(true);
                                     googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+                                    route();
                                 }
                             });
                         } else {
@@ -324,6 +341,69 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView{
         mMapView.onLowMemory();
     }
 
+    @Override
+    public void onRoutingFailure(RouteException e) {
+        if(e != null) {
+            Toast.makeText(getActivity(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }else {
+            Toast.makeText(getActivity(), "Something went wrong, Try again", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onRoutingStart() {
+
+    }
+
+    @Override
+    public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
+        CameraUpdate center = CameraUpdateFactory.newLatLng(start);
+        CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
+
+        googleMap.moveCamera(center);
+
+
+        if(polylines.size()>0) {
+            for (Polyline poly : polylines) {
+                poly.remove();
+            }
+        }
+
+        polylines = new ArrayList<>();
+        //add route(s) to the map.
+        for (int i = 0; i <route.size(); i++) {
+
+            //In case of more than 5 alternative routes
+            int colorIndex = i % COLORS.length;
+
+            PolylineOptions polyOptions = new PolylineOptions();
+            polyOptions.color(getResources().getColor(COLORS[colorIndex]));
+            polyOptions.width(10 + i * 3);
+            polyOptions.addAll(route.get(i).getPoints());
+            Polyline polyline = googleMap.addPolyline(polyOptions);
+            polylines.add(polyline);
+
+            Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();
+        }
+
+        // Start marker
+        MarkerOptions options = new MarkerOptions();
+        options.position(start);
+        //options.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_calendar_plus));
+        googleMap.addMarker(options);
+
+        // End marker
+        options = new MarkerOptions();
+        options.position(end);
+        //options.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_calendar_plus));
+        googleMap.addMarker(options);
+    }
+
+    @Override
+    public void onRoutingCancelled() {
+        Timber.i("Routing was cancelled.");
+    }
+
     private class ErrorHandler implements Consumer<Throwable> {
         @Override
         public void accept(Throwable throwable) {
@@ -331,4 +411,21 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView{
             Log.d("MainActivity", "Error occurred", throwable);
         }
     }
+
+
+
+    public void route()
+    {
+        start = new LatLng(54.4448, 18.5593);
+        end = new LatLng(54.5448, 18.1593);
+
+
+        Routing routing = new Routing.Builder()
+                .travelMode(Routing.TravelMode.DRIVING)
+                .withListener(this)
+                .waypoints(start, end)
+                .build();
+        routing.execute();
+    }
+
 }

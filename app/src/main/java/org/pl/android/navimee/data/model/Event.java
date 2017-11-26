@@ -13,24 +13,24 @@ import java.io.Serializable;
 public  class Event implements Comparable<Event>, Serializable {
 
     private String id;
-    private String attending_count;
-    private String end_time;
+    private long attendingCount;
+    private String endTime;
     private String name;
-    private String maybe_count;
-    private String start_time;
+    private long maybeCount;
+    private String startTime;
     private String type;
     private Place place;
 
     public Event() {
     }
 
-    public Event(String id, String attending_count, String end_time, String name, String maybe_count, String start_time, String type, Place place) {
+    public Event(String id, long attendingCount, String endTime, String name, long maybeCount, String startTime, String type, Place place) {
         this.id = id;
-        this.attending_count = attending_count;
-        this.end_time = end_time;
+        this.attendingCount = attendingCount;
+        this.endTime = endTime;
         this.name = name;
-        this.maybe_count = maybe_count;
-        this.start_time = start_time;
+        this.maybeCount = maybeCount;
+        this.startTime = startTime;
         this.type = type;
         this.place = place;
     }
@@ -43,20 +43,20 @@ public  class Event implements Comparable<Event>, Serializable {
         this.id = id;
     }
 
-    public String getAttending_count() {
-        return attending_count;
+    public long getattendingCount() {
+        return attendingCount;
     }
 
-    public void setAttending_count(String attending_count) {
-        this.attending_count = attending_count;
+    public void setattendingCount(long attendingCount) {
+        this.attendingCount = attendingCount;
     }
 
-    public String getEnd_time() {
-        return end_time;
+    public String getendTime() {
+        return endTime;
     }
 
-    public void setEnd_time(String end_time) {
-        this.end_time = end_time;
+    public void setendTime(String endTime) {
+        this.endTime = endTime;
     }
 
     public String getName() {
@@ -67,20 +67,20 @@ public  class Event implements Comparable<Event>, Serializable {
         this.name = name;
     }
 
-    public String getMaybe_count() {
-        return maybe_count;
+    public long getmaybeCount() {
+        return maybeCount;
     }
 
-    public void setMaybe_count(String maybe_count) {
-        this.maybe_count = maybe_count;
+    public void setmaybeCount(long maybeCount) {
+        this.maybeCount = maybeCount;
     }
 
-    public String getStart_time() {
-        return start_time;
+    public String getstartTime() {
+        return startTime;
     }
 
-    public void setStart_time(String start_time) {
-        this.start_time = start_time;
+    public void setstartTime(String startTime) {
+        this.startTime = startTime;
     }
 
     public String getType() {

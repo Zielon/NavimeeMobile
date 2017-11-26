@@ -170,6 +170,9 @@ dependencies {
     compile 'devs.mulham.horizontalcalendar:horizontalcalendar:1.2.0'
     compile 'com.ethanhua:skeleton:1.0.0'
 
+    //google map route
+    compile 'com.github.jd-alexander:library:1.1.0'
+
     //facebook
     compile 'com.facebook.android:facebook-login:[4,5)'
 
