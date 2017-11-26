@@ -18,6 +18,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.kelvinapps.rxfirebase.DataSnapshotMapper;
 import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 
+import net.danlew.android.joda.DateUtils;
+
+import org.joda.time.DateTime;
 import org.pl.android.navimee.data.DataManager;
 import org.pl.android.navimee.data.model.Event;
 import org.pl.android.navimee.injection.ConfigPersistent;
@@ -62,7 +65,6 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
 
 
     public void loadEvents(Date date) {
-
         // today
         Calendar dt = new GregorianCalendar();
 // reset hour, minutes, seconds and millis
@@ -72,11 +74,24 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
         dt.set(Calendar.SECOND, 0);
         dt.set(Calendar.MILLISECOND, 0);
 
-// next day
+        // next day
         dt.add(Calendar.DAY_OF_MONTH, 1);
+        DateTime dateTime = new DateTime(date);
+        Date dateFinal = date;
+        if(!DateUtils.isToday(dateTime)) {
+            // today
+            Calendar dt1 = new GregorianCalendar();
+            // reset hour, minutes, seconds and millis
+            dt1.setTime(date);
+            dt1.set(Calendar.HOUR_OF_DAY, 0);
+            dt1.set(Calendar.MINUTE, 0);
+            dt1.set(Calendar.SECOND, 0);
+            dt1.set(Calendar.MILLISECOND, 0);
+            dateFinal = dt1.getTime();
+        }
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
 
-        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("users").document(userId).collection("userEvents").whereGreaterThan("endTime",date).whereLessThan("endTime", dt.getTime())
+        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("users").document(userId).collection("userEvents").whereGreaterThan("endTime",dateFinal).whereLessThan("endTime", dt.getTime())
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
