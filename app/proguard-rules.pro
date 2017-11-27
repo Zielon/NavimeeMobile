@@ -55,6 +55,8 @@
 -keep class com.google.android.gms.** { *; }
 -dontwarn com.google.android.gms.**
 
+-keepclassmembers class org.pl.android.navimee.data.model.** { *; }
+
 # Otto rules
 -keepclassmembers class ** {
     @com.squareup.otto.Subscribe public *;
