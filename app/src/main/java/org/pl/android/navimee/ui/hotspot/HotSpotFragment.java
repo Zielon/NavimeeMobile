@@ -21,9 +21,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
@@ -95,6 +97,8 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     TextView mTextPlaceTime;
     @BindView(R.id.place_driveButton)
     Button mPlaceDriveButton;
+    @BindView(R.id.place_closeBotton)
+    ImageButton mPlaceCloseButton;
 
     BottomSheetBehavior mBottomSheetBehavior;
 
@@ -189,25 +193,29 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                         break;
                 }
             }
-
-
             @Override
             public void onSlide(View bottomSheet, float slideOffset) {
 
             }
         });
-
         mPlaceDriveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + String.valueOf(latLngDrive.latitude) + "," +
-                        String.valueOf(latLngDrive.longitude) + "( " + driveName + ")");
+                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + String.valueOf(latLngDrive.latitude) + "," +
+                        String.valueOf(latLngDrive.longitude));
 
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
                 if (mapIntent.resolveActivity(getContext().getPackageManager()) != null) {
                     getContext().startActivity(mapIntent);
                 }
+            }
+        });
+
+        mPlaceCloseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
             }
         });
     }
@@ -375,7 +383,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                         bmpMar2.icon(BitmapDescriptorFactory.fromBitmap(bmp2));
 
                         MarkerOptions bmpMar3 = new MarkerOptions();
-                        bmpMar3.position(latLng1);
+                        bmpMar3.position(latLng2);
                         bmpMar3.icon(BitmapDescriptorFactory.fromBitmap(bmp3));
 
 
