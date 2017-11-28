@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/bottomSheetLayout"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@android:color/holo_orange_light"
+                android:padding="@dimen/vertical_margin"
+                app:behavior_hideable="true"
+                app:behavior_peekHeight="60dp"
+                app:layout_behavior="@string/bottom_sheet_behavior">
+
+
+
+    <TextView
+        android:id="@+id/text_place_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textSize="@dimen/text_small_body"
+        android:layout_toLeftOf="@+id/driveButton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    <TextView
+        android:id="@+id/text_place_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_body"
+        android:layout_below="@id/text_place_address"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/driveButton"
+        android:layout_toStartOf="@+id/driveButton" />
+    <TextView
+        android:id="@+id/text_place_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_body"
+        android:layout_below="@id/text_place_distance"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/driveButton"
+        android:layout_toStartOf="@+id/driveButton" />
+
+
+
+    <Button
+        android:id="@+id/place_driveButton"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/drive_now"
+        android:background="@null"
+        android:textColor="@color/primary"
+        android:layout_alignParentTop="true" />
+</RelativeLayout>

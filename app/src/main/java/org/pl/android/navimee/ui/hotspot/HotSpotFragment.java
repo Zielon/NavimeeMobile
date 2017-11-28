@@ -2,6 +2,7 @@ package org.pl.android.navimee.ui.hotspot;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,13 +11,17 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.location.Address;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.directions.route.Route;
@@ -57,6 +62,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -77,7 +84,20 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         AdapterView.OnItemSelectedListener,RoutingListener {
 
 
+    @BindView(R.id.mapView)
     MapView mMapView;
+
+    @BindView(R.id.text_place_address)
+    TextView mTextPlaceAddress;
+    @BindView(R.id.text_place_distance)
+    TextView mTextPlaceDistance;
+    @BindView(R.id.text_place_time)
+    TextView mTextPlaceTime;
+    @BindView(R.id.place_driveButton)
+    Button mPlaceDriveButton;
+
+    BottomSheetBehavior mBottomSheetBehavior;
+
     private GoogleMap googleMap;
     private ReactiveLocationProvider locationProvider;
     RxPermissions rxPermissions;
@@ -92,11 +112,10 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     private Disposable addressDisposable;
 
     private List<Polyline> polylines;
-    LatLng latLngCurrent,latLngEnd;
-    LatLng start;
-    LatLng waypoint;
-    LatLng end;
+    LatLng latLngCurrent,latLngEnd,latLngDrive;
+    String driveName;
     private static final int[] COLORS = new int[]{R.color.primary_dark,R.color.primary,R.color.primary_light,R.color.accent,R.color.primary_dark_material_light};
+
 
 
     private final static int REQUEST_CHECK_SETTINGS = 0;
@@ -119,11 +138,18 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.hotspot_fragment, container, false);
-        mMapView = (MapView) rootView.findViewById(R.id.mapView);
+        ButterKnife.bind(this, rootView);
         mMapView.onCreate(savedInstanceState);
         mHotspotPresenter.attachView(this);
 
+
         mMapView.onResume(); // needed to get the map to display immediately
+
+        mBottomSheetBehavior = BottomSheetBehavior.from(rootView.findViewById(R.id.bottomSheetLayout));
+        mBottomSheetBehavior.setPeekHeight(300);
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
+        initListeners();
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -131,6 +157,59 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
             e.printStackTrace();
         }
         return rootView;
+    }
+
+    private void initListeners() {
+        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(View bottomSheet, int newState) {
+
+                /*if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    bottomSheetHeading.setText(getString(R.string.text_collapse_me));
+                } else {
+                    bottomSheetHeading.setText(getString(R.string.text_expand_me));
+                }*/
+
+                // Check Logs to see how bottom sheets behaves
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        Log.e("Bottom Sheet Behaviour", "STATE_COLLAPSED");
+                        break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        Log.e("Bottom Sheet Behaviour", "STATE_DRAGGING");
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                        Log.e("Bottom Sheet Behaviour", "STATE_EXPANDED");
+                        break;
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        Log.e("Bottom Sheet Behaviour", "STATE_HIDDEN");
+                        break;
+                    case BottomSheetBehavior.STATE_SETTLING:
+                        Log.e("Bottom Sheet Behaviour", "STATE_SETTLING");
+                        break;
+                }
+            }
+
+
+            @Override
+            public void onSlide(View bottomSheet, float slideOffset) {
+
+            }
+        });
+
+        mPlaceDriveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + String.valueOf(latLngDrive.latitude) + "," +
+                        String.valueOf(latLngDrive.longitude) + "( " + driveName + ")");
+
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                if (mapIntent.resolveActivity(getContext().getPackageManager()) != null) {
+                    getContext().startActivity(mapIntent);
+                }
+            }
+        });
     }
 
     @SuppressLint("MissingPermission")
@@ -212,7 +291,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                         //mock
                         LatLng latLng1 = new LatLng(latLng.latitude+0.04,latLng.longitude+0.05);
                         LatLng latLng2 = new LatLng(latLng.latitude-0.04,latLng.longitude-0.05);
-                        googleMap.addCircle(new CircleOptions()
+                       /* googleMap.addCircle(new CircleOptions()
                                 .center(latLng1)
                                 .radius(2000)
                                 .strokeColor(Color.BLUE)
@@ -224,7 +303,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                 .radius(1500)
                                 .strokeColor(Color.BLUE)
                                 .fillColor(Color.RED))
-                                .setClickable(true);
+                                .setClickable(true);*/
                     }
                 }, new ErrorHandler());
 
@@ -246,7 +325,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                         LatLng latLng2 = new LatLng(latLng.latitude-0.04,latLng.longitude-0.05);
                         LatLng latLng3 = new LatLng(latLng.latitude-0.07,latLng.longitude-0.09);
                         LatLng latLng4 = new LatLng(latLng.latitude+0.07,latLng.longitude-0.09);
-                        googleMap.addCircle(new CircleOptions()
+                    /*    googleMap.addCircle(new CircleOptions()
                                 .center(latLng1)
                                 .radius(1000)
                                 .strokeColor(Color.BLUE)
@@ -258,13 +337,15 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                 .radius(1500)
                                 .strokeColor(Color.BLUE)
                                 .fillColor(Color.RED))
-                                .setClickable(true);
+                                .setClickable(true);*/
 
                         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
                         Bitmap bmp = Bitmap.createBitmap(80, 90, conf);
                         Bitmap bmp2 = Bitmap.createBitmap(80, 90, conf);
+                        Bitmap bmp3 = Bitmap.createBitmap(80, 90, conf);
                         Canvas canvas1 = new Canvas(bmp);
                         Canvas canvas2 = new Canvas(bmp2);
+                        Canvas canvas3 = new Canvas(bmp3);
                         // paint defines the text color, stroke width and size
                         Paint color = new Paint();
                         color.setTextSize(35);
@@ -280,6 +361,9 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                         // modify canvas
                         canvas2.drawBitmap(BitmapFactory.decodeResource(getResources(),
                                 R.drawable.ic_action_flight_land), 0,0, color);
+                        // modify canvas
+                        canvas3.drawBitmap(BitmapFactory.decodeResource(getResources(),
+                                R.drawable.ic_action_people), 0,0, color);
 
                         // mock
                         MarkerOptions bmpMar1 = new MarkerOptions();
@@ -290,9 +374,14 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                         bmpMar2.position(latLng4);
                         bmpMar2.icon(BitmapDescriptorFactory.fromBitmap(bmp2));
 
+                        MarkerOptions bmpMar3 = new MarkerOptions();
+                        bmpMar3.position(latLng1);
+                        bmpMar3.icon(BitmapDescriptorFactory.fromBitmap(bmp3));
+
 
                         googleMap.addMarker(bmpMar1);
                         googleMap.addMarker(bmpMar2);
+                        googleMap.addMarker(bmpMar3);
                     }
                 }, new ErrorHandler());
 
@@ -327,7 +416,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         if(mHotspotPresenter.checkLogin() != null) {
             rxPermissions
                     .request(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
-                    .subscribe(granted -> {
+                    .subscribe((Boolean granted) -> {
                         if (granted) { // Always true pre-M
                             onLocationPermissionGranted();
                             mMapView.getMapAsync(new OnMapReadyCallback() {
@@ -339,12 +428,19 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                     // For showing a move to my location button
                                     googleMap.setMyLocationEnabled(true);
                                     googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+                                    googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                                        @Override
+                                        public boolean onMarkerClick(Marker marker) {
+                                            route(latLngCurrent,marker.getPosition());
+                                            return true;
+                                        }
+                                    });
                                     googleMap.setOnCircleClickListener(new GoogleMap.OnCircleClickListener() {
                                         @Override
                                         public void onCircleClick(Circle circle) {
                                             // Flip the red, green and blue components of the circle's stroke color.
                                             circle.setStrokeColor(circle.getStrokeColor() ^ 0x00ffffff);
-                                            route( latLngCurrent, circle.getCenter());
+                                        //    route( latLngCurrent, circle.getCenter());
                                         }
                                     });
 
@@ -407,12 +503,12 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
 
     @Override
     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
-        CameraUpdate center = CameraUpdateFactory.newLatLng(latLngCurrent);
+        CameraUpdate center = CameraUpdateFactory.newLatLng(latLngEnd);
         CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
 
         googleMap.moveCamera(center);
 
-
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         if(polylines.size()>0) {
             for (Polyline poly : polylines) {
                 poly.remove();
@@ -421,6 +517,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
 
         polylines = new ArrayList<>();
         //add route(s) to the map.
+
         for (int i = 0; i <route.size(); i++) {
 
             //In case of more than 5 alternative routes
@@ -432,8 +529,11 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
             polyOptions.addAll(route.get(i).getPoints());
             Polyline polyline = googleMap.addPolyline(polyOptions);
             polylines.add(polyline);
-
-            Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();
+            mTextPlaceAddress.setText(route.get(i).getEndAddressText());
+            mTextPlaceDistance.setText(route.get(i).getDistanceText());
+            mTextPlaceTime.setText(route.get(i).getDurationText());
+            latLngDrive = route.get(i).getLatLgnBounds().getCenter();
+            driveName = route.get(i).getEndAddressText();
         }
 
         // Start marker
@@ -443,10 +543,10 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
       //  googleMap.addMarker(options);
 
         // End marker
-        MarkerOptions options = new MarkerOptions();
-        options.position(latLngEnd);
+       // MarkerOptions options = new MarkerOptions();
+     //   options.position(latLngEnd);
        // options.icon(BitmapDescriptorFactory.fromBitmap(bmp));
-        googleMap.addMarker(options);
+       // googleMap.addMarker(options);
     }
 
     @Override
