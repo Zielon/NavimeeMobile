@@ -35,7 +35,7 @@
                 android:layout_toStartOf="@+id/driveButton" />
 
             <TextView
-                android:id="@+id/text_address"
+                android:id="@+id/text_address_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/text_name"
@@ -45,6 +45,19 @@
                 android:layout_toLeftOf="@+id/driveButton"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true" />
+
+            <TextView
+                android:id="@+id/text_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_address_name"
+                android:layout_marginTop="5dp"
+                android:textSize="@dimen/text_small_body"
+                tools:text="developer"
+                android:layout_toLeftOf="@+id/driveButton"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
 
             <Button
                 android:id="@+id/driveButton"

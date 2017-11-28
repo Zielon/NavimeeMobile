@@ -91,7 +91,7 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
         }
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
 
-        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("users").document(userId).collection("userEvents").whereGreaterThan("endTime",dateFinal).whereLessThan("endTime", dt.getTime())
+        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).collection("USER_EVENTS").whereGreaterThan("endTime",dateFinal).whereLessThan("endTime", dt.getTime())
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {

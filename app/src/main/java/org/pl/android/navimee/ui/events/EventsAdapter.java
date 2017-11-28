@@ -58,8 +58,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
     public void onBindViewHolder(final EventsHolder holder, final int position) {
         Event event = mEvents.get(position);
         holder.nameTextView.setText(event.getName());
-        if(event.getPlace() != null && event.getPlace().getName() != null) {
-            holder.addressTextView.setText(event.getPlace().getName());
+        if(event.getPlace() != null) {
+            if(event.getPlace().getName() != null) {
+                holder.addressNameTextView.setText(event.getPlace().getName());
+            }
+            if(event.getPlace().getAddress() != null) {
+                holder.addressTextView.setText(event.getPlace().getAddress()+", "+event.getPlace().getCity());
+            }
         }
         holder.countTextView.setText(String.valueOf(event.getattendingCount()));
         if(event.getendTime() != null) {
@@ -69,9 +74,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         holder.driveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + String.valueOf(event.getPlace().getLat()) + "," +
-                            String.valueOf(event.getPlace().getLon()) + "( " + event.getPlace().getName() + ")");
-
+                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + String.valueOf(event.getPlace().getGeoPoint().getLatitude()) + "," +
+                            String.valueOf(event.getPlace().getGeoPoint().getLongitude()));
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                     mapIntent.setPackage("com.google.android.apps.maps");
                     if (mapIntent.resolveActivity(mContext.getPackageManager()) != null) {
@@ -102,6 +106,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
     class EventsHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.text_name) TextView nameTextView;
+        @BindView(R.id.text_address_name) TextView addressNameTextView;
         @BindView(R.id.text_address) TextView addressTextView;
         @BindView(R.id.viewTextCount) TextView countTextView;
         @BindView(R.id.viewTextTime) TextView timeTextView;

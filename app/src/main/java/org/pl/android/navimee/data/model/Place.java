@@ -2,6 +2,7 @@ package org.pl.android.navimee.data.model;
 
 
 
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.IgnoreExtraProperties;
 
 import java.io.Serializable;
@@ -12,16 +13,16 @@ import java.io.Serializable;
 @IgnoreExtraProperties
 public class Place implements Serializable {
     private String id;
+    private String address;
     private String name;
-    private double lon;
-    private double lat;
+    GeoPoint geoPoint;
     private String city;
 
-    public Place(String id, String name, double lon, double lat, String city) {
+    public Place(String id, String address, String name, GeoPoint geoPoint, String city) {
         this.id = id;
+        this.address = address;
         this.name = name;
-        this.lon = lon;
-        this.lat = lat;
+        this.geoPoint = geoPoint;
         this.city = city;
     }
 
@@ -52,19 +53,19 @@ public class Place implements Serializable {
         this.city = city;
     }
 
-    public double getLon() {
-        return lon;
+    public String getAddress() {
+        return address;
     }
 
-    public void setLon(double lon) {
-        this.lon = lon;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public double getLat() {
-        return lat;
+    public GeoPoint getGeoPoint() {
+        return geoPoint;
     }
 
-    public void setLat(double lat) {
-        this.lat = lat;
+    public void setGeoPoint(GeoPoint geoPoint) {
+        this.geoPoint = geoPoint;
     }
 }

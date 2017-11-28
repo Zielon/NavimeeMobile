@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ethanhua.skeleton.Skeleton;
@@ -15,6 +16,7 @@ import com.ethanhua.skeleton.SkeletonScreen;
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.data.model.Event;
 import org.pl.android.navimee.ui.base.BaseActivity;
+import org.pl.android.navimee.ui.main.MainActivity;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -56,6 +58,8 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((BaseActivity) getActivity()).activityComponent().inject(this);
+        TextView text = (TextView) ((MainActivity) getActivity()).getSupportActionBar().getCustomView().findViewById(R.id.app_bar_text);
+        text.setText(getResources().getString(R.string.day_schedule));
     }
 
     @Override

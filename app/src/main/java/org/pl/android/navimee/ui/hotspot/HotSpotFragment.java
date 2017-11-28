@@ -54,10 +54,12 @@ import com.tbruyelle.rxpermissions.RxPermissions;
 
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
+import org.pl.android.navimee.ui.main.MainActivity;
 import org.pl.android.navimee.util.AddressToStringFunc;
 import org.pl.android.navimee.util.DetectedActivityToString;
 import org.pl.android.navimee.util.DisplayTextOnViewAction;
 import org.pl.android.navimee.util.ToMostProbableActivity;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,6 +137,8 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((BaseActivity) getActivity()).activityComponent().inject(this);
+        TextView text = (TextView) ((MainActivity) getActivity()).getSupportActionBar().getCustomView().findViewById(R.id.app_bar_text);
+        text.setText(getResources().getString(R.string.hotspot));
         initGeolocation();
     }
 
