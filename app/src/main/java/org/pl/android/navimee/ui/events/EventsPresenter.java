@@ -118,7 +118,7 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
 
         Map<String, Object> eventMap = new HashMap<>();
         eventMap.put("event", event);
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("users").document(userId).collection("userEvents").document(event.getId()).set(event).addOnSuccessListener(new OnSuccessListener<Void>() {
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).collection("USER_EVENTS").document(event.getId()).set(event).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Timber.i("Event saved");

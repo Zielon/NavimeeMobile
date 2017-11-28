@@ -300,7 +300,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                     @Override
                     public void accept(LatLng latLng) throws Exception {
                         CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 10);
-                        googleMap.animateCamera(yourLocation);
+                        googleMap.moveCamera(yourLocation);
                         //mock
                         LatLng latLng1 = new LatLng(latLng.latitude+0.04,latLng.longitude+0.05);
                         LatLng latLng2 = new LatLng(latLng.latitude-0.04,latLng.longitude-0.05);
@@ -331,7 +331,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                     @Override
                     public void accept(LatLng latLng) throws Exception {
                         CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 10);
-                        googleMap.animateCamera(yourLocation);
+                        googleMap.moveCamera(yourLocation);
                         latLngCurrent = latLng;
                         //mock
                         LatLng latLng1 = new LatLng(latLng.latitude+0.04,latLng.longitude+0.05);

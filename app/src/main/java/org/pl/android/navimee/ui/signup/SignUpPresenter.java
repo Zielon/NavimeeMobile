@@ -65,7 +65,7 @@ public class SignUpPresenter extends BasePresenter<SignUpMvpView> {
             Map<String, Object> user = new HashMap<>();
             user.put("token", token);
             user.put("email", mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getEmail());
-            mDataManager.getFirebaseService().getFirebaseFirestore().collection("users").document(userId).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+            mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Timber.i("DocumentSnapshot successfully written!");
