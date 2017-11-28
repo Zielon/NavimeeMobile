@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseUser;
 import org.pl.android.navimee.data.DataManager;
 import org.pl.android.navimee.ui.base.BasePresenter;
 import org.pl.android.navimee.util.Const;
+import org.pl.android.navimee.util.ViewUtil;
 
 import javax.inject.Inject;
 
@@ -37,7 +38,7 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
     }
 
     public void setLastLocation(String location) {
-        mDataManager.getPreferencesHelper().setValue(Const.LAST_LOCATION,location.toUpperCase());
+        mDataManager.getPreferencesHelper().setValue(Const.LAST_LOCATION, ViewUtil.deAccent(location.toUpperCase()));
     }
 
 
