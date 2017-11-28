@@ -3,7 +3,11 @@ package org.pl.android.navimee.ui.hotspot;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.IntentSender;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.location.Address;
 import android.location.Location;
 import android.os.Bundle;
@@ -15,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
-import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
@@ -33,7 +36,6 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -45,18 +47,13 @@ import com.tbruyelle.rxpermissions.RxPermissions;
 
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
-import org.pl.android.navimee.ui.main.MainActivity;
 import org.pl.android.navimee.util.AddressToStringFunc;
 import org.pl.android.navimee.util.DetectedActivityToString;
 import org.pl.android.navimee.util.DisplayTextOnViewAction;
-import org.pl.android.navimee.util.LocationToStringFunc;
 import org.pl.android.navimee.util.ToMostProbableActivity;
-import org.reactivestreams.Subscription;
-import org.xml.sax.ErrorHandler;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -247,6 +244,8 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                         //mock
                         LatLng latLng1 = new LatLng(latLng.latitude+0.04,latLng.longitude+0.05);
                         LatLng latLng2 = new LatLng(latLng.latitude-0.04,latLng.longitude-0.05);
+                        LatLng latLng3 = new LatLng(latLng.latitude-0.07,latLng.longitude-0.09);
+                        LatLng latLng4 = new LatLng(latLng.latitude+0.07,latLng.longitude-0.09);
                         googleMap.addCircle(new CircleOptions()
                                 .center(latLng1)
                                 .radius(1000)
@@ -261,6 +260,39 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                 .fillColor(Color.RED))
                                 .setClickable(true);
 
+                        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+                        Bitmap bmp = Bitmap.createBitmap(80, 90, conf);
+                        Bitmap bmp2 = Bitmap.createBitmap(80, 90, conf);
+                        Canvas canvas1 = new Canvas(bmp);
+                        Canvas canvas2 = new Canvas(bmp2);
+                        // paint defines the text color, stroke width and size
+                        Paint color = new Paint();
+                        color.setTextSize(35);
+                        color.setColor(Color.BLACK);
+
+                        // modify canvas
+                        canvas1.drawBitmap(BitmapFactory.decodeResource(getResources(),
+                                R.drawable.ic_action_whatshot), 0,0, color);
+
+
+                        // paint defines the text color, stroke width and size
+
+                        // modify canvas
+                        canvas2.drawBitmap(BitmapFactory.decodeResource(getResources(),
+                                R.drawable.ic_action_flight_land), 0,0, color);
+
+                        // mock
+                        MarkerOptions bmpMar1 = new MarkerOptions();
+                        bmpMar1.position(latLng3);
+                        bmpMar1.icon(BitmapDescriptorFactory.fromBitmap(bmp));
+                        // mock
+                        MarkerOptions bmpMar2 = new MarkerOptions();
+                        bmpMar2.position(latLng4);
+                        bmpMar2.icon(BitmapDescriptorFactory.fromBitmap(bmp2));
+
+
+                        googleMap.addMarker(bmpMar1);
+                        googleMap.addMarker(bmpMar2);
                     }
                 }, new ErrorHandler());
 
@@ -413,7 +445,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         // End marker
         MarkerOptions options = new MarkerOptions();
         options.position(latLngEnd);
-        //options.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_calendar_plus));
+       // options.icon(BitmapDescriptorFactory.fromBitmap(bmp));
         googleMap.addMarker(options);
     }
 
