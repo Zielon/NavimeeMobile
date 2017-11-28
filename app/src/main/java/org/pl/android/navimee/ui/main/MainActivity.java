@@ -22,6 +22,7 @@ import butterknife.ButterKnife;
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.data.model.Ribot;
 import org.pl.android.navimee.ui.base.BaseActivity;
+import org.pl.android.navimee.ui.base.BaseActivityFragment;
 import org.pl.android.navimee.ui.intro.IntroActivity;
 import org.pl.android.navimee.ui.hotspot.HotSpotFragment;
 import org.pl.android.navimee.ui.dayschedule.DayScheduleFragment;
@@ -31,7 +32,7 @@ import org.pl.android.navimee.ui.radar.RadarFragment;
 import org.pl.android.navimee.ui.signin.SignInActivity;
 import org.pl.android.navimee.util.DialogFactory;
 
-public class MainActivity extends BaseActivity implements MainMvpView {
+public class MainActivity extends BaseActivityFragment implements MainMvpView {
 
     private static final String EXTRA_TRIGGER_SYNC_FLAG =
             "uk.co.ribot.androidboilerplate.ui.main.MainActivity.EXTRA_TRIGGER_SYNC_FLAG";
