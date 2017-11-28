@@ -215,6 +215,11 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         mPlaceCloseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(polylines.size()>0) {
+                    for (Polyline poly : polylines) {
+                        poly.remove();
+                    }
+                }
                 mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
             }
         });
