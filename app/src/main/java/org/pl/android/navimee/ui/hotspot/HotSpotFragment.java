@@ -25,11 +25,14 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.LocationRequest;
@@ -44,12 +47,15 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
 import org.pl.android.navimee.R;
@@ -59,7 +65,6 @@ import org.pl.android.navimee.util.AddressToStringFunc;
 import org.pl.android.navimee.util.DetectedActivityToString;
 import org.pl.android.navimee.util.DisplayTextOnViewAction;
 import org.pl.android.navimee.util.ToMostProbableActivity;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,6 +126,8 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     LatLng latLngCurrent,latLngEnd,latLngDrive;
     String driveName;
     private static final int[] COLORS = new int[]{R.color.primary_dark,R.color.primary,R.color.primary_light,R.color.accent,R.color.primary_dark_material_light};
+    GeoFire geoFire;
+    GeoQuery geoQuery;
 
 
 
@@ -140,6 +147,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         TextView text = (TextView) ((MainActivity) getActivity()).getSupportActionBar().getCustomView().findViewById(R.id.app_bar_text);
         text.setText(getResources().getString(R.string.hotspot));
         initGeolocation();
+
     }
 
     @Override
@@ -290,6 +298,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                 .map(new AddressToStringFunc())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+        geoFire = new GeoFire(mHotspotPresenter.getHotSpotDatabaseRefernce());
     }
 
     protected void onLocationPermissionGranted() {
@@ -336,6 +345,38 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                     public void accept(LatLng latLng) throws Exception {
                         CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 10);
                         googleMap.moveCamera(yourLocation);
+                        // setup GeoFire
+
+                        // radius in km
+                        geoFire.setLocation(mHotspotPresenter.getUid(), new GeoLocation(latLng.latitude+0.04, latLng.longitude+0.04));
+
+                        geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude),5).addGeoQueryEventListener(new GeoQueryEventListener() {
+                            @Override
+                            public void onKeyEntered(String key, GeoLocation location) {
+                                System.out.println(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
+                            }
+
+                            @Override
+                            public void onKeyExited(String key) {
+                                System.out.println(String.format("Key %s is no longer in the search area", key));
+                            }
+
+                            @Override
+                            public void onKeyMoved(String key, GeoLocation location) {
+                                System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+                            }
+
+                            @Override
+                            public void onGeoQueryReady() {
+                                System.out.println("All initial data has been loaded and events have been fired!");
+                            }
+
+                            @Override
+                            public void onGeoQueryError(DatabaseError error) {
+                                System.err.println("There was an error with this query: " + error);
+                            }
+                        });
+
                         latLngCurrent = latLng;
                         //mock
                         LatLng latLng1 = new LatLng(latLng.latitude+0.04,latLng.longitude+0.05);
