@@ -8,6 +8,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.pl.android.navimee.data.DataManager;
@@ -28,6 +29,8 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
 
 
     private final DataManager mDataManager;
+
+    private ListenerRegistration mListener;
 
     @Inject
     public HotSpotPresenter(DataManager dataManager) {
@@ -61,7 +64,7 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
     }
 
     public void loadHotSpotPlace(String key){
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("EVENTS").document("BY_CITY").collection("SOPOT").document(key).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        mListener =  mDataManager.getFirebaseService().getFirebaseFirestore().collection("EVENTS").document("BY_CITY").collection("SOPOT").document(key).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @SuppressLint("TimberArgCount")
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
