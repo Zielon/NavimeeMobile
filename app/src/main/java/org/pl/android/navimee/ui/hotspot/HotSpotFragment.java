@@ -464,7 +464,10 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     public void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
+        mHotspotPresenter.detachView();
+
     }
+
 
     @Override
     public void onStop() {
