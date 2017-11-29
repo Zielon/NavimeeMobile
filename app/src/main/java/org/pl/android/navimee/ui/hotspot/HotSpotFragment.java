@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.WindowDecorActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,6 +60,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
 import org.pl.android.navimee.R;
+import org.pl.android.navimee.data.model.Event;
 import org.pl.android.navimee.ui.base.BaseActivity;
 import org.pl.android.navimee.ui.main.MainActivity;
 import org.pl.android.navimee.util.AddressToStringFunc;
@@ -127,8 +129,6 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     String driveName;
     private static final int[] COLORS = new int[]{R.color.primary_dark,R.color.primary,R.color.primary_light,R.color.accent,R.color.primary_dark_material_light};
     GeoFire geoFire;
-    GeoQuery geoQuery;
-
 
 
     private final static int REQUEST_CHECK_SETTINGS = 0;
@@ -299,6 +299,8 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
         geoFire = new GeoFire(mHotspotPresenter.getHotSpotDatabaseRefernce());
+
+
     }
 
     protected void onLocationPermissionGranted() {
@@ -346,100 +348,34 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                         CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 10);
                         googleMap.moveCamera(yourLocation);
                         // setup GeoFire
-
-                        // radius in km
-                        geoFire.setLocation(mHotspotPresenter.getUid(), new GeoLocation(latLng.latitude+0.04, latLng.longitude+0.04));
-
-                        geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude),5).addGeoQueryEventListener(new GeoQueryEventListener() {
+                        latLngCurrent = latLng;
+                        geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude),18).addGeoQueryEventListener(new GeoQueryEventListener() {
                             @Override
                             public void onKeyEntered(String key, GeoLocation location) {
-                                System.out.println(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
+                                Timber.i(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
+                                mHotspotPresenter.loadHotSpotPlace(key);
                             }
 
                             @Override
                             public void onKeyExited(String key) {
-                                System.out.println(String.format("Key %s is no longer in the search area", key));
+                                Timber.i(String.format("Key %s is no longer in the search area", key));
                             }
 
                             @Override
                             public void onKeyMoved(String key, GeoLocation location) {
-                                System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+                                Timber.i(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
                             }
 
                             @Override
                             public void onGeoQueryReady() {
-                                System.out.println("All initial data has been loaded and events have been fired!");
+                                Timber.i("All initial data has been loaded and events have been fired!");
                             }
 
                             @Override
                             public void onGeoQueryError(DatabaseError error) {
-                                System.err.println("There was an error with this query: " + error);
+                                Timber.e("There was an error with this query: " + error);
                             }
                         });
-
-                        latLngCurrent = latLng;
-                        //mock
-                        LatLng latLng1 = new LatLng(latLng.latitude+0.04,latLng.longitude+0.05);
-                        LatLng latLng2 = new LatLng(latLng.latitude-0.04,latLng.longitude-0.05);
-                        LatLng latLng3 = new LatLng(latLng.latitude-0.07,latLng.longitude-0.09);
-                        LatLng latLng4 = new LatLng(latLng.latitude+0.07,latLng.longitude-0.09);
-                    /*    googleMap.addCircle(new CircleOptions()
-                                .center(latLng1)
-                                .radius(1000)
-                                .strokeColor(Color.BLUE)
-                                .fillColor(Color.RED))
-                                .setClickable(true);
-
-                        googleMap.addCircle(new CircleOptions()
-                                .center(latLng2)
-                                .radius(1500)
-                                .strokeColor(Color.BLUE)
-                                .fillColor(Color.RED))
-                                .setClickable(true);*/
-
-                        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
-                        Bitmap bmp = Bitmap.createBitmap(80, 90, conf);
-                        Bitmap bmp2 = Bitmap.createBitmap(80, 90, conf);
-                        Bitmap bmp3 = Bitmap.createBitmap(80, 90, conf);
-                        Canvas canvas1 = new Canvas(bmp);
-                        Canvas canvas2 = new Canvas(bmp2);
-                        Canvas canvas3 = new Canvas(bmp3);
-                        // paint defines the text color, stroke width and size
-                        Paint color = new Paint();
-                        color.setTextSize(35);
-                        color.setColor(Color.BLACK);
-
-                        // modify canvas
-                        canvas1.drawBitmap(BitmapFactory.decodeResource(getResources(),
-                                R.drawable.ic_action_whatshot), 0,0, color);
-
-
-                        // paint defines the text color, stroke width and size
-
-                        // modify canvas
-                        canvas2.drawBitmap(BitmapFactory.decodeResource(getResources(),
-                                R.drawable.ic_action_flight_land), 0,0, color);
-                        // modify canvas
-                        canvas3.drawBitmap(BitmapFactory.decodeResource(getResources(),
-                                R.drawable.ic_action_people), 0,0, color);
-
-                        // mock
-                        MarkerOptions bmpMar1 = new MarkerOptions();
-                        bmpMar1.position(latLng3);
-                        bmpMar1.icon(BitmapDescriptorFactory.fromBitmap(bmp));
-                        // mock
-                        MarkerOptions bmpMar2 = new MarkerOptions();
-                        bmpMar2.position(latLng4);
-                        bmpMar2.icon(BitmapDescriptorFactory.fromBitmap(bmp2));
-
-                        MarkerOptions bmpMar3 = new MarkerOptions();
-                        bmpMar3.position(latLng2);
-                        bmpMar3.icon(BitmapDescriptorFactory.fromBitmap(bmp3));
-
-
-                        googleMap.addMarker(bmpMar1);
-                        googleMap.addMarker(bmpMar2);
-                        googleMap.addMarker(bmpMar3);
                     }
                 }, new ErrorHandler());
 
@@ -641,6 +577,34 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     public void onMarkerDragEnd(Marker marker) {
 
     }
+
+    @Override
+    public void showOnMap(Event event) {
+        Timber.d(event.getName());
+
+
+        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+        Bitmap bmp = Bitmap.createBitmap(80, 90, conf);
+        Canvas canvas = new Canvas(bmp);
+        // paint defines the text color, stroke width and size
+        Paint color = new Paint();
+        color.setTextSize(35);
+        color.setColor(Color.BLACK);
+
+        // modify canvas
+        canvas.drawBitmap(BitmapFactory.decodeResource(getResources(),
+                R.drawable.ic_action_whatshot), 0,0, color);
+
+
+
+        // mock
+        MarkerOptions bmpMar = new MarkerOptions();
+        bmpMar.position(new LatLng(event.getPlace().getGeoPoint().getLatitude(),event.getPlace().getGeoPoint().getLongitude()));
+        bmpMar.icon(BitmapDescriptorFactory.fromBitmap(bmp));
+
+        googleMap.addMarker(bmpMar);
+    }
+
 
     private class ErrorHandler implements Consumer<Throwable> {
         @Override
