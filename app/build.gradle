@@ -173,8 +173,9 @@ dependencies {
     compile 'com.ethanhua:skeleton:1.0.0'
     compile 'com.allattentionhere:fabulousfilter:0.0.4'
 
-    //google map route
+    //google map
     compile 'com.github.jd-alexander:library:1.1.0'
+    compile 'com.google.maps.android:android-maps-utils:0.4+'
 
     //facebook
     compile 'com.facebook.android:facebook-login:[4,5)'

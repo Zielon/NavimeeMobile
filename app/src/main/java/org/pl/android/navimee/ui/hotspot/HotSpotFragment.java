@@ -15,7 +15,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.WindowDecorActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +31,6 @@ import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
-import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.ActivityRecognitionResult;
@@ -53,14 +51,13 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.maps.android.clustering.ClusterManager;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.data.model.Event;
+import org.pl.android.navimee.data.model.maps.ClusterItemGoogleMap;
 import org.pl.android.navimee.ui.base.BaseActivity;
 import org.pl.android.navimee.ui.main.MainActivity;
 import org.pl.android.navimee.util.AddressToStringFunc;
@@ -69,7 +66,9 @@ import org.pl.android.navimee.util.DisplayTextOnViewAction;
 import org.pl.android.navimee.util.ToMostProbableActivity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -125,10 +124,11 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     private Disposable addressDisposable;
 
     private List<Polyline> polylines;
-    LatLng latLngCurrent,latLngEnd,latLngDrive;
-    String driveName;
+    LatLng latLngCurrent,latLngEnd;
     private static final int[] COLORS = new int[]{R.color.primary_dark,R.color.primary,R.color.primary_light,R.color.accent,R.color.primary_dark_material_light};
     GeoFire geoFire;
+    private ClusterManager<ClusterItemGoogleMap> mClusterManager;
+    private Set<ClusterItemGoogleMap> eventsOnMap = new HashSet<>();
 
 
     private final static int REQUEST_CHECK_SETTINGS = 0;
@@ -213,8 +213,8 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         mPlaceDriveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + String.valueOf(latLngDrive.latitude) + "," +
-                        String.valueOf(latLngDrive.longitude));
+                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + String.valueOf(latLngEnd.latitude) + "," +
+                        String.valueOf(latLngEnd.longitude));
 
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
@@ -314,7 +314,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                 .subscribe(new Consumer<LatLng>() {
                     @Override
                     public void accept(LatLng latLng) throws Exception {
-                        CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 10);
+                        CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 11);
                         googleMap.moveCamera(yourLocation);
                         //mock
                         LatLng latLng1 = new LatLng(latLng.latitude+0.04,latLng.longitude+0.05);
@@ -345,7 +345,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                 .subscribe(new Consumer<LatLng>() {
                     @Override
                     public void accept(LatLng latLng) throws Exception {
-                        CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 10);
+                        CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 11);
                         googleMap.moveCamera(yourLocation);
                         // setup GeoFire
                         latLngCurrent = latLng;
@@ -437,6 +437,8 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                         //    route( latLngCurrent, circle.getCenter());
                                         }
                                     });
+                                    mClusterManager = new ClusterManager<ClusterItemGoogleMap>(getContext(), googleMap);
+                                    googleMap.setOnCameraIdleListener(mClusterManager);
 
                                 }
                             });
@@ -529,8 +531,6 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
             mTextPlaceAddress.setText(route.get(i).getEndAddressText());
             mTextPlaceDistance.setText(route.get(i).getDistanceText());
             mTextPlaceTime.setText(route.get(i).getDurationText());
-            latLngDrive = route.get(i).getLatLgnBounds().getCenter();
-            driveName = route.get(i).getEndAddressText();
         }
 
         // Start marker
@@ -604,8 +604,11 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         MarkerOptions bmpMar = new MarkerOptions();
         bmpMar.position(new LatLng(event.getPlace().getGeoPoint().getLatitude(),event.getPlace().getGeoPoint().getLongitude()));
         bmpMar.icon(BitmapDescriptorFactory.fromBitmap(bmp));
-
-        googleMap.addMarker(bmpMar);
+        ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(),event.getPlace().getGeoPoint().getLatitude(),event.getPlace().getGeoPoint().getLongitude());
+        eventsOnMap.add(clusterItemGoogleMap);
+        mClusterManager.addItems(eventsOnMap);
+        mClusterManager.cluster();
+      //  googleMap.addMarker(bmpMar);
     }
 
 
