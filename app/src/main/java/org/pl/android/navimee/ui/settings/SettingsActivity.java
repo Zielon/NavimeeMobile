@@ -90,42 +90,19 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
                         new ProfileSettingDrawerItem().withName("Add Account").withDescription("Add new GitHub Account"),
                         new ProfileSettingDrawerItem().withName(R.string.delete_account)
                 )
-               /* .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
-                    @Override
-                    public boolean onProfileChanged(View view, IProfile profile, boolean current) {
-                        //sample usage of the onProfileChanged listener
-                        //if the clicked item has the identifier 1 add a new profile ;)
-                        if (profile instanceof IDrawerItem && ((IDrawerItem) profile).getIdentifier() == PROFILE_SETTING) {
-                            IProfile newProfile = new ProfileDrawerItem().withNameShown(true).withName("Batman").withEmail("batman@gmail.com");
-                            if (headerResult.getProfiles() != null) {
-                                //we know that there are 2 setting elements. set the new profile above them ;)
-                                headerResult.addProfile(newProfile, headerResult.getProfiles().size() - 2);
-                            } else {
-                                headerResult.addProfiles(newProfile);
-                            }
-                        }
-
-                        //false if you have not consumed the event and it should close the drawer
-                        return false;
-                    }
-                })*/
                 .withSavedInstance(savedInstanceState)
                 .build();
 
         result = new DrawerBuilder()
                 .withActivity(this)
-                //.withToolbar(toolbar)
+                .withToolbar(toolbar)
                 .withTranslucentStatusBar(false)
                 .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
                 .addDrawerItems(
                         new PrimaryDrawerItem().withName(R.string.notifications).withIcon(R.drawable.ic_action_whatshot).withIdentifier(1),
                         new PrimaryDrawerItem().withName(R.string.change_email).withIcon(R.drawable.ic_action_whatshot).withIdentifier(2),
                         new PrimaryDrawerItem().withName(R.string.change_password).withIcon(R.drawable.ic_action_whatshot).withIdentifier(3),
-                      //  new PrimaryDrawerItem().withName(R.string.drawer_item_non_translucent_status_drawer).withIcon(FontAwesome.Icon.faw_eye).withIdentifier(4),
-                      //  new PrimaryDrawerItem().withDescription("A more complex sample").withName(R.string.drawer_item_advanced_drawer).withIcon(GoogleMaterial.Icon.gmd_adb).withIdentifier(5),
-                      //  new SectionDrawerItem().withName(R.string.drawer_item_section_header),
-                       // new SecondaryDrawerItem().withName(R.string.drawer_item_open_source).withIcon(FontAwesome.Icon.faw_github),
-                      //  new SecondaryDrawerItem().withName(R.string.drawer_item_contact).withIcon(GoogleMaterial.Icon.gmd_format_color_fill).withTag("Bullhorn"),
+                        new PrimaryDrawerItem().withName(R.string.logout).withIcon(R.drawable.ic_action_whatshot).withIdentifier(4),
                         new DividerDrawerItem(),
                         new PrimaryDrawerItem().withName(R.string.privacy_conditions).withIcon(R.drawable.ic_action_whatshot),
                         new PrimaryDrawerItem().withName(R.string.help).withIcon(R.drawable.ic_action_whatshot),
@@ -135,12 +112,19 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                         if (drawerItem instanceof Nameable) {
-                            Toast.makeText(SettingsActivity.this, ((Nameable) drawerItem).getName().getText(SettingsActivity.this), Toast.LENGTH_SHORT).show();
+                            switch (position) {
+                                case 1:
+
+                                case 4:
+                                    mSettingsPresenter.logout();
+                            }
+
                         }
                         return false;
                     }
                 })
                 .withSavedInstance(savedInstanceState)
+                .withSelectedItem(-1)
                 .buildView();
 
         ((ViewGroup) findViewById(R.id.frame_container)).addView(result.getSlider());
