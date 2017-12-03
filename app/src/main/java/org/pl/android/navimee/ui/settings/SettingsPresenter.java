@@ -67,4 +67,12 @@ public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
         getMvpView().onLogout();
     }
 
+    public String getName() {
+        return  mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getDisplayName();
+    }
+
+    public String getEmail() {
+        return  mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getEmail();
+    }
+
 }

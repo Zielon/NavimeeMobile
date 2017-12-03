@@ -57,8 +57,9 @@
 
         <activity
             android:name="org.pl.android.navimee.ui.settings.SettingsActivity"
+            android:theme="@style/MaterialDrawerThemeCustom"
             android:parentActivityName="org.pl.android.navimee.ui.main.MainActivity"
-            android:label="@string/settings">
+           >
         </activity>
 
         <service android:name="org.pl.android.navimee.data.SyncService"/>

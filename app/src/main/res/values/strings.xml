@@ -40,6 +40,13 @@
     <string name="login">Zaloguj się</string>
     <string name="logout">Wyloguj się</string>
     <string name="settings">Ustawienia</string>
+    <string name="notifications">Powiadomienia</string>
+    <string name="change_email">Zmień email</string>
+    <string name="change_password">Zmień hasło</string>
+    <string name="privacy_conditions">Warunki prywatności</string>
+    <string name="help">Pomoc</string>
+    <string name="rate_app">Oceń aplikację</string>
+    <string name="delete_account">Usuń konto</string>
     <string name="no_account_yet">Nie masz jeszcze konta? Stwórz je</string>
     <string name="facebook_app_id">490316121339159</string>
     <string name="fb_login_protocol_scheme">fb490316121339159</string>
