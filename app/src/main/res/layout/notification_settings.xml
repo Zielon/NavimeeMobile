@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="org.pl.android.navimee.ui.settings.notification.NotificationActivity">
+
+
+    <TextView
+        android:id="@+id/day_schedule_notifications_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/toolbar"
+        android:paddingBottom="10dp"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:text="@string/notifications_day_schedule" />
+
+    <Switch
+        android:id="@+id/day_schedule_notifications_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/day_schedule_notifications_text"
+        android:paddingRight="10dp"
+        android:textColorLink="@color/colorPrimary" />
+
+    <TextView
+        android:id="@+id/big_events_notifications_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/day_schedule_notifications_button"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:paddingLeft="20dp"
+        android:text="@string/notifications_big_events" />
+
+    <Switch
+        android:id="@+id/big_events_notifications_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/day_schedule_notifications_text"
+        android:paddingBottom="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp"
+        android:textColorLink="@color/colorPrimary" />
+
+</RelativeLayout>

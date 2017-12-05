@@ -1,45 +1,30 @@
 package org.pl.android.navimee.ui.settings;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.net.Uri;
-import android.os.BaseBundle;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.Toast;
 
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.holder.BadgeStyle;
 import com.mikepenz.materialdrawer.interfaces.OnCheckedChangeListener;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SectionDrawerItem;
-import com.mikepenz.materialdrawer.model.SwitchDrawerItem;
-import com.mikepenz.materialdrawer.model.ToggleDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
-import org.pl.android.navimee.BoilerplateApplication;
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
+import org.pl.android.navimee.ui.settings.notification.NotificationActivity;
 
 import javax.inject.Inject;
 
@@ -112,13 +97,21 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                         if (drawerItem instanceof Nameable) {
-                            switch (position) {
-                                case 1:
+                            Intent intent = null;
+                           if(position == 1) {
+                               Timber.d(String.valueOf(position));
+                               intent = new Intent(SettingsActivity.this,NotificationActivity.class);
+                           } else if(position == 2) {
+                               Timber.d(String.valueOf(position));
+                           } else if(position == 3) {
+                               Timber.d(String.valueOf(position));
+                           } else if(position == 4) {
+                               mSettingsPresenter.logout();
+                           }
 
-                                case 4:
-                                    mSettingsPresenter.logout();
+                            if (intent != null) {
+                                SettingsActivity.this.startActivity(intent);
                             }
-
                         }
                         return false;
                     }

@@ -62,6 +62,14 @@
            >
         </activity>
 
+        <activity
+            android:name="org.pl.android.navimee.ui.settings.notification.NotificationActivity"
+            android:theme="@style/AppTheme"
+            android:label="@string/notifications"
+            android:parentActivityName="org.pl.android.navimee.ui.settings.SettingsActivity"
+            >
+        </activity>
+
         <service android:name="org.pl.android.navimee.data.SyncService"/>
 
         <receiver

@@ -40,6 +40,8 @@
     <string name="login">Zaloguj się</string>
     <string name="logout">Wyloguj się</string>
     <string name="settings">Ustawienia</string>
+    <string name="notifications_day_schedule">Powiadomienia z planu dnia</string>
+    <string name="notifications_big_events">Powiadomienia o dużych imprezach</string>
     <string name="notifications">Powiadomienia</string>
     <string name="change_email">Zmień email</string>
     <string name="change_password">Zmień hasło</string>
