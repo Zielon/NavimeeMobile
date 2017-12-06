@@ -7,9 +7,14 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.SetOptions;
 import com.kelvinapps.rxfirebase.RxFirebaseAuth;
 import com.kelvinapps.rxfirebase.RxFirebaseUser;
 
@@ -87,9 +92,8 @@ public class SignInPresenter extends BasePresenter<SignInMvpView> {
             String token = mDataManager.getPreferencesHelper().getValueString(Const.MESSAGING_TOKEN);
             Map<String, Object> user = new HashMap<>();
             user.put("token", token);
-            user.put("bigEventsNotification", true);
-            user.put("dayScheduleNotification", true);
-            mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+            user.put("email", mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getEmail());
+            mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).set(user,SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Timber.i("DocumentSnapshot successfully written!");
@@ -100,6 +104,23 @@ public class SignInPresenter extends BasePresenter<SignInMvpView> {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Timber.e("Error writing document", e);
+                }
+            });
+
+            mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document != null) {
+                            if(document.get("bigEventsNotification") == null && document.get("dayScheduleNotification") == null ) {
+                                Map<String, Object> userNotification = new HashMap<>();
+                                userNotification.put("bigEventsNotification", true);
+                                userNotification.put("dayScheduleNotification", true);
+                                mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).update(userNotification);
+                            }
+                        }
+                    }
                 }
             });
         }

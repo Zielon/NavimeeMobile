@@ -1,6 +1,8 @@
 package org.pl.android.navimee.ui.settings.notification;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -12,6 +14,8 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
 
 /**
  * Created by Wojtek on 2017-12-05.
@@ -49,4 +53,25 @@ public class NotificationActivity extends BaseActivity implements NotificationMv
         mDayScheduleNotiSwitch.setChecked(dayScheduleNotification);
         mBigEventsNotiSwitch.setChecked(bigEventsNotification);
     }
+
+
+    @OnCheckedChanged ({R.id.day_schedule_notifications_button,R.id.big_events_notifications_button})
+    public void submitSwitchButton(CompoundButton button, boolean checked) {
+        switch (button.getId()) {
+            case R.id.day_schedule_notifications_button:
+                mNotificationPresenter.submitCheckedChange("dayScheduleNotification",checked);
+                break;
+            case R.id.big_events_notifications_button:
+                mNotificationPresenter.submitCheckedChange("bigEventsNotification",checked);
+                break;
+        }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mNotificationPresenter.detachView();
+    }
+
 }

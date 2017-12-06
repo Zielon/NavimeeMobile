@@ -50,19 +50,7 @@ public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
         Map<String,Object> updates = new HashMap<>();
         updates.put("token", FieldValue.delete());
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).update(updates).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Timber.i("Token successfully deleted!");
-            }
-        })
-        .addOnFailureListener(new OnFailureListener() {
-            @SuppressLint("TimberArgCount")
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Timber.e("Error writing document", e);
-            }
-        });
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).update(updates);
         mDataManager.getFirebaseService().getFirebaseAuth().signOut();
         getMvpView().onLogout();
     }

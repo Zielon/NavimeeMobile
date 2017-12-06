@@ -63,7 +63,12 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
 
         // Create a few sample profile
         // NOTE you have to define the loader logic too. See the CustomApplication for more details
-        final IProfile profile = new ProfileDrawerItem().withName(mSettingsPresenter.getName()).withEmail(mSettingsPresenter.getEmail());
+        final IProfile profile;
+        if(mSettingsPresenter.getName() != null) {
+            profile = new ProfileDrawerItem().withName(mSettingsPresenter.getName()).withEmail(mSettingsPresenter.getEmail());
+        } else {
+            profile = new ProfileDrawerItem().withEmail(mSettingsPresenter.getEmail());
+        }
         // Create the AccountHeader
         headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -148,14 +153,22 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
 
     @Override
    public void onLogout() {
-        Intent returnIntent = new Intent();
-        setResult(Activity.RESULT_OK);
+        Intent resultInt = new Intent();
+        resultInt.putExtra("ACTION", "LOGOUT");
+        setResult(Activity.RESULT_OK,resultInt);
         finish();
     }
 
     @Override
     public void onError() {
 
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mSettingsPresenter.detachView();
     }
 
 

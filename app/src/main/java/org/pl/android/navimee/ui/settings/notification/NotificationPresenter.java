@@ -1,6 +1,12 @@
 package org.pl.android.navimee.ui.settings.notification;
 
+import android.annotation.SuppressLint;
+import android.support.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
@@ -29,7 +35,6 @@ public class NotificationPresenter extends BasePresenter<NotificationMvpView> {
 
     private final DataManager mDataManager;
     private Disposable mDisposable;
-    private ListenerRegistration mListener;
 
     @Inject
     public NotificationPresenter(DataManager dataManager) {
@@ -49,14 +54,36 @@ public class NotificationPresenter extends BasePresenter<NotificationMvpView> {
 
     public void loadNotificationConfig() {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                Timber.d(documentSnapshot.getId() + " => " + documentSnapshot.getData());
-                documentSnapshot.getData().get("dayScheduleNotification");
-                documentSnapshot.getData().get("bigEventsNotification");
-                getMvpView().setSwitches( (Boolean)documentSnapshot.getData().get("dayScheduleNotification"), (Boolean)documentSnapshot.getData().get("bigEventsNotification"));
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    Timber.d(document .getId() + " => " + document.getData());
+                    document .getData().get("dayScheduleNotification");
+                    document .getData().get("bigEventsNotification");
+                    getMvpView().setSwitches( (Boolean)document .getData().get("dayScheduleNotification"), (Boolean)document .getData().get("bigEventsNotification"));
+                }
             }
         });
+    }
+
+    public void submitCheckedChange(String name, boolean checked) {
+        String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).update(name,checked).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Timber.i("Checked changed ");
+            }
+        })
+        .addOnFailureListener(new OnFailureListener() {
+            @SuppressLint("TimberArgCount")
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Timber.e("Error saving event", e);
+            }
+        });
+
+
     }
 }

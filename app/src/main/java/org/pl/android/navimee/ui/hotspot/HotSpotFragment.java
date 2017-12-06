@@ -349,7 +349,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                         googleMap.moveCamera(yourLocation);
                         // setup GeoFire
                         latLngCurrent = latLng;
-                        geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude),18).addGeoQueryEventListener(new GeoQueryEventListener() {
+                        geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude),4).addGeoQueryEventListener(new GeoQueryEventListener() {
                             @Override
                             public void onKeyEntered(String key, GeoLocation location) {
                                 Timber.i(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
