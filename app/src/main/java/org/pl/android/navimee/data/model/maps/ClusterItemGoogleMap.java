@@ -8,49 +8,42 @@ import com.google.maps.android.clustering.ClusterItem;
  */
 
 public class ClusterItemGoogleMap implements ClusterItem {
-    private final LatLng mPosition;
-    private String mTitle;
-    private String mSnippet;
+    public final LatLng mPosition;
+    public  int profilePhoto;
+    public  String name;
     String id;
 
-    public ClusterItemGoogleMap(String id,double lat, double lng) {
-        mPosition = new LatLng(lat, lng);
+    public ClusterItemGoogleMap(String id, LatLng position, String name, int pictureResource) {
         this.id = id;
-        mTitle = null;
-        mSnippet = null;
+        mPosition = position;
+        this.name = name;
+        profilePhoto = pictureResource;
     }
 
-    public ClusterItemGoogleMap(String id,double lat, double lng, String title, String snippet) {
-        mPosition = new LatLng(lat, lng);
-        this.id = id;
-        mTitle = title;
-        mSnippet = snippet;
-    }
 
     @Override
     public LatLng getPosition() {
         return mPosition;
     }
 
-    public String getTitle() { return mTitle; }
-
-
-    public String getSnippet() { return mSnippet; }
-
-    /**
-     * Set the title of the marker
-     * @param title string to be set as title
-     */
-    public void setTitle(String title) {
-        mTitle = title;
+    public LatLng getmPosition() {
+        return mPosition;
     }
 
-    /**
-     * Set the description of the marker
-     * @param snippet string to be set as snippet
-     */
-    public void setSnippet(String snippet) {
-        mSnippet = snippet;
+    public int getProfilePhoto() {
+        return profilePhoto;
+    }
+
+    public void setProfilePhoto(int profilePhoto) {
+        this.profilePhoto = profilePhoto;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

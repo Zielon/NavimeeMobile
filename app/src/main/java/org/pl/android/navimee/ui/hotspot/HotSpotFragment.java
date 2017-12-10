@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Location;
 import android.net.Uri;
@@ -22,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,7 +54,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.database.DatabaseError;
+import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.view.DefaultClusterRenderer;
+import com.google.maps.android.ui.IconGenerator;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
 import org.pl.android.navimee.R;
@@ -63,6 +68,7 @@ import org.pl.android.navimee.ui.main.MainActivity;
 import org.pl.android.navimee.util.AddressToStringFunc;
 import org.pl.android.navimee.util.DetectedActivityToString;
 import org.pl.android.navimee.util.DisplayTextOnViewAction;
+import org.pl.android.navimee.util.MultiDrawable;
 import org.pl.android.navimee.util.ToMostProbableActivity;
 
 import java.util.ArrayList;
@@ -132,6 +138,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     GeoFire geoFire;
     private ClusterManager<ClusterItemGoogleMap> mClusterManager;
     private Set<ClusterItemGoogleMap> eventsOnMap = new HashSet<>();
+    Timer timer;
 
 
     private final static int REQUEST_CHECK_SETTINGS = 0;
@@ -353,7 +360,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                        // googleMap.moveCamera(yourLocation);
                         // setup GeoFire
                         latLngCurrent = latLng;
-                        geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude),16).addGeoQueryEventListener(new GeoQueryEventListener() {
+                        geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude),2).addGeoQueryEventListener(new GeoQueryEventListener() {
                             @Override
                             public void onKeyEntered(String key, GeoLocation location) {
                                 Timber.i(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
@@ -442,8 +449,9 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                         }
                                     });
                                     mClusterManager = new ClusterManager<ClusterItemGoogleMap>(getContext(), googleMap);
+                                    mClusterManager.setRenderer(new MapRenderer());
                                     googleMap.setOnCameraIdleListener(mClusterManager);
-                                    Timer timer = new Timer();
+                                    timer = new Timer();
 
                                     timer.scheduleAtFixedRate(new MyTimerTask(), TimeUnit.SECONDS.toMillis(1), TimeUnit.SECONDS.toMillis(1));
 
@@ -469,12 +477,12 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         mMapView.onPause();
     }
 
+
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
         mMapView.onDestroy();
         mHotspotPresenter.detachView();
-
     }
 
 
@@ -485,6 +493,11 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         dispose(lastKnownLocationDisposable);
         dispose(activityDisposable);
         dispose(addressDisposable);
+        if(timer != null) {
+            timer.cancel();
+            timer.purge();
+            timer = null;
+        }
     }
 
     @Override
@@ -591,33 +604,18 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     @Override
     public void showOnMap(Event event) {
         Timber.d(event.getName());
-
-
-        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
-        Bitmap bmp = Bitmap.createBitmap(80, 90, conf);
-        Canvas canvas = new Canvas(bmp);
-        // paint defines the text color, stroke width and size
-        Paint color = new Paint();
-        color.setTextSize(35);
-        color.setColor(Color.BLACK);
-
-        // modify canvas
-        canvas.drawBitmap(BitmapFactory.decodeResource(getResources(),
-                R.drawable.ic_action_whatshot), 0,0, color);
-
-
-
-        // mock
-        MarkerOptions bmpMar = new MarkerOptions();
         if(event.getPlace() != null && event.getPlace().getGeoPoint() != null) {
-                bmpMar.position(new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()));
-                bmpMar.icon(BitmapDescriptorFactory.fromBitmap(bmp));
-                ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(), event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude());
+                ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(),new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()),event.getName(),R.drawable.ic_action_whatshot);
                 eventsOnMap.add(clusterItemGoogleMap);
                 mClusterManager.addItems(eventsOnMap);
              //   mClusterManager.c
         }
       //  googleMap.addMarker(bmpMar);
+    }
+
+
+    protected GoogleMap getMap() {
+        return googleMap;
     }
 
 
@@ -652,7 +650,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
 
 
 
-    private class MyTimerTask extends TimerTask{
+    private class MyTimerTask extends TimerTask {
 
         @Override
         public void run() {
@@ -662,6 +660,71 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                     clusterMap();
                 }
             });
+        }
+    }
+
+
+
+
+
+    private class MapRenderer extends DefaultClusterRenderer<ClusterItemGoogleMap> {
+        private final IconGenerator mIconGenerator = new IconGenerator(getApplicationContext());
+        private final IconGenerator mClusterIconGenerator = new IconGenerator(getApplicationContext());
+        private final ImageView mImageView;
+        private final ImageView mClusterImageView;
+        private final int mDimension;
+
+        public MapRenderer() {
+            super(getApplicationContext(), getMap(), mClusterManager);
+
+            View multiProfile = getActivity().getLayoutInflater().inflate(R.layout.multi_profile, null);
+            mClusterIconGenerator.setContentView(multiProfile);
+            mClusterImageView = (ImageView) multiProfile.findViewById(R.id.image);
+
+            mImageView = new ImageView(getApplicationContext());
+            mDimension = (int) getResources().getDimension(R.dimen.custom_profile_image);
+            mImageView.setLayoutParams(new ViewGroup.LayoutParams(mDimension, mDimension));
+            int padding = (int) getResources().getDimension(R.dimen.custom_profile_padding);
+            mImageView.setPadding(padding, padding, padding, padding);
+            mIconGenerator.setContentView(mImageView);
+        }
+
+        @Override
+        protected void onBeforeClusterItemRendered(ClusterItemGoogleMap clusterItemGoogleMap, MarkerOptions markerOptions) {
+            // Draw a single person.
+            // Set the info window to show their name.
+            mImageView.setImageResource(clusterItemGoogleMap.profilePhoto);
+            Bitmap icon = mIconGenerator.makeIcon();
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(clusterItemGoogleMap.name);
+        }
+
+        @Override
+        protected void onBeforeClusterRendered(Cluster<ClusterItemGoogleMap> cluster, MarkerOptions markerOptions) {
+            // Draw multiple people.
+            // Note: this method runs on the UI thread. Don't spend too much time in here (like in this example).
+            List<Drawable> profilePhotos = new ArrayList<Drawable>(Math.min(4, cluster.getSize()));
+            int width = mDimension;
+            int height = mDimension;
+
+            for (ClusterItemGoogleMap p : cluster.getItems()) {
+                // Draw 4 at most.
+                if (profilePhotos.size() == 4) break;
+                Drawable drawable = getResources().getDrawable(p.profilePhoto);
+                drawable.setBounds(0, 0, width, height);
+                profilePhotos.add(drawable);
+            }
+            MultiDrawable multiDrawable = new MultiDrawable(profilePhotos);
+            multiDrawable.setBounds(0, 0, width, height);
+
+            mClusterImageView.setImageDrawable(multiDrawable);
+            Bitmap icon = mClusterIconGenerator.makeIcon(String.valueOf(cluster.getSize()));
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
+        }
+
+        @Override
+        protected boolean shouldRenderAsCluster(Cluster cluster) {
+            // Always render clusters.
+            return cluster.getSize() > 1;
         }
     }
 

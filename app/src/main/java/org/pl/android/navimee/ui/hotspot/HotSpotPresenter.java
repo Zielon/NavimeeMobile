@@ -83,7 +83,9 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
 
                 if (snapshot != null && snapshot.exists() && snapshot.get("hotspotType").equals(Const.HotSpotType.FACEBOOK_EVENT.name())) {
                     Timber.d("Current data: " + snapshot.getData());
-                    getMvpView().showOnMap(snapshot.toObject(Event.class));
+                    if(getMvpView() != null) {
+                        getMvpView().showOnMap(snapshot.toObject(Event.class));
+                    }
                 }
             }
         });

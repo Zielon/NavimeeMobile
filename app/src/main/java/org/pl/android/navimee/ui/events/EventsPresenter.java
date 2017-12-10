@@ -101,8 +101,10 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
                 }
                 if ( snapshot != null && snapshot.exists() && snapshot.get("hotspotType").equals(Const.HotSpotType.FACEBOOK_EVENT.name())) {
                         Event event = snapshot.toObject(Event.class);
-                        if (event.getendTime().after(finalDateFinal) && event.getendTime().before(dt.getTime())) {
-                            getMvpView().showEvent(snapshot.toObject(Event.class));
+                        if (event.getendTime() !=null && event.getendTime().after(finalDateFinal) && event.getendTime().before(dt.getTime())) {
+                            if(getMvpView() != null) {
+                                getMvpView().showEvent(snapshot.toObject(Event.class));
+                            }
                         }
                  }
             }
