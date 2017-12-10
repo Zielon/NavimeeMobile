@@ -13,6 +13,10 @@ import android.widget.Toast;
 
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQueryEventListener;
+import com.google.firebase.database.DatabaseError;
 
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.data.model.Event;
@@ -31,6 +35,7 @@ import butterknife.ButterKnife;
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.HorizontalCalendarListener;
 import devs.mulham.horizontalcalendar.HorizontalCalendarView;
+import timber.log.Timber;
 
 /**
  * Created by Wojtek on 2017-10-21.
@@ -47,6 +52,8 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
 
     Date today;
     SkeletonScreen skeletonScreen;
+
+    GeoFire geoFire;
 
     public static EventsFragment newInstance() {
         EventsFragment fragment = new EventsFragment();
@@ -91,7 +98,38 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
             @Override
             public void onDateSelected(Date date, int position) {
                 skeletonScreen.show();
-                mEventsPresenter.loadEvents(date);
+                mEventsAdapter.clearEvents();
+                double latitude = mEventsPresenter.getLastLat();
+                double longitude = mEventsPresenter.getLastLng();
+                geoFire.queryAtLocation(new GeoLocation(latitude, longitude),16).addGeoQueryEventListener(new GeoQueryEventListener() {
+                    @Override
+                    public void onKeyEntered(String key, GeoLocation location) {
+                        Timber.i(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
+                       // mHotspotPresenter.loadHotSpotPlace(key);
+                        mEventsPresenter.loadEvents(date,key);
+                    }
+
+                    @Override
+                    public void onKeyExited(String key) {
+                        Timber.i(String.format("Key %s is no longer in the search area", key));
+                    }
+
+                    @Override
+                    public void onKeyMoved(String key, GeoLocation location) {
+                        Timber.i(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+                    }
+
+                    @Override
+                    public void onGeoQueryReady() {
+                        Timber.i("All initial data has been loaded and events have been fired!");
+                    }
+
+                    @Override
+                    public void onGeoQueryError(DatabaseError error) {
+                        Timber.e("There was an error with this query: " + error);
+                    }
+                });
+             //   mEventsPresenter.loadEvents(date);
             }
 
             @Override
@@ -112,6 +150,7 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
         mEventsRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mEventsRecycler.setHasFixedSize(true);
         mEventsRecycler.setAdapter(mEventsAdapter);
+        geoFire = new GeoFire(mEventsPresenter.getHotSpotDatabaseRefernce());
 
        skeletonScreen = Skeleton.bind(mEventsRecycler)
                 .adapter(mEventsAdapter)
@@ -136,8 +175,8 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
     }
 
     @Override
-    public void showEvents(List<Event> events) {
-        mEventsAdapter.setEvents(events);
+    public void showEvent(Event event) {
+        mEventsAdapter.addEvent(event);
         mEventsAdapter.notifyDataSetChanged();
         skeletonScreen.hide();
     }
@@ -157,4 +196,5 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
     public void onSuccessSave() {
         Toast.makeText(getActivity(),getResources().getString(R.string.save_day_schedule), Toast.LENGTH_SHORT).show();
     }
+
 }

@@ -2,9 +2,11 @@ package org.pl.android.navimee.ui.events;
 
 import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -60,11 +62,11 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
     }
 
 
-    public void loadEvents(Date date) {
+    public void loadEvents(Date date, String key) {
 
         // today
         Calendar dt = new GregorianCalendar();
-// reset hour, minutes, seconds and millis
+        // reset hour, minutes, seconds and millis
         dt.setTime(date);
         dt.set(Calendar.HOUR_OF_DAY, 0);
         dt.set(Calendar.MINUTE, 0);
@@ -88,14 +90,21 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
         }
         String city = mDataManager.getPreferencesHelper().getValueString(Const.LAST_LOCATION);
 
-        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("EVENTS").document("BY_CITY").collection(city).whereGreaterThan("endTime",dateFinal).whereLessThan("endTime", dt.getTime()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        Date finalDateFinal = dateFinal;
+        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("HOTSPOT").document(key).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @SuppressLint("TimberArgCount")
             @Override
-            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                for (DocumentSnapshot document : documentSnapshots) {
-                    Timber.d(document.getId() + " => " + document.getData());
-
+            public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Timber.e("Listen failed.", e);
+                    return;
                 }
-                getMvpView().showEvents(documentSnapshots.toObjects(Event.class));
+                if ( snapshot != null && snapshot.exists() && snapshot.get("hotspotType").equals(Const.HotSpotType.FACEBOOK_EVENT.name())) {
+                        Event event = snapshot.toObject(Event.class);
+                        if (event.getendTime().after(finalDateFinal) && event.getendTime().before(dt.getTime())) {
+                            getMvpView().showEvent(snapshot.toObject(Event.class));
+                        }
+                 }
             }
         });
 
@@ -136,5 +145,15 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
     }
 
 
+    public DatabaseReference getHotSpotDatabaseRefernce() {
+        return mDataManager.getFirebaseService().getFirebaseDatabase().getReference("HOTSPOT");
+    }
 
+    public double getLastLat() {
+        return mDataManager.getPreferencesHelper().getValueFloat(Const.LAST_LOCATION_LAT);
+    }
+
+    public double getLastLng() {
+        return mDataManager.getPreferencesHelper().getValueFloat(Const.LAST_LOCATION_LNG);
+    }
 }

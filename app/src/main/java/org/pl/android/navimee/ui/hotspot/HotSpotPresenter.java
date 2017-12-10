@@ -3,6 +3,7 @@ package org.pl.android.navimee.ui.hotspot;
 import android.annotation.SuppressLint;
 import android.support.annotation.Nullable;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -55,6 +56,12 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
         mDataManager.getPreferencesHelper().setValue(Const.LAST_LOCATION, ViewUtil.deAccent(location.toUpperCase()));
     }
 
+    public void setLastLocationLatLng(LatLng latLng) {
+        mDataManager.getPreferencesHelper().setValueFloat(Const.LAST_LOCATION_LAT, (float) latLng.latitude);
+        mDataManager.getPreferencesHelper().setValueFloat(Const.LAST_LOCATION_LNG, (float) latLng.longitude);
+    }
+
+
     public DatabaseReference getHotSpotDatabaseRefernce() {
         return mDataManager.getFirebaseService().getFirebaseDatabase().getReference("HOTSPOT");
     }
@@ -64,7 +71,7 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
     }
 
     public void loadHotSpotPlace(String key){
-        mListener =  mDataManager.getFirebaseService().getFirebaseFirestore().collection("EVENTS").document("BY_CITY").collection("SOPOT").document(key).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        mListener =  mDataManager.getFirebaseService().getFirebaseFirestore().collection("HOTSPOT").document(key).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @SuppressLint("TimberArgCount")
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
@@ -74,7 +81,7 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
                     return;
                 }
 
-                if (snapshot != null && snapshot.exists()) {
+                if (snapshot != null && snapshot.exists() && snapshot.get("hotspotType").equals(Const.HotSpotType.FACEBOOK_EVENT.name())) {
                     Timber.d("Current data: " + snapshot.getData());
                     getMvpView().showOnMap(snapshot.toObject(Event.class));
                 } else {

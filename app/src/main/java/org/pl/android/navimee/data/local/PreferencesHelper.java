@@ -28,6 +28,10 @@ public class PreferencesHelper {
        return  mPref.getBoolean(name, true);
     }
 
+    public float getValueFloat(String name) {
+        return  mPref.getFloat(name, (float) 0.0);
+    }
+
     public String getValueString(String name) {
         return  mPref.getString(name,"");
     }
@@ -50,6 +54,17 @@ public class PreferencesHelper {
 
         //  Edit preference to make it false because we don't want this to run again
         e.putString(name, value);
+
+        //  Apply changes
+        e.apply();
+    }
+
+    public void setValueFloat(String name, float value) {
+        //  Make a new preferences editor
+        SharedPreferences.Editor e = mPref.edit();
+
+        //  Edit preference to make it false because we don't want this to run again
+        e.putFloat(name, value);
 
         //  Apply changes
         e.apply();

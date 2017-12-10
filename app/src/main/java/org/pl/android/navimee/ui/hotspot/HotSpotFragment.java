@@ -346,10 +346,11 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                     @Override
                     public void accept(LatLng latLng) throws Exception {
                         CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 11);
+                        mHotspotPresenter.setLastLocationLatLng(latLng);
                         googleMap.moveCamera(yourLocation);
                         // setup GeoFire
                         latLngCurrent = latLng;
-                        geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude),4).addGeoQueryEventListener(new GeoQueryEventListener() {
+                        geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude),16).addGeoQueryEventListener(new GeoQueryEventListener() {
                             @Override
                             public void onKeyEntered(String key, GeoLocation location) {
                                 Timber.i(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
@@ -602,12 +603,14 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
 
         // mock
         MarkerOptions bmpMar = new MarkerOptions();
-        bmpMar.position(new LatLng(event.getPlace().getGeoPoint().getLatitude(),event.getPlace().getGeoPoint().getLongitude()));
-        bmpMar.icon(BitmapDescriptorFactory.fromBitmap(bmp));
-        ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(),event.getPlace().getGeoPoint().getLatitude(),event.getPlace().getGeoPoint().getLongitude());
-        eventsOnMap.add(clusterItemGoogleMap);
-        mClusterManager.addItems(eventsOnMap);
-        mClusterManager.cluster();
+        if(event.getPlace() != null && event.getPlace().getGeoPoint() != null) {
+                bmpMar.position(new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()));
+                bmpMar.icon(BitmapDescriptorFactory.fromBitmap(bmp));
+                ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(), event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude());
+                eventsOnMap.add(clusterItemGoogleMap);
+                mClusterManager.addItems(eventsOnMap);
+                mClusterManager.cluster();
+        }
       //  googleMap.addMarker(bmpMar);
     }
 

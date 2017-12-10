@@ -99,9 +99,18 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         return mEvents.size();
     }
 
-    public void setEvents(List<Event> events) {
+ /*   public void setEvents(List<Event> events) {
         mEvents = events;
+    }*/
+
+    public void addEvent(Event event) {
+        mEvents.add(event);
     }
+
+    public void clearEvents() {
+        mEvents.clear();
+    }
+
 
     class EventsHolder extends RecyclerView.ViewHolder {
 
