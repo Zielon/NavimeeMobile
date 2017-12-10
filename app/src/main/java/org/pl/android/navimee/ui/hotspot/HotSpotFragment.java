@@ -69,6 +69,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -314,7 +317,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                 .subscribe(new Consumer<LatLng>() {
                     @Override
                     public void accept(LatLng latLng) throws Exception {
-                        CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 11);
+                        CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 13);
                         googleMap.moveCamera(yourLocation);
                         //mock
                         LatLng latLng1 = new LatLng(latLng.latitude+0.04,latLng.longitude+0.05);
@@ -347,7 +350,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                     public void accept(LatLng latLng) throws Exception {
                         CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 11);
                         mHotspotPresenter.setLastLocationLatLng(latLng);
-                        googleMap.moveCamera(yourLocation);
+                       // googleMap.moveCamera(yourLocation);
                         // setup GeoFire
                         latLngCurrent = latLng;
                         geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude),16).addGeoQueryEventListener(new GeoQueryEventListener() {
@@ -440,6 +443,9 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                     });
                                     mClusterManager = new ClusterManager<ClusterItemGoogleMap>(getContext(), googleMap);
                                     googleMap.setOnCameraIdleListener(mClusterManager);
+                                    Timer timer = new Timer();
+
+                                    timer.scheduleAtFixedRate(new MyTimerTask(), TimeUnit.SECONDS.toMillis(1), TimeUnit.SECONDS.toMillis(1));
 
                                 }
                             });
@@ -609,7 +615,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                 ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(), event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude());
                 eventsOnMap.add(clusterItemGoogleMap);
                 mClusterManager.addItems(eventsOnMap);
-                mClusterManager.cluster();
+             //   mClusterManager.c
         }
       //  googleMap.addMarker(bmpMar);
     }
@@ -635,5 +641,29 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                 .build();
         routing.execute();
     }
+
+
+    public void clusterMap()
+    {
+       Timber.i("Clustering");
+       mClusterManager.cluster();
+    }
+
+
+
+
+    private class MyTimerTask extends TimerTask{
+
+        @Override
+        public void run() {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    clusterMap();
+                }
+            });
+        }
+    }
+
 
 }
