@@ -120,6 +120,13 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     ImageButton mPlaceCloseButton;
     @BindView(R.id.fab)
     FloatingActionButton filterButton;
+    @BindView(R.id.fab_minus)
+    FloatingActionButton minusButton;
+    @BindView(R.id.fab_plus)
+    FloatingActionButton plusButton;
+    @BindView(R.id.fab_my_location)
+    FloatingActionButton myLocatioButton;
+
 
     BottomSheetBehavior mBottomSheetBehavior;
 
@@ -484,6 +491,21 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     public void submit(View view) {
         dialogFrag.show(getActivity().getSupportFragmentManager(), dialogFrag.getTag());
     }
+    @OnClick(R.id.fab_my_location)
+    public void myLocation(View view) {
+        CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLngCurrent, 11);
+        mHotspotPresenter.setLastLocationLatLng(latLngCurrent);
+        googleMap.moveCamera(yourLocation);
+    }
+    @OnClick(R.id.fab_minus)
+    public void zoomOut(View view) {
+        googleMap.animateCamera(CameraUpdateFactory.zoomOut());
+    }
+    @OnClick(R.id.fab_plus)
+    public void szoomIn(View view) {
+        googleMap.animateCamera(CameraUpdateFactory.zoomIn());
+    }
+
 
     @Override
     public void onPause() {

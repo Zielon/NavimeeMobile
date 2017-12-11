@@ -15,33 +15,56 @@
         android:layout_height="match_parent" />
 
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_anchor="@id/mapView"
+        app:layout_anchorGravity="bottom|right|end"
+        android:layout_margin="16dp"
+        android:background="@android:color/transparent"
+        android:clipToPadding="false">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_my_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:tint="@color/filters_chips"
+        app:backgroundTint="@color/filtersfab"
+        android:src="@drawable/ic_my_location_white_24dp"
+        />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_plus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:tint="@color/filters_chips"
+        app:backgroundTint="@color/filtersfab"
+        android:src="@drawable/ic_add_circle_outline_white_24dp"
+        />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_minus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:tint="@color/filters_chips"
+        app:backgroundTint="@color/filtersfab"
+        android:src="@drawable/ic_remove_circle_outline_white_24dp"
+         />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
         android:tint="@color/filters_chips"
         app:backgroundTint="@color/filtersfab"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_filter" />
+        android:src="@drawable/ic_filter"
+        app:elevation="5dp" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|end"
-        android:layout_marginBottom="0dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="100dp"
-        android:tint="@color/filters_chips"
-        app:backgroundTint="@color/filtersfab"
-        android:src="@android:drawable/ic_media_play"
-        app:layout_anchor="@id/fab"
-        app:layout_anchorGravity="top" />
+    </LinearLayout>
 
 
     <!-- Bottom Sheet Content -->
