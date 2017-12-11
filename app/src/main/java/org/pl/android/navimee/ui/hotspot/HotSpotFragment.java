@@ -15,6 +15,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -83,6 +84,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -116,6 +118,8 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     Button mPlaceDriveButton;
     @BindView(R.id.place_closeBotton)
     ImageButton mPlaceCloseButton;
+    @BindView(R.id.fab)
+    FloatingActionButton filterButton;
 
     BottomSheetBehavior mBottomSheetBehavior;
 
@@ -139,6 +143,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     private ClusterManager<ClusterItemGoogleMap> mClusterManager;
     private Set<ClusterItemGoogleMap> eventsOnMap = new HashSet<>();
     Timer timer;
+    MyFabFragment dialogFrag;
 
 
     private final static int REQUEST_CHECK_SETTINGS = 0;
@@ -174,6 +179,9 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         mBottomSheetBehavior = BottomSheetBehavior.from(rootView.findViewById(R.id.bottomSheetLayout));
         mBottomSheetBehavior.setPeekHeight(300);
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
+        dialogFrag = MyFabFragment.newInstance();
+        dialogFrag.setParentFab(filterButton);
 
         initListeners();
 
@@ -432,7 +440,8 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
 
                                     // For showing a move to my location button
                                     googleMap.setMyLocationEnabled(true);
-                                    googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+                                    googleMap.getUiSettings().setZoomControlsEnabled(true);
+                                    googleMap.getUiSettings().setMyLocationButtonEnabled(false);
                                     googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                                         @Override
                                         public boolean onMarkerClick(Marker marker) {
@@ -469,6 +478,11 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                     });
         }
         mMapView.onResume();
+    }
+
+    @OnClick(R.id.fab)
+    public void submit(View view) {
+        dialogFrag.show(getActivity().getSupportFragmentManager(), dialogFrag.getTag());
     }
 
     @Override

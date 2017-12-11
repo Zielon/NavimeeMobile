@@ -172,6 +172,9 @@ dependencies {
     compile 'devs.mulham.horizontalcalendar:horizontalcalendar:1.2.0'
     compile 'com.ethanhua:skeleton:1.0.0'
     compile 'com.allattentionhere:fabulousfilter:0.0.4'
+    compile ('com.google.android:flexbox:0.2.7'){
+        exclude group: 'com.android.support'
+    }
     compile("com.mikepenz:materialdrawer:6.0.2@aar") {
         transitive = true
     }
