@@ -365,7 +365,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                     public void accept(LatLng latLng) throws Exception {
                         CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 11);
                         mHotspotPresenter.setLastLocationLatLng(latLng);
-                       // googleMap.moveCamera(yourLocation);
+                        googleMap.moveCamera(yourLocation);
                         // setup GeoFire
                         latLngCurrent = latLng;
                         geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude),2).addGeoQueryEventListener(new GeoQueryEventListener() {
@@ -440,7 +440,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
 
                                     // For showing a move to my location button
                                     googleMap.setMyLocationEnabled(true);
-                                    googleMap.getUiSettings().setZoomControlsEnabled(true);
+                                    googleMap.getUiSettings().setZoomControlsEnabled(false);
                                     googleMap.getUiSettings().setMyLocationButtonEnabled(false);
                                     googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                                         @Override
