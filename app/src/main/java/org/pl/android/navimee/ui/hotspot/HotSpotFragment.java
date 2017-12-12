@@ -381,7 +381,8 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                         }
                         // setup GeoFire
                         latLngCurrent = latLng;
-                        geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude),2).addGeoQueryEventListener(new GeoQueryEventListener() {
+                        eventsOnMap.clear();
+                        geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude),5).addGeoQueryEventListener(new GeoQueryEventListener() {
                             @Override
                             public void onKeyEntered(String key, GeoLocation location) {
                                 Timber.i(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
@@ -455,23 +456,30 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                     googleMap.setMyLocationEnabled(true);
                                     googleMap.getUiSettings().setZoomControlsEnabled(false);
                                     googleMap.getUiSettings().setMyLocationButtonEnabled(false);
-                                    googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                                  /*  googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                                         @Override
                                         public boolean onMarkerClick(Marker marker) {
                                             route(latLngCurrent,marker.getPosition());
                                             return true;
                                         }
-                                    });
-                                    googleMap.setOnCircleClickListener(new GoogleMap.OnCircleClickListener() {
-                                        @Override
-                                        public void onCircleClick(Circle circle) {
-                                            // Flip the red, green and blue components of the circle's stroke color.
-                                            circle.setStrokeColor(circle.getStrokeColor() ^ 0x00ffffff);
-                                        //    route( latLngCurrent, circle.getCenter());
-                                        }
-                                    });
+                                    });*/
                                     mClusterManager = new ClusterManager<ClusterItemGoogleMap>(getContext(), googleMap);
                                     mClusterManager.setRenderer(new MapRenderer());
+                                    mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<ClusterItemGoogleMap>() {
+                                        @Override
+                                        public boolean onClusterItemClick(ClusterItemGoogleMap clusterItemGoogleMap) {
+                                            route(latLngCurrent,clusterItemGoogleMap.getPosition());
+                                            return false;
+                                        }
+                                    });
+                                    mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<ClusterItemGoogleMap>() {
+                                        @Override
+                                        public boolean onClusterClick(Cluster<ClusterItemGoogleMap> cluster) {
+                                            route(latLngCurrent,cluster.getPosition());
+                                            return false;
+                                        }
+                                    });
+                                    googleMap.setOnMarkerClickListener(mClusterManager);
                                     googleMap.setOnCameraIdleListener(mClusterManager);
                                     timer = new Timer();
 
@@ -649,8 +657,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         if(event.getPlace() != null && event.getPlace().getGeoPoint() != null) {
                 ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(),new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()),event.getName(),R.drawable.ic_action_whatshot);
                 eventsOnMap.add(clusterItemGoogleMap);
-                mClusterManager.addItems(eventsOnMap);
-             //   mClusterManager.c
+            mClusterManager.addItems(eventsOnMap);
         }
       //  googleMap.addMarker(bmpMar);
     }
@@ -694,7 +701,8 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     public void clusterMap()
     {
        Timber.i("Clustering");
-       mClusterManager.cluster();
+      //  mClusterManager.clearItems();
+        mClusterManager.cluster();
     }
 
 
