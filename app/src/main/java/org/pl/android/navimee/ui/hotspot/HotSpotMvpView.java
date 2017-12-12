@@ -1,6 +1,7 @@
 package org.pl.android.navimee.ui.hotspot;
 
 import org.pl.android.navimee.data.model.Event;
+import org.pl.android.navimee.data.model.FourSquarePlace;
 import org.pl.android.navimee.ui.base.MvpView;
 
 /**
@@ -9,5 +10,7 @@ import org.pl.android.navimee.ui.base.MvpView;
 
 public interface HotSpotMvpView  extends MvpView {
 
-    void  showOnMap(Event event);
+    void  showEventOnMap(Event event);
+    void  showFoursquareOnMap(FourSquarePlace fourSquarePlace);
+
 }

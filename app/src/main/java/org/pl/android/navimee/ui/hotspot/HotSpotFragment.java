@@ -63,6 +63,7 @@ import com.tbruyelle.rxpermissions.RxPermissions;
 
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.data.model.Event;
+import org.pl.android.navimee.data.model.FourSquarePlace;
 import org.pl.android.navimee.data.model.maps.ClusterItemGoogleMap;
 import org.pl.android.navimee.ui.base.BaseActivity;
 import org.pl.android.navimee.ui.main.MainActivity;
@@ -151,6 +152,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     private Set<ClusterItemGoogleMap> eventsOnMap = new HashSet<>();
     Timer timer;
     MyFabFragment dialogFrag;
+    boolean isFirstAfterPermissionGranted = true;
 
 
     private final static int REQUEST_CHECK_SETTINGS = 0;
@@ -370,9 +372,13 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                 .subscribe(new Consumer<LatLng>() {
                     @Override
                     public void accept(LatLng latLng) throws Exception {
-                        CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 11);
+
                         mHotspotPresenter.setLastLocationLatLng(latLng);
-                        googleMap.moveCamera(yourLocation);
+                        if(isFirstAfterPermissionGranted) {
+                            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 14);
+                            googleMap.moveCamera(yourLocation);
+                            isFirstAfterPermissionGranted = false;
+                        }
                         // setup GeoFire
                         latLngCurrent = latLng;
                         geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude),2).addGeoQueryEventListener(new GeoQueryEventListener() {
@@ -493,7 +499,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     }
     @OnClick(R.id.fab_my_location)
     public void myLocation(View view) {
-        CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLngCurrent, 11);
+        CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLngCurrent, 14);
         mHotspotPresenter.setLastLocationLatLng(latLngCurrent);
         googleMap.moveCamera(yourLocation);
     }
@@ -638,7 +644,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     }
 
     @Override
-    public void showOnMap(Event event) {
+    public void showEventOnMap(Event event) {
         Timber.d(event.getName());
         if(event.getPlace() != null && event.getPlace().getGeoPoint() != null) {
                 ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(),new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()),event.getName(),R.drawable.ic_action_whatshot);
@@ -647,6 +653,14 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
              //   mClusterManager.c
         }
       //  googleMap.addMarker(bmpMar);
+    }
+
+    @Override
+    public void showFoursquareOnMap(FourSquarePlace fourSquarePlace) {
+        Timber.d(fourSquarePlace.getName());
+        ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(fourSquarePlace.getId(),new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()),fourSquarePlace.getName(),R.drawable.ic_action_people);
+        eventsOnMap.add(clusterItemGoogleMap);
+        mClusterManager.addItems(eventsOnMap);
     }
 
 

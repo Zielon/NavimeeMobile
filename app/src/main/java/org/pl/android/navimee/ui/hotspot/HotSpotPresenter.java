@@ -14,6 +14,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import org.pl.android.navimee.data.DataManager;
 import org.pl.android.navimee.data.model.Event;
+import org.pl.android.navimee.data.model.FourSquarePlace;
 import org.pl.android.navimee.ui.base.BasePresenter;
 import org.pl.android.navimee.util.Const;
 import org.pl.android.navimee.util.ViewUtil;
@@ -81,11 +82,18 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
                     return;
                 }
 
-                if (snapshot != null && snapshot.exists() && snapshot.get("hotspotType").equals(Const.HotSpotType.FACEBOOK_EVENT.name())) {
-                    Timber.d("Current data: " + snapshot.getData());
-                    if(getMvpView() != null) {
-                        getMvpView().showOnMap(snapshot.toObject(Event.class));
+                if (snapshot != null && snapshot.exists()) {
+                   // Timber.d("Current data: " + snapshot.getData());
+                    if(snapshot.get("hotspotType").equals(Const.HotSpotType.FACEBOOK_EVENT.name())) {
+                        if (getMvpView() != null) {
+                            getMvpView().showEventOnMap(snapshot.toObject(Event.class));
+                        }
+                    } else if(snapshot.get("hotspotType").equals(Const.HotSpotType.FOURSQUARE_PLACE.name())) {
+                        if (getMvpView() != null) {
+                            getMvpView().showFoursquareOnMap(snapshot.toObject(FourSquarePlace.class));
+                        }
                     }
+
                 }
             }
         });

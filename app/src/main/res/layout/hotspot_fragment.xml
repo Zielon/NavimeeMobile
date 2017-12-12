@@ -30,8 +30,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:tint="@color/filters_chips"
-        app:backgroundTint="@color/filtersfab"
+        app:fabSize="mini"
+        android:tint="@color/white"
+        app:backgroundTint="@color/primary_dark"
         android:src="@drawable/ic_my_location_white_24dp"
         />
 
@@ -40,8 +41,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:tint="@color/filters_chips"
-        app:backgroundTint="@color/filtersfab"
+        app:fabSize="mini"
+        android:tint="@color/white"
+        app:backgroundTint="@color/primary_dark"
         android:src="@drawable/ic_add_circle_outline_white_24dp"
         />
 
@@ -49,9 +51,10 @@
         android:id="@+id/fab_minus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:fabSize="mini"
         android:layout_marginBottom="20dp"
-        android:tint="@color/filters_chips"
-        app:backgroundTint="@color/filtersfab"
+        android:tint="@color/white"
+        app:backgroundTint="@color/primary_dark"
         android:src="@drawable/ic_remove_circle_outline_white_24dp"
          />
 
@@ -59,8 +62,9 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:tint="@color/filters_chips"
-        app:backgroundTint="@color/filtersfab"
+        app:fabSize="mini"
+        android:tint="@color/white"
+        app:backgroundTint="@color/primary_dark"
         android:src="@drawable/ic_filter"
         app:elevation="5dp" />
 
