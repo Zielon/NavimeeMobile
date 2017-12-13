@@ -11,13 +11,15 @@ public class ClusterItemGoogleMap implements ClusterItem {
     public final LatLng mPosition;
     public  int profilePhoto;
     public  String name;
+    public String count;
     String id;
 
-    public ClusterItemGoogleMap(String id, LatLng position, String name, int pictureResource) {
+    public ClusterItemGoogleMap(String id, LatLng position, String name,String count, int pictureResource) {
         this.id = id;
         mPosition = position;
         this.name = name;
         profilePhoto = pictureResource;
+        this.count = count;
     }
 
 
@@ -44,6 +46,22 @@ public class ClusterItemGoogleMap implements ClusterItem {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCount() {
+        return count;
+    }
+
+    public void setCount(String count) {
+        this.count = count;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override

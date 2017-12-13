@@ -54,6 +54,7 @@
 
 -keep class com.google.android.gms.** { *; }
 -dontwarn com.google.android.gms.**
+-dontwarn com.facebook.internal.Utility
 
 -keepclassmembers class org.pl.android.navimee.data.model.** { *; }
 

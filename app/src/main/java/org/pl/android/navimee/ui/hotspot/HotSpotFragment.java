@@ -115,6 +115,10 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     TextView mTextPlaceDistance;
     @BindView(R.id.text_place_time)
     TextView mTextPlaceTime;
+    @BindView(R.id.text_place_event_name)
+    TextView mTextPlaceName;
+    @BindView(R.id.text_place_event_count)
+    TextView mTextPlaceCount;
     @BindView(R.id.place_driveButton)
     Button mPlaceDriveButton;
     @BindView(R.id.place_closeBotton)
@@ -146,6 +150,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
 
     private List<Polyline> polylines;
     LatLng latLngCurrent,latLngEnd;
+    String  sEventName,sEventCount;
     private static final int[] COLORS = new int[]{R.color.primary_dark,R.color.primary,R.color.primary_light,R.color.accent,R.color.primary_dark_material_light};
     GeoFire geoFire;
     private ClusterManager<ClusterItemGoogleMap> mClusterManager;
@@ -382,7 +387,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                         // setup GeoFire
                         latLngCurrent = latLng;
                         eventsOnMap.clear();
-                        geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude),5).addGeoQueryEventListener(new GeoQueryEventListener() {
+                        geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude),1).addGeoQueryEventListener(new GeoQueryEventListener() {
                             @Override
                             public void onKeyEntered(String key, GeoLocation location) {
                                 Timber.i(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
@@ -468,14 +473,15 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                     mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<ClusterItemGoogleMap>() {
                                         @Override
                                         public boolean onClusterItemClick(ClusterItemGoogleMap clusterItemGoogleMap) {
-                                            route(latLngCurrent,clusterItemGoogleMap.getPosition());
+                                            route(latLngCurrent,clusterItemGoogleMap.getPosition(),clusterItemGoogleMap.getName(),clusterItemGoogleMap.getCount());
                                             return false;
                                         }
                                     });
                                     mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<ClusterItemGoogleMap>() {
                                         @Override
                                         public boolean onClusterClick(Cluster<ClusterItemGoogleMap> cluster) {
-                                            route(latLngCurrent,cluster.getPosition());
+                                            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(cluster.getPosition(), googleMap.getCameraPosition().zoom+2);
+                                            googleMap.moveCamera(yourLocation);
                                             return false;
                                         }
                                     });
@@ -601,6 +607,8 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
             mTextPlaceAddress.setText(route.get(i).getEndAddressText());
             mTextPlaceDistance.setText(route.get(i).getDistanceText());
             mTextPlaceTime.setText(route.get(i).getDurationText());
+            mTextPlaceName.setText(sEventName);
+            mTextPlaceCount.setText(sEventCount);
         }
 
         // Start marker
@@ -655,7 +663,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     public void showEventOnMap(Event event) {
         Timber.d(event.getName());
         if(event.getPlace() != null && event.getPlace().getGeoPoint() != null) {
-                ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(),new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()),event.getName(),R.drawable.ic_action_whatshot);
+                ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(),new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()),event.getName(),String.valueOf(event.getattendingCount()),R.drawable.ic_action_whatshot);
                 eventsOnMap.add(clusterItemGoogleMap);
             mClusterManager.addItems(eventsOnMap);
         }
@@ -665,7 +673,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     @Override
     public void showFoursquareOnMap(FourSquarePlace fourSquarePlace) {
         Timber.d(fourSquarePlace.getName());
-        ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(fourSquarePlace.getId(),new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()),fourSquarePlace.getName(),R.drawable.ic_action_people);
+        ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(fourSquarePlace.getId(),new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()),fourSquarePlace.getName(),String.valueOf(fourSquarePlace.getStatsVisitsCount()),R.drawable.ic_action_people);
         eventsOnMap.add(clusterItemGoogleMap);
         mClusterManager.addItems(eventsOnMap);
     }
@@ -686,8 +694,10 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
 
 
 
-    public void route(LatLng start,LatLng end)
+    public void route(LatLng start,LatLng end,String eventName,String eventCount)
     {
+        sEventName = eventName;
+        sEventCount = eventCount;
         latLngEnd = end;
         Routing routing = new Routing.Builder()
                 .travelMode(Routing.TravelMode.DRIVING)
@@ -753,7 +763,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
             // Set the info window to show their name.
             mImageView.setImageResource(clusterItemGoogleMap.profilePhoto);
             Bitmap icon = mIconGenerator.makeIcon();
-            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(clusterItemGoogleMap.name);
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
         }
 
         @Override
