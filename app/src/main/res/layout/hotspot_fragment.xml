@@ -16,6 +16,7 @@
 
 
     <LinearLayout
+        android:id="@+id/button_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -72,6 +73,7 @@
 
 
     <!-- Bottom Sheet Content -->
-    <include layout="@layout/content_bottom_sheet" />
+    <include layout="@layout/content_bottom_sheet"
+        app:layout_anchor="@id/button_layout"/>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -64,7 +64,7 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
 
 
     public DatabaseReference getHotSpotDatabaseRefernce() {
-        return mDataManager.getFirebaseService().getFirebaseDatabase().getReference("HOTSPOT");
+        return mDataManager.getFirebaseService().getFirebaseDatabase().getReference("HOTSPOT_CURRENT");
     }
 
     public String getUid() {

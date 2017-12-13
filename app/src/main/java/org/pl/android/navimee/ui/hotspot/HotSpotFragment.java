@@ -74,6 +74,7 @@ import org.pl.android.navimee.util.MultiDrawable;
 import org.pl.android.navimee.util.ToMostProbableActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -154,7 +155,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     private static final int[] COLORS = new int[]{R.color.primary_dark,R.color.primary,R.color.primary_light,R.color.accent,R.color.primary_dark_material_light};
     GeoFire geoFire;
     private ClusterManager<ClusterItemGoogleMap> mClusterManager;
-    private Set<ClusterItemGoogleMap> eventsOnMap = new HashSet<>();
+    private HashMap<String,ClusterItemGoogleMap> eventsOnMap = new HashMap<>();
     Timer timer;
     MyFabFragment dialogFrag;
     boolean isFirstAfterPermissionGranted = true;
@@ -386,8 +387,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                         }
                         // setup GeoFire
                         latLngCurrent = latLng;
-                        eventsOnMap.clear();
-                        geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude),1).addGeoQueryEventListener(new GeoQueryEventListener() {
+                        geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude),2).addGeoQueryEventListener(new GeoQueryEventListener() {
                             @Override
                             public void onKeyEntered(String key, GeoLocation location) {
                                 Timber.i(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
@@ -397,16 +397,26 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                             @Override
                             public void onKeyExited(String key) {
                                 Timber.i(String.format("Key %s is no longer in the search area", key));
+                                mClusterManager.removeItem((ClusterItemGoogleMap) eventsOnMap.get(key));
+                                eventsOnMap.remove(key);
                             }
 
                             @Override
                             public void onKeyMoved(String key, GeoLocation location) {
                                 Timber.i(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+                                if(eventsOnMap.containsKey(key)) {
+                                    Timber.i( "Old Location: " + eventsOnMap.get(key).getPosition());
+                                    Timber.i("New Location: " + location);
+                                    mClusterManager.removeItem(eventsOnMap.get(key));
+                                    eventsOnMap.get(key).setPosition(new LatLng(location.latitude, location.longitude));
+                                    mClusterManager.addItem(eventsOnMap.get(key));
+                                }
                             }
 
                             @Override
                             public void onGeoQueryReady() {
                                 Timber.i("All initial data has been loaded and events have been fired!");
+                                mClusterManager.cluster();
                             }
 
                             @Override
@@ -480,7 +490,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                     mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<ClusterItemGoogleMap>() {
                                         @Override
                                         public boolean onClusterClick(Cluster<ClusterItemGoogleMap> cluster) {
-                                            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(cluster.getPosition(), googleMap.getCameraPosition().zoom+2);
+                                            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(cluster.getPosition(), googleMap.getCameraPosition().zoom+1);
                                             googleMap.moveCamera(yourLocation);
                                             return false;
                                         }
@@ -489,7 +499,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                     googleMap.setOnCameraIdleListener(mClusterManager);
                                     timer = new Timer();
 
-                                    timer.scheduleAtFixedRate(new MyTimerTask(), TimeUnit.SECONDS.toMillis(1), TimeUnit.SECONDS.toMillis(1));
+                                  //  timer.scheduleAtFixedRate(new MyTimerTask(), TimeUnit.SECONDS.toMillis(1), TimeUnit.SECONDS.toMillis(1));
 
                                 }
                             });
@@ -664,8 +674,8 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         Timber.d(event.getName());
         if(event.getPlace() != null && event.getPlace().getGeoPoint() != null) {
                 ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(),new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()),event.getName(),String.valueOf(event.getattendingCount()),R.drawable.ic_action_whatshot);
-                eventsOnMap.add(clusterItemGoogleMap);
-            mClusterManager.addItems(eventsOnMap);
+            eventsOnMap.put(event.getId(),clusterItemGoogleMap);
+            mClusterManager.addItem(clusterItemGoogleMap);
         }
       //  googleMap.addMarker(bmpMar);
     }
@@ -674,8 +684,8 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     public void showFoursquareOnMap(FourSquarePlace fourSquarePlace) {
         Timber.d(fourSquarePlace.getName());
         ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(fourSquarePlace.getId(),new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()),fourSquarePlace.getName(),String.valueOf(fourSquarePlace.getStatsVisitsCount()),R.drawable.ic_action_people);
-        eventsOnMap.add(clusterItemGoogleMap);
-        mClusterManager.addItems(eventsOnMap);
+        eventsOnMap.put(fourSquarePlace.getId(),clusterItemGoogleMap);
+        mClusterManager.addItem(clusterItemGoogleMap);
     }
 
 

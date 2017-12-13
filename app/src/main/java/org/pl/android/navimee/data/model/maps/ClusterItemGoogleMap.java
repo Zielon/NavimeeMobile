@@ -8,7 +8,7 @@ import com.google.maps.android.clustering.ClusterItem;
  */
 
 public class ClusterItemGoogleMap implements ClusterItem {
-    public final LatLng mPosition;
+    public  LatLng mPosition;
     public  int profilePhoto;
     public  String name;
     public String count;
@@ -27,6 +27,12 @@ public class ClusterItemGoogleMap implements ClusterItem {
     public LatLng getPosition() {
         return mPosition;
     }
+
+    public void setPosition(LatLng location) {
+        this.mPosition = location;
+    }
+
+
 
     public LatLng getmPosition() {
         return mPosition;
