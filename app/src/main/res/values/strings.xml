@@ -47,6 +47,11 @@
     <string name="change_password">Zmień hasło</string>
     <string name="privacy_conditions">Warunki prywatności</string>
     <string name="help">Pomoc</string>
+    <string name="visible_on_map">Widoczne na mapie</string>
+    <string name="radius">Promień</string>
+    <string name="events_filtr">wydarzenia</string>
+    <string name="popular_places">popularne miejsca</string>
+    <string name="uber_ratio">mnożnik ubera</string>
     <string name="rate_app">Oceń aplikację</string>
     <string name="delete_account">Usuń konto</string>
     <string name="no_account_yet">Nie masz jeszcze konta? Stwórz je</string>

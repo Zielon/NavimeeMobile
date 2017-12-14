@@ -5,10 +5,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Location;
@@ -34,6 +30,7 @@ import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.ActivityRecognitionResult;
@@ -48,7 +45,6 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -72,15 +68,11 @@ import org.pl.android.navimee.util.DetectedActivityToString;
 import org.pl.android.navimee.util.DisplayTextOnViewAction;
 import org.pl.android.navimee.util.MultiDrawable;
 import org.pl.android.navimee.util.ToMostProbableActivity;
+import org.xml.sax.ErrorHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -104,7 +96,7 @@ import static org.pl.android.navimee.util.RxUtil.dispose;
  */
 
 public class HotSpotFragment extends Fragment  implements HotSpotMvpView, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapLongClickListener,
-        AdapterView.OnItemSelectedListener,RoutingListener {
+        AdapterView.OnItemSelectedListener,RoutingListener,GeoQueryEventListener {
 
 
     @BindView(R.id.mapView)
@@ -154,9 +146,9 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     String  sEventName,sEventCount;
     private static final int[] COLORS = new int[]{R.color.primary_dark,R.color.primary,R.color.primary_light,R.color.accent,R.color.primary_dark_material_light};
     GeoFire geoFire;
+    GeoQuery geoQuery;
     private ClusterManager<ClusterItemGoogleMap> mClusterManager;
     private HashMap<String,ClusterItemGoogleMap> eventsOnMap = new HashMap<>();
-    Timer timer;
     MyFabFragment dialogFrag;
     boolean isFirstAfterPermissionGranted = true;
 
@@ -332,6 +324,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
         geoFire = new GeoFire(mHotspotPresenter.getHotSpotDatabaseRefernce());
+        this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), 3);
 
 
     }
@@ -376,58 +369,21 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                     }
                 })
                 .subscribe(new Consumer<LatLng>() {
-                    @Override
-                    public void accept(LatLng latLng) throws Exception {
+                               @Override
+                               public void accept(LatLng latLng) throws Exception {
 
-                        mHotspotPresenter.setLastLocationLatLng(latLng);
-                        if(isFirstAfterPermissionGranted) {
-                            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 14);
-                            googleMap.moveCamera(yourLocation);
-                            isFirstAfterPermissionGranted = false;
-                        }
-                        // setup GeoFire
-                        latLngCurrent = latLng;
-                        geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude),2).addGeoQueryEventListener(new GeoQueryEventListener() {
-                            @Override
-                            public void onKeyEntered(String key, GeoLocation location) {
-                                Timber.i(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
-                                mHotspotPresenter.loadHotSpotPlace(key);
-                            }
+                                   mHotspotPresenter.setLastLocationLatLng(latLng);
+                                   if (isFirstAfterPermissionGranted) {
+                                       CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 14);
+                                       googleMap.moveCamera(yourLocation);
+                                       isFirstAfterPermissionGranted = false;
+                                   }
+                                   // setup GeoFire
+                                   latLngCurrent = latLng;
+                                   geoQuery.setLocation(new GeoLocation(latLng.latitude, latLng.longitude), 3);
 
-                            @Override
-                            public void onKeyExited(String key) {
-                                Timber.i(String.format("Key %s is no longer in the search area", key));
-                                mClusterManager.removeItem((ClusterItemGoogleMap) eventsOnMap.get(key));
-                                eventsOnMap.remove(key);
-                            }
-
-                            @Override
-                            public void onKeyMoved(String key, GeoLocation location) {
-                                Timber.i(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
-                                if(eventsOnMap.containsKey(key)) {
-                                    Timber.i( "Old Location: " + eventsOnMap.get(key).getPosition());
-                                    Timber.i("New Location: " + location);
-                                    mClusterManager.removeItem(eventsOnMap.get(key));
-                                    eventsOnMap.get(key).setPosition(new LatLng(location.latitude, location.longitude));
-                                    mClusterManager.addItem(eventsOnMap.get(key));
-                                }
-                            }
-
-                            @Override
-                            public void onGeoQueryReady() {
-                                Timber.i("All initial data has been loaded and events have been fired!");
-                                mClusterManager.cluster();
-                            }
-
-                            @Override
-                            public void onGeoQueryError(DatabaseError error) {
-                                Timber.e("There was an error with this query: " + error);
-                            }
-                        });
-                    }
-                }, new ErrorHandler());
-
-
+                               }
+                    });
 
         activityDisposable = activityObservable
                 .map(new ToMostProbableActivity())
@@ -450,6 +406,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     public void onStart() {
         super.onStart();
         mMapView.onResume();
+        this.geoQuery.addGeoQueryEventListener(this);
     }
 
     @Override
@@ -471,6 +428,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                     googleMap.setMyLocationEnabled(true);
                                     googleMap.getUiSettings().setZoomControlsEnabled(false);
                                     googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+                                    googleMap.getUiSettings().setMapToolbarEnabled(false);
                                   /*  googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                                         @Override
                                         public boolean onMarkerClick(Marker marker) {
@@ -497,10 +455,6 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                     });
                                     googleMap.setOnMarkerClickListener(mClusterManager);
                                     googleMap.setOnCameraIdleListener(mClusterManager);
-                                    timer = new Timer();
-
-                                  //  timer.scheduleAtFixedRate(new MyTimerTask(), TimeUnit.SECONDS.toMillis(1), TimeUnit.SECONDS.toMillis(1));
-
                                 }
                             });
                         } else {
@@ -559,11 +513,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         dispose(lastKnownLocationDisposable);
         dispose(activityDisposable);
         dispose(addressDisposable);
-        if(timer != null) {
-            timer.cancel();
-            timer.purge();
-            timer = null;
-        }
+        this.geoQuery.removeAllListeners();
     }
 
     @Override
@@ -693,6 +643,46 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         return googleMap;
     }
 
+    @Override
+    public void onKeyEntered(String key, GeoLocation location) {
+        Timber.i(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
+        mHotspotPresenter.loadHotSpotPlace(key);
+    }
+
+    @Override
+    public void onKeyExited(String key) {
+        Timber.i(String.format("Key %s is no longer in the search area", key));
+        if(eventsOnMap.containsKey(key)) {
+            mClusterManager.removeItem((ClusterItemGoogleMap) eventsOnMap.get(key));
+            eventsOnMap.remove(key);
+        }
+    }
+
+    @Override
+    public void onKeyMoved(String key, GeoLocation location) {
+        Timber.i(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+        if(eventsOnMap.containsKey(key)) {
+            Timber.i( "Old Location: " + eventsOnMap.get(key).getPosition());
+            Timber.i("New Location: " + location);
+            mClusterManager.removeItem(eventsOnMap.get(key));
+            eventsOnMap.get(key).setPosition(new LatLng(location.latitude, location.longitude));
+            mClusterManager.addItem(eventsOnMap.get(key));
+        }
+    }
+
+    @Override
+    public void onGeoQueryReady() {
+        Timber.i("All initial data has been loaded and events have been fired!");
+        if(mClusterManager != null) {
+            mClusterManager.cluster();
+        }
+    }
+
+    @Override
+    public void onGeoQueryError(DatabaseError error) {
+        Timber.e("There was an error with this query: " + error);
+    }
+
 
     private class ErrorHandler implements Consumer<Throwable> {
         @Override
@@ -716,33 +706,6 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                 .build();
         routing.execute();
     }
-
-
-    public void clusterMap()
-    {
-       Timber.i("Clustering");
-      //  mClusterManager.clearItems();
-        mClusterManager.cluster();
-    }
-
-
-
-
-    private class MyTimerTask extends TimerTask {
-
-        @Override
-        public void run() {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    clusterMap();
-                }
-            });
-        }
-    }
-
-
-
 
 
     private class MapRenderer extends DefaultClusterRenderer<ClusterItemGoogleMap> {

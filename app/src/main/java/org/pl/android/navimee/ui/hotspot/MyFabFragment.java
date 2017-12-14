@@ -25,6 +25,7 @@ import org.pl.android.navimee.ui.main.MainActivity;
 import com.google.android.flexbox.FlexboxLayout;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -66,7 +67,6 @@ public class MyFabFragment extends AAH_FabulousFragment {
     }
 
     @Override
-
     public void setupDialog(Dialog dialog, int style) {
         View contentView = View.inflate(getContext(), R.layout.filter_view, null);
 
@@ -96,7 +96,7 @@ public class MyFabFragment extends AAH_FabulousFragment {
         });
 
         mAdapter = new SectionsPagerAdapter();
-        vp_types.setOffscreenPageLimit(4);
+        vp_types.setOffscreenPageLimit(2);
         vp_types.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
         tabs_types.setupWithViewPager(vp_types);
@@ -126,16 +126,10 @@ public class MyFabFragment extends AAH_FabulousFragment {
 //            ll_scroll.setLayoutParams(lp);
             switch (position) {
                 case 0:
-                    inflateLayoutWithFilters("genre", fbl);
+                    inflateLayoutWithFilters(getResources().getString(R.string.visible_on_map), fbl);
                     break;
                 case 1:
-                    inflateLayoutWithFilters("rating", fbl);
-                    break;
-                case 2:
-                    inflateLayoutWithFilters("year", fbl);
-                    break;
-                case 3:
-                    inflateLayoutWithFilters("quality", fbl);
+                    inflateLayoutWithFilters(getResources().getString(R.string.radius), fbl);
                     break;
             }
             collection.addView(layout);
@@ -150,21 +144,16 @@ public class MyFabFragment extends AAH_FabulousFragment {
 
         @Override
         public int getCount() {
-            return 4;
+            return 2;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "GENRE";
+                    return getResources().getString(R.string.visible_on_map).toUpperCase();
                 case 1:
-                    return "RATING";
-                case 2:
-                    return "YEAR";
-                case 3:
-                    return "QUALITY";
-
+                    return getResources().getString(R.string.radius).toUpperCase();
             }
             return "";
         }
@@ -178,21 +167,12 @@ public class MyFabFragment extends AAH_FabulousFragment {
 
     private void inflateLayoutWithFilters(final String filter_category, FlexboxLayout fbl) {
         List<String> keys = new ArrayList<>();
-        switch (filter_category) {
-            case "genre":
-              //  keys = ((MainActivity) getActivity()).getmData().getUniqueGenreKeys();
-                break;
-            case "rating":
-               // keys = ((MainActivity) getActivity()).getmData().getUniqueRatingKeys();
-                break;
-            case "year":
-               // keys = ((MainActivity) getActivity()).getmData().getUniqueYearKeys();
-                break;
-            case "quality":
-              //  keys = ((MainActivity) getActivity()).getmData().getUniqueQualityKeys();
-                break;
+        if(filter_category.equals(getResources().getString(R.string.visible_on_map))) {
+            String[] chips = {getResources().getString(R.string.events_filtr),getResources().getString(R.string.popular_places),getResources().getString(R.string.uber_ratio)};
+            keys = Arrays.asList(chips);
+        } else if (filter_category.equals(getResources().getString(R.string.radius))) {
+            //  keys = ((MainActivity) getActivity()).getmData().getUniqueGenreKeys();
         }
-
         for (int i = 0; i < keys.size(); i++) {
             View subchild = getActivity().getLayoutInflater().inflate(R.layout.single_chip, null);
             final TextView tv = ((TextView) subchild.findViewById(R.id.txt_title));

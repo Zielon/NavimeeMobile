@@ -99,5 +99,13 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
         });
     }
 
+    public double getLastLat() {
+        return mDataManager.getPreferencesHelper().getValueFloat(Const.LAST_LOCATION_LAT);
+    }
+
+    public double getLastLng() {
+        return mDataManager.getPreferencesHelper().getValueFloat(Const.LAST_LOCATION_LNG);
+    }
+
 
 }
