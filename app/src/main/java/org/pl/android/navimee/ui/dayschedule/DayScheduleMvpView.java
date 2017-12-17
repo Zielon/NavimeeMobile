@@ -18,5 +18,5 @@ public interface DayScheduleMvpView  extends MvpView {
 
     void showError();
 
-    void onSuccessDelete();
+    void onSuccessDelete(Event event);
 }

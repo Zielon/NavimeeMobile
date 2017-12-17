@@ -621,9 +621,9 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
 
     @Override
     public void showEventOnMap(Event event) {
-        Timber.d(event.getName());
+        Timber.d(event.getTitle());
         if(event.getPlace() != null && event.getPlace().getGeoPoint() != null) {
-                ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(),new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()),event.getName(),String.valueOf(event.getattendingCount()),R.drawable.ic_action_whatshot);
+                ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(),new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()),event.getTimezone(),String.valueOf(event.getRank()),R.drawable.ic_action_whatshot);
             eventsOnMap.put(event.getId(),clusterItemGoogleMap);
             mClusterManager.addItem(clusterItemGoogleMap);
         }

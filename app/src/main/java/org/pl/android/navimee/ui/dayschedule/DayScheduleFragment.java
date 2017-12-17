@@ -150,7 +150,9 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
     }
 
     @Override
-    public void onSuccessDelete() {
+    public void onSuccessDelete(Event event) {
+        mDayScheduleAdapter.deleteEvent(event);
+        mDayScheduleAdapter.notifyDataSetChanged();
         Toast.makeText(getActivity(),getResources().getString(R.string.delete_day_schedule), Toast.LENGTH_SHORT).show();
     }
 }

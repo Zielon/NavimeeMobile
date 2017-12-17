@@ -15,15 +15,17 @@ public class Place implements Serializable {
     private String id;
     private String address;
     private String name;
+    private String category;
     GeoPoint geoPoint;
     private String city;
 
-    public Place(String id, String address, String name, GeoPoint geoPoint, String city) {
+    public Place(String id, String address, String name, GeoPoint geoPoint, String city,String category) {
         this.id = id;
         this.address = address;
         this.name = name;
         this.geoPoint = geoPoint;
         this.city = city;
+        this.category = category;
     }
 
     public Place() {
@@ -67,5 +69,13 @@ public class Place implements Serializable {
 
     public void setGeoPoint(GeoPoint geoPoint) {
         this.geoPoint = geoPoint;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

@@ -84,7 +84,7 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
 
                 if (snapshot != null && snapshot.exists()) {
                    // Timber.d("Current data: " + snapshot.getData());
-                    if(snapshot.get("hotspotType").equals(Const.HotSpotType.FACEBOOK_EVENT.name())) {
+                    if(snapshot.get("hotspotType").equals(Const.HotSpotType.EVENT.name())) {
                         if (getMvpView() != null) {
                             getMvpView().showEventOnMap(snapshot.toObject(Event.class));
                         }

@@ -57,20 +57,20 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
     @Override
     public void onBindViewHolder(final EventsHolder holder, final int position) {
         Event event = mEvents.get(position);
-        holder.nameTextView.setText(event.getName());
-        if(event.getPlace() != null) {
+        holder.nameTextView.setText(event.getTitle());
+        if(event.getPlace() != null && event.getPlace().getGeoPoint() != null) {
             if(event.getPlace().getName() != null) {
-                holder.addressNameTextView.setText(event.getPlace().getName());
-            }
+               holder.addressNameTextView.setText(event.getPlace().getName());
+           }
             if(event.getPlace().getAddress() != null) {
-                holder.addressTextView.setText(event.getPlace().getAddress()+", "+event.getPlace().getCity());
+               holder.addressTextView.setText(event.getPlace().getAddress()+", "+event.getPlace().getCity());
             }
         }
-        holder.countTextView.setText(String.valueOf(event.getattendingCount()));
-        if(event.getendTime() != null) {
-            holder.timeTextView.setText(event.getendTime().getHours()+":"+String.format("%02d",event.getendTime().getMinutes()));
+        holder.countTextView.setText(String.valueOf(event.getRank()));
+        if(event.getEndTime() != null) {
+            holder.timeTextView.setText(event.getEndTime().getHours()+":"+String.format("%02d",event.getEndTime().getMinutes()));
         }
-        holder.maybeTextView.setText(String.valueOf(event.getmaybeCount()));
+        holder.maybeTextView.setText(String.valueOf(event.getRank()));
         holder.driveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

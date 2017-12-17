@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -99,9 +100,9 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
                     Timber.e("Listen failed.", e);
                     return;
                 }
-                if ( snapshot != null && snapshot.exists() && snapshot.get("hotspotType").equals(Const.HotSpotType.FACEBOOK_EVENT.name())) {
+                if ( snapshot != null && snapshot.exists() && snapshot.get("hotspotType").equals(Const.HotSpotType.EVENT.name())) {
                         Event event = snapshot.toObject(Event.class);
-                        if (event.getendTime() !=null && event.getendTime().after(finalDateFinal) && event.getendTime().before(dt.getTime())) {
+                        if (event.getEndTime() !=null && event.getEndTime().after(finalDateFinal) && event.getEndTime().before(dt.getTime())) {
                             if(getMvpView() != null) {
                                 getMvpView().showEvent(snapshot.toObject(Event.class));
                             }
@@ -128,10 +129,18 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
 
         Map<String, Object> eventMap = new HashMap<>();
-        eventMap.put("event", event);
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).collection("USER_EVENTS").document(event.getId()).set(event).addOnSuccessListener(new OnSuccessListener<Void>() {
+        eventMap.put("startTime", event.getStartTime());
+        eventMap.put("endTime", event.getStartTime());
+        eventMap.put("type", event.getHotspotType().name());
+        eventMap.put("userId",userId);
+        eventMap.put("id",event.getId());
+        eventMap.put("title",event.getTitle());
+        eventMap.put("rank",event.getRank());
+        eventMap.put("geoPoint",event.getPlace().getGeoPoint());
+        eventMap.put("token",mDataManager.getPreferencesHelper().getValueString(Const.MESSAGING_TOKEN));
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection("NOTIFICATIONS").add(eventMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
-            public void onSuccess(Void aVoid) {
+            public void onSuccess(DocumentReference documentReference) {
                 Timber.i("Event saved");
                 getMvpView().onSuccessSave();
             }

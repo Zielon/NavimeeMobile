@@ -11,6 +11,12 @@ public class Const {
     public final static String LAST_LOCATION_LNG = "LAST_LOCATION_LNG";
 
     public enum HotSpotType {
-        FACEBOOK_EVENT, FOURSQUARE_PLACE;
+        EVENT,
+        UBER_MULTIPLIER,
+        FOURSQUARE_PLACE
+    }
+    public enum EventType {
+        PREDICT_HQ,
+        FACEBOOK
     }
 }
