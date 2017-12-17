@@ -58,7 +58,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
     public void onBindViewHolder(final EventsHolder holder, final int position) {
         Event event = mEvents.get(position);
         holder.nameTextView.setText(event.getTitle());
-        if(event.getPlace() != null && event.getPlace().getGeoPoint() != null) {
+        if(event.getPlace() != null) {
             if(event.getPlace().getName() != null) {
                holder.addressNameTextView.setText(event.getPlace().getName());
            }
@@ -104,7 +104,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
     }*/
 
     public void addEvent(Event event) {
-        mEvents.add(event);
+        if(!mEvents.contains(event)) {
+            mEvents.add(event);
+        }
     }
 
     public void clearEvents() {
