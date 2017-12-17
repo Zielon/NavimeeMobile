@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.Task;
 import net.danlew.android.joda.DateUtils;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.pl.android.navimee.data.DataManager;
 import org.pl.android.navimee.data.model.Event;
 import org.pl.android.navimee.injection.ConfigPersistent;
@@ -25,6 +26,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -66,11 +68,13 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
         dt.set(Calendar.MINUTE, 0);
         dt.set(Calendar.SECOND, 0);
         dt.set(Calendar.MILLISECOND, 0);
+        dt.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         // next day
         dt.add(Calendar.DAY_OF_MONTH, 1);
-        DateTime dateTime = new DateTime(date);
-        Date dateFinal = date;
+        DateTime dateTime = new DateTime(date)
+                .withZone(DateTimeZone.getDefault());
+        Date dateFinal = dateTime.toDate();
         if(!DateUtils.isToday(dateTime)) {
             // today
             Calendar dt1 = new GregorianCalendar();
