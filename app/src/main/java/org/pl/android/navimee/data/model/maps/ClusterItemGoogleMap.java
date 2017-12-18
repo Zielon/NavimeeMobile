@@ -3,6 +3,8 @@ package org.pl.android.navimee.data.model.maps;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 
+import org.pl.android.navimee.util.Const;
+
 /**
  * Created by wojciech.grazawski on 2017-11-30.
  */
@@ -12,14 +14,16 @@ public class ClusterItemGoogleMap implements ClusterItem {
     public  int profilePhoto;
     public  String name;
     public String count;
+    public Const.HotSpotType type;
     String id;
 
-    public ClusterItemGoogleMap(String id, LatLng position, String name,String count, int pictureResource) {
+    public ClusterItemGoogleMap(String id, LatLng position, String name,String count,Const.HotSpotType type, int pictureResource) {
         this.id = id;
         mPosition = position;
         this.name = name;
         profilePhoto = pictureResource;
         this.count = count;
+        this.type = type;
     }
 
 
@@ -68,6 +72,14 @@ public class ClusterItemGoogleMap implements ClusterItem {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Const.HotSpotType getType() {
+        return type;
+    }
+
+    public void setType(Const.HotSpotType type) {
+        this.type = type;
     }
 
     @Override

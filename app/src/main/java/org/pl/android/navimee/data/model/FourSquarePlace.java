@@ -1,5 +1,7 @@
 package org.pl.android.navimee.data.model;
 
+import org.pl.android.navimee.util.Const;
+
 import java.io.Serializable;
 
 /**
@@ -30,11 +32,12 @@ public class FourSquarePlace implements Serializable {
     private String popularStatus;
     private boolean popularIsOpen;
     private boolean popularIsLocalHoliday;
+    private Const.HotSpotType hotspotType;
 
     public FourSquarePlace() {
     }
 
-    public FourSquarePlace(String id, String name, double rating, int likesCount, String likesSummary, int statsCheckinsCount, int statsUsersCount, int statsTipCount, int statsVisitsCount, String locationAddress, String locationCrossStreet, String locationPostalCode, String locationCity, String locationCountry, double locationLat, double locationLng, String popularStatus, boolean popularIsOpen, boolean popularIsLocalHoliday) {
+    public FourSquarePlace(String id, String name, double rating, int likesCount, String likesSummary, int statsCheckinsCount, int statsUsersCount, int statsTipCount, int statsVisitsCount, String locationAddress, String locationCrossStreet, String locationPostalCode, String locationCity, String locationCountry, double locationLat, double locationLng, String popularStatus, boolean popularIsOpen, boolean popularIsLocalHoliday,Const.HotSpotType hotspotType) {
         this.id = id;
         this.name = name;
         this.rating = rating;
@@ -54,6 +57,7 @@ public class FourSquarePlace implements Serializable {
         this.popularStatus = popularStatus;
         this.popularIsOpen = popularIsOpen;
         this.popularIsLocalHoliday = popularIsLocalHoliday;
+        this.hotspotType = hotspotType;
     }
 
     public String getId() {
@@ -206,5 +210,13 @@ public class FourSquarePlace implements Serializable {
 
     public void setPopularIsLocalHoliday(boolean popularIsLocalHoliday) {
         this.popularIsLocalHoliday = popularIsLocalHoliday;
+    }
+
+    public Const.HotSpotType getHotspotType() {
+        return hotspotType;
+    }
+
+    public void setHotspotType(Const.HotSpotType hotspotType) {
+        this.hotspotType = hotspotType;
     }
 }

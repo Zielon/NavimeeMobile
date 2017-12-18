@@ -105,7 +105,7 @@ public class MyFabFragment extends AAH_FabulousFragment {
         //params to set
         setAnimationDuration(600); //optional; default 500ms
         setPeekHeight(300); // optional; default 400dp
-      //  setCallbacks((Callbacks) getActivity()); //optional; to get back result
+        //setCallbacks((Callbacks) getActivity()); //optional; to get back result
        // setAnimationListener((AnimationListener) getActivity()); //optional; to get animation callbacks
         setViewgroupStatic(ll_buttons); // optional; layout to stick at bottom on slide
         setViewPager(vp_types); //optional; if you use viewpager that has scrollview

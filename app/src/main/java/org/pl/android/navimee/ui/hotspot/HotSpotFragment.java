@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.ArrayMap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.allattentionhere.fabulousfilter.AAH_FabulousFragment;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
@@ -64,6 +66,7 @@ import org.pl.android.navimee.data.model.maps.ClusterItemGoogleMap;
 import org.pl.android.navimee.ui.base.BaseActivity;
 import org.pl.android.navimee.ui.main.MainActivity;
 import org.pl.android.navimee.util.AddressToStringFunc;
+import org.pl.android.navimee.util.Const;
 import org.pl.android.navimee.util.DetectedActivityToString;
 import org.pl.android.navimee.util.DisplayTextOnViewAction;
 import org.pl.android.navimee.util.MultiDrawable;
@@ -73,6 +76,7 @@ import org.xml.sax.ErrorHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -96,7 +100,7 @@ import static org.pl.android.navimee.util.RxUtil.dispose;
  */
 
 public class HotSpotFragment extends Fragment  implements HotSpotMvpView, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapLongClickListener,
-        AdapterView.OnItemSelectedListener,RoutingListener,GeoQueryEventListener {
+        AdapterView.OnItemSelectedListener,RoutingListener,GeoQueryEventListener, AAH_FabulousFragment.Callbacks {
 
 
     @BindView(R.id.mapView)
@@ -149,6 +153,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     GeoQuery geoQuery;
     private ClusterManager<ClusterItemGoogleMap> mClusterManager;
     private HashMap<String,ClusterItemGoogleMap> eventsOnMap = new HashMap<>();
+    private HashMap<String,ClusterItemGoogleMap> eventsOnMapFilter = new HashMap<>();
     MyFabFragment dialogFrag;
     boolean isFirstAfterPermissionGranted = true;
 
@@ -189,7 +194,8 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
 
         dialogFrag = MyFabFragment.newInstance();
         dialogFrag.setParentFab(filterButton);
-
+        dialogFrag.setCallbacks(HotSpotFragment.this);
+      //  setCallbacks((Callbacks) getActivity());
         initListeners();
 
         try {
@@ -623,7 +629,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     public void showEventOnMap(Event event) {
         Timber.d(event.getTitle());
         if(event.getPlace() != null && event.getPlace().getGeoPoint() != null) {
-                ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(),new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()),event.getTimezone(),String.valueOf(event.getRank()),R.drawable.ic_action_whatshot);
+                ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(),new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()),event.getTimezone(),String.valueOf(event.getRank()),event.getHotspotType(),R.drawable.ic_action_whatshot);
             eventsOnMap.put(event.getId(),clusterItemGoogleMap);
             mClusterManager.addItem(clusterItemGoogleMap);
         }
@@ -633,7 +639,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     @Override
     public void showFoursquareOnMap(FourSquarePlace fourSquarePlace) {
         Timber.d(fourSquarePlace.getName());
-        ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(fourSquarePlace.getId(),new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()),fourSquarePlace.getName(),String.valueOf(fourSquarePlace.getStatsVisitsCount()),R.drawable.ic_action_people);
+        ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(fourSquarePlace.getId(),new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()),fourSquarePlace.getName(),String.valueOf(fourSquarePlace.getStatsVisitsCount()),fourSquarePlace.getHotspotType(),R.drawable.ic_action_people);
         eventsOnMap.put(fourSquarePlace.getId(),clusterItemGoogleMap);
         mClusterManager.addItem(clusterItemGoogleMap);
     }
@@ -681,6 +687,50 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     @Override
     public void onGeoQueryError(DatabaseError error) {
         Timber.e("There was an error with this query: " + error);
+    }
+
+    @Override
+    public void onResult(Object result) {
+        Log.d("k9res", "onResult: " + result.toString());
+        Log.d("k9res", "onResult: " + result.toString());
+        mHotspotPresenter.clearFilterList();
+        if (result.toString().equalsIgnoreCase("swiped_down")) {
+            //do something or nothing
+        } else {
+            if (result != null) {
+                ArrayMap<String, List<String>> applied_filters = (ArrayMap<String, List<String>>) result;
+                if (applied_filters.size() != 0) {
+
+                    //iterate over arraymap
+                    for (Map.Entry<String, List<String>> entry : applied_filters.entrySet()) {
+                        Log.d("k9res", "entry.key: " + entry.getKey());
+                        if(entry.getValue().contains(getResources().getString(R.string.events_filtr))){
+                            mHotspotPresenter.addItemToFilterList(Const.HotSpotType.EVENT);
+                        }
+                        if(entry.getValue().contains(getResources().getString(R.string.popular_places))) {
+                            mHotspotPresenter.addItemToFilterList(Const.HotSpotType.FOURSQUARE_PLACE);
+                        }
+                        if(entry.getValue().contains(getResources().getString(R.string.uber_ratio))) {
+                            mHotspotPresenter.addItemToFilterList(Const.HotSpotType.UBER_MULTIPLIER);
+                          /*  for(ClusterItemGoogleMap item : eventsOnMap.values()) {
+                                if(item.getType().equals(Const.HotSpotType.UBER_MULTIPLIER)) {
+
+                                }
+                            }*/
+                        }
+                    }
+                    this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), 3);
+                    this.geoQuery.addGeoQueryEventListener(this);
+                    eventsOnMap.clear();
+                    mClusterManager.clearItems();
+                   // this.geoQuery.setLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), 3);
+
+                } else {
+
+                }
+            }
+            //handle result
+        }
     }
 
 

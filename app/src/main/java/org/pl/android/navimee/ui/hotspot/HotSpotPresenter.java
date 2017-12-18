@@ -19,6 +19,11 @@ import org.pl.android.navimee.ui.base.BasePresenter;
 import org.pl.android.navimee.util.Const;
 import org.pl.android.navimee.util.ViewUtil;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import javax.inject.Inject;
 
 import timber.log.Timber;
@@ -33,6 +38,8 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
     private final DataManager mDataManager;
 
     private ListenerRegistration mListener;
+
+    private Set<Const.HotSpotType> filterList = new HashSet<>();
 
     @Inject
     public HotSpotPresenter(DataManager dataManager) {
@@ -84,11 +91,11 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
 
                 if (snapshot != null && snapshot.exists()) {
                    // Timber.d("Current data: " + snapshot.getData());
-                    if(snapshot.get("hotspotType").equals(Const.HotSpotType.EVENT.name())) {
+                    if(snapshot.get("hotspotType").equals(Const.HotSpotType.EVENT.name()) && (filterList.contains(Const.HotSpotType.EVENT) || filterList.isEmpty())) {
                         if (getMvpView() != null) {
                             getMvpView().showEventOnMap(snapshot.toObject(Event.class));
                         }
-                    } else if(snapshot.get("hotspotType").equals(Const.HotSpotType.FOURSQUARE_PLACE.name())) {
+                    } else if(snapshot.get("hotspotType").equals(Const.HotSpotType.FOURSQUARE_PLACE.name()) && (filterList.contains(Const.HotSpotType.FOURSQUARE_PLACE) || filterList.isEmpty())) {
                         if (getMvpView() != null) {
                             getMvpView().showFoursquareOnMap(snapshot.toObject(FourSquarePlace.class));
                         }
@@ -105,6 +112,14 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
 
     public double getLastLng() {
         return mDataManager.getPreferencesHelper().getValueFloat(Const.LAST_LOCATION_LNG);
+    }
+
+    public void addItemToFilterList(Const.HotSpotType item) {
+        filterList.add(item);
+    }
+
+    public void clearFilterList() {
+        filterList.clear();
     }
 
 
