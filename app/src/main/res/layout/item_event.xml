@@ -2,6 +2,7 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -57,17 +58,6 @@
                 android:layout_toLeftOf="@+id/driveButton"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true" />
-
-
-            <Button
-                android:id="@+id/driveButton"
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/drive_now"
-                android:background="@null"
-                android:textColor="@color/background_accent"
-                android:layout_alignParentTop="true" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -84,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_people_black_24dp" />
+                android:src="@drawable/ic_people" />
 
             <TextView
                 android:id="@+id/viewTextCount"
@@ -131,16 +121,15 @@
                 android:text="18:30"
                 android:textColor="#FFFFFF" />
 
-            <Button
+            <android.support.design.widget.FloatingActionButton
                 android:id="@+id/addButton"
-                android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
-                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/ic_add_circle_outline_black_24dp"
-                android:text="@string/add"
-                android:background="@null"
-                android:drawableLeft="@drawable/ic_add_circle_outline_black_24dp" />
+                app:borderWidth="0dp"
+                app:backgroundTint="@color/button_backgrtound"
+                android:src="@drawable/ic_dzwon_nie_brzeczacy"
+                />
         </RelativeLayout>
 
     </RelativeLayout>

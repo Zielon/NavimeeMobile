@@ -632,7 +632,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     public void showEventOnMap(Event event) {
         Timber.d(event.getTitle());
         if(event.getPlace() != null && event.getPlace().getGeoPoint() != null) {
-                ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(),new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()),event.getTimezone(),String.valueOf(event.getRank()),event.getHotspotType(),R.drawable.ic_action_whatshot);
+                ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(),new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()),event.getTimezone(),String.valueOf(event.getRank()),event.getHotspotType(),R.drawable.ic_plomien);
             eventsOnMap.put(event.getId(),clusterItemGoogleMap);
             mClusterManager.addItem(clusterItemGoogleMap);
         }
@@ -642,7 +642,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     @Override
     public void showFoursquareOnMap(FourSquarePlace fourSquarePlace) {
         Timber.d(fourSquarePlace.getName());
-        ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(fourSquarePlace.getId(),new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()),fourSquarePlace.getName(),String.valueOf(fourSquarePlace.getStatsVisitsCount()),fourSquarePlace.getHotspotType(),R.drawable.ic_action_people);
+        ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(fourSquarePlace.getId(),new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()),fourSquarePlace.getName(),String.valueOf(fourSquarePlace.getStatsVisitsCount()),fourSquarePlace.getHotspotType(),R.drawable.ic_people);
         eventsOnMap.put(fourSquarePlace.getId(),clusterItemGoogleMap);
         mClusterManager.addItem(clusterItemGoogleMap);
     }
