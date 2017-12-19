@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
+    android:background="@color/primary"
     android:layout_height="wrap_content"
     android:layout_marginBottom="6dp"
     android:layout_marginLeft="12dp"
@@ -13,6 +14,7 @@
     card_view:cardCornerRadius="2dp">
 
     <RelativeLayout
+        android:background="@color/primary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
       >
@@ -30,6 +32,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/text_body"
                 tools:text="Antony Ribot"
+                android:textColor="@color/white"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_toLeftOf="@+id/driveButton"
@@ -41,6 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/text_name"
                 android:layout_marginTop="5dp"
+                android:textColor="@color/white"
                 android:textSize="@dimen/text_small_body"
                 tools:text="developer"
                 android:layout_toLeftOf="@+id/driveButton"
@@ -53,6 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/text_address_name"
                 android:layout_marginTop="5dp"
+                android:textColor="@color/white"
                 android:textSize="@dimen/text_small_body"
                 tools:text="developer"
                 android:layout_toLeftOf="@+id/driveButton"
@@ -62,7 +67,6 @@
 
         <RelativeLayout
             android:id="@+id/buttons"
-            android:background="@color/background"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/content"
@@ -74,7 +78,7 @@
                 android:layout_width="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_people" />
+                android:src="@drawable/ic_people_white" />
 
             <TextView
                 android:id="@+id/viewTextCount"
@@ -84,7 +88,7 @@
                 android:layout_margin="1dp"
                 android:layout_toRightOf="@+id/imageCount"
                 android:text="1000"
-                android:textColor="#FFFFFF" />
+                android:textColor="@color/white" />
 
             <ImageView
                 android:id="@+id/imageTime"
@@ -92,7 +96,7 @@
                 android:layout_width="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_schedule_black_24dp" />
+                android:src="@drawable/ic_zegar" />
 
             <TextView
                 android:id="@+id/viewTextTime"
@@ -101,7 +105,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/imageTime"
                 android:text="18:30"
-                android:textColor="#FFFFFF" />
+                android:textColor="@color/white" />
 
             <ImageView
                 android:id="@+id/imageMaybe"
@@ -109,7 +113,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_remove_red_eye_black_24dp" />
+                android:src="@drawable/ic_oko_nie_przekreslone" />
 
             <TextView
                 android:id="@+id/viewTextMaybe"
@@ -119,7 +123,7 @@
                 android:layout_toRightOf="@+id/imageMaybe"
                 android:layout_margin="1dp"
                 android:text="18:30"
-                android:textColor="#FFFFFF" />
+                android:textColor="@color/white" />
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/addButton"

@@ -9,13 +9,14 @@
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/accent"
+        android:background="@color/primary_dark"
         app:textColorSelected="#FFFF"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_events"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/calendarView"
+        android:background="@color/primary_dark"
         android:clipToPadding="false"
         android:paddingBottom="6dp"
         android:paddingTop="6dp"
