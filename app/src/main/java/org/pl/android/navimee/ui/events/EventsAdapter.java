@@ -87,9 +87,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         holder.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                holder.addButton.setEnabled(false);
                 mEventsPresenter.saveEvent(event);
             }
         });
+        if(mEventsPresenter.getDayScheduleList().contains(event)) {
+            holder.addButton.setEnabled(false);
+        }
 
 
     }

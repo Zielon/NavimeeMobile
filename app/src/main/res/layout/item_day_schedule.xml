@@ -67,15 +67,6 @@
                 android:background="@null"
                 android:textColor="@color/background_accent"
                 android:layout_alignParentTop="true" />
-            <TextView
-                android:id="@+id/viewTimeToDrive"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/driveButton"
-                android:layout_alignParentRight="true"
-                android:layout_margin="1dp"
-                android:text="8 min."
-                />
         </RelativeLayout>
 
         <RelativeLayout

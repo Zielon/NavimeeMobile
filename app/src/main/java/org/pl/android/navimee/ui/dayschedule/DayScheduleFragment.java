@@ -89,6 +89,7 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Date date, int position) {
+                skeletonScreen.show();
                 mDaySchedulePresenter.loadEvents(date);
             }
 

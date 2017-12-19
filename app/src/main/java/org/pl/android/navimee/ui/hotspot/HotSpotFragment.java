@@ -386,7 +386,10 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                    }
                                    // setup GeoFire
                                    latLngCurrent = latLng;
-                                   geoQuery.setLocation(new GeoLocation(latLng.latitude, latLng.longitude), 3);
+                                   geoQuery = geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), 3);
+                                   geoQuery.addGeoQueryEventListener(HotSpotFragment.this);
+                                   eventsOnMap.clear();
+                                   mClusterManager.clearItems();
 
                                }
                     });

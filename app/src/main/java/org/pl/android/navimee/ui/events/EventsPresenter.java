@@ -25,10 +25,12 @@ import org.pl.android.navimee.ui.base.BasePresenter;
 import org.pl.android.navimee.util.Const;
 import org.reactivestreams.Subscription;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -46,6 +48,8 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
     public Subscription mSubscription;
 
     private ListenerRegistration mListener;
+
+    private List<Event> dayScheduleList = new ArrayList<>();
 
     @Inject
     public EventsPresenter(DataManager dataManager) {
@@ -100,7 +104,7 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
                     Timber.e("Listen failed.", e);
                     return;
                 }
-                if ( snapshot != null && snapshot.exists() && snapshot.get("hotspotType").equals(Const.HotSpotType.EVENT.name())) {
+                if (snapshot != null && snapshot.exists() && snapshot.get("hotspotType").equals(Const.HotSpotType.EVENT.name())) {
                         Event event = snapshot.toObject(Event.class);
                         if (event.getEndTime() !=null && event.getEndTime().after(finalDateFinal) && event.getEndTime().before(dt.getTime())) {
                             if(getMvpView() != null) {
@@ -125,13 +129,30 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
     }
 
 
+    public void loadDayScheduleEvents() {
+        String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection("NOTIFICATIONS").whereEqualTo("userId",userId).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @SuppressLint("TimberArgCount")
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Timber.e("Listen failed.", e);
+                    return;
+                }
+                setDayScheduleList(value.toObjects(Event.class));
+            }
+        });
+    }
+
+
     public void saveEvent(Event event) {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
 
         Map<String, Object> eventMap = new HashMap<>();
         eventMap.put("startTime", event.getStartTime());
         eventMap.put("endTime", event.getStartTime());
-        eventMap.put("type", event.getHotspotType().name());
+        eventMap.put("hotspotType", event.getHotspotType().name());
         eventMap.put("userId",userId);
         eventMap.put("id",event.getId());
         eventMap.put("title",event.getTitle());
@@ -166,5 +187,13 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
 
     public double getLastLng() {
         return mDataManager.getPreferencesHelper().getValueFloat(Const.LAST_LOCATION_LNG);
+    }
+
+    public List<Event> getDayScheduleList() {
+        return dayScheduleList;
+    }
+
+    public void setDayScheduleList(List<Event> dayScheduleList) {
+        this.dayScheduleList = dayScheduleList;
     }
 }

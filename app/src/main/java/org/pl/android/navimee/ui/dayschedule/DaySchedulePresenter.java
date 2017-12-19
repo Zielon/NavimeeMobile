@@ -68,12 +68,10 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
         dt.set(Calendar.MINUTE, 0);
         dt.set(Calendar.SECOND, 0);
         dt.set(Calendar.MILLISECOND, 0);
-        dt.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         // next day
         dt.add(Calendar.DAY_OF_MONTH, 1);
-        DateTime dateTime = new DateTime(date)
-                .withZone(DateTimeZone.getDefault());
+        DateTime dateTime = new DateTime(date);
         Date dateFinal = dateTime.toDate();
         if(!DateUtils.isToday(dateTime)) {
             // today
@@ -99,7 +97,9 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
                         event.setFirestoreId(documentSnapshot.getId());
                         eventList.add(event);
                     }
-                    getMvpView().showEvents(eventList);
+                    if(getMvpView() != null) {
+                        getMvpView().showEvents(eventList);
+                    }
                 } else {
                     Timber.e("Error getting documents: ", task.getException());
                 }

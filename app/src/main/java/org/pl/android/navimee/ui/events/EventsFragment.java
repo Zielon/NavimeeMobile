@@ -94,6 +94,7 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
                 .defaultSelectedDate(today)  // Date to be seleceted at start (default to Today)
                 .build();
 
+
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Date date, int position) {
@@ -121,6 +122,7 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
 
                     @Override
                     public void onGeoQueryReady() {
+                        skeletonScreen.hide();
                         Timber.i("All initial data has been loaded and events have been fired!");
                     }
 
@@ -150,6 +152,7 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
         mEventsRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mEventsRecycler.setHasFixedSize(true);
         mEventsRecycler.setAdapter(mEventsAdapter);
+        mEventsPresenter.loadDayScheduleEvents();
         geoFire = new GeoFire(mEventsPresenter.getHotSpotDatabaseRefernce());
 
        skeletonScreen = Skeleton.bind(mEventsRecycler)
