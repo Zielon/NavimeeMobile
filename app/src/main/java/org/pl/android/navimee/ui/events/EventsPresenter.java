@@ -157,8 +157,15 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
         eventMap.put("id",event.getId());
         eventMap.put("title",event.getTitle());
         eventMap.put("rank",event.getRank());
-        eventMap.put("geoPoint",event.getPlace().getGeoPoint());
-        eventMap.put("token",mDataManager.getPreferencesHelper().getValueString(Const.MESSAGING_TOKEN));
+        eventMap.put("isSent",false);
+        Map<String, Object> place = new HashMap<>();
+        place.put("address", event.getPlace().getAddress());
+        place.put("category", event.getPlace().getCategory());
+        place.put("city", event.getPlace().getCity());
+        place.put("geoPoint",event.getPlace().getGeoPoint());
+        place.put("id", event.getPlace().getId());
+        place.put("name", event.getPlace().getName());
+        eventMap.put("place",place);
         mDataManager.getFirebaseService().getFirebaseFirestore().collection("NOTIFICATIONS").add(eventMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {

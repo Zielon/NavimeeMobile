@@ -2,6 +2,7 @@ package org.pl.android.navimee.ui.main;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
@@ -70,6 +71,17 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
                 requestPermissions(LOCATION_PERMS, Const.LOCATION_REQUEST);
             }
         }*/
+
+        Intent intent = getIntent();
+        if(getIntent().getExtras().get("lat") != null && getIntent().getExtras().get("lng") != null) {
+            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + getIntent().getExtras().get("lat") + "," +
+                    getIntent().getExtras().get("lng"));
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            mapIntent.setPackage("com.google.android.apps.maps");
+            if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(mapIntent);
+            }
+        }
 
         checkAppIntro();
 
