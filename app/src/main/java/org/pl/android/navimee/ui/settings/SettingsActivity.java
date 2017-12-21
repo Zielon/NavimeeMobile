@@ -30,10 +30,6 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-/**
- * Created by Wojtek on 2017-11-20.
- */
-
 public class SettingsActivity extends BaseActivity implements SettingsMvpView {
 
     private static final int PROFILE_SETTING = 1;
