@@ -48,34 +48,22 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
         setContentView(R.layout.activity_user);
         mSettingsPresenter.attachView(this);
 
-
-        // Handle Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //set the back arrow in the toolbar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(R.string.settings);
+        getSupportActionBar().setTitle(R.string.menu);
 
-
-        // Create a few sample profile
-        // NOTE you have to define the loader logic too. See the CustomApplication for more details
         final IProfile profile;
         if(mSettingsPresenter.getName() != null) {
             profile = new ProfileDrawerItem().withName(mSettingsPresenter.getName()).withEmail(mSettingsPresenter.getEmail());
         } else {
             profile = new ProfileDrawerItem().withEmail(mSettingsPresenter.getEmail());
         }
-        // Create the AccountHeader
+
         headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
-                .withHeaderBackground(R.drawable.header)
+                .withHeaderBackground(R.color.md_dark_background)
                 .withTranslucentStatusBar(false)
-                .addProfiles(
-                        profile,
-                        //don't ask but google uses 14dp for the add account icon in gmail but 20dp for the normal icons (like manage account)
-                        new ProfileSettingDrawerItem().withName("Add Account").withDescription("Add new GitHub Account"),
-                        new ProfileSettingDrawerItem().withName(R.string.delete_account)
-                )
                 .withSavedInstance(savedInstanceState)
                 .build();
 
@@ -85,37 +73,34 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
                 .withTranslucentStatusBar(false)
                 .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.notifications).withIcon(R.drawable.ic_action_whatshot).withIdentifier(1),
-                        new PrimaryDrawerItem().withName(R.string.change_email).withIcon(R.drawable.ic_action_whatshot).withIdentifier(2),
-                        new PrimaryDrawerItem().withName(R.string.change_password).withIcon(R.drawable.ic_action_whatshot).withIdentifier(3),
+                        new PrimaryDrawerItem().withName(R.string.settings).withIcon(R.drawable.ic_action_whatshot).withIdentifier(1),
+                        new PrimaryDrawerItem().withName(R.string.login_uber).withIcon(R.drawable.ic_action_whatshot).withIdentifier(2),
+                        new PrimaryDrawerItem().withName(R.string.user).withIcon(R.drawable.ic_action_whatshot).withIdentifier(3),
                         new PrimaryDrawerItem().withName(R.string.logout).withIcon(R.drawable.ic_action_whatshot).withIdentifier(4),
                         new DividerDrawerItem(),
                         new PrimaryDrawerItem().withName(R.string.privacy_conditions).withIcon(R.drawable.ic_action_whatshot),
                         new PrimaryDrawerItem().withName(R.string.help).withIcon(R.drawable.ic_action_whatshot),
                         new PrimaryDrawerItem().withName(R.string.rate_app).withIcon(R.drawable.ic_action_whatshot)
-                ) // add the items we want to use with our Drawer
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        if (drawerItem instanceof Nameable) {
-                            Intent intent = null;
-                           if(position == 1) {
-                               Timber.d(String.valueOf(position));
-                               intent = new Intent(SettingsActivity.this,NotificationActivity.class);
-                           } else if(position == 2) {
-                               Timber.d(String.valueOf(position));
-                           } else if(position == 3) {
-                               Timber.d(String.valueOf(position));
-                           } else if(position == 4) {
-                               mSettingsPresenter.logout();
-                           }
+                )
+                .withOnDrawerItemClickListener((view, position, drawerItem) -> {
+                    if (drawerItem instanceof Nameable) {
+                        Intent intent = null;
+                       if(position == 1) {
+                           Timber.d(String.valueOf(position));
+                           intent = new Intent(SettingsActivity.this, NotificationActivity.class);
+                       } else if(position == 2) {
+                           Timber.d(String.valueOf(position));
+                       } else if(position == 3) {
+                           Timber.d(String.valueOf(position));
+                       } else if(position == 4) {
+                           mSettingsPresenter.logout();
+                       }
 
-                            if (intent != null) {
-                                SettingsActivity.this.startActivity(intent);
-                            }
+                        if (intent != null) {
+                            SettingsActivity.this.startActivity(intent);
                         }
-                        return false;
                     }
+                    return false;
                 })
                 .withSavedInstance(savedInstanceState)
                 .withSelectedItem(-1)

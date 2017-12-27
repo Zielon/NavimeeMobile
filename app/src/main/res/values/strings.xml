@@ -40,12 +40,15 @@
     <string name="login">Zaloguj się</string>
     <string name="logout">Wyloguj się</string>
     <string name="settings">Ustawienia</string>
+    <string name="user">Użytkownik</string>
+    <string name="menu">Menu</string>
+    <string name="login_uber">Zaloguj sie do Ubera</string>
     <string name="notifications_day_schedule">Powiadomienia z planu dnia</string>
     <string name="notifications_big_events">Powiadomienia o dużych imprezach</string>
     <string name="notifications">Powiadomienia</string>
     <string name="change_email">Zmień email</string>
     <string name="change_password">Zmień hasło</string>
-    <string name="privacy_conditions">Warunki prywatności</string>
+    <string name="privacy_conditions">Warunki i prywatności</string>
     <string name="help">Pomoc</string>
     <string name="visible_on_map">Widoczne na mapie</string>
     <string name="radius">Promień</string>
