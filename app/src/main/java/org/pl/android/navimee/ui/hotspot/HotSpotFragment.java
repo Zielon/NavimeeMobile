@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.allattentionhere.fabulousfilter.AAH_FabulousFragment;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
@@ -155,6 +156,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     private HashMap<String,ClusterItemGoogleMap> eventsOnMap = new HashMap<>();
     MyFabFragment dialogFrag;
     boolean isFirstAfterPermissionGranted = true;
+    int durationInSec;
 
 
     private final static int REQUEST_CHECK_SETTINGS = 0;
@@ -196,6 +198,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         dialogFrag.setCallbacks(HotSpotFragment.this);
       //  setCallbacks((Callbacks) getActivity());
         initListeners();
+        showFeedBackDialog();
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -203,6 +206,39 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
             e.printStackTrace();
         }
         return rootView;
+    }
+
+    private void showFeedBackDialog() {
+        MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
+                .title(R.string.feedback)
+                .customView(R.layout.dialog_customview, true)
+                .build();
+
+         Button yesButton = (Button) dialog.getCustomView().findViewById(R.id.yes_work);
+         Button nobutton = (Button) dialog.getCustomView().findViewById(R.id.no_work);
+         Button noDrivebutton = (Button) dialog.getCustomView().findViewById(R.id.no_drive);
+         yesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("hello",v.toString());
+            }
+        });
+
+        nobutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("hello",v.toString());
+            }
+        });
+
+        noDrivebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("hello",v.toString());
+            }
+        });
+
+        dialog.show();
     }
 
     private void initListeners() {
@@ -245,7 +281,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
             public void onClick(View v) {
                 Uri gmmIntentUri = Uri.parse("google.navigation:q=" + String.valueOf(latLngEnd.latitude) + "," +
                         String.valueOf(latLngEnd.longitude));
-
+                mHotspotPresenter.setRouteFromDriver(mTextPlaceAddress.getText().toString(),durationInSec);
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
                 if (mapIntent.resolveActivity(getContext().getPackageManager()) != null) {
@@ -580,6 +616,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
             mTextPlaceAddress.setText(route.get(i).getEndAddressText());
             mTextPlaceDistance.setText(route.get(i).getDistanceText());
             mTextPlaceTime.setText(route.get(i).getDurationText());
+            durationInSec = route.get(i).getDurationValue();
             mTextPlaceName.setText(sEventName);
             mTextPlaceCount.setText(sEventCount);
         }

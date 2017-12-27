@@ -20,6 +20,7 @@ import org.pl.android.navimee.util.Const;
 import org.pl.android.navimee.util.ViewUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -104,6 +105,15 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
                 }
             }
         });
+    }
+
+    public void setRouteFromDriver(String locationName,int durationInSec) {
+        HashMap<String, Object> feedBackObject = new HashMap<>();
+        String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+        feedBackObject.put("userId", userId);
+        feedBackObject.put("locationName", locationName);
+        feedBackObject.put("durationInSec",durationInSec);
+        mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child("FEEDBACK").push().setValue(feedBackObject);
     }
 
     public double getLastLat() {
