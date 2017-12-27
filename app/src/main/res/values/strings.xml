@@ -58,4 +58,8 @@
     <string name="facebook_app_id">490316121339159</string>
     <string name="fb_login_protocol_scheme">fb490316121339159</string>
     <string name="google_maps_key">AIzaSyCm3VEK4jjMA6jl0QkyfCn-qO3LYwoOKOs</string>
+    <string name="yes_work">Tak, udało się</string>
+    <string name="no_work">Nie udało się</string>
+    <string name="no_drive">Nie pojechałem tam</string>
+    <string name="feedback">Feedback</string>
 </resources>

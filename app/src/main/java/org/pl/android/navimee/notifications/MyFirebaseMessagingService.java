@@ -1,3 +1,19 @@
+/**
+ * Copyright 2016 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.pl.android.navimee.notifications;
 
 import android.app.Notification;
@@ -13,14 +29,34 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.pl.android.navimee.BoilerplateApplication;
 import org.pl.android.navimee.R;
+import org.pl.android.navimee.data.DataManager;
 import org.pl.android.navimee.ui.main.MainActivity;
+
+import javax.inject.Inject;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
 
+    @Inject
+    DataManager dataManager;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        BoilerplateApplication.get(this).getComponent().inject(this);
+    }
+
+    /**
+     * Called when message is received.
+     *
+     * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
+     */
     // [START receive_message]
+
+
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         // [START_EXCLUDE]
@@ -46,20 +82,31 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 
         // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-            sendNotification(remoteMessage.getNotification().getTitle(),remoteMessage.getNotification().getBody(),remoteMessage.getData().get("lat"),remoteMessage.getData().get("lng"));
-        }
-
+        //if (remoteMessage.getNotification() != null) {
+            Log.d(TAG, "Data manager in service: " + dataManager.toString());
+            sendNotification("hello","witam",remoteMessage.getData().get("lat"),remoteMessage.getData().get("lng"));
+        //}
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
     }
     // [END receive_message]
 
+    /**
+     * Schedule a job using FirebaseJobDispatcher.
+     */
+
+    /**
+     * Handle time allotted to BroadcastReceivers.
+     */
     private void handleNow() {
         Log.d(TAG, "Short lived task is done.");
     }
 
+    /**
+     * Create and show a simple notification containing the received FCM message.
+     *
+     * @param messageBody FCM message body received.
+     */
     private void sendNotification(String title,String messageBody,String lat, String lng) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -72,8 +119,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
 
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
+        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_stat_ic_notification)
                 .setContentTitle(title)

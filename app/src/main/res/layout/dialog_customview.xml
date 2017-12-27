@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/already_member_login"
+        android:textColor="#80000000"
+        />
+
+
+    <Button
+        android:id="@+id/yes_work"
+        android:layout_width="match_parent"
+        android:text="@string/yes_work"
+        android:layout_height="match_parent" />
+
+    <Button
+        android:id="@+id/no_work"
+        android:layout_width="match_parent"
+        android:text="@string/no_work"
+        android:layout_height="match_parent" />
+
+    <Button
+        android:id="@+id/no_drive"
+        android:layout_width="match_parent"
+        android:text="@string/no_drive"
+        android:layout_height="match_parent" />
+
+
+
+</LinearLayout>
