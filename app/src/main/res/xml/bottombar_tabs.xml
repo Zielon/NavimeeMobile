@@ -5,18 +5,9 @@
         icon="@drawable/ic_action_whatshot"
         title="@string/hotspot" />
     <tab
-    id="@+id/tab_radar"
-    icon="@drawable/ic_action_explore"
-    title="@string/radar" />
-
-    <tab
         id="@+id/tab_events"
         icon="@drawable/ic_action_place"
         title="@string/events" />
-    <tab
-        id="@+id/tab_flights"
-        icon="@drawable/ic_action_flight_land"
-        title="@string/flights" />
     <tab
         id="@+id/tab_day_schedule"
         icon="@drawable/ic_action_today"
