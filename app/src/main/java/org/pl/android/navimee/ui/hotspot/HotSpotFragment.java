@@ -220,8 +220,11 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                 .title(R.string.feedback)
                 .customView(R.layout.dialog_customview, true)
                 .build();
-         TextView feedBackText = (TextView) dialog.getCustomView().findViewById(R.id.feedback_text);
-         feedBackText.setText(name+" "+address+" "+locationName);
+
+         TextView feedBackTextCustom = (TextView) dialog.getCustomView().findViewById(R.id.feedback_custom_text);
+         feedBackTextCustom.setText(String.format(getString(R.string.feeback_custom_text), name,locationName));
+         TextView feedBackTextNormal = (TextView) dialog.getCustomView().findViewById(R.id.feedback_normal_text);
+         feedBackTextNormal.setText(R.string.feeback_normal_text);
          Button yesButton = (Button) dialog.getCustomView().findViewById(R.id.yes_work);
          Button nobutton = (Button) dialog.getCustomView().findViewById(R.id.no_work);
          Button noDrivebutton = (Button) dialog.getCustomView().findViewById(R.id.no_drive);
