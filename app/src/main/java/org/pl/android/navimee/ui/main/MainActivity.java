@@ -68,8 +68,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
             }
         }*/
 
-        Intent intent = getIntent();
-        if(getIntent().getExtras().get("lat") != null && getIntent().getExtras().get("lng") != null) {
+        if(getIntent() != null &&  getIntent().getExtras() != null && getIntent().getExtras().get("lat") != null && getIntent().getExtras().get("lng") != null) {
             Uri gmmIntentUri = Uri.parse("google.navigation:q=" + getIntent().getExtras().get("lat") + "," +
                     getIntent().getExtras().get("lng"));
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);

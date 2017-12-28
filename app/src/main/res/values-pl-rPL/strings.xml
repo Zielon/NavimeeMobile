@@ -41,5 +41,10 @@
     <string name="uber_ratio">mnoznik Ubera</string>
     <string name="rate_app">Oceń aplikacje</string>
     <string name="delete_account">Usuń konto</string>
+    <string name="yes_work">Tak, udało się</string>
+    <string name="no_work">Nie udało się</string>
+    <string name="no_drive">Nie pojechałem tam</string>
     <string name="no_account_yet">Nie masz jeszcze konta? Stwórz konto</string>
+    <string name="feeback_custom_text">Hej %1$s, udało Ci się złapać klienta po dotarciu do %2$s?</string>
+    <string name="feeback_normal_text">Twoja odpowiedź sprawi, że aplikacja będzie działać coraz lepiej!</string>
 </resources>

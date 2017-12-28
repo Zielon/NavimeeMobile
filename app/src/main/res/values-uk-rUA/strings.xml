@@ -42,4 +42,9 @@
     <string name="rate_app">Оцінити додаток</string>
     <string name="delete_account">Видалити аккаунт</string>
     <string name="no_account_yet">ще немає рахунку? створити обліковий запис</string>
+    <string name="yes_work">Так, це спрацювало</string>
+    <string name="no_work">Це не вдалося</string>
+    <string name="no_drive">Я туди не ходив</string>
+    <string name="feeback_custom_text">Привіт %1$s, Ви спромоглися знайти пасажира поблизу %2$s?</string>
+    <string name="feeback_normal_text">Ваш відгук покращить ваш додаток, і це покращиться кожен день!</string>
 </resources>

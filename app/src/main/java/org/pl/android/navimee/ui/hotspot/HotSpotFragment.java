@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.allattentionhere.fabulousfilter.AAH_FabulousFragment;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
@@ -156,7 +157,8 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     private HashMap<String,ClusterItemGoogleMap> eventsOnMapFilter = new HashMap<>();
     MyFabFragment dialogFrag;
     boolean isFirstAfterPermissionGranted = true;
-
+    int durationInSec,distanceValue;
+    LatLng locationGeo;
 
     private final static int REQUEST_CHECK_SETTINGS = 0;
 
@@ -197,6 +199,14 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         dialogFrag.setCallbacks(HotSpotFragment.this);
       //  setCallbacks((Callbacks) getActivity());
         initListeners();
+        if(mHotspotPresenter.getFeedbackBoolean()) {
+            mHotspotPresenter.setFeedbackBoolean(false);
+            String name = mHotspotPresenter.getFeedbackValue(Const.NAME);
+            String address = mHotspotPresenter.getFeedbackValue(Const.LOCATION_ADDRESS);
+            String locationName = mHotspotPresenter.getFeedbackValue(Const.LOCATION_NAME);
+            String feedbackId = mHotspotPresenter.getFeedbackValue(Const.FEEDBACK_ID);
+            showFeedBackDialog(name,address,locationName,feedbackId);
+        }
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -204,6 +214,46 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
             e.printStackTrace();
         }
         return rootView;
+    }
+
+    private void showFeedBackDialog(String name, String address, String locationName,String feedBackId) {
+        MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
+                .title(R.string.feedback)
+                .customView(R.layout.dialog_customview, true)
+                .build();
+
+         TextView feedBackTextCustom = (TextView) dialog.getCustomView().findViewById(R.id.feedback_custom_text);
+         feedBackTextCustom.setText(String.format(getString(R.string.feeback_custom_text), name,locationName));
+         TextView feedBackTextNormal = (TextView) dialog.getCustomView().findViewById(R.id.feedback_normal_text);
+         feedBackTextNormal.setText(R.string.feeback_normal_text);
+         Button yesButton = (Button) dialog.getCustomView().findViewById(R.id.yes_work);
+         Button nobutton = (Button) dialog.getCustomView().findViewById(R.id.no_work);
+         Button noDrivebutton = (Button) dialog.getCustomView().findViewById(R.id.no_drive);
+         yesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mHotspotPresenter.sendFeedbackToServer(feedBackId,0);
+                dialog.dismiss();
+            }
+        });
+
+        nobutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mHotspotPresenter.sendFeedbackToServer(feedBackId,1);
+                dialog.dismiss();
+            }
+        });
+
+        noDrivebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mHotspotPresenter.sendFeedbackToServer(feedBackId,2);
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     private void initListeners() {
@@ -246,7 +296,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
             public void onClick(View v) {
                 Uri gmmIntentUri = Uri.parse("google.navigation:q=" + String.valueOf(latLngEnd.latitude) + "," +
                         String.valueOf(latLngEnd.longitude));
-
+                mHotspotPresenter.setRouteFromDriver(mTextPlaceAddress.getText().toString(),sEventName,durationInSec,distanceValue,locationGeo);
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
                 if (mapIntent.resolveActivity(getContext().getPackageManager()) != null) {
@@ -330,7 +380,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
         geoFire = new GeoFire(mHotspotPresenter.getHotSpotDatabaseRefernce());
-        this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), 3);
+        this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), 10);
 
 
     }
@@ -386,7 +436,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                    }
                                    // setup GeoFire
                                    latLngCurrent = latLng;
-                                   geoQuery = geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), 3);
+                                   geoQuery = geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), 10);
                                    geoQuery.addGeoQueryEventListener(HotSpotFragment.this);
                                    eventsOnMap.clear();
                                    mClusterManager.clearItems();
@@ -576,6 +626,9 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
             mTextPlaceAddress.setText(route.get(i).getEndAddressText());
             mTextPlaceDistance.setText(route.get(i).getDistanceText());
             mTextPlaceTime.setText(route.get(i).getDurationText());
+            durationInSec = route.get(i).getDurationValue();
+            distanceValue = route.get(i).getDistanceValue();
+            locationGeo = route.get(i).getLatLgnBounds().getCenter();
             mTextPlaceName.setText(sEventName);
             mTextPlaceCount.setText(sEventCount);
         }
