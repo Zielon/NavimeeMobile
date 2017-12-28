@@ -380,7 +380,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
         geoFire = new GeoFire(mHotspotPresenter.getHotSpotDatabaseRefernce());
-        this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), 3);
+        this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), 10);
 
 
     }
@@ -436,7 +436,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                    }
                                    // setup GeoFire
                                    latLngCurrent = latLng;
-                                   geoQuery = geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), 3);
+                                   geoQuery = geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), 10);
                                    geoQuery.addGeoQueryEventListener(HotSpotFragment.this);
                                    eventsOnMap.clear();
                                    mClusterManager.clearItems();
