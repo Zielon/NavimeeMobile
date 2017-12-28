@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -107,12 +108,15 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
         });
     }
 
-    public void setRouteFromDriver(String locationName,int durationInSec) {
+    public void setRouteFromDriver(String locationAddress,String locationName,int durationInSec, int distanceValue,LatLng latLng) {
         HashMap<String, Object> feedBackObject = new HashMap<>();
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
         feedBackObject.put("userId", userId);
+        feedBackObject.put("locationAddress", locationAddress);
         feedBackObject.put("locationName", locationName);
         feedBackObject.put("durationInSec",durationInSec);
+        feedBackObject.put("distance",distanceValue);
+        feedBackObject.put("geoPoint",latLng);
         mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child("FEEDBACK").push().setValue(feedBackObject);
     }
 
@@ -122,6 +126,24 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
 
     public double getLastLng() {
         return mDataManager.getPreferencesHelper().getValueFloat(Const.LAST_LOCATION_LNG);
+    }
+
+    public boolean getFeedbackBoolean() {
+        return mDataManager.getPreferencesHelper().getValueWithDefaultFalse(Const.IS_FEEDBACK);
+    }
+
+    public void setFeedbackBoolean(boolean var) {
+        mDataManager.getPreferencesHelper().setValue(Const.IS_FEEDBACK,var);
+    }
+
+    public String getFeedbackValue(String name) {
+        return mDataManager.getPreferencesHelper().getValueString(name);
+    }
+
+    public void sendFeedbackToServer(String feedbackId, int feedbackAnswer) {
+        Map<String, Object> feedbackAnswerMap = new HashMap<>();
+        feedbackAnswerMap.put("feedbackAnswer", feedbackAnswer);
+        mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child("FEEDBACK").child(feedbackId).updateChildren(feedbackAnswerMap);
     }
 
     public void addItemToFilterList(Const.HotSpotType item) {

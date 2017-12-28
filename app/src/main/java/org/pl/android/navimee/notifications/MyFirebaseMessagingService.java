@@ -21,6 +21,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
@@ -33,6 +34,7 @@ import org.pl.android.navimee.BoilerplateApplication;
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.data.DataManager;
 import org.pl.android.navimee.ui.main.MainActivity;
+import org.pl.android.navimee.util.Const;
 
 import javax.inject.Inject;
 
@@ -83,11 +85,24 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // Check if message contains a notification payload.
         //if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Data manager in service: " + dataManager.toString());
-            sendNotification("hello","witam",remoteMessage.getData().get("lat"),remoteMessage.getData().get("lng"));
-        //}
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
+        Log.d(TAG, "Data manager in service: " + dataManager.toString());
+        Const.NotificationsType type = Const.NotificationsType.valueOf(remoteMessage.getData().get("type"));
+
+        switch (type) {
+            case FEEDBACK:
+                dataManager.getPreferencesHelper().setValue(Const.IS_FEEDBACK,true);
+                dataManager.getPreferencesHelper().setValue(Const.LOCATION_NAME,remoteMessage.getData().get("locationName"));
+                dataManager.getPreferencesHelper().setValue(Const.NAME,remoteMessage.getData().get("name"));
+                dataManager.getPreferencesHelper().setValue(Const.LOCATION_ADDRESS,remoteMessage.getData().get("locationAddress"));
+                dataManager.getPreferencesHelper().setValue(Const.FEEDBACK_ID,remoteMessage.getData().get("id"));
+                break;
+            case SCHEDULED_EVENT:
+                sendNotification(remoteMessage.getData().get("title"),remoteMessage.getData().get("endTime"),remoteMessage.getData().get("lat"),remoteMessage.getData().get("lng"));
+                break;
+            case BIG_EVENT:
+                sendNotification(remoteMessage.getData().get("title"),remoteMessage.getData().get("endTime"),remoteMessage.getData().get("lat"),remoteMessage.getData().get("lng"));
+                break;
+        }
     }
     // [END receive_message]
 
@@ -128,8 +143,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setAutoCancel(true)
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setSound(defaultSoundUri)
-                .addAction(R.drawable.ic_action_whatshot,getResources().getString(R.string.drive_now), navigationIntent);
-             //   .setContentIntent(pendingIntent);
+                .addAction(R.drawable.ic_action_whatshot,getResources().getString(R.string.drive_now), navigationIntent)
+                .setContentIntent(navigationIntent);
 
 
         NotificationManager notificationManager =
