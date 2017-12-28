@@ -8,28 +8,14 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import org.pl.android.navimee.data.DataManager;
-import org.pl.android.navimee.data.model.Event;
 import org.pl.android.navimee.ui.base.BasePresenter;
-import org.pl.android.navimee.ui.settings.SettingsMvpView;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
-
-/**
- * Created by Wojtek on 2017-12-05.
- */
 
 public class NotificationPresenter extends BasePresenter<NotificationMvpView> {
 
@@ -59,10 +45,13 @@ public class NotificationPresenter extends BasePresenter<NotificationMvpView> {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    Timber.d(document .getId() + " => " + document.getData());
-                    document .getData().get("dayScheduleNotification");
-                    document .getData().get("bigEventsNotification");
-                    getMvpView().setSwitches( (Boolean)document .getData().get("dayScheduleNotification"), (Boolean)document .getData().get("bigEventsNotification"));
+                    if(!document.exists()) return;
+                    Timber.d(document.getId() + " => " + document.getData());
+
+                    boolean dayScheduleNotification = (Boolean) document.getData().get("dayScheduleNotification");
+                    boolean bigEventsNotification =  (Boolean) document.getData().get("bigEventsNotification");
+
+                    getMvpView().setSwitches(dayScheduleNotification, bigEventsNotification);
                 }
             }
         });
@@ -70,19 +59,19 @@ public class NotificationPresenter extends BasePresenter<NotificationMvpView> {
 
     public void submitCheckedChange(String name, boolean checked) {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).update(name,checked).addOnSuccessListener(new OnSuccessListener<Void>() {
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).update(name, checked).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Timber.i("Checked changed ");
             }
         })
-        .addOnFailureListener(new OnFailureListener() {
-            @SuppressLint("TimberArgCount")
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Timber.e("Error saving event", e);
-            }
-        });
+                .addOnFailureListener(new OnFailureListener() {
+                    @SuppressLint("TimberArgCount")
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Timber.e("Error saving event", e);
+                    }
+                });
 
 
     }

@@ -38,7 +38,7 @@ public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
 
     public void logout() {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        Map<String,Object> updates = new HashMap<>();
+        Map<String, Object> updates = new HashMap<>();
         updates.put("token", FieldValue.delete());
         mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).update(updates);
         mDataManager.getFirebaseService().getFirebaseAuth().signOut();
@@ -46,11 +46,11 @@ public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
     }
 
     public String getName() {
-        return  mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getDisplayName();
+        return mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getDisplayName();
     }
 
     public String getEmail() {
-        return  mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getEmail();
+        return mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getEmail();
     }
 
 }
