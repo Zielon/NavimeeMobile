@@ -8,11 +8,19 @@ import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
+
+import org.pl.android.navimee.R;
+import org.pl.android.navimee.data.model.Ribot;
+import org.pl.android.navimee.ui.base.BaseActivityFragment;
+import org.pl.android.navimee.ui.dayschedule.DayScheduleFragment;
+import org.pl.android.navimee.ui.events.EventsFragment;
+import org.pl.android.navimee.ui.hotspot.HotSpotFragment;
+import org.pl.android.navimee.ui.intro.IntroActivity;
+import org.pl.android.navimee.ui.signin.SignInActivity;
 
 import java.util.Collections;
 import java.util.List;
@@ -20,18 +28,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import org.pl.android.navimee.R;
-import org.pl.android.navimee.data.model.Ribot;
-import org.pl.android.navimee.ui.base.BaseActivity;
-import org.pl.android.navimee.ui.base.BaseActivityFragment;
-import org.pl.android.navimee.ui.intro.IntroActivity;
-import org.pl.android.navimee.ui.hotspot.HotSpotFragment;
-import org.pl.android.navimee.ui.dayschedule.DayScheduleFragment;
-import org.pl.android.navimee.ui.events.EventsFragment;
-import org.pl.android.navimee.ui.flights.FlightsFragment;
-import org.pl.android.navimee.ui.radar.RadarFragment;
-import org.pl.android.navimee.ui.signin.SignInActivity;
-import org.pl.android.navimee.util.DialogFactory;
 
 public class MainActivity extends BaseActivityFragment implements MainMvpView {
 
@@ -99,14 +95,8 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
                     case R.id.tab_events:
                         selectedFragment = EventsFragment.newInstance();
                         break;
-                    case R.id.tab_flights:
-                        selectedFragment = FlightsFragment.newInstance();
-                        break;
                     case R.id.tab_day_schedule:
                         selectedFragment = DayScheduleFragment.newInstance();
-                        break;
-                    case R.id.tab_radar:
-                        selectedFragment = RadarFragment.newInstance();
                         break;
                     case R.id.tab_hotspot:
                         selectedFragment = HotSpotFragment.newInstance();
@@ -175,8 +165,6 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
 
     @Override
     public void showError() {
-        DialogFactory.createGenericErrorDialog(this, getString(R.string.error_loading_ribots))
-                .show();
     }
 
     @Override
@@ -188,7 +176,6 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     public void showRibotsEmpty() {
         mRibotsAdapter.setRibots(Collections.<Ribot>emptyList());
         mRibotsAdapter.notifyDataSetChanged();
-        Toast.makeText(this, R.string.empty_ribots, Toast.LENGTH_LONG).show();
     }
 
     @Override
