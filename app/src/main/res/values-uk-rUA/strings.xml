@@ -42,4 +42,7 @@
     <string name="rate_app">Оцінити додаток</string>
     <string name="delete_account">Видалити аккаунт</string>
     <string name="no_account_yet">ще немає рахунку? створити обліковий запис</string>
+    <string name="yes_work">Так, це спрацювало</string>
+    <string name="no_work">Це не вдалося</string>
+    <string name="no_drive">Я туди не ходив</string>
 </resources>
