@@ -50,4 +50,6 @@
     <string name="no_work">No, it not worked</string>
     <string name="no_drive">I did not drive there</string>
     <string name="feedback">Feedback</string>
+    <string name="feeback_custom_text">Hi %1$s, did you manage to find a passenger near to %2$s?</string>
+    <string name="feeback_normal_text">Your feedback will improve your app and it will get better everyday!</string>
 </resources>
