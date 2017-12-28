@@ -157,8 +157,8 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     private HashMap<String,ClusterItemGoogleMap> eventsOnMapFilter = new HashMap<>();
     MyFabFragment dialogFrag;
     boolean isFirstAfterPermissionGranted = true;
-    int durationInSec;
-
+    int durationInSec,distanceValue;
+    LatLng locationGeo;
 
     private final static int REQUEST_CHECK_SETTINGS = 0;
 
@@ -199,7 +199,14 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         dialogFrag.setCallbacks(HotSpotFragment.this);
       //  setCallbacks((Callbacks) getActivity());
         initListeners();
-      //  showFeedBackDialog();
+        if(mHotspotPresenter.getFeedbackBoolean()) {
+            mHotspotPresenter.setFeedbackBoolean(false);
+            String name = mHotspotPresenter.getFeedbackValue(Const.NAME);
+            String address = mHotspotPresenter.getFeedbackValue(Const.LOCATION_ADDRESS);
+            String locationName = mHotspotPresenter.getFeedbackValue(Const.LOCATION_NAME);
+            String feedbackId = mHotspotPresenter.getFeedbackValue(Const.FEEDBACK_ID);
+            showFeedBackDialog(name,address,locationName,feedbackId);
+        }
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -209,33 +216,37 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         return rootView;
     }
 
-    private void showFeedBackDialog() {
+    private void showFeedBackDialog(String name, String address, String locationName,String feedBackId) {
         MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                 .title(R.string.feedback)
                 .customView(R.layout.dialog_customview, true)
                 .build();
-
+         TextView feedBackText = (TextView) dialog.getCustomView().findViewById(R.id.feedback_text);
+         feedBackText.setText(name+" "+address+" "+locationName);
          Button yesButton = (Button) dialog.getCustomView().findViewById(R.id.yes_work);
          Button nobutton = (Button) dialog.getCustomView().findViewById(R.id.no_work);
          Button noDrivebutton = (Button) dialog.getCustomView().findViewById(R.id.no_drive);
          yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("hello",v.toString());
+                mHotspotPresenter.sendFeedbackToServer(feedBackId,0);
+                dialog.dismiss();
             }
         });
 
         nobutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("hello",v.toString());
+                mHotspotPresenter.sendFeedbackToServer(feedBackId,1);
+                dialog.dismiss();
             }
         });
 
         noDrivebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("hello",v.toString());
+                mHotspotPresenter.sendFeedbackToServer(feedBackId,2);
+                dialog.dismiss();
             }
         });
 
@@ -282,7 +293,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
             public void onClick(View v) {
                 Uri gmmIntentUri = Uri.parse("google.navigation:q=" + String.valueOf(latLngEnd.latitude) + "," +
                         String.valueOf(latLngEnd.longitude));
-                mHotspotPresenter.setRouteFromDriver(mTextPlaceAddress.getText().toString(),durationInSec);
+                mHotspotPresenter.setRouteFromDriver(mTextPlaceAddress.getText().toString(),sEventName,durationInSec,distanceValue,locationGeo);
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
                 if (mapIntent.resolveActivity(getContext().getPackageManager()) != null) {
@@ -613,6 +624,8 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
             mTextPlaceDistance.setText(route.get(i).getDistanceText());
             mTextPlaceTime.setText(route.get(i).getDurationText());
             durationInSec = route.get(i).getDurationValue();
+            distanceValue = route.get(i).getDistanceValue();
+            locationGeo = route.get(i).getLatLgnBounds().getCenter();
             mTextPlaceName.setText(sEventName);
             mTextPlaceCount.setText(sEventCount);
         }
