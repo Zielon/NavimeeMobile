@@ -198,7 +198,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         dialogFrag.setCallbacks(HotSpotFragment.this);
       //  setCallbacks((Callbacks) getActivity());
         initListeners();
-        showFeedBackDialog();
+      //  showFeedBackDialog();
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());

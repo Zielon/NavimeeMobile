@@ -87,6 +87,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
             Map<String, Object> user = new HashMap<>();
             user.put("token", token);
             user.put("email", dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getEmail());
+            user.put("id",userId);
             dataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {

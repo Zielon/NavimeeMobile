@@ -65,6 +65,7 @@ public class SignUpPresenter extends BasePresenter<SignUpMvpView> {
             Map<String, Object> user = new HashMap<>();
             user.put("token", token);
             user.put("email", mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getEmail());
+            user.put("id",userId);
             user.put("bigEventsNotification", true);
             user.put("dayScheduleNotification", true);
             mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
