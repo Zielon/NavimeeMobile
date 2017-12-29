@@ -2,22 +2,18 @@ package org.pl.android.navimee.ui.settings;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 
 import com.mikepenz.materialdrawer.AccountHeader;
-import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.interfaces.OnCheckedChangeListener;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import org.pl.android.navimee.R;
@@ -36,21 +32,11 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
     //save our header or result
     private AccountHeader headerResult = null;
     private Drawer result = null;
-    private OnCheckedChangeListener onCheckedChangeListener = new OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(IDrawerItem drawerItem, CompoundButton buttonView, boolean isChecked) {
-            if (drawerItem instanceof Nameable) {
-                Log.i("material-drawer", "DrawerItem: " + ((Nameable) drawerItem).getName() + " - toggleChecked: " + isChecked);
-            } else {
-                Log.i("material-drawer", "toggleChecked: " + isChecked);
-            }
-
-            /**
-             * We load a PreferenceFragment which is the recommended way by Android
-             * see @http://developer.android.com/guide/topics/ui/settings.html#Fragment
-             * @TargetApi(11)
-             */
-            // ((BoilerplateApplication) getApplication()).get.inject(SettingsActivity.this);
+    private OnCheckedChangeListener onCheckedChangeListener = (drawerItem, buttonView, isChecked) -> {
+        if (drawerItem instanceof Nameable) {
+            Log.i("material-drawer", "DrawerItem: " + ((Nameable) drawerItem).getName() + " - toggleChecked: " + isChecked);
+        } else {
+            Log.i("material-drawer", "toggleChecked: " + isChecked);
         }
     };
 
@@ -61,40 +47,31 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
         setContentView(R.layout.activity_user);
         mSettingsPresenter.attachView(this);
 
+        Drawable grayBackground = getResources().getDrawable(R.drawable.menu_background);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        toolbar.setBackground(getResources().getDrawable(R.drawable.menu_background));
+        toolbar.setNavigationIcon(R.drawable.ic_x___close);
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
-
-        final IProfile profile;
-        if (mSettingsPresenter.getName() != null) {
-            profile = new ProfileDrawerItem().withName(mSettingsPresenter.getName()).withEmail(mSettingsPresenter.getEmail());
-        } else {
-            profile = new ProfileDrawerItem().withEmail(mSettingsPresenter.getEmail());
-        }
-
-        headerResult = new AccountHeaderBuilder()
-                .withActivity(this)
-                .withHeaderBackground(R.color.md_dark_background)
-                .withTranslucentStatusBar(false)
-                .withSavedInstance(savedInstanceState)
-                .build();
 
         result = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
                 .withTranslucentStatusBar(false)
-                .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.settings).withIcon(R.drawable.ic_action_whatshot).withIdentifier(1),
-                        new PrimaryDrawerItem().withName("Uber").withIcon(R.drawable.ic_action_whatshot).withIdentifier(2),
-                        new PrimaryDrawerItem().withName("User").withIcon(R.drawable.ic_action_whatshot).withIdentifier(3),
-                        new PrimaryDrawerItem().withName(R.string.logout).withIcon(R.drawable.ic_action_whatshot).withIdentifier(4),
+                        new PrimaryDrawerItem().withName(R.string.settings).withIcon(R.drawable.ic_settings).withIdentifier(1).withTextColor(getResources().getColor(R.color.white)),
+                        new PrimaryDrawerItem().withName("Uber").withIcon(R.drawable.ic_litera_u).withIdentifier(2).withTextColor(getResources().getColor(R.color.white)),
+                        new PrimaryDrawerItem().withName("User").withIcon(R.drawable.ic_usmiech_onboarding).withIdentifier(3).withTextColor(getResources().getColor(R.color.white)),
+                        new PrimaryDrawerItem().withName(R.string.logout).withIcon(R.drawable.ic_login_variant).withIdentifier(4).withTextColor(getResources().getColor(R.color.white)),
                         new DividerDrawerItem(),
-                        new PrimaryDrawerItem().withName(R.string.privacy_conditions).withIcon(R.drawable.ic_action_whatshot),
-                        new PrimaryDrawerItem().withName(R.string.help).withIcon(R.drawable.ic_action_whatshot),
-                        new PrimaryDrawerItem().withName(R.string.rate_app).withIcon(R.drawable.ic_action_whatshot)
+                        new PrimaryDrawerItem().withName(R.string.privacy_conditions).withIcon(R.drawable.ic_briefcase).withTextColor(getResources().getColor(R.color.white)),
+                        new PrimaryDrawerItem().withName(R.string.help).withIcon(R.drawable.ic_help_circle).withTextColor(getResources().getColor(R.color.white)),
+                        new PrimaryDrawerItem().withName(R.string.rate_app).withIcon(R.drawable.ic_thumb_up).withTextColor(getResources().getColor(R.color.white))
                 )
+                .withSliderBackgroundColor(0)
                 .withOnDrawerItemClickListener((view, position, drawerItem) -> {
                     if (drawerItem instanceof Nameable) {
                         Intent intent = null;
@@ -118,6 +95,8 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
                 .withSavedInstance(savedInstanceState)
                 .withSelectedItem(-1)
                 .buildView();
+
+        result.getSlider().setBackground(grayBackground);
 
         ((ViewGroup) findViewById(R.id.frame_container)).addView(result.getSlider());
     }

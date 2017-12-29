@@ -18,4 +18,6 @@
     <color name="filters_buttons">#ff4081</color>
     <color name="filters_buttons_selected">#c2185b</color>
     <color name="button_backgrtound">#E40455</color>
+    <color name="menu_background">#242832</color>
+    <color name="menu_name_background">#171a21</color>
 </resources>
