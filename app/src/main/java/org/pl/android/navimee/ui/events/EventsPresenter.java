@@ -151,7 +151,7 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
 
         Map<String, Object> eventMap = new HashMap<>();
         eventMap.put("startTime", event.getStartTime());
-        eventMap.put("endTime", event.getStartTime());
+        eventMap.put("endTime", event.getEndTime());
         eventMap.put("hotspotType", event.getHotspotType().name());
         eventMap.put("userId",userId);
         eventMap.put("id",event.getId());

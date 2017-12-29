@@ -69,6 +69,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         if(Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() < 30) {
             holder.addButton.setImageResource(R.drawable.ic_nawigacja);
             holder.addButton.setTag(1);
+        }  else if(mEventsPresenter.getDayScheduleList().contains(event)) {
+            holder.addButton.setImageResource(R.drawable.ic_dzwon_brzeczacy);
+            holder.addButton.setEnabled(false);
         }
 
         holder.addButton.setOnClickListener(new View.OnClickListener() {
@@ -89,10 +92,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
                 }
             }
         });
-        if(mEventsPresenter.getDayScheduleList().contains(event)) {
-            holder.addButton.setImageResource(R.drawable.ic_dzwon_brzeczacy);
-            holder.addButton.setEnabled(false);
-        }
+
 
 
     }

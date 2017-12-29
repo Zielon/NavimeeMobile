@@ -154,7 +154,6 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     GeoQuery geoQuery;
     private ClusterManager<ClusterItemGoogleMap> mClusterManager;
     private HashMap<String,ClusterItemGoogleMap> eventsOnMap = new HashMap<>();
-    private HashMap<String,ClusterItemGoogleMap> eventsOnMapFilter = new HashMap<>();
     MyFabFragment dialogFrag;
     boolean isFirstAfterPermissionGranted = true;
     int durationInSec,distanceValue;
@@ -495,23 +494,25 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                             return true;
                                         }
                                     });*/
-                                    mClusterManager = new ClusterManager<ClusterItemGoogleMap>(getContext(), googleMap);
-                                    mClusterManager.setRenderer(new MapRenderer());
-                                    mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<ClusterItemGoogleMap>() {
-                                        @Override
-                                        public boolean onClusterItemClick(ClusterItemGoogleMap clusterItemGoogleMap) {
-                                            route(latLngCurrent,clusterItemGoogleMap.getPosition(),clusterItemGoogleMap.getName(),clusterItemGoogleMap.getCount());
-                                            return false;
-                                        }
-                                    });
-                                    mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<ClusterItemGoogleMap>() {
-                                        @Override
-                                        public boolean onClusterClick(Cluster<ClusterItemGoogleMap> cluster) {
-                                            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(cluster.getPosition(), googleMap.getCameraPosition().zoom+1);
-                                            googleMap.moveCamera(yourLocation);
-                                            return false;
-                                        }
-                                    });
+                                    if(mClusterManager ==  null) {
+                                        mClusterManager = new ClusterManager<ClusterItemGoogleMap>(getContext(), googleMap);
+                                        mClusterManager.setRenderer(new MapRenderer());
+                                        mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<ClusterItemGoogleMap>() {
+                                            @Override
+                                            public boolean onClusterItemClick(ClusterItemGoogleMap clusterItemGoogleMap) {
+                                                route(latLngCurrent, clusterItemGoogleMap.getPosition(), clusterItemGoogleMap.getName(), clusterItemGoogleMap.getCount());
+                                                return false;
+                                            }
+                                        });
+                                        mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<ClusterItemGoogleMap>() {
+                                            @Override
+                                            public boolean onClusterClick(Cluster<ClusterItemGoogleMap> cluster) {
+                                                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(cluster.getPosition(), googleMap.getCameraPosition().zoom + 1);
+                                                googleMap.moveCamera(yourLocation);
+                                                return false;
+                                            }
+                                        });
+                                    }
                                     googleMap.setOnMarkerClickListener(mClusterManager);
                                     googleMap.setOnCameraIdleListener(mClusterManager);
                                 }
@@ -532,7 +533,10 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
 
     @OnClick(R.id.fab)
     public void submit(View view) {
-        dialogFrag.show(getActivity().getSupportFragmentManager(), dialogFrag.getTag());
+        if(!dialogFrag.isAdded()) {
+            dialogFrag.show(getActivity().getSupportFragmentManager(), dialogFrag.getTag());
+        }
+
     }
     @OnClick(R.id.fab_my_location)
     public void myLocation(View view) {
@@ -684,20 +688,21 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     @Override
     public void showEventOnMap(Event event) {
         Timber.d(event.getTitle());
-        if(event.getPlace() != null && event.getPlace().getGeoPoint() != null) {
-                ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(),new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()),event.getTimezone(),String.valueOf(event.getRank()),event.getHotspotType(),R.drawable.ic_plomien);
+        if(!eventsOnMap.containsKey(event.getId()) && event.getPlace() != null && event.getPlace().getGeoPoint() != null) {
+            ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(),new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()),event.getTitle(),String.valueOf(event.getRank()),event.getHotspotType(),R.drawable.ic_plomien);
             eventsOnMap.put(event.getId(),clusterItemGoogleMap);
             mClusterManager.addItem(clusterItemGoogleMap);
         }
-      //  googleMap.addMarker(bmpMar);
     }
 
     @Override
     public void showFoursquareOnMap(FourSquarePlace fourSquarePlace) {
         Timber.d(fourSquarePlace.getName());
-        ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(fourSquarePlace.getId(),new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()),fourSquarePlace.getName(),String.valueOf(fourSquarePlace.getStatsVisitsCount()),fourSquarePlace.getHotspotType(),R.drawable.ic_people);
-        eventsOnMap.put(fourSquarePlace.getId(),clusterItemGoogleMap);
-        mClusterManager.addItem(clusterItemGoogleMap);
+        if(!eventsOnMap.containsKey(fourSquarePlace.getId())) {
+            ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(fourSquarePlace.getId(), new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()), fourSquarePlace.getName(), String.valueOf(fourSquarePlace.getStatsVisitsCount()), fourSquarePlace.getHotspotType(), R.drawable.ic_people);
+            eventsOnMap.put(fourSquarePlace.getId(), clusterItemGoogleMap);
+            mClusterManager.addItem(clusterItemGoogleMap);
+        }
     }
 
 
@@ -751,7 +756,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         Log.d("k9res", "onResult: " + result.toString());
         mHotspotPresenter.clearFilterList();
         if (result.toString().equalsIgnoreCase("swiped_down")) {
-            //do something or nothing
+
         } else {
             if (result != null) {
                 ArrayMap<String, List<String>> applied_filters = (ArrayMap<String, List<String>>) result;
@@ -775,10 +780,6 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                             }*/
                         }
                     }
-                    this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), 3);
-                    this.geoQuery.addGeoQueryEventListener(this);
-                    eventsOnMap.clear();
-                    mClusterManager.clearItems();
                    // this.geoQuery.setLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), 3);
 
                 } else {
@@ -787,6 +788,11 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
             }
             //handle result
         }
+        this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), 3);
+        this.geoQuery.addGeoQueryEventListener(this);
+        eventsOnMap.clear();
+        mClusterManager.clearItems();
+
     }
 
 
