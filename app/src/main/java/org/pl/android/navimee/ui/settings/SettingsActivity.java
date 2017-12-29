@@ -47,11 +47,11 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
         setContentView(R.layout.activity_user);
         mSettingsPresenter.attachView(this);
 
-        Drawable grayBackground = getResources().getDrawable(R.drawable.menu_background);
+        Drawable grayBackground = getResources().getDrawable(R.drawable.primary);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        toolbar.setBackground(getResources().getDrawable(R.drawable.menu_background));
+        toolbar.setBackground(getResources().getDrawable(R.drawable.primary));
         toolbar.setNavigationIcon(R.drawable.ic_x___close);
 
         setSupportActionBar(toolbar);
@@ -64,7 +64,7 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
                 .addDrawerItems(
                         new PrimaryDrawerItem().withName(R.string.settings).withIcon(R.drawable.ic_settings).withIdentifier(1).withTextColor(getResources().getColor(R.color.white)),
                         new PrimaryDrawerItem().withName("Uber").withIcon(R.drawable.ic_litera_u).withIdentifier(2).withTextColor(getResources().getColor(R.color.white)),
-                        new PrimaryDrawerItem().withName("User").withIcon(R.drawable.ic_usmiech_onboarding).withIdentifier(3).withTextColor(getResources().getColor(R.color.white)),
+                        new PrimaryDrawerItem().withName("User").withIcon(R.drawable.ic_emoticon_happy).withIdentifier(3).withTextColor(getResources().getColor(R.color.white)),
                         new PrimaryDrawerItem().withName(R.string.logout).withIcon(R.drawable.ic_login_variant).withIdentifier(4).withTextColor(getResources().getColor(R.color.white)),
                         new DividerDrawerItem(),
                         new PrimaryDrawerItem().withName(R.string.privacy_conditions).withIcon(R.drawable.ic_briefcase).withTextColor(getResources().getColor(R.color.white)),
