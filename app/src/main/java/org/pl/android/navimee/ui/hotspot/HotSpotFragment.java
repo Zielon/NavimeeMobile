@@ -158,7 +158,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     boolean isFirstAfterPermissionGranted = true;
     int durationInSec,distanceValue;
     LatLng locationGeo;
-    int radius = 2;
+    int radius = 10;
 
     private final static int REQUEST_CHECK_SETTINGS = 0;
 
