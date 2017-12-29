@@ -153,7 +153,6 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     GeoQuery geoQuery;
     private ClusterManager<ClusterItemGoogleMap> mClusterManager;
     private HashMap<String,ClusterItemGoogleMap> eventsOnMap = new HashMap<>();
-    private HashMap<String,ClusterItemGoogleMap> eventsOnMapFilter = new HashMap<>();
     MyFabFragment dialogFrag;
     boolean isFirstAfterPermissionGranted = true;
 
@@ -631,20 +630,21 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     @Override
     public void showEventOnMap(Event event) {
         Timber.d(event.getTitle());
-        if(event.getPlace() != null && event.getPlace().getGeoPoint() != null) {
-                ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(),new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()),event.getTimezone(),String.valueOf(event.getRank()),event.getHotspotType(),R.drawable.ic_plomien);
+        if(!eventsOnMap.containsKey(event.getId()) && event.getPlace() != null && event.getPlace().getGeoPoint() != null) {
+            ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(),new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()),event.getTimezone(),String.valueOf(event.getRank()),event.getHotspotType(),R.drawable.ic_plomien);
             eventsOnMap.put(event.getId(),clusterItemGoogleMap);
             mClusterManager.addItem(clusterItemGoogleMap);
         }
-      //  googleMap.addMarker(bmpMar);
     }
 
     @Override
     public void showFoursquareOnMap(FourSquarePlace fourSquarePlace) {
         Timber.d(fourSquarePlace.getName());
-        ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(fourSquarePlace.getId(),new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()),fourSquarePlace.getName(),String.valueOf(fourSquarePlace.getStatsVisitsCount()),fourSquarePlace.getHotspotType(),R.drawable.ic_people);
-        eventsOnMap.put(fourSquarePlace.getId(),clusterItemGoogleMap);
-        mClusterManager.addItem(clusterItemGoogleMap);
+        if(!eventsOnMap.containsKey(fourSquarePlace.getId())) {
+            ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(fourSquarePlace.getId(), new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()), fourSquarePlace.getName(), String.valueOf(fourSquarePlace.getStatsVisitsCount()), fourSquarePlace.getHotspotType(), R.drawable.ic_people);
+            eventsOnMap.put(fourSquarePlace.getId(), clusterItemGoogleMap);
+            mClusterManager.addItem(clusterItemGoogleMap);
+        }
     }
 
 
