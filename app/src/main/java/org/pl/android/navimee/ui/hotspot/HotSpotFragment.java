@@ -698,7 +698,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         Log.d("k9res", "onResult: " + result.toString());
         mHotspotPresenter.clearFilterList();
         if (result.toString().equalsIgnoreCase("swiped_down")) {
-            //do something or nothing
+
         } else {
             if (result != null) {
                 ArrayMap<String, List<String>> applied_filters = (ArrayMap<String, List<String>>) result;
@@ -722,10 +722,6 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                             }*/
                         }
                     }
-                    this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), 3);
-                    this.geoQuery.addGeoQueryEventListener(this);
-                    eventsOnMap.clear();
-                    mClusterManager.clearItems();
                    // this.geoQuery.setLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), 3);
 
                 } else {
@@ -734,6 +730,11 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
             }
             //handle result
         }
+        this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), 3);
+        this.geoQuery.addGeoQueryEventListener(this);
+        eventsOnMap.clear();
+        mClusterManager.clearItems();
+
     }
 
 
