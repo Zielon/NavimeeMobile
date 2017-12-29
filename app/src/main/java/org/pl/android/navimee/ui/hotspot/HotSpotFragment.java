@@ -483,7 +483,10 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
 
     @OnClick(R.id.fab)
     public void submit(View view) {
-        dialogFrag.show(getActivity().getSupportFragmentManager(), dialogFrag.getTag());
+        if(!dialogFrag.isAdded()) {
+            dialogFrag.show(getActivity().getSupportFragmentManager(), dialogFrag.getTag());
+        }
+
     }
     @OnClick(R.id.fab_my_location)
     public void myLocation(View view) {
@@ -633,7 +636,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     public void showEventOnMap(Event event) {
         Timber.d(event.getTitle());
         if(!eventsOnMap.containsKey(event.getId()) && event.getPlace() != null && event.getPlace().getGeoPoint() != null) {
-            ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(),new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()),event.getTimezone(),String.valueOf(event.getRank()),event.getHotspotType(),R.drawable.ic_plomien);
+            ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(),new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()),event.getTitle(),String.valueOf(event.getRank()),event.getHotspotType(),R.drawable.ic_plomien);
             eventsOnMap.put(event.getId(),clusterItemGoogleMap);
             mClusterManager.addItem(clusterItemGoogleMap);
         }
