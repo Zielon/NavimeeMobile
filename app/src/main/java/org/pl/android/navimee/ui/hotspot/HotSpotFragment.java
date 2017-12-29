@@ -444,23 +444,25 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                             return true;
                                         }
                                     });*/
-                                    mClusterManager = new ClusterManager<ClusterItemGoogleMap>(getContext(), googleMap);
-                                    mClusterManager.setRenderer(new MapRenderer());
-                                    mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<ClusterItemGoogleMap>() {
-                                        @Override
-                                        public boolean onClusterItemClick(ClusterItemGoogleMap clusterItemGoogleMap) {
-                                            route(latLngCurrent,clusterItemGoogleMap.getPosition(),clusterItemGoogleMap.getName(),clusterItemGoogleMap.getCount());
-                                            return false;
-                                        }
-                                    });
-                                    mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<ClusterItemGoogleMap>() {
-                                        @Override
-                                        public boolean onClusterClick(Cluster<ClusterItemGoogleMap> cluster) {
-                                            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(cluster.getPosition(), googleMap.getCameraPosition().zoom+1);
-                                            googleMap.moveCamera(yourLocation);
-                                            return false;
-                                        }
-                                    });
+                                    if(mClusterManager ==  null) {
+                                        mClusterManager = new ClusterManager<ClusterItemGoogleMap>(getContext(), googleMap);
+                                        mClusterManager.setRenderer(new MapRenderer());
+                                        mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<ClusterItemGoogleMap>() {
+                                            @Override
+                                            public boolean onClusterItemClick(ClusterItemGoogleMap clusterItemGoogleMap) {
+                                                route(latLngCurrent, clusterItemGoogleMap.getPosition(), clusterItemGoogleMap.getName(), clusterItemGoogleMap.getCount());
+                                                return false;
+                                            }
+                                        });
+                                        mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<ClusterItemGoogleMap>() {
+                                            @Override
+                                            public boolean onClusterClick(Cluster<ClusterItemGoogleMap> cluster) {
+                                                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(cluster.getPosition(), googleMap.getCameraPosition().zoom + 1);
+                                                googleMap.moveCamera(yourLocation);
+                                                return false;
+                                            }
+                                        });
+                                    }
                                     googleMap.setOnMarkerClickListener(mClusterManager);
                                     googleMap.setOnCameraIdleListener(mClusterManager);
                                 }
