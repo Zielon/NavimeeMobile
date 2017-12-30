@@ -129,6 +129,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("lat",lat);
         intent.putExtra("lng",lng);
+        intent.putExtra("name",title);
+        intent.putExtra("count",100);
 
         PendingIntent navigationIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);

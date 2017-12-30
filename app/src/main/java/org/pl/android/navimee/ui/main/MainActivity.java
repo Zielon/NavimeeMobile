@@ -39,6 +39,9 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     @Inject MainPresenter mMainPresenter;
     @Inject RibotsAdapter mRibotsAdapter;
     static final int SETTINGS_REQUEST = 1;  // The request code
+    boolean isFromNotification = false;
+    double lat,lng;
+    String name,count;
 
    // @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
 
@@ -69,13 +72,18 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         }*/
 
         if(getIntent() != null &&  getIntent().getExtras() != null && getIntent().getExtras().get("lat") != null && getIntent().getExtras().get("lng") != null) {
-            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + getIntent().getExtras().get("lat") + "," +
+      /*      Uri gmmIntentUri = Uri.parse("google.navigation:q=" + getIntent().getExtras().get("lat") + "," +
                     getIntent().getExtras().get("lng"));
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
             mapIntent.setPackage("com.google.android.apps.maps");
             if (mapIntent.resolveActivity(getPackageManager()) != null) {
                 startActivity(mapIntent);
-            }
+            }*/
+            isFromNotification = true;
+            lat =  Double.valueOf(getIntent().getExtras().getString("lat"));
+            lng =  Double.valueOf(getIntent().getExtras().getString("lng"));
+            name = getIntent().getExtras().getString("name");
+            count = getIntent().getExtras().getString("count");
         }
 
         checkAppIntro();
@@ -99,6 +107,15 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
                         break;
                     case R.id.tab_hotspot:
                         selectedFragment = HotSpotFragment.newInstance();
+                        if(isFromNotification) {
+                            Bundle bundle = new Bundle();
+                            bundle.putBoolean("isFromNotification",true);
+                            bundle.putDouble("lat", lat);
+                            bundle.putDouble("lng", lng);
+                            bundle.putString("name",name);
+                            bundle.putString("count",count);
+                            selectedFragment.setArguments(bundle);
+                        }
                         break;
                 }
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
