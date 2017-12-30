@@ -5,6 +5,7 @@
     <string name="events">Wydarzenia</string>
     <string name="day_schedule">Plan Dnia</string>
     <string name="hotspot">Hotspot</string>
+    <string name="save">Zapisz</string>
     <string name="user">Użytkownik</string>
     <string name="user_exists">Uzytkownik juz istnieje</string>
     <string name="sign_in_facebook">Kontynuuj z Facebook</string>
@@ -21,7 +22,6 @@
     <string name="delete_day_schedule">Usunięto z Planu Dnia</string>
     <string name="login_failed">Logowanie nie powiodło się</string>
     <string name="login_progress">Logowanie trwa..</string>
-    <string name="email">Email</string>
     <string name="password">Hasło</string>
     <string name="create_account">Stwórz konto</string>
     <string name="already_member_login">Masz juz konto? Zaloguj się</string>

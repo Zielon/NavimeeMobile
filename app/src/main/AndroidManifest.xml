@@ -46,22 +46,19 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
-
         <activity
             android:name=".ui.signup.SignUpActivity"
             android:theme="@style/AppTheme.Dark" />
-
         <activity
             android:name=".ui.settings.SettingsActivity"
             android:label="Menu"
             android:launchMode="singleTop"
-            android:parentActivityName=".ui.main.MainActivity"/>
-
+            android:parentActivityName=".ui.main.MainActivity" />
         <activity
             android:name=".ui.settings.notification.NotificationActivity"
             android:label="@string/notifications"
             android:parentActivityName=".ui.settings.SettingsActivity"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
 
         <service android:name=".data.SyncService" />
 
@@ -91,7 +88,21 @@
         <activity
             android:name=".ui.settings.user.UserSettingsActivity"
             android:label="@string/user"
-            android:parentActivityName=".ui.settings.SettingsActivity"/>
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.settings.SettingsActivity" />
+
+        <activity
+            android:name=".ui.settings.user.UserPasswordChangeActivity"
+            android:label="@string/change_password"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.settings.user.UserSettingsActivity" />
+
+        <activity
+            android:name=".ui.settings.user.UserEmailChangeActivity"
+            android:label="@string/change_email"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.settings.user.UserSettingsActivity"/>
+
     </application>
 
 </manifest>

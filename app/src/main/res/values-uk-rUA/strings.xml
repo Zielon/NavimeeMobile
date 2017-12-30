@@ -12,6 +12,7 @@
     <string name="logout_text">вийти</string>
     <string name="add">додати до розкладу</string>
     <string name="delete">видалити</string>
+    <string name="save">економити</string>
     <string name="drive_now">йди вже</string>
     <string name="create_account_progress">створення рахунку..</string>
     <string name="valid_email_address">Введіть правильний електронний лист</string>
@@ -21,7 +22,6 @@
     <string name="delete_day_schedule">вилучено з графіка</string>
     <string name="login_failed">помилка логіну</string>
     <string name="login_progress">Вхід в процес роботи..</string>
-    <string name="email">Email</string>
     <string name="password">пароль</string>
     <string name="create_account">Створити обліковий запис</string>
     <string name="already_member_login">Вже є аккаунт? Увійдіть</string>

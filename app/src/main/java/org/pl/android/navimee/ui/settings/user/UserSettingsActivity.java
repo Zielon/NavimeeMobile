@@ -55,8 +55,10 @@ public class UserSettingsActivity extends BaseActivity {
                             Timber.d(String.valueOf(position));
                         } else if (position == 1) {
                             Timber.d(String.valueOf(position));
+                            intent = new Intent(UserSettingsActivity.this, UserEmailChangeActivity.class);
                         } else if (position == 2) {
                             Timber.d(String.valueOf(position));
+                            intent = new Intent(UserSettingsActivity.this, UserPasswordChangeActivity.class);
                         }
 
                         if (intent != null) {

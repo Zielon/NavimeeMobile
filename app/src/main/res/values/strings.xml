@@ -12,6 +12,7 @@
     <string name="logout_text">Log out</string>
     <string name="add">Add to Schedule</string>
     <string name="delete">Delete</string>
+    <string name="save">Save</string>
     <string name="drive_now">Go now</string>
     <string name="create_account_progress">Creating Account...</string>
     <string name="valid_email_address">Type correct email address</string>
