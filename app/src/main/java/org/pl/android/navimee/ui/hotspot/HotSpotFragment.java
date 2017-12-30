@@ -158,6 +158,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     boolean isFirstAfterPermissionGranted = true;
     int durationInSec,distanceValue;
     LatLng locationGeo;
+    int radius = 10;
 
     private final static int REQUEST_CHECK_SETTINGS = 0;
 
@@ -326,9 +327,10 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                 .getLastKnownLocation()
                 .observeOn(AndroidSchedulers.mainThread());
         final LocationRequest locationRequest = LocationRequest.create()
+                .setSmallestDisplacement(100)
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setNumUpdates(5)
-                .setInterval(100);
+                .setFastestInterval(1000 * 2) //Do not receive the updated any frequent than 10 sec
+                .setInterval(1000 * 4); // Receive location update every 20 sec
 
         locationUpdatesObservable = locationProvider
                 .checkLocationSettings(
@@ -379,7 +381,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
         geoFire = new GeoFire(mHotspotPresenter.getHotSpotDatabaseRefernce());
-        this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), 10);
+        this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radius);
 
 
     }
@@ -397,22 +399,6 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                     public void accept(LatLng latLng) throws Exception {
                         CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 13);
                         googleMap.moveCamera(yourLocation);
-                        //mock
-                        LatLng latLng1 = new LatLng(latLng.latitude+0.04,latLng.longitude+0.05);
-                        LatLng latLng2 = new LatLng(latLng.latitude-0.04,latLng.longitude-0.05);
-                       /* googleMap.addCircle(new CircleOptions()
-                                .center(latLng1)
-                                .radius(2000)
-                                .strokeColor(Color.BLUE)
-                                .fillColor(Color.RED))
-                                .setClickable(true);
-
-                        googleMap.addCircle(new CircleOptions()
-                                .center(latLng2)
-                                .radius(1500)
-                                .strokeColor(Color.BLUE)
-                                .fillColor(Color.RED))
-                                .setClickable(true);*/
                     }
                 }, new ErrorHandler());
 
@@ -426,16 +412,18 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                 .subscribe(new Consumer<LatLng>() {
                                @Override
                                public void accept(LatLng latLng) throws Exception {
-
+                                   Timber.d("ON LOCATION UPDATE");
                                    mHotspotPresenter.setLastLocationLatLng(latLng);
                                    if (isFirstAfterPermissionGranted) {
                                        CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 14);
                                        googleMap.moveCamera(yourLocation);
                                        isFirstAfterPermissionGranted = false;
+                                   } else {
+                                       CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, googleMap.getCameraPosition().zoom);
+                                       googleMap.moveCamera(yourLocation);
                                    }
-                                   // setup GeoFire
                                    latLngCurrent = latLng;
-                                   geoQuery = geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), 10);
+                                   geoQuery = geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
                                    geoQuery.addGeoQueryEventListener(HotSpotFragment.this);
                                    eventsOnMap.clear();
                                    mClusterManager.clearItems();
@@ -789,7 +777,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
             }
             //handle result
         }
-        this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), 3);
+        this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
         this.geoQuery.addGeoQueryEventListener(this);
         eventsOnMap.clear();
         mClusterManager.clearItems();
