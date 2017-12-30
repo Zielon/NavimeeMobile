@@ -437,6 +437,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                    }
                                    latLngCurrent = latLng;
                                    if(isFromNotification) {
+                                       isFromNotification = false;
                                        route(new LatLng(latNotification,lngNotification),latLng,notificationName,notificationCount);
                                    }
                                    geoQuery = geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);

@@ -108,6 +108,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
                     case R.id.tab_hotspot:
                         selectedFragment = HotSpotFragment.newInstance();
                         if(isFromNotification) {
+                            isFromNotification = false;
                             Bundle bundle = new Bundle();
                             bundle.putBoolean("isFromNotification",true);
                             bundle.putDouble("lat", lat);
