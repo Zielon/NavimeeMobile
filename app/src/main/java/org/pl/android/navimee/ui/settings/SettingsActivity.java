@@ -4,13 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.interfaces.OnCheckedChangeListener;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
@@ -30,14 +28,6 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
     SettingsPresenter settingsPresenter;
     private Drawer result = null;
 
-    private OnCheckedChangeListener onCheckedChangeListener = (drawerItem, buttonView, isChecked) -> {
-        if (drawerItem instanceof Nameable) {
-            Log.i("material-drawer", "DrawerItem: " + ((Nameable) drawerItem).getName() + " - toggleChecked: " + isChecked);
-        } else {
-            Log.i("material-drawer", "toggleChecked: " + isChecked);
-        }
-    };
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +41,6 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
 
         result = new DrawerBuilder()
                 .withActivity(this)
-                // .withToolbar(toolbar)
                 .withTranslucentStatusBar(false)
                 .addDrawerItems(
                         new PrimaryDrawerItem().withName(R.string.settings).withIcon(R.drawable.ic_settings).withIdentifier(1).withTextColor(getResources().getColor(R.color.white)),

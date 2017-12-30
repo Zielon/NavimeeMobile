@@ -7,8 +7,8 @@ import org.apache.commons.collections4.ListUtils;
 import org.pl.android.navimee.data.DataManager;
 import org.pl.android.navimee.injection.ConfigPersistent;
 import org.pl.android.navimee.ui.base.BasePresenter;
+import org.pl.android.navimee.util.ExternalProviders;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +16,8 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import io.reactivex.disposables.Disposable;
+
+import static org.pl.android.navimee.util.FirebasePaths.USERS;
 
 @ConfigPersistent
 public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
@@ -45,29 +47,25 @@ public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
         String userId = firebaseUser.getUid();
         Map<String, Object> updates = new HashMap<>();
         updates.put("token", FieldValue.delete());
-        dataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).update(updates);
+
+        dataManager.getFirebaseService().getFirebaseFirestore().collection(USERS).document(userId).update(updates);
         dataManager.getFirebaseService().getFirebaseAuth().signOut();
+
         getMvpView().onLogout();
     }
 
     public String getName() {
-        if (firebaseUser == null) return "";
         return firebaseUser.getDisplayName();
     }
 
     public String getEmail() {
-        if (firebaseUser == null) return "";
         return firebaseUser.getEmail();
     }
 
     public boolean isExternalProvider() {
-        if (firebaseUser == null) return false;
         List<String> actualProviders = firebaseUser.getProviders();
         if (actualProviders == null) return false;
 
-        List<String> providers = new ArrayList<>();
-        providers.add("facebook.com");
-
-        return ListUtils.intersection(actualProviders, providers).size() > 0;
+        return ListUtils.intersection(actualProviders, ExternalProviders.getExternalProviders()).size() > 0;
     }
 }

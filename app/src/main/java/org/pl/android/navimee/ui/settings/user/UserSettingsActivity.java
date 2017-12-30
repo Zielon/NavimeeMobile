@@ -3,12 +3,10 @@ package org.pl.android.navimee.ui.settings.user;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ViewGroup;
 
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.interfaces.OnCheckedChangeListener;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
@@ -27,14 +25,6 @@ public class UserSettingsActivity extends BaseActivity {
     private String userEmail;
     private boolean external;
     private Drawer drawer = null;
-
-    private OnCheckedChangeListener onCheckedChangeListener = (drawerItem, buttonView, isChecked) -> {
-        if (drawerItem instanceof Nameable) {
-            Log.i("material-drawer", "DrawerItem: " + ((Nameable) drawerItem).getName() + " - toggleChecked: " + isChecked);
-        } else {
-            Log.i("material-drawer", "toggleChecked: " + isChecked);
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
