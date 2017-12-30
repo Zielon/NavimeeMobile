@@ -13,12 +13,14 @@
         android:textColorHint="@color/white">
 
         <EditText
+            android:id="@+id/input_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email"
             android:textColorHighlight="@color/white"
             android:textColorHint="@color/white"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:inputType="textEmailAddress" />
 
     </android.support.design.widget.TextInputLayout>
 
