@@ -159,7 +159,10 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     int durationInSec,distanceValue;
     LatLng locationGeo;
     int radius = 10;
-
+    double latNotification;
+    double lngNotification;
+    boolean isFromNotification = false;
+    String notificationName,notificationCount;
     private final static int REQUEST_CHECK_SETTINGS = 0;
 
     @Inject HotSpotPresenter mHotspotPresenter;
@@ -212,6 +215,16 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
             MapsInitializer.initialize(getActivity().getApplicationContext());
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+
+            latNotification = bundle.getDouble("lat", 0.0);
+            lngNotification = bundle.getDouble("lng", 0.0);
+            isFromNotification = true;
+            notificationName = bundle.getString("name", "");
+            notificationCount = bundle.getString("count", "");
         }
         return rootView;
     }
@@ -423,6 +436,10 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                        googleMap.moveCamera(yourLocation);
                                    }
                                    latLngCurrent = latLng;
+                                   if(isFromNotification) {
+                                       isFromNotification = false;
+                                       route(new LatLng(latNotification,lngNotification),latLng,notificationName,notificationCount);
+                                   }
                                    geoQuery = geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
                                    geoQuery.addGeoQueryEventListener(HotSpotFragment.this);
                                    eventsOnMap.clear();
