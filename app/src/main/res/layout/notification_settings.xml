@@ -17,6 +17,7 @@
         android:paddingBottom="10dp"
         android:paddingLeft="20dp"
         android:paddingTop="10dp"
+        android:textSize="16sp"
         android:textColor="@color/white"
         android:text="@string/notifications_day_schedule" />
 
@@ -38,6 +39,7 @@
         android:layout_alignParentStart="true"
         android:paddingLeft="20dp"
         android:textColor="@color/white"
+        android:textSize="16sp"
         android:text="@string/notifications_big_events" />
 
     <Switch

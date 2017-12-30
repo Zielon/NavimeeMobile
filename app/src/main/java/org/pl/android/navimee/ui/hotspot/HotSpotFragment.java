@@ -701,7 +701,8 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         if(!eventsOnMap.containsKey(fourSquarePlace.getId())) {
             ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(fourSquarePlace.getId(), new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()), fourSquarePlace.getName(), String.valueOf(fourSquarePlace.getStatsVisitsCount()), fourSquarePlace.getHotspotType(), R.drawable.ic_people);
             eventsOnMap.put(fourSquarePlace.getId(), clusterItemGoogleMap);
-            mClusterManager.addItem(clusterItemGoogleMap);
+            if(mClusterManager != null)
+                mClusterManager.addItem(clusterItemGoogleMap);
         }
     }
 

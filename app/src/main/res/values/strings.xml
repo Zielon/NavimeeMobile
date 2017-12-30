@@ -5,6 +5,7 @@
     <string name="events">Events</string>
     <string name="day_schedule">Schedule</string>
     <string name="hotspot">Hotspot</string>
+    <string name="user">User</string>
     <string name="user_exists">User already logged in</string>
     <string name="sign_in_facebook">Log in with Facebook</string>
     <string name="sign_in_google">Log in with Google</string>

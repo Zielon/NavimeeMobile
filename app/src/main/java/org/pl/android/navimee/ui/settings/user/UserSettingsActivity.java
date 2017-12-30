@@ -1,0 +1,86 @@
+package org.pl.android.navimee.ui.settings.user;
+
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.ViewGroup;
+
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.interfaces.OnCheckedChangeListener;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.Nameable;
+
+import org.pl.android.navimee.R;
+import org.pl.android.navimee.ui.base.BaseActivity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import timber.log.Timber;
+
+public class UserSettingsActivity extends BaseActivity {
+
+    private String userName;
+    private String userEmail;
+    private boolean external;
+    private Drawer drawer = null;
+
+    private OnCheckedChangeListener onCheckedChangeListener = (drawerItem, buttonView, isChecked) -> {
+        if (drawerItem instanceof Nameable) {
+            Log.i("material-drawer", "DrawerItem: " + ((Nameable) drawerItem).getName() + " - toggleChecked: " + isChecked);
+        } else {
+            Log.i("material-drawer", "toggleChecked: " + isChecked);
+        }
+    };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_user_settings);
+        Drawable grayBackground = getResources().getDrawable(R.drawable.primary);
+
+        userName = getIntent().getStringExtra("NAME");
+        userEmail = getIntent().getStringExtra("EMAIL");
+        external = getIntent().getBooleanExtra("EXTERNAL", false);
+
+        List<IDrawerItem> drawerItems = new ArrayList<>();
+        drawerItems.add(new PrimaryDrawerItem().withName(userName).withIcon(R.drawable.ic_emoticon_happy).withTextColor(getResources().getColor(R.color.white)));
+        drawerItems.add(new PrimaryDrawerItem().withName(userEmail).withIcon(R.drawable.ic_list).withTextColor(getResources().getColor(R.color.white)));
+
+        if (!external)
+            drawerItems.add(new PrimaryDrawerItem().withName("**********").withIcon(R.drawable.ic_kludka).withTextColor(getResources().getColor(R.color.white)));
+
+        drawer = new DrawerBuilder()
+                .withActivity(this)
+                .withTranslucentStatusBar(false)
+                .addDrawerItems(drawerItems.toArray(new IDrawerItem[drawerItems.size()]))
+                .withSliderBackgroundColor(0)
+                .withOnDrawerItemClickListener((view, position, drawerItem) -> {
+                    if (drawerItem instanceof Nameable) {
+                        Intent intent = null;
+                        if (position == 0) {
+                            Timber.d(String.valueOf(position));
+                        } else if (position == 1) {
+                            Timber.d(String.valueOf(position));
+                        } else if (position == 2) {
+                            Timber.d(String.valueOf(position));
+                        }
+
+                        if (intent != null) {
+                            UserSettingsActivity.this.startActivity(intent);
+                        }
+                    }
+                    return false;
+                })
+                .withSavedInstance(savedInstanceState)
+                .withSelectedItem(-1)
+                .buildView();
+
+        drawer.getSlider().setBackground(grayBackground);
+
+        ((ViewGroup) findViewById(R.id.frame_container)).addView(drawer.getSlider());
+    }
+}

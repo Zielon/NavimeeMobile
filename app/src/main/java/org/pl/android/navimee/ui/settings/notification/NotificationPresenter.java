@@ -45,11 +45,11 @@ public class NotificationPresenter extends BasePresenter<NotificationMvpView> {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    if(!document.exists()) return;
+                    if (!document.exists()) return;
                     Timber.d(document.getId() + " => " + document.getData());
 
                     boolean dayScheduleNotification = (Boolean) document.getData().get("dayScheduleNotification");
-                    boolean bigEventsNotification =  (Boolean) document.getData().get("bigEventsNotification");
+                    boolean bigEventsNotification = (Boolean) document.getData().get("bigEventsNotification");
 
                     getMvpView().setSwitches(dayScheduleNotification, bigEventsNotification);
                 }
