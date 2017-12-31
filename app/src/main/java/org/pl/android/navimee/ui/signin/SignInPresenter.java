@@ -90,9 +90,12 @@ public class SignInPresenter extends BasePresenter<SignInMvpView> {
         if(mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() != null) {
             String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
             String token = mDataManager.getPreferencesHelper().getValueString(Const.MESSAGING_TOKEN);
+            String name = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getDisplayName();
             Map<String, Object> user = new HashMap<>();
             user.put("token", token);
             user.put("email", mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getEmail());
+            user.put("id",userId);
+            user.put("name",name);
             mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).set(user,SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {

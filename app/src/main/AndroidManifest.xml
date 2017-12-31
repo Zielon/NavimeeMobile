@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="org.pl.android.navimee" >
+    package="org.pl.android.navimee">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -9,71 +9,61 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
 
-
     <application
-        android:name="org.pl.android.navimee.BoilerplateApplication"
+        android:name=".BoilerplateApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        tools:replace="android:allowBackup"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:allowBackup">
         <activity
-            android:name="org.pl.android.navimee.ui.main.MainActivity"
-            android:label="@string/app_name" >
+            android:name=".ui.main.MainActivity"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name="org.pl.android.navimee.ui.intro.IntroActivity"
-            android:label="@string/app_name"
-         />
-
+            android:name=".ui.intro.IntroActivity"
+            android:label="@string/app_name" />
         <activity
-            android:name="org.pl.android.navimee.ui.signin.SignInActivity"
-            android:theme="@style/AppTheme.Dark"
-            />
+            android:name=".ui.signin.SignInActivity"
+            android:theme="@style/AppTheme.Dark" />
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
 
-        <meta-data android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
-
-        <activity android:name="com.facebook.FacebookActivity"
-            android:configChanges=
-                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
-
-        <activity android:name="org.pl.android.navimee.ui.signup.SignUpActivity" android:theme="@style/AppTheme.Dark" />
-
         <activity
-            android:name="org.pl.android.navimee.ui.settings.SettingsActivity"
-            android:theme="@style/MaterialDrawerThemeCustom"
-            android:parentActivityName="org.pl.android.navimee.ui.main.MainActivity"
-           >
-        </activity>
-
+            android:name=".ui.signup.SignUpActivity"
+            android:theme="@style/AppTheme.Dark" />
         <activity
-            android:name="org.pl.android.navimee.ui.settings.notification.NotificationActivity"
-            android:theme="@style/AppTheme"
+            android:name=".ui.settings.SettingsActivity"
+            android:label="Menu"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.main.MainActivity" />
+        <activity
+            android:name=".ui.settings.notification.NotificationActivity"
             android:label="@string/notifications"
-            android:parentActivityName="org.pl.android.navimee.ui.settings.SettingsActivity"
-            >
-        </activity>
+            android:parentActivityName=".ui.settings.SettingsActivity"
+            android:theme="@style/AppTheme" />
 
-        <service android:name="org.pl.android.navimee.data.SyncService"/>
+        <service android:name=".data.SyncService" />
 
         <receiver
-            android:name="org.pl.android.navimee.data.SyncService$SyncOnConnectionAvailable"
+            android:name=".data.SyncService$SyncOnConnectionAvailable"
             android:enabled="false">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -94,6 +84,25 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+
+        <activity
+            android:name=".ui.settings.user.UserSettingsActivity"
+            android:label="@string/user"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.settings.SettingsActivity" />
+
+        <activity
+            android:name=".ui.settings.user.UserPasswordChangeActivity"
+            android:label="@string/change_password"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.settings.user.UserSettingsActivity" />
+
+        <activity
+            android:name=".ui.settings.user.UserEmailChangeActivity"
+            android:label="@string/change_email"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.settings.user.UserSettingsActivity"/>
+
     </application>
 
 </manifest>

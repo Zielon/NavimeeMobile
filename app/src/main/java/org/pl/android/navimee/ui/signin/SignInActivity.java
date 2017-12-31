@@ -37,10 +37,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-/**
- * Created by Wojtek on 2017-10-21.
- */
-
 public class SignInActivity extends BaseActivity implements SignInMvpView {
 
     @Inject

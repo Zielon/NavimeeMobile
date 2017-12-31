@@ -1,28 +1,20 @@
 package org.pl.android.navimee.ui.settings.notification;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
-import org.pl.android.navimee.ui.settings.SettingsPresenter;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
-import butterknife.OnClick;
-
-/**
- * Created by Wojtek on 2017-12-05.
- */
 
 public class NotificationActivity extends BaseActivity implements NotificationMvpView {
-
 
     @BindView(R.id.day_schedule_notifications_text)
     TextView mDayScheduleNotiText;
@@ -32,7 +24,6 @@ public class NotificationActivity extends BaseActivity implements NotificationMv
     TextView mBigEventsNotiText;
     @BindView(R.id.big_events_notifications_button)
     Switch mBigEventsNotiSwitch;
-
 
     @Inject
     NotificationPresenter mNotificationPresenter;
@@ -54,24 +45,21 @@ public class NotificationActivity extends BaseActivity implements NotificationMv
         mBigEventsNotiSwitch.setChecked(bigEventsNotification);
     }
 
-
-    @OnCheckedChanged ({R.id.day_schedule_notifications_button,R.id.big_events_notifications_button})
+    @OnCheckedChanged({R.id.day_schedule_notifications_button, R.id.big_events_notifications_button})
     public void submitSwitchButton(CompoundButton button, boolean checked) {
         switch (button.getId()) {
             case R.id.day_schedule_notifications_button:
-                mNotificationPresenter.submitCheckedChange("dayScheduleNotification",checked);
+                mNotificationPresenter.submitCheckedChange("dayScheduleNotification", checked);
                 break;
             case R.id.big_events_notifications_button:
-                mNotificationPresenter.submitCheckedChange("bigEventsNotification",checked);
+                mNotificationPresenter.submitCheckedChange("bigEventsNotification", checked);
                 break;
         }
     }
-
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mNotificationPresenter.detachView();
     }
-
 }

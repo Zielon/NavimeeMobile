@@ -5,6 +5,8 @@
     <string name="events">Wydarzenia</string>
     <string name="day_schedule">Plan Dnia</string>
     <string name="hotspot">Hotspot</string>
+    <string name="save">Zapisz</string>
+    <string name="user">Użytkownik</string>
     <string name="user_exists">Uzytkownik juz istnieje</string>
     <string name="sign_in_facebook">Kontynuuj z Facebook</string>
     <string name="sign_in_google">Kontynuuj z Google</string>
@@ -20,7 +22,6 @@
     <string name="delete_day_schedule">Usunięto z Planu Dnia</string>
     <string name="login_failed">Logowanie nie powiodło się</string>
     <string name="login_progress">Logowanie trwa..</string>
-    <string name="email">Email</string>
     <string name="password">Hasło</string>
     <string name="create_account">Stwórz konto</string>
     <string name="already_member_login">Masz juz konto? Zaloguj się</string>
@@ -41,5 +42,11 @@
     <string name="uber_ratio">mnoznik Ubera</string>
     <string name="rate_app">Oceń aplikacje</string>
     <string name="delete_account">Usuń konto</string>
+    <string name="yes_work">Tak, udało się</string>
+    <string name="no_work">Nie udało się</string>
+    <string name="no_drive">Nie pojechałem tam</string>
     <string name="no_account_yet">Nie masz jeszcze konta? Stwórz konto</string>
+    <string name="feeback_custom_text">Hej %1$s, udało Ci się złapać klienta po dotarciu do %2$s?</string>
+    <string name="feeback_normal_text">Twoja odpowiedź sprawi, że aplikacja będzie działać coraz lepiej!</string>
+    <string name="notification_time">Czas zakończenia %1$d:%2$d</string>
 </resources>

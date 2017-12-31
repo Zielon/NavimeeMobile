@@ -10,5 +10,6 @@ public interface SettingsMvpView extends MvpView {
     void onSuccess();
 
     void onLogout();
+
     void onError();
 }

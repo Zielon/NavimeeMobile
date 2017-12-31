@@ -5,12 +5,14 @@
     <string name="events">Events</string>
     <string name="day_schedule">Schedule</string>
     <string name="hotspot">Hotspot</string>
+    <string name="user">User</string>
     <string name="user_exists">User already logged in</string>
     <string name="sign_in_facebook">Log in with Facebook</string>
     <string name="sign_in_google">Log in with Google</string>
     <string name="logout_text">Log out</string>
     <string name="add">Add to Schedule</string>
     <string name="delete">Delete</string>
+    <string name="save">Save</string>
     <string name="drive_now">Go now</string>
     <string name="create_account_progress">Creating Account...</string>
     <string name="valid_email_address">Type correct email address</string>
@@ -46,4 +48,11 @@
     <string name="facebook_app_id">490316121339159</string>
     <string name="fb_login_protocol_scheme">fb490316121339159</string>
     <string name="google_maps_key">AIzaSyCm3VEK4jjMA6jl0QkyfCn-qO3LYwoOKOs</string>
+    <string name="yes_work">Yes, it worked</string>
+    <string name="no_work">No, it not worked</string>
+    <string name="no_drive">I did not drive there</string>
+    <string name="feedback">Feedback</string>
+    <string name="feeback_custom_text">Hi %1$s, did you manage to find a passenger near to %2$s?</string>
+    <string name="feeback_normal_text">Your feedback will improve your app and it will get better everyday!</string>
+    <string name="notification_time">End time %1$d:%2$d</string>
 </resources>

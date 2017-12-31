@@ -28,6 +28,10 @@ public class PreferencesHelper {
        return  mPref.getBoolean(name, true);
     }
 
+    public boolean getValueWithDefaultFalse(String name) {
+        return  mPref.getBoolean(name, false);
+    }
+
     public float getValueFloat(String name) {
         return  mPref.getFloat(name, (float) 0.0);
     }
@@ -43,10 +47,11 @@ public class PreferencesHelper {
 
         //  Edit preference to make it false because we don't want this to run again
         e.putBoolean(name, value);
-
         //  Apply changes
         e.apply();
     }
+
+
 
     public void setValue(String name, String value) {
         //  Make a new preferences editor
