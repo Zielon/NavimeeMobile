@@ -2,12 +2,13 @@ package org.pl.android.navimee.ui.main;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.roughike.bottombar.BottomBar;
@@ -30,6 +31,10 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivityFragment implements MainMvpView {
+
+
+    TextView tv1;
+    Typeface tf1;
 
     private static final String EXTRA_TRIGGER_SYNC_FLAG =
             "uk.co.ribot.androidboilerplate.ui.main.MainActivity.EXTRA_TRIGGER_SYNC_FLAG";
@@ -64,6 +69,19 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         getSupportActionBar().setCustomView(R.layout.app_bar);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        /**
+         * below I've put my super complicated code to make our app even more awesome
+         * I feel like a hero, I will conquer the MainActivity, avanati El Patron!\
+         **/
+
+
+        tv1 = (TextView) findViewById(R.id.textView2);
+        tf1 = Typeface.createFromAsset(getAssets(),"NexaBold.ttf");
+
+
+
+
 
      /*   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!hasPermission(Manifest.permission.ACCESS_FINE_LOCATION) || !hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {

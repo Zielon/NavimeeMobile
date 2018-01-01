@@ -23,28 +23,28 @@ public class IntroActivity extends AppIntro {
         // Note here that we DO NOT use setContentView();
 
         SliderPage firstFragment = new SliderPage();
-        firstFragment.setTitle("Welcome!");
-        firstFragment.setDescription("This is a demo of the AppIntro library.");
-        firstFragment.setImageDrawable(R.drawable.ic_slide1);
+        firstFragment.setTitle(getResources().getString(R.string.onboarding_1_title));
+        firstFragment.setDescription(getResources().getString(R.string.onboarding_1_body));
+        firstFragment.setImageDrawable(R.drawable.onboarding_1_welcome);
         firstFragment.setBgColor(Color.TRANSPARENT);
 
 
         SliderPage secondFragment = new SliderPage();
-        secondFragment.setTitle("Clean App Intros");
-        secondFragment.setDescription("This library offers developers the ability to add clean app intros at the start of their apps.");
-        secondFragment.setImageDrawable(R.drawable.ic_slide2);
+        secondFragment.setTitle(getResources().getString(R.string.onboarding_2_title));
+        secondFragment.setDescription(getResources().getString(R.string.onboarding_2_body));
+        secondFragment.setImageDrawable(R.drawable.onboarding_events_24dp);
         secondFragment.setBgColor(Color.TRANSPARENT);
 
         SliderPage thirdFragment = new SliderPage();
-        thirdFragment.setTitle("Simple, yet Customizable");
-        thirdFragment.setDescription("The library offers a lot of customization, while keeping it simple for those that like simple.");
-        thirdFragment.setImageDrawable(R.drawable.ic_slide3);
+        thirdFragment.setTitle(getResources().getString(R.string.onboarding_3_title));
+        thirdFragment.setDescription(getResources().getString(R.string.onboarding_3_body));
+        thirdFragment.setImageDrawable(R.drawable.onboarding_schedule_24dp);
         thirdFragment.setBgColor(Color.TRANSPARENT);
 
         SliderPage fourthFragment = new SliderPage();
-        fourthFragment.setTitle("Explore");
-        fourthFragment.setDescription("Feel free to explore the rest of the library demo!");
-        fourthFragment.setImageDrawable(R.drawable.ic_slide4);
+        fourthFragment.setTitle(getResources().getString(R.string.onboarding_4_title));
+        fourthFragment.setDescription(getResources().getString(R.string.onboarding_4_body));
+        fourthFragment.setImageDrawable(R.drawable.onboarding_hotspot_24dp);
         fourthFragment.setBgColor(Color.TRANSPARENT);
         // Add your slide fragments here.
         // AppIntro will automatically generate the dots indicator and buttons.
