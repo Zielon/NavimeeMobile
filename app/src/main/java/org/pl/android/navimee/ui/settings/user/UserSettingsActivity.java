@@ -37,11 +37,11 @@ public class UserSettingsActivity extends BaseActivity {
         external = getIntent().getBooleanExtra("EXTERNAL", false);
 
         List<IDrawerItem> drawerItems = new ArrayList<>();
-        drawerItems.add(new PrimaryDrawerItem().withName(userName).withIcon(R.drawable.ic_emoticon_happy).withTextColor(getResources().getColor(R.color.white)));
-        drawerItems.add(new PrimaryDrawerItem().withName(userEmail).withIcon(R.drawable.ic_list).withTextColor(getResources().getColor(R.color.white)));
+        drawerItems.add(new PrimaryDrawerItem().withName(userName).withIcon(R.drawable.happy_user_24dp).withTextColor(getResources().getColor(R.color.white)));
+        drawerItems.add(new PrimaryDrawerItem().withName(userEmail).withIcon(R.drawable.email_user_24dp).withTextColor(getResources().getColor(R.color.white)));
 
         if (!external)
-            drawerItems.add(new PrimaryDrawerItem().withName("**********").withIcon(R.drawable.ic_kludka).withTextColor(getResources().getColor(R.color.white)));
+            drawerItems.add(new PrimaryDrawerItem().withName("**********").withIcon(R.drawable.password_24dp).withTextColor(getResources().getColor(R.color.white)));
 
         drawer = new DrawerBuilder()
                 .withActivity(this)
