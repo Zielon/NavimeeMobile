@@ -2,6 +2,7 @@ package org.pl.android.navimee.ui.hotspot;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.Bitmap;
@@ -49,6 +50,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -163,6 +165,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     boolean isFromNotification = false;
     String notificationName,notificationCount;
     private final static int REQUEST_CHECK_SETTINGS = 0;
+    private Context context;
 
     @Inject HotSpotPresenter mHotspotPresenter;
 
@@ -178,7 +181,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         TextView text = (TextView) ((MainActivity) getActivity()).getSupportActionBar().getCustomView().findViewById(R.id.app_bar_text);
         text.setText(getResources().getString(R.string.hotspot));
         initGeolocation();
-
+        context = this.getContext();
     }
 
     @Override
@@ -485,6 +488,10 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                 @Override
                                 public void onMapReady(GoogleMap mMap) {
                                     googleMap = mMap;
+                                    boolean success = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style));
+
+                                    if(!success)
+                                        Timber.i("Map style was not loaded");
 
                                     // For showing a move to my location button
                                     googleMap.setMyLocationEnabled(true);
@@ -527,6 +534,10 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                 @Override
                                 public void onMapReady(GoogleMap mMap) {
                                     googleMap = mMap;
+                                    boolean success = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style));
+
+                                    if(!success)
+                                        Timber.i("Map style was not loaded");
                                 }
                             });
                         }
