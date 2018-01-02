@@ -43,14 +43,14 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
                 .withActivity(this)
                 .withTranslucentStatusBar(false)
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.settings).withIcon(R.drawable.ic_settings).withIdentifier(1).withTextColor(getResources().getColor(R.color.white)),
-                        new PrimaryDrawerItem().withName("Uber").withIcon(R.drawable.ic_litera_u).withIdentifier(2).withTextColor(getResources().getColor(R.color.white)),
-                        new PrimaryDrawerItem().withName(R.string.user).withIcon(R.drawable.ic_emoticon_happy).withIdentifier(3).withTextColor(getResources().getColor(R.color.white)),
-                        new PrimaryDrawerItem().withName(R.string.logout).withIcon(R.drawable.ic_login_variant).withIdentifier(4).withTextColor(getResources().getColor(R.color.white)),
+                        new PrimaryDrawerItem().withName(R.string.settings).withIcon(R.drawable.settings_24dp).withIdentifier(1).withTextColor(getResources().getColor(R.color.white)),
+                        new PrimaryDrawerItem().withName("Uber").withIcon(R.drawable.uber_icon_24dp).withIdentifier(2).withTextColor(getResources().getColor(R.color.white)),
+                        new PrimaryDrawerItem().withName(R.string.user).withIcon(R.drawable.happy_user_24dp).withIdentifier(3).withTextColor(getResources().getColor(R.color.white)),
+                        new PrimaryDrawerItem().withName(R.string.logout).withIcon(R.drawable.logout_24dp).withIdentifier(4).withTextColor(getResources().getColor(R.color.white)),
                         new DividerDrawerItem().withEnabled(true),
-                        new PrimaryDrawerItem().withName(R.string.privacy_conditions).withIcon(R.drawable.ic_briefcase).withTextColor(getResources().getColor(R.color.white)),
-                        new PrimaryDrawerItem().withName(R.string.help).withIcon(R.drawable.ic_help_circle).withTextColor(getResources().getColor(R.color.white)),
-                        new PrimaryDrawerItem().withName(R.string.rate_app).withIcon(R.drawable.ic_thumb_up).withTextColor(getResources().getColor(R.color.white))
+                        new PrimaryDrawerItem().withName(R.string.privacy_conditions).withIcon(R.drawable.legal_privacy_24dp).withTextColor(getResources().getColor(R.color.white)),
+                        new PrimaryDrawerItem().withName(R.string.help).withIcon(R.drawable.help_circle_24dp).withTextColor(getResources().getColor(R.color.white)),
+                        new PrimaryDrawerItem().withName(R.string.rate_app).withIcon(R.drawable.rate_app_24dp).withTextColor(getResources().getColor(R.color.white))
                 )
                 .withSliderBackgroundColor(0)
                 .withOnDrawerItemClickListener((view, position, drawerItem) -> {

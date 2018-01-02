@@ -67,10 +67,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         holder.maybeTextView.setText(String.valueOf(event.getRank()));
         holder.addButton.setTag(0);
         if(Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() < 30) {
-            holder.addButton.setImageResource(R.drawable.ic_nawigacja);
+            holder.addButton.setImageResource(R.drawable.go_now_24dp);
             holder.addButton.setTag(1);
         }  else if(mEventsPresenter.getDayScheduleList().contains(event)) {
-            holder.addButton.setImageResource(R.drawable.ic_dzwon_brzeczacy);
+            holder.addButton.setImageResource(R.drawable.ringing_bell_24dp);
             holder.addButton.setEnabled(false);
         }
 
@@ -86,7 +86,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
                         mContext.startActivity(mapIntent);
                     }
                 } else {
-                    holder.addButton.setImageResource(R.drawable.ic_dzwon_brzeczacy);
+                    holder.addButton.setImageResource(R.drawable.ringing_bell_24dp);
                     holder.addButton.setEnabled(false);
                     mEventsPresenter.saveEvent(event);
                 }

@@ -96,7 +96,7 @@
                 android:layout_width="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_zegar" />
+                android:src="@drawable/end_time_24dp" />
 
             <TextView
                 android:id="@+id/viewTextTime"
@@ -113,7 +113,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_oko_nie_przekreslone" />
+                android:src="@drawable/visibilty_on_24dp" />
 
             <TextView
                 android:id="@+id/viewTextMaybe"
@@ -132,7 +132,7 @@
                 android:layout_height="wrap_content"
                 app:borderWidth="0dp"
                 app:backgroundTint="@color/button_backgrtound"
-                android:src="@drawable/ic_dzwon_nie_brzeczacy"
+                android:src="@drawable/bell_24dp"
                 />
         </RelativeLayout>
 

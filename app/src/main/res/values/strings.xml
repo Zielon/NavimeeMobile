@@ -55,4 +55,13 @@
     <string name="feeback_custom_text">Hi %1$s, did you manage to find a passenger near to %2$s?</string>
     <string name="feeback_normal_text">Your feedback will improve your app and it will get better everyday!</string>
     <string name="notification_time">End time %1$d:%2$d</string>
+    <string name="onboarding_1_title">Hi!</string>
+    <string name="onboarding_1_body">You are on the right way to rise your profit. Fasten your sit belts and start off</string>
+    <string name="onboarding_2_title">Events</string>
+    <string name="onboarding_2_body">Look through all the events near your place and make a plan for the upcoming days!</string>
+    <string name="onboarding_3_title">Schedule</string>
+    <string name="onboarding_3_body">To keep your things organized add events to Schedule.</string>
+    <string name="onboarding_4_title">Hotspot</string>
+    <string name="onboarding_4_body"> All popular and crowded place are now available on the map.</string>
+
 </resources>

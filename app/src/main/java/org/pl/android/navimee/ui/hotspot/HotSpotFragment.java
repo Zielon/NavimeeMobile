@@ -2,6 +2,7 @@ package org.pl.android.navimee.ui.hotspot;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.Bitmap;
@@ -49,6 +50,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -72,7 +74,6 @@ import org.pl.android.navimee.util.DetectedActivityToString;
 import org.pl.android.navimee.util.DisplayTextOnViewAction;
 import org.pl.android.navimee.util.MultiDrawable;
 import org.pl.android.navimee.util.ToMostProbableActivity;
-import org.xml.sax.ErrorHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -164,6 +165,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     boolean isFromNotification = false;
     String notificationName,notificationCount;
     private final static int REQUEST_CHECK_SETTINGS = 0;
+    private Context context;
 
     @Inject HotSpotPresenter mHotspotPresenter;
 
@@ -179,7 +181,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         TextView text = (TextView) ((MainActivity) getActivity()).getSupportActionBar().getCustomView().findViewById(R.id.app_bar_text);
         text.setText(getResources().getString(R.string.hotspot));
         initGeolocation();
-
+        context = this.getContext();
     }
 
     @Override
@@ -486,6 +488,10 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                 @Override
                                 public void onMapReady(GoogleMap mMap) {
                                     googleMap = mMap;
+                                    boolean success = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style));
+
+                                    if(!success)
+                                        Timber.i("Map style was not loaded");
 
                                     // For showing a move to my location button
                                     googleMap.setMyLocationEnabled(true);
@@ -528,6 +534,10 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                 @Override
                                 public void onMapReady(GoogleMap mMap) {
                                     googleMap = mMap;
+                                    boolean success = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style));
+
+                                    if(!success)
+                                        Timber.i("Map style was not loaded");
                                 }
                             });
                         }
@@ -694,7 +704,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     public void showEventOnMap(Event event) {
         Timber.d(event.getTitle());
         if(!eventsOnMap.containsKey(event.getId()) && event.getPlace() != null && event.getPlace().getGeoPoint() != null) {
-            ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(),new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()),event.getTitle(),String.valueOf(event.getRank()),event.getHotspotType(),R.drawable.ic_plomien);
+            ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(),new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()),event.getTitle(),String.valueOf(event.getRank()),event.getHotspotType(),R.drawable.hotspot_24dp);
             eventsOnMap.put(event.getId(),clusterItemGoogleMap);
             mClusterManager.addItem(clusterItemGoogleMap);
         }
@@ -704,7 +714,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     public void showFoursquareOnMap(FourSquarePlace fourSquarePlace) {
         Timber.d(fourSquarePlace.getName());
         if(!eventsOnMap.containsKey(fourSquarePlace.getId())) {
-            ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(fourSquarePlace.getId(), new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()), fourSquarePlace.getName(), String.valueOf(fourSquarePlace.getStatsVisitsCount()), fourSquarePlace.getHotspotType(), R.drawable.ic_people);
+            ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(fourSquarePlace.getId(), new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()), fourSquarePlace.getName(), String.valueOf(fourSquarePlace.getStatsVisitsCount()), fourSquarePlace.getHotspotType(), R.drawable.people);
             eventsOnMap.put(fourSquarePlace.getId(), clusterItemGoogleMap);
             if(mClusterManager != null)
                 mClusterManager.addItem(clusterItemGoogleMap);
