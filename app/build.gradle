@@ -49,6 +49,9 @@ android {
             keyAlias 'releasekey'
             storePassword "navimee"
             keyPassword "haslo123"
+            lintOptions {
+                disable 'MissingTranslation'
+            }
         }
 
         debug {
@@ -64,7 +67,6 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
             ext.betaDistributionReleaseNotesFilePath =
                     file('../crashlytics_release_notes.txt').absolutePath
         }
