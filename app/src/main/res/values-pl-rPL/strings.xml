@@ -14,6 +14,7 @@
     <string name="add">Dodaj do Planu Dnia</string>
     <string name="delete">Usuń</string>
     <string name="drive_now">Jedź teraz</string>
+    <string name="check_in_app">Sprawdź w aplikacji</string>
     <string name="create_account_progress">Tworzenie konta trwa..</string>
     <string name="valid_email_address">Wprowadź poprawny adres email</string>
     <string name="valid_password">Hasło musi zawierać od 6 do 10 znaków</string>

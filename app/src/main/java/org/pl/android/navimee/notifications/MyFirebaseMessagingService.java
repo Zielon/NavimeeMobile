@@ -21,7 +21,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
@@ -31,7 +30,6 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import org.joda.time.DateTime;
-import org.joda.time.Minutes;
 import org.pl.android.navimee.BoilerplateApplication;
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.data.DataManager;
@@ -145,7 +143,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setAutoCancel(true)
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setSound(defaultSoundUri)
-                .addAction(R.drawable.ic_action_whatshot,getResources().getString(R.string.drive_now), navigationIntent)
+                .addAction(R.drawable.ic_action_whatshot,getResources().getString(R.string.check_in_app), navigationIntent)
                 .setContentIntent(navigationIntent);
 
 

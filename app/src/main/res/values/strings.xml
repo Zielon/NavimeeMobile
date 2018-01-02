@@ -14,6 +14,7 @@
     <string name="delete">Delete</string>
     <string name="save">Save</string>
     <string name="drive_now">Go now</string>
+    <string name="check_in_app">Check in app</string>
     <string name="create_account_progress">Creating Account...</string>
     <string name="valid_email_address">Type correct email address</string>
     <string name="valid_password">Password must contain from 6 to 10 characters</string>
