@@ -5,6 +5,7 @@ package org.pl.android.navimee.ui.signup;
  */
 
 import android.app.ProgressDialog;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -42,6 +43,10 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
         mSignUpPresenter.attachView(this);
+
+        TextView tv = (TextView) findViewById(R.id.textView2);
+        Typeface tf = Typeface.createFromAsset(getAssets(),"NexaBold.ttf");
+        tv.setTypeface(tf);
 
         _signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
