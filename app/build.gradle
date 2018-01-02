@@ -192,6 +192,9 @@ dependencies {
     //facebook
     compile 'com.facebook.android:facebook-login:[4,5)'
 
+    // Google Sign In SDK (only required for Google Sign In)
+    compile "com.google.android.gms:play-services-auth:$PLAY_SERVICES_VERSION"
+
     // Replace provided dependency below with official AutoValue once this issue is fixed
     // https://github.com/google/auto/issues/268
     provided "com.jakewharton.auto.value:auto-value-annotations:$AUTO_VALUE_VERSION"

@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -23,13 +24,23 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
 import org.pl.android.navimee.ui.signup.SignUpActivity;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -49,11 +60,14 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
     @BindView(R.id.btn_login) Button _loginButton;
     @BindView(R.id.link_signup) TextView _signupLink;
     @BindView(R.id.facebook_login_button) public LoginButton facebookButton;
+    @BindView(R.id.sign_in_google_button) public SignInButton googleButton;
     private static final int REQUEST_SIGNUP = 0;
     private CallbackManager mCallbackManager;
+    private GoogleSignInClient mGoogleSignInClient;
 
     ProgressDialog progressDialog;
     private static final String TAG = "SignInActivity";
+    private static final int RC_SIGN_IN = 9001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +82,7 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         LoginManager.getInstance().logOut();
+
 
       /*  try {
             PackageInfo info = getPackageManager().getPackageInfo(
@@ -93,6 +108,13 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
 
         initalizeButtons();
 
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
     }
 
     public void initalizeButtons() {
@@ -111,6 +133,14 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
                 // Start the Signup activity
                 Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
                 startActivityForResult(intent, REQUEST_SIGNUP);
+            }
+        });
+
+        googleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                startActivityForResult(signInIntent, RC_SIGN_IN);
             }
         });
 
@@ -181,7 +211,21 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
                 // By default we just finish the Activity and log them in automatically
                 this.finish();
             }
-        } else {
+        } else if(requestCode == RC_SIGN_IN){
+            // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                try {
+                    // Google Sign In was successful, authenticate with Firebase
+                    GoogleSignInAccount account = task.getResult(ApiException.class);
+                    firebaseAuthWithGoogle(account);
+                } catch (ApiException e) {
+                    // Google Sign In failed, update UI appropriately
+                    Log.w(TAG, "Google sign in failed", e);
+                    // [START_EXCLUDE]
+                   // updateUI(null);
+                    // [END_EXCLUDE]
+                }
+        }   else{
             //facebook
             if (resultCode == RESULT_OK) {
                 super.onActivityResult(requestCode, resultCode, data);
@@ -226,8 +270,22 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
         progressDialog.show();
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
 
-       mSignInPresenter.loginInWithFacebook(credential);
+       mSignInPresenter.loginInWithFacebookOrGoogle(credential);
     }
+
+
+
+    // [START auth_with_google]
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+        // [START_EXCLUDE silent]
+        // [END_EXCLUDE]
+        progressDialog.show();
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        mSignInPresenter.loginInWithFacebookOrGoogle(credential);
+    }
+    // [END auth_with_google]
 
     @Override
     public void onSuccess() {
