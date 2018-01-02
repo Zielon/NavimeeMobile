@@ -7,7 +7,7 @@
     <string name="hotspot">Hotspot</string>
     <string name="save">Zapisz</string>
     <string name="user">Użytkownik</string>
-    <string name="user_exists">Uzytkownik juz istnieje</string>
+    <string name="user_exists">Użytkownik już istnieje</string>
     <string name="sign_in_facebook">Kontynuuj z Facebook</string>
     <string name="sign_in_google">Kontynuuj z Google</string>
     <string name="logout_text">Wyloguj się</string>
@@ -24,12 +24,12 @@
     <string name="login_progress">Logowanie trwa..</string>
     <string name="password">Hasło</string>
     <string name="create_account">Stwórz konto</string>
-    <string name="already_member_login">Masz juz konto? Zaloguj się</string>
+    <string name="already_member_login">Masz już konto? Zaloguj się</string>
     <string name="login">Zaloguj się</string>
     <string name="logout">Wyloguj się</string>
     <string name="settings">Ustawienia</string>
     <string name="notifications_day_schedule">Powiadomienia o wydarzeniach z Planu Dnia</string>
-    <string name="notifications_big_events">Powiadomienia o duzych wydarzeniach</string>
+    <string name="notifications_big_events">Powiadomienia o dużych wydarzeniach</string>
     <string name="notifications">Powiadomienia</string>
     <string name="change_email">Zmień email</string>
     <string name="change_password">Zmień hasło</string>
@@ -39,8 +39,8 @@
     <string name="radius">Promień</string>
     <string name="events_filtr">Kończące się wydarzenia</string>
     <string name="popular_places">Popularne miejsca</string>
-    <string name="uber_ratio">mnoznik Ubera</string>
-    <string name="rate_app">Oceń aplikacje</string>
+    <string name="uber_ratio">Mnożnik Ubera</string>
+    <string name="rate_app">Oceń aplikację</string>
     <string name="delete_account">Usuń konto</string>
     <string name="yes_work">Tak, udało się</string>
     <string name="no_work">Nie udało się</string>
@@ -49,4 +49,13 @@
     <string name="feeback_custom_text">Hej %1$s, udało Ci się złapać klienta po dotarciu do %2$s?</string>
     <string name="feeback_normal_text">Twoja odpowiedź sprawi, że aplikacja będzie działać coraz lepiej!</string>
     <string name="notification_time">Czas zakończenia %1$d:%2$d</string>
+    <string name="onboarding_1_title">Hej!</string>
+    <string name="onboarding_1_body">To pierwszy krok do większych zysków, zapnij pasy i zaczynamy!</string>
+    <string name="onboarding_2_title">Wydarzenia</string>
+    <string name="onboarding_2_body">Przeglądaj wydarzenia na kolejne dni i stwórz swój własny plan na cały tydzień.</string>
+    <string name="onboarding_3_title">Plan Dnia</string>
+    <string name="onboarding_3_body">Dobra organizacja to podstawa. Tutaj szybko sprawdzisz co masz w grafiku na dziś i następne dni.</string>
+    <string name="onboarding_4_title">Hotspot</string>
+    <string name="onboarding_4_body">Na mapie zobaczysz wszystkie popularne miejsca. Dzięki temu w skuteczny sposób sprawdzisz gdzie warto podjechać.</string>
+
 </resources>
