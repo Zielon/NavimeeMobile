@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -71,11 +72,20 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
                 holder.addressTextView.setText(event.getPlace().getAddress()+", "+event.getPlace().getCity());
             }
         }
-        holder.countTextView.setText(String.valueOf(event.getRank()));
         if(event.getEndTime() != null) {
             holder.timeTextView.setText(event.getEndTime().getHours()+":"+String.format("%02d",event.getEndTime().getMinutes()));
         }
-        holder.maybeTextView.setText(String.valueOf(event.getRank()));
+        if(event.getRank() >= 0 && event.getRank() <= 20) {
+            holder.imageCount.setImageResource(R.drawable.ranking_1_24dp);
+        }  else if(event.getRank() >= 21 && event.getRank() <= 40) {
+            holder.imageCount.setImageResource(R.drawable.ranking_2_24dp);
+        } else if(event.getRank() >= 41 && event.getRank() <= 60) {
+            holder.imageCount.setImageResource(R.drawable.ranking_3_24dp);
+        } else if(event.getRank() >= 61 && event.getRank() <= 80) {
+            holder.imageCount.setImageResource(R.drawable.ranking_4_24dp);
+        } else {
+            holder.imageCount.setImageResource(R.drawable.ranking_5_24dp);
+        }
 
         if(Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() < 30) {
             holder.driveButton.setImageResource(R.drawable.go_now_24dp);
@@ -124,10 +134,11 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
 
     class DayScheduleHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.imageCount)
+        ImageView imageCount;
         @BindView(R.id.text_name) TextView nameTextView;
         @BindView(R.id.text_address_name) TextView addressNameTextView;
         @BindView(R.id.text_address) TextView addressTextView;
-        @BindView(R.id.viewTextCount) TextView countTextView;
         @BindView(R.id.viewTextTime) TextView timeTextView;
         @BindView(R.id.viewTextMaybe) TextView maybeTextView;
         @BindView(R.id.driveButton)

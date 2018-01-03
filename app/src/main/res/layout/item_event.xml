@@ -103,23 +103,13 @@
                 android:layout_marginLeft="10dp"
                 android:src="@drawable/ic_people_white" />
 
-            <TextView
-                android:id="@+id/viewTextCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_margin="1dp"
-                android:layout_toRightOf="@+id/imageCount"
-                android:paddingLeft="10dp"
-                android:text="1000"
-                android:textColor="@color/white" />
 
             <ImageView
                 android:id="@+id/imageTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/viewTextCount"
+                android:layout_toRightOf="@+id/imageCount"
                 android:paddingLeft="10dp"
                 android:src="@drawable/end_time_24dp" />
 
