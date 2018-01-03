@@ -1,9 +1,5 @@
 package org.pl.android.navimee.ui.signup;
 
-/**
- * Created by Wojtek on 2017-10-24.
- */
-
 import android.app.ProgressDialog;
 import android.graphics.Typeface;
 import android.os.Bundle;

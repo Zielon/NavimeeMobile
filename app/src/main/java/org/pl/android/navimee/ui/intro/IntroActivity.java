@@ -11,10 +11,6 @@ import com.github.paolorotolo.appintro.model.SliderPage;
 
 import org.pl.android.navimee.R;
 
-/**
- * Created by Wojtek on 2017-10-20.
- */
-
 public class IntroActivity extends AppIntro {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
