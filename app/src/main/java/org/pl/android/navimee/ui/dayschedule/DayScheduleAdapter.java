@@ -3,15 +3,19 @@ package org.pl.android.navimee.ui.dayschedule;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
+import org.joda.time.DateTime;
+import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.data.model.Event;
@@ -19,6 +23,7 @@ import org.pl.android.navimee.injection.ActivityContext;
 import org.pl.android.navimee.util.ViewUtil;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +39,7 @@ import butterknife.ButterKnife;
 public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.DayScheduleHolder> {
     private List<Event> mEvents;
     private Context mContext;
+    DateTime currentDateTime;
 
     @Inject
     DaySchedulePresenter mDaySchedulePresenter;
@@ -43,6 +49,7 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
     public DayScheduleAdapter(@ActivityContext Context context) {
         this.mEvents = new ArrayList<>();
         mContext = context;
+        currentDateTime = new DateTime(Calendar.getInstance().getTime());
     }
 
     @Override
@@ -69,6 +76,15 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
             holder.timeTextView.setText(event.getEndTime().getHours()+":"+String.format("%02d",event.getEndTime().getMinutes()));
         }
         holder.maybeTextView.setText(String.valueOf(event.getRank()));
+
+        if(Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() < 30) {
+            holder.driveButton.setImageResource(R.drawable.go_now_24dp);
+            holder.driveButton.setTag(1);
+        }  else  {
+            holder.driveButton.setImageResource(R.drawable.ringing_bell_24dp);
+            holder.driveButton.setEnabled(false);
+        }
+
         holder.driveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,8 +130,10 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
         @BindView(R.id.viewTextCount) TextView countTextView;
         @BindView(R.id.viewTextTime) TextView timeTextView;
         @BindView(R.id.viewTextMaybe) TextView maybeTextView;
-        @BindView(R.id.driveButton) TextView driveButton;
-        @BindView(R.id.deleteButton) TextView deleteButton;
+        @BindView(R.id.driveButton)
+        FloatingActionButton driveButton;
+        @BindView(R.id.deleteButton)
+        ImageButton deleteButton;
 
         public DayScheduleHolder(View itemView) {
             super(itemView);
