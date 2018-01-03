@@ -25,8 +25,6 @@ public class WelcomeActivity extends BaseActivity {
     @BindView(R.id.title)
     TextView titleTextView;
 
-    private static final int REQUEST_SIGNUP = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,17 +35,18 @@ public class WelcomeActivity extends BaseActivity {
 
         loginButton.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
-            startActivityForResult(intent, REQUEST_SIGNUP);
+            startActivity(intent);
         });
 
         createAccountButton.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
-            startActivityForResult(intent, REQUEST_SIGNUP);
+            startActivity(intent);
         });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        this.finish();
+        if(requestCode == RESULT_OK)
+            this.finish();
     }
 }

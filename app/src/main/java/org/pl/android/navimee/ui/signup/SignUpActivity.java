@@ -28,7 +28,6 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
     @BindView(R.id.input_email) EditText _emailText;
     @BindView(R.id.input_password) EditText _passwordText;
     @BindView(R.id.btn_signup) Button _signupButton;
-    @BindView(R.id.link_login) TextView _loginLink;
 
     ProgressDialog progressDialog;
 
@@ -44,20 +43,7 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
         Typeface tf = Typeface.createFromAsset(getAssets(),"NexaBold.ttf");
         tv.setTypeface(tf);
 
-        _signupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signUp();
-            }
-        });
-
-        _loginLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Finish the registration screen and return to the Login activity
-                finish();
-            }
-        });
+        _signupButton.setOnClickListener(v -> signUp());
     }
 
     public void signUp() {
@@ -112,8 +98,8 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
         _signupButton.setEnabled(true);
         mSignUpPresenter.registerMessagingToken();
         setResult(RESULT_OK, null);
-        finish();
         progressDialog.dismiss();
+        finish();
     }
 
     @Override

@@ -59,13 +59,5 @@
             android:padding="12dp"
             android:text="@string/create_account"/>
 
-        <TextView android:id="@+id/link_login"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:text="@string/already_member_login"
-            android:gravity="center"
-            android:textSize="16dip"/>
-
     </LinearLayout>
 </ScrollView>
