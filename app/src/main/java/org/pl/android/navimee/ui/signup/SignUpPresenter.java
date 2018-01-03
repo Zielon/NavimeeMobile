@@ -1,18 +1,17 @@
 package org.pl.android.navimee.ui.signup;
 
-
-
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.kelvinapps.rxfirebase.RxFirebaseAuth;
 import com.kelvinapps.rxfirebase.RxFirebaseUser;
 
 import org.pl.android.navimee.data.DataManager;
 import org.pl.android.navimee.ui.base.BasePresenter;
 import org.pl.android.navimee.util.Const;
-import org.reactivestreams.Subscription;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,12 +20,10 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-
 public class SignUpPresenter extends BasePresenter<SignUpMvpView> {
 
     private final DataManager mDataManager;
     private SignUpMvpView mMvpView;
-    private Subscription mSubscription;
 
     @Inject
     public SignUpPresenter(DataManager dataManager) {
@@ -43,14 +40,15 @@ public class SignUpPresenter extends BasePresenter<SignUpMvpView> {
         mMvpView = null;
     }
 
-
-
-    public void register(String email, String password) {
-      //  mDataManager.getFirebaseService().signUp(email, password);
-        RxFirebaseAuth.createUserWithEmailAndPassword(mDataManager.getFirebaseService().getFirebaseAuth(),email, password)
+    public void register(String email, String password, String name) {
+        RxFirebaseAuth
+                .createUserWithEmailAndPassword(mDataManager.getFirebaseService().getFirebaseAuth(),email, password)
                 .flatMap(x -> RxFirebaseUser.getToken(mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser(), false))
                 .subscribe(token -> {
                     Timber.i("RxFirebaseSample", "user token: " + token.getToken());
+                    FirebaseUser user = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
+                    UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
+                    user.updateProfile(userProfileChangeRequest).getResult();
                     mMvpView.onSuccess();
                 }, throwable -> {
                     Timber.e("RxFirebaseSample", throwable.toString());

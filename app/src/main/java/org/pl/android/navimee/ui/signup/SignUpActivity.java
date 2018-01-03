@@ -3,7 +3,6 @@ package org.pl.android.navimee.ui.signup;
 import android.app.ProgressDialog;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -25,9 +24,21 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
 
     private static final String TAG = "SignUpActivity";
 
-    @BindView(R.id.input_email) EditText _emailText;
-    @BindView(R.id.input_password) EditText _passwordText;
-    @BindView(R.id.btn_signup) Button _signupButton;
+    @BindView(R.id.input_name)
+    EditText _nameText;
+
+    @BindView(R.id.input_email)
+    EditText _emailText;
+
+    @BindView(R.id.input_password)
+    EditText _passwordText;
+
+    @BindView(R.id.title)
+    TextView _titleTextView;
+
+    @BindView(R.id.btn_signup)
+    Button _signupButton;
+
 
     ProgressDialog progressDialog;
 
@@ -39,9 +50,7 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
         ButterKnife.bind(this);
         mSignUpPresenter.attachView(this);
 
-        TextView tv = (TextView) findViewById(R.id.textView2);
-        Typeface tf = Typeface.createFromAsset(getAssets(),"NexaBold.ttf");
-        tv.setTypeface(tf);
+        _titleTextView.setTypeface(Typeface.createFromAsset(getAssets(),"NexaBold.ttf"));
 
         _signupButton.setOnClickListener(v -> signUp());
     }
@@ -62,19 +71,27 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
         progressDialog.setMessage(getResources().getString(R.string.create_account_progress));
         progressDialog.show();
 
+        String name = _nameText.getText().toString();
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
-        // TODO: Implement your own signup logic here.
-        mSignUpPresenter.register(email,password);
-
+        mSignUpPresenter.register(email, password, name);
     }
+
 
     public boolean validate() {
         boolean valid = true;
 
+        String name = _nameText.getText().toString();
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
+
+        if (name.isEmpty() || name.length() < 4) {
+            _emailText.setError(getResources().getString(R.string.valid_name));
+            valid = false;
+        } else {
+            _emailText.setError(null);
+        }
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             _emailText.setError(getResources().getString(R.string.valid_email_address));
@@ -105,9 +122,7 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
     @Override
     public void onError() {
         Toast.makeText(getBaseContext(),getResources().getString(R.string.register_failed), Toast.LENGTH_LONG).show();
-
         _signupButton.setEnabled(true);
-
         progressDialog.dismiss();
     }
 }

@@ -41,21 +41,24 @@ import timber.log.Timber;
 
 public class SignInActivity extends BaseActivity implements SignInMvpView {
 
-    @Inject
-    SignInPresenter mSignInPresenter;
-
-    @BindView(R.id.input_email) EditText _emailText;
-    @BindView(R.id.input_password) EditText _passwordText;
-    @BindView(R.id.btn_login) Button _loginButton;
-    @BindView(R.id.facebook_login_button) public LoginButton facebookButton;
-    @BindView(R.id.sign_in_google_button) public SignInButton googleButton;
     private static final int REQUEST_SIGNUP = 0;
-    private CallbackManager mCallbackManager;
-    private GoogleSignInClient mGoogleSignInClient;
-
-    ProgressDialog progressDialog;
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
+    @BindView(R.id.facebook_login_button)
+    public LoginButton facebookButton;
+    @BindView(R.id.sign_in_google_button)
+    public SignInButton googleButton;
+    @Inject
+    SignInPresenter mSignInPresenter;
+    @BindView(R.id.input_email)
+    EditText _emailText;
+    @BindView(R.id.input_password)
+    EditText _passwordText;
+    @BindView(R.id.btn_login)
+    Button _loginButton;
+    ProgressDialog progressDialog;
+    private CallbackManager mCallbackManager;
+    private GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,28 +68,12 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
         ButterKnife.bind(this);
 
         TextView tv = (TextView) findViewById(R.id.textView2);
-        Typeface tf = Typeface.createFromAsset(getAssets(),"NexaBold.ttf");
+        Typeface tf = Typeface.createFromAsset(getAssets(), "NexaBold.ttf");
         tv.setTypeface(tf);
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         LoginManager.getInstance().logOut();
 
-
-      /*  try {
-            PackageInfo info = getPackageManager().getPackageInfo(
-                    "org.pl.android.navimee",
-                    PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-
-        } catch (NoSuchAlgorithmException e) {
-
-        }
-*/
         mSignInPresenter.attachView(this);
 
         progressDialog = new ProgressDialog(this,
@@ -138,7 +125,7 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
                 Timber.d(TAG, "facebook:onCancel");
                 onErrorFacebook();
                 // [START_EXCLUDE]
-               // updateUI(null);
+                // updateUI(null);
                 // [END_EXCLUDE]
             }
 
@@ -171,7 +158,7 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
         String password = _passwordText.getText().toString();
 
         // TODO: Implement your own authentication logic here.
-        mSignInPresenter.loginIn(email,password);
+        mSignInPresenter.loginIn(email, password);
     }
 
 
@@ -185,21 +172,21 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
                 // By default we just finish the Activity and log them in automatically
                 this.finish();
             }
-        } else if(requestCode == RC_SIGN_IN){
+        } else if (requestCode == RC_SIGN_IN) {
             // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-                try {
-                    // Google Sign In was successful, authenticate with Firebase
-                    GoogleSignInAccount account = task.getResult(ApiException.class);
-                    firebaseAuthWithGoogle(account);
-                } catch (ApiException e) {
-                    // Google Sign In failed, update UI appropriately
-                    Log.w(TAG, "Google sign in failed", e);
-                    // [START_EXCLUDE]
-                   // updateUI(null);
-                    // [END_EXCLUDE]
-                }
-        }   else{
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                firebaseAuthWithGoogle(account);
+            } catch (ApiException e) {
+                // Google Sign In failed, update UI appropriately
+                Log.w(TAG, "Google sign in failed", e);
+                // [START_EXCLUDE]
+                // updateUI(null);
+                // [END_EXCLUDE]
+            }
+        } else {
             //facebook
             if (resultCode == RESULT_OK) {
                 super.onActivityResult(requestCode, resultCode, data);
@@ -246,9 +233,8 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
         progressDialog.show();
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
 
-       mSignInPresenter.loginInWithFacebookOrGoogle(credential);
+        mSignInPresenter.loginInWithFacebookOrGoogle(credential);
     }
-
 
 
     // [START auth_with_google]

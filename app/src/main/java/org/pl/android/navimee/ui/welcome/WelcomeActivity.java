@@ -17,13 +17,15 @@ import butterknife.ButterKnife;
 public class WelcomeActivity extends BaseActivity {
 
     @BindView(R.id.loginButton)
-    Button loginButton;
+    Button _loginButton;
 
     @BindView(R.id.createAccountButton)
-    Button createAccountButton;
+    Button _createAccountButton;
 
     @BindView(R.id.title)
-    TextView titleTextView;
+    TextView _titleTextView;
+
+    private static final int REQUEST_SIGN = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,22 +33,23 @@ public class WelcomeActivity extends BaseActivity {
         setContentView(R.layout.activity_welcome);
         ButterKnife.bind(this);
 
-        titleTextView.setTypeface(Typeface.createFromAsset(getAssets(),"NexaBold.ttf"));
+        _titleTextView.setTypeface(Typeface.createFromAsset(getAssets(),"NexaBold.ttf"));
 
-        loginButton.setOnClickListener(v -> {
+        _loginButton.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_SIGN);
         });
 
-        createAccountButton.setOnClickListener(v -> {
+        _createAccountButton.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_SIGN);
         });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == RESULT_OK)
-            this.finish();
+        if(requestCode == REQUEST_SIGN)
+            if(resultCode == RESULT_OK)
+                this.finish();
     }
 }

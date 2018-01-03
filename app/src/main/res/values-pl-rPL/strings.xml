@@ -16,6 +16,7 @@
     <string name="drive_now">Jedź teraz</string>
     <string name="create_account_progress">Tworzenie konta trwa..</string>
     <string name="valid_email_address">Wprowadź poprawny adres email</string>
+    <string name="valid_name">Imię musi zawierać wiecej niż 4 znaki</string>
     <string name="valid_password">Hasło musi zawierać od 6 do 10 znaków</string>
     <string name="register_failed">Rejestracja nie powiodła się</string>
     <string name="save_day_schedule">Dodano do Planu Dnia</string>
@@ -59,5 +60,6 @@
     <string name="onboarding_3_body">Dobra organizacja to podstawa. Tutaj szybko sprawdzisz co masz w grafiku na dziś i następne dni.</string>
     <string name="onboarding_4_title">Hotspot</string>
     <string name="onboarding_4_body">Na mapie zobaczysz wszystkie popularne miejsca. Dzięki temu w skuteczny sposób sprawdzisz gdzie warto podjechać.</string>
-
+    <string name="or">lub</string>
+    <string name="name">Imię</string>
 </resources>

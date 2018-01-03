@@ -16,6 +16,7 @@
     <string name="drive_now">йди вже</string>
     <string name="create_account_progress">створення рахунку..</string>
     <string name="valid_email_address">Введіть правильний електронний лист</string>
+    <string name="valid_name">Назва повинна містити більше 4 символів</string>
     <string name="valid_password">Пароль повинен містити від 6 до 10 символів</string>
     <string name="register_failed">Реєстрація не вдалося</string>
     <string name="save_day_schedule">додано до розкладу</string>
@@ -58,4 +59,6 @@
     <string name = "onboarding_3_body">Щоб зберегти своє речі, додайте події до розкладу.</string>
     <string name = "onboarding_4_title">Точка доступу.</string>
     <string name = "onboarding_4_body">Усі популярні та багатолюдні місця тепер доступні на карті.</string>
+    <string name = "or">або</string>
+    <string name = "Name">ім\'я</string>
 </resources>

@@ -175,7 +175,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginEnd="10dp"
                 android:src="@drawable/ringing_bell_24dp"
-                app:backgroundTint="@color/button_backgrtound"
+                app:backgroundTint="@color/button_background"
                 app:borderWidth="0dp"
                 android:layout_marginRight="10dp" />
         </RelativeLayout>
