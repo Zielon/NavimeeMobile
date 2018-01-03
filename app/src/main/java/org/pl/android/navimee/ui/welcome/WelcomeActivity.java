@@ -45,4 +45,9 @@ public class WelcomeActivity extends BaseActivity {
             startActivityForResult(intent, REQUEST_SIGNUP);
         });
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        this.finish();
+    }
 }

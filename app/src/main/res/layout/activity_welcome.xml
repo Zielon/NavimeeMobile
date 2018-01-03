@@ -30,6 +30,18 @@
         android:layout_below="@+id/title"
         android:text="@string/login" />
 
+    <TextView
+        android:id="@+id/or"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:textSize="12sp"
+        android:textColor="#ffffff"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/loginButton"
+        android:text="or" />
+
     <Button
         android:id="@+id/createAccountButton"
         android:layout_width="match_parent"
@@ -40,7 +52,7 @@
         android:textAlignment="center"
         android:backgroundTint="#e40455"
         android:textColor="@color/white"
-        android:layout_below="@+id/loginButton"
+        android:layout_below="@+id/or"
         android:text="@string/create_account" />
 
 </RelativeLayout>
