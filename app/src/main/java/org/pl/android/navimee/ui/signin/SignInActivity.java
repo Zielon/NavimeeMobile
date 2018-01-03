@@ -174,10 +174,6 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
         mSignInPresenter.loginIn(email,password);
     }
 
-    @Override
-    public void onBackPressed() {
-    }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
