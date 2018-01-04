@@ -61,8 +61,8 @@
     <string name="onboarding_2_title">Events</string>
     <string name="onboarding_2_body">Look through all the events near your place and make a plan for the upcoming days!</string>
     <string name="onboarding_3_title">Schedule</string>
-    <string name="onboarding_3_body">To keep your things organized add events to Schedule.</string>
+    <string name="onboarding_3_body">To keep your things organized add events to the Schedule.</string>
     <string name="onboarding_4_title">Hotspot</string>
-    <string name="onboarding_4_body"> All popular and crowded place are now available on the map.</string>
+    <string name="onboarding_4_body"> All popular and crowded places are now available on your map.</string>
 
 </resources>

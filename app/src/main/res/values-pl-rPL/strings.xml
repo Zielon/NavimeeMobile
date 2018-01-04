@@ -47,15 +47,16 @@
     <string name="no_work">Nie udało się</string>
     <string name="no_drive">Nie pojechałem tam</string>
     <string name="no_account_yet">Nie masz jeszcze konta? Stwórz konto</string>
+    <string name="feedback">Twoja ocena</string>
     <string name="feeback_custom_text">Hej %1$s, udało Ci się złapać klienta po dotarciu do %2$s?</string>
     <string name="feeback_normal_text">Twoja odpowiedź sprawi, że aplikacja będzie działać coraz lepiej!</string>
     <string name="notification_time">Czas zakończenia %1$d:%2$d</string>
     <string name="onboarding_1_title">Hej!</string>
     <string name="onboarding_1_body">To pierwszy krok do większych zysków, zapnij pasy i zaczynamy!</string>
     <string name="onboarding_2_title">Wydarzenia</string>
-    <string name="onboarding_2_body">Przeglądaj wydarzenia na kolejne dni i stwórz swój własny plan na cały tydzień.</string>
+    <string name="onboarding_2_body">Przeglądaj wydarzenia na najbliższe dni i stwórz swój własny plan na cały tydzień.</string>
     <string name="onboarding_3_title">Plan Dnia</string>
-    <string name="onboarding_3_body">Dobra organizacja to podstawa. Tutaj szybko sprawdzisz co masz w grafiku na dziś i następne dni.</string>
+    <string name="onboarding_3_body">Dobra organizacja to podstawa. Tutaj szybko sprawdzisz co masz w grafiku na dziś i kolejne dni.</string>
     <string name="onboarding_4_title">Hotspot</string>
     <string name="onboarding_4_body">Na mapie zobaczysz wszystkie popularne miejsca. Dzięki temu w skuteczny sposób sprawdzisz gdzie warto podjechać.</string>
 
