@@ -52,7 +52,7 @@
     <string name="feedback">Twoja ocena</string>
     <string name="feeback_custom_text">Hej %1$s, udało Ci się złapać klienta po dotarciu do %2$s?</string>
     <string name="feeback_normal_text">Twoja odpowiedź sprawi, że aplikacja będzie działać coraz lepiej!</string>
-    <string name="notification_time">Czas zakończenia %1$d:%2$d</string>
+    <string name="notification_time">Czas zakończenia %1$d:%2$s</string>
     <string name="onboarding_1_title">Hej!</string>
     <string name="onboarding_1_body">To pierwszy krok do większych zysków, zapnij pasy i zaczynamy!</string>
     <string name="onboarding_2_title">Wydarzenia</string>

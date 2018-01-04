@@ -56,7 +56,7 @@
     <string name="feedback">Feedback</string>
     <string name="feeback_custom_text">Hi %1$s, did you manage to find a passenger near to %2$s?</string>
     <string name="feeback_normal_text">Your feedback will improve your app and it will get better everyday!</string>
-    <string name="notification_time">End time %1$d:%2$d</string>
+    <string name="notification_time">End time %1$d:%2$s</string>
     <string name="onboarding_1_title">Hi!</string>
     <string name="onboarding_1_body">You are on the right way to rise your profit. Fasten your sit belts and start off</string>
     <string name="onboarding_2_title">Events</string>

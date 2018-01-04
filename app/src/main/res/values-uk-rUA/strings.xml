@@ -51,7 +51,7 @@
     <string name="no_drive">Я туди не ходив</string>
     <string name="feeback_custom_text">Привіт %1$s, Ви спромоглися знайти пасажира поблизу %2$s?</string>
     <string name="feeback_normal_text">Ваш відгук покращить ваш додаток, і це покращиться кожен день!</string>
-    <string name="notification_time">час закінчення %1$d:%2$d</string>
+    <string name="notification_time">час закінчення %1$d:%2$s</string>
     <string name = "onboarding_1_title">Привіт!</string>
     <string name = "onboarding_1_body">Ви на правильному шляху збільшити прибуток. Закріпіть свої ремені та почніть.</string>
     <string name = "onboarding_2_title">Події </string>

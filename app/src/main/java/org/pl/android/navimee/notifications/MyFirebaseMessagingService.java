@@ -134,7 +134,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         DateTime date = new DateTime(Long.valueOf(dateTime));
-        String time = String.format(getString(R.string.notification_time),date.getHourOfDay(),date.getMinuteOfHour());
+        String time = String.format(getString(R.string.notification_time),date.getHourOfDay(),String.format("%02d",date.getMinuteOfHour()));
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
