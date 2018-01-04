@@ -41,22 +41,32 @@ import timber.log.Timber;
 
 public class SignInActivity extends BaseActivity implements SignInMvpView {
 
+    @Inject
+    SignInPresenter mSignInPresenter;
+
+    @BindView(R.id.facebook_login_button)
+    LoginButton facebookButton;
+
+    @BindView(R.id.sign_in_google_button)
+    SignInButton googleButton;
+
+    @BindView(R.id.input_email)
+    EditText _emailText;
+
+    @BindView(R.id.input_password)
+    EditText _passwordText;
+
+    @BindView(R.id.btn_login)
+    Button _loginButton;
+
+    @BindView(R.id.title)
+    TextView _titleTextView;
+
+    ProgressDialog progressDialog;
+
     private static final int REQUEST_SIGNUP = 0;
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
-    @BindView(R.id.facebook_login_button)
-    public LoginButton facebookButton;
-    @BindView(R.id.sign_in_google_button)
-    public SignInButton googleButton;
-    @Inject
-    SignInPresenter mSignInPresenter;
-    @BindView(R.id.input_email)
-    EditText _emailText;
-    @BindView(R.id.input_password)
-    EditText _passwordText;
-    @BindView(R.id.btn_login)
-    Button _loginButton;
-    ProgressDialog progressDialog;
     private CallbackManager mCallbackManager;
     private GoogleSignInClient mGoogleSignInClient;
 
@@ -67,21 +77,18 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
         setContentView(R.layout.activity_sign_in);
         ButterKnife.bind(this);
 
-        TextView tv = (TextView) findViewById(R.id.textView2);
-        Typeface tf = Typeface.createFromAsset(getAssets(), "NexaBold.ttf");
-        tv.setTypeface(tf);
+        _titleTextView.setTypeface(Typeface.createFromAsset(getAssets(), "NexaBold.ttf"));
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         LoginManager.getInstance().logOut();
 
         mSignInPresenter.attachView(this);
 
-        progressDialog = new ProgressDialog(this,
-                R.style.AppTheme_Dark_Dialog);
+        progressDialog = new ProgressDialog(this, R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage(getResources().getString(R.string.login_progress));
 
-        initalizeButtons();
+        initializeButtons();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -92,25 +99,15 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
 
     }
 
-    public void initalizeButtons() {
-        _loginButton.setOnClickListener(new View.OnClickListener() {
+    public void initializeButtons() {
+        _loginButton.setOnClickListener(v -> login());
 
-            @Override
-            public void onClick(View v) {
-                login();
-            }
+        googleButton.setOnClickListener(v -> {
+            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+            startActivityForResult(signInIntent, RC_SIGN_IN);
         });
 
-        googleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                startActivityForResult(signInIntent, RC_SIGN_IN);
-            }
-        });
-
-
-        //        FACEBOOK BUTTON
+        // FACEBOOK BUTTON
         mCallbackManager = CallbackManager.Factory.create();
         facebookButton.setReadPermissions("email", "public_profile");
         facebookButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
@@ -124,21 +121,16 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
             public void onCancel() {
                 Timber.d(TAG, "facebook:onCancel");
                 onErrorFacebook();
-                // [START_EXCLUDE]
-                // updateUI(null);
-                // [END_EXCLUDE]
             }
 
             @Override
             public void onError(FacebookException error) {
                 Timber.d(TAG, "facebook:onError", error);
                 onErrorFacebook();
-                // [START_EXCLUDE]
-                //updateUI(null);
-                // [END_EXCLUDE]
             }
         });
 
+        setGooglePlusButtonText(googleButton, "Google");
     }
 
 
@@ -182,9 +174,6 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
-                // [START_EXCLUDE]
-                // updateUI(null);
-                // [END_EXCLUDE]
             }
         } else {
             //facebook
@@ -200,7 +189,6 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
 
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), getResources().getString(R.string.login_failed), Toast.LENGTH_LONG).show();
-
         _loginButton.setEnabled(true);
     }
 
@@ -240,8 +228,6 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
     // [START auth_with_google]
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-        // [START_EXCLUDE silent]
-        // [END_EXCLUDE]
         progressDialog.show();
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
@@ -274,6 +260,19 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
     public void onErrorFacebook() {
         Toast.makeText(getBaseContext(), getResources().getString(R.string.login_failed), Toast.LENGTH_LONG).show();
         progressDialog.dismiss();
+    }
+
+    protected void setGooglePlusButtonText(SignInButton signInButton, String buttonText) {
+        // Find the TextView that is inside of the SignInButton and set its text
+        for (int i = 0; i < signInButton.getChildCount(); i++) {
+            View v = signInButton.getChildAt(i);
+
+            if (v instanceof TextView) {
+                TextView tv = (TextView) v;
+                tv.setText(buttonText);
+                return;
+            }
+        }
     }
 }
 

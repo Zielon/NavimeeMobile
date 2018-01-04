@@ -47,9 +47,10 @@ public class SignUpPresenter extends BasePresenter<SignUpMvpView> {
                 .subscribe(token -> {
                     Timber.i("RxFirebaseSample", "user token: " + token.getToken());
                     FirebaseUser user = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
-                    UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
-                    user.updateProfile(userProfileChangeRequest).getResult();
-                    mMvpView.onSuccess();
+                    UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
+                    RxFirebaseUser.updateProfile(user, profile).subscribe(sub -> {
+                        mMvpView.onSuccess();
+                    });
                 }, throwable -> {
                     Timber.e("RxFirebaseSample", throwable.toString());
                     mMvpView.onError();

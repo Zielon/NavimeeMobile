@@ -39,7 +39,6 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
     @BindView(R.id.btn_signup)
     Button _signupButton;
 
-
     ProgressDialog progressDialog;
 
     @Override
@@ -58,18 +57,17 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
     public void signUp() {
         Timber.d(TAG, "Signup");
 
+        progressDialog = new ProgressDialog(SignUpActivity.this, R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage(getResources().getString(R.string.create_account_progress));
+        progressDialog.show();
+
         if (!validate()) {
             onError();
             return;
         }
 
         _signupButton.setEnabled(false);
-
-        progressDialog = new ProgressDialog(SignUpActivity.this,
-                R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage(getResources().getString(R.string.create_account_progress));
-        progressDialog.show();
 
         String name = _nameText.getText().toString();
         String email = _emailText.getText().toString();
@@ -87,10 +85,10 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
         String password = _passwordText.getText().toString();
 
         if (name.isEmpty() || name.length() < 4) {
-            _emailText.setError(getResources().getString(R.string.valid_name));
+            _nameText.setError(getResources().getString(R.string.valid_name));
             valid = false;
         } else {
-            _emailText.setError(null);
+            _nameText.setError(null);
         }
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
@@ -114,8 +112,8 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
     public void onSuccess() {
         _signupButton.setEnabled(true);
         mSignUpPresenter.registerMessagingToken();
-        setResult(RESULT_OK, null);
         progressDialog.dismiss();
+        setResult(RESULT_OK, null);
         finish();
     }
 
