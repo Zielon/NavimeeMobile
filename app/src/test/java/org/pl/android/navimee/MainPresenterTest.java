@@ -14,7 +14,6 @@ import java.util.List;
 
 import io.reactivex.Observable;
 import org.pl.android.navimee.data.DataManager;
-import org.pl.android.navimee.data.model.Ribot;
 import org.pl.android.navimee.test.common.TestDataFactory;
 import org.pl.android.navimee.ui.main.MainMvpView;
 import org.pl.android.navimee.ui.main.MainPresenter;

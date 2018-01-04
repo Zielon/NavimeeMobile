@@ -14,10 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import io.reactivex.observers.TestObserver;
-import org.pl.android.navimee.data.local.DatabaseHelper;
-import org.pl.android.navimee.data.local.Db;
-import org.pl.android.navimee.data.local.DbOpenHelper;
-import org.pl.android.navimee.data.model.Ribot;
+
 import org.pl.android.navimee.test.common.TestDataFactory;
 import org.pl.android.navimee.util.DefaultConfig;
 import org.pl.android.navimee.util.RxSchedulersOverrideRule;
