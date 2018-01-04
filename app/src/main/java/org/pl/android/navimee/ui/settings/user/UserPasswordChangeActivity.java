@@ -6,7 +6,7 @@ import android.view.View;
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
 
-public class UserPasswordChangeActivity extends BaseActivity{
+public class UserPasswordChangeActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -14,6 +14,6 @@ public class UserPasswordChangeActivity extends BaseActivity{
         setContentView(R.layout.activity_user_password_change);
     }
 
-    public void onClick(View v){
+    public void onClick(View v) {
     }
 }

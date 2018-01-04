@@ -41,32 +41,24 @@ import timber.log.Timber;
 
 public class SignInActivity extends BaseActivity implements SignInMvpView {
 
-    @Inject
-    SignInPresenter mSignInPresenter;
-
-    @BindView(R.id.facebook_login_button)
-    LoginButton facebookButton;
-
-    @BindView(R.id.sign_in_google_button)
-    SignInButton googleButton;
-
-    @BindView(R.id.input_email)
-    EditText _emailText;
-
-    @BindView(R.id.input_password)
-    EditText _passwordText;
-
-    @BindView(R.id.btn_login)
-    Button _loginButton;
-
-    @BindView(R.id.title)
-    TextView _titleTextView;
-
-    ProgressDialog progressDialog;
-
     private static final int REQUEST_SIGNUP = 0;
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
+    @Inject
+    SignInPresenter mSignInPresenter;
+    @BindView(R.id.facebook_login_button)
+    LoginButton facebookButton;
+    @BindView(R.id.sign_in_google_button)
+    SignInButton googleButton;
+    @BindView(R.id.input_email)
+    EditText _emailText;
+    @BindView(R.id.input_password)
+    EditText _passwordText;
+    @BindView(R.id.btn_login)
+    Button _loginButton;
+    @BindView(R.id.title)
+    TextView _titleTextView;
+    ProgressDialog progressDialog;
     private CallbackManager mCallbackManager;
     private GoogleSignInClient mGoogleSignInClient;
 

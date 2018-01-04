@@ -22,7 +22,7 @@ public class UserEmailChangeActivity extends BaseActivity {
         ButterKnife.bind(this);
     }
 
-    public void onClick(View v){
+    public void onClick(View v) {
         String email = _emailText.getText().toString();
         boolean isValid = true;
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
@@ -32,6 +32,6 @@ public class UserEmailChangeActivity extends BaseActivity {
             _emailText.setError(null);
         }
 
-        if(!isValid) return;
+        if (!isValid) return;
     }
 }
