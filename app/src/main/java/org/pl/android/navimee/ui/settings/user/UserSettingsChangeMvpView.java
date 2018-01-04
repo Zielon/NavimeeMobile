@@ -4,5 +4,6 @@ import org.pl.android.navimee.ui.base.MvpView;
 
 public interface UserSettingsChangeMvpView extends MvpView {
     void onSuccess();
+
     void onError();
 }

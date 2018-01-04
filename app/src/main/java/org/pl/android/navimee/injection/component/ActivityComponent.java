@@ -13,7 +13,7 @@ import org.pl.android.navimee.ui.hotspot.HotSpotFragment;
 import org.pl.android.navimee.ui.main.MainActivity;
 import org.pl.android.navimee.ui.settings.notification.NotificationActivity;
 import org.pl.android.navimee.ui.settings.SettingsActivity;
-import org.pl.android.navimee.ui.settings.reauthenticate.ReauthenticateActivity;
+import org.pl.android.navimee.ui.settings.user.reauthenticate.ReauthenticateActivity;
 import org.pl.android.navimee.ui.settings.user.UserSettingsActivity;
 import org.pl.android.navimee.ui.settings.user.email.UserEmailChangeActivity;
 import org.pl.android.navimee.ui.signin.SignInActivity;

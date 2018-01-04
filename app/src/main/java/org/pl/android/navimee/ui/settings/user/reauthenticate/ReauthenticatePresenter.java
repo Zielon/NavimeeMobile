@@ -1,4 +1,4 @@
-package org.pl.android.navimee.ui.settings.reauthenticate;
+package org.pl.android.navimee.ui.settings.user.reauthenticate;
 
 
 import com.google.firebase.auth.EmailAuthProvider;
@@ -26,9 +26,9 @@ public class ReauthenticatePresenter extends BasePresenter<UserSettingsChangeMvp
         _mvpView = mvpView;
     }
 
-    public void reauthenticate(String email, String password){
+    public void reauthenticate(String email, String password) {
         FirebaseUser user = _dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
-        if(user == null) return;
+        if (user == null) return;
         RxFirebaseUser.reauthenticate(user, EmailAuthProvider.getCredential(email, password))
                 .subscribe(sub -> _mvpView.onSuccess(), throwable -> _mvpView.onError());
     }

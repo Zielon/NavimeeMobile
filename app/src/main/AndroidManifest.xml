@@ -84,6 +84,7 @@
             android:name=".ui.settings.user.UserSettingsActivity"
             android:label="@string/user"
             android:launchMode="singleTop"
+            android:theme="@style/AppTheme"
             android:parentActivityName=".ui.settings.SettingsActivity" />
         <activity
             android:name=".ui.settings.user.password.UserPasswordChangeActivity"
@@ -101,8 +102,9 @@
             android:launchMode="singleTop"
             android:parentActivityName=".ui.settings.user.UserSettingsActivity" />
         <activity
-            android:name=".ui.settings.reauthenticate.ReauthenticateActivity"
+            android:name=".ui.settings.user.reauthenticate.ReauthenticateActivity"
             android:label="@string/reauthenticate"
+            android:theme="@style/AppTheme"
             android:launchMode="singleTop" />
     </application>
 

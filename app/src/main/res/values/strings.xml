@@ -34,6 +34,8 @@
     <string name="notifications_big_events">Notifications on Big Events</string>
     <string name="notifications">Notifications</string>
     <string name="change_email">Change email</string>
+    <string name="change_email_failed">Change email failed!</string>
+    <string name="change_email_succeed">Change email succeed!</string>
     <string name="change_password">Change password</string>
     <string name="change_name">Change name</string>
     <string name="reauthenticate">Reauthenticate</string>
@@ -69,4 +71,5 @@
     <string name="or">or</string>
     <string name="name">Name</string>
     <string name="continueWith">or continue with</string>
+    <string name="emailAlreadyInUse">The email address is already in use by another account.</string>
 </resources>

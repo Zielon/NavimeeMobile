@@ -5,14 +5,13 @@ import com.kelvinapps.rxfirebase.RxFirebaseUser;
 
 import org.pl.android.navimee.data.DataManager;
 import org.pl.android.navimee.ui.base.BasePresenter;
-import org.pl.android.navimee.ui.settings.user.UserSettingsChangeMvpView;
 
 import javax.inject.Inject;
 
-public class UserEmailChangePresenter extends BasePresenter<UserSettingsChangeMvpView> {
+public class UserEmailChangePresenter extends BasePresenter<UserEmailChangeMvpView> {
 
     private final DataManager _dataManager;
-    private UserSettingsChangeMvpView _mvpView;
+    private UserEmailChangeMvpView _mvpView;
 
     @Inject
     public UserEmailChangePresenter(DataManager dataManager) {
@@ -20,14 +19,14 @@ public class UserEmailChangePresenter extends BasePresenter<UserSettingsChangeMv
     }
 
     @Override
-    public void attachView(UserSettingsChangeMvpView mvpView) {
+    public void attachView(UserEmailChangeMvpView mvpView) {
         _mvpView = mvpView;
     }
 
-    public void changeEmail(String newEmail){
+    public void changeEmail(String newEmail) {
         FirebaseUser user = _dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
-        if(user == null) return;
+        if (user == null) return;
         RxFirebaseUser.updateEmail(user, newEmail)
-                .subscribe(sub -> _mvpView.onSuccess(), throwable -> _mvpView.onError());
+                .subscribe(sub -> _mvpView.onSuccess(), throwable -> _mvpView.onError(throwable));
     }
 }

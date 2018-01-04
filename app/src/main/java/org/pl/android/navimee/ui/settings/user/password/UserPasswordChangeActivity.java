@@ -19,9 +19,5 @@ public class UserPasswordChangeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_password_change);
         ButterKnife.bind(this);
-
-    public void onClick(View v) {
-
-        });
     }
 }

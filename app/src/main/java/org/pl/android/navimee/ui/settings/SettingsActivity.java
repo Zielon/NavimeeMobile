@@ -28,12 +28,10 @@ import timber.log.Timber;
 
 public class SettingsActivity extends BaseActivity implements SettingsMvpView {
 
+    private static final int REQUEST_SETTINGS = 1;
     @Inject
     SettingsPresenter settingsPresenter;
-
     private Drawer drawer = null;
-
-    private static final int REQUEST_SETTINGS = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,7 +46,7 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
 
         List<IDrawerItem> drawerItems = new ArrayList<>();
 
-        if(!settingsPresenter.isExternalProvider())
+        if (!settingsPresenter.isExternalProvider())
             drawerItems.add(new PrimaryDrawerItem().withName(R.string.user)
                     .withIcon(R.drawable.happy_user_24dp)
                     .withIdentifier(2)
@@ -94,7 +92,7 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
                 .withOnDrawerItemClickListener((view, position, drawerItem) -> {
                     if (drawerItem instanceof Nameable) {
                         Intent intent = null;
-                        position = (int)drawerItem.getIdentifier();
+                        position = (int) drawerItem.getIdentifier();
                         if (position == 0) {
                             Timber.d(String.valueOf(position));
                             intent = new Intent(SettingsActivity.this, NotificationActivity.class);
@@ -103,9 +101,6 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
                         } else if (position == 2) {
                             Timber.d(String.valueOf(position));
                             intent = new Intent(SettingsActivity.this, UserSettingsActivity.class);
-                            intent.putExtra("EMAIL", settingsPresenter.getEmail());
-                            intent.putExtra("NAME", settingsPresenter.getName());
-                            intent.putExtra("EXTERNAL", settingsPresenter.isExternalProvider());
                         } else if (position == 3) {
                             settingsPresenter.logout();
                         }

@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary_dark"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.design.widget.TextInputLayout
@@ -11,17 +10,13 @@
         android:layout_width="match_parent"
         android:paddingLeft="50dp"
         android:paddingRight="50dp"
-        android:layout_height="wrap_content"
-        android:textColorHint="@color/white">
+        android:layout_height="wrap_content">
 
         <EditText
             android:id="@+id/input_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email"
-            android:textColorHighlight="@color/white"
-            android:textColorHint="@color/white"
-            android:textColor="@color/white"
             android:inputType="textEmailAddress" />
 
     </android.support.design.widget.TextInputLayout>
@@ -34,8 +29,6 @@
         android:paddingRight="50dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColorHint="@color/white"
-        app:passwordToggleTint="@color/white"
         app:passwordToggleEnabled="true"
         app:passwordToggleDrawable="@drawable/visibility_off_white_48px" >
 
@@ -44,9 +37,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/password"
-            android:textColorHighlight="@color/white"
-            android:textColorHint="@color/white"
-            android:textColor="@color/white"
             android:inputType="textPassword" />
 
     </android.support.design.widget.TextInputLayout>
@@ -58,9 +48,8 @@
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
         android:backgroundTint="@color/button_background"
-        android:textColor="@color/white"
         android:textAlignment="center"
         android:layout_below="@id/layout_password"
-        android:text="@string/save" />
+        android:text="@string/login" />
 
 </RelativeLayout>

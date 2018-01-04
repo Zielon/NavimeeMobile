@@ -1,9 +1,10 @@
-package org.pl.android.navimee.ui.settings.reauthenticate;
+package org.pl.android.navimee.ui.settings.user.reauthenticate;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
@@ -28,7 +29,7 @@ public class ReauthenticateActivity extends BaseActivity implements UserSettings
     @Inject
     ReauthenticatePresenter _reauthenticatePresenter;
 
-    ProgressDialog progressDialog;
+    ProgressDialog _progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +42,9 @@ public class ReauthenticateActivity extends BaseActivity implements UserSettings
 
         _reauthenticateButton.setOnClickListener(v -> {
 
-            progressDialog = new ProgressDialog(this, R.style.AppTheme_Dark_Dialog);
-            progressDialog.setIndeterminate(true);
-            progressDialog.setMessage(getResources().getString(R.string.create_account_progress));
-            progressDialog.show();
+            _progressDialog = new ProgressDialog(this, R.style.AppTheme_Dark_Dialog);
+            _progressDialog.setIndeterminate(true);
+            _progressDialog.setMessage(getResources().getString(R.string.login_progress));
 
             String email = _emailText.getText().toString();
             String password = _passwordText.getText().toString();
@@ -65,7 +65,9 @@ public class ReauthenticateActivity extends BaseActivity implements UserSettings
                 _passwordText.setError(null);
             }
 
-            if(!valid) return;
+            if (!valid) return;
+
+            _progressDialog.show();
             _reauthenticateButton.setEnabled(false);
             _reauthenticatePresenter.reauthenticate(email, password);
         });
@@ -75,15 +77,17 @@ public class ReauthenticateActivity extends BaseActivity implements UserSettings
     public void onSuccess() {
         _reauthenticatePresenter.detachView();
         _reauthenticateButton.setEnabled(true);
+        _progressDialog.dismiss();
 
-        progressDialog.dismiss();
         setResult(RESULT_OK, null);
         finish();
     }
 
     @Override
     public void onError() {
+        Toast.makeText(getBaseContext(), getResources().getString(R.string.login_failed), Toast.LENGTH_LONG).show();
         _passwordText.setText("");
         _emailText.setText("");
+        _progressDialog.dismiss();
     }
 }

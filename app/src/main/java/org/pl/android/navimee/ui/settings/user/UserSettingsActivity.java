@@ -26,28 +26,49 @@ import timber.log.Timber;
 
 public class UserSettingsActivity extends BaseActivity implements UserSettingsChangeMvpView {
 
-    private Drawer drawer = null;
-
     @Inject
-    UserSettingsPresenter userSettingsPresenter;
+    UserSettingsPresenter _userSettingsPresenter;
+    private Drawer _drawer = null;
+    private Bundle _savedInstanceState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_settings);
-        Drawable grayBackground = getResources().getDrawable(R.drawable.primary);
+        activityComponent().inject(UserSettingsActivity.this);
 
-        activityComponent().inject(this);
-        setContentView(R.layout.activity_user);
-        userSettingsPresenter.attachView(this);
+        _userSettingsPresenter.attachView(this);
+        _savedInstanceState = savedInstanceState;
+
+        initDrawer();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        initDrawer();
+    }
+
+    @Override
+    public void onSuccess() {
+
+    }
+
+    @Override
+    public void onError() {
+
+    }
+
+    private void initDrawer() {
+
+        Drawable grayBackground = getResources().getDrawable(R.drawable.primary);
 
         List<IDrawerItem> drawerItems = new ArrayList<>();
 
-        drawerItems.add(new PrimaryDrawerItem().withName(userSettingsPresenter.getName())
+        drawerItems.add(new PrimaryDrawerItem().withName(_userSettingsPresenter.getName())
                 .withIcon(R.drawable.happy_user_24dp)
                 .withTextColor(getResources().getColor(R.color.white)));
 
-        drawerItems.add(new PrimaryDrawerItem().withName(userSettingsPresenter.getEmail())
+        drawerItems.add(new PrimaryDrawerItem().withName(_userSettingsPresenter.getEmail())
                 .withIcon(R.drawable.email_user_24dp)
                 .withTextColor(getResources().getColor(R.color.white)));
 
@@ -55,7 +76,7 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
                 .withIcon(R.drawable.password_24dp)
                 .withTextColor(getResources().getColor(R.color.white)));
 
-        drawer = new DrawerBuilder()
+        _drawer = new DrawerBuilder()
                 .withActivity(this)
                 .withTranslucentStatusBar(false)
                 .addDrawerItems(drawerItems.toArray(new IDrawerItem[drawerItems.size()]))
@@ -80,27 +101,14 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
                     }
                     return false;
                 })
-                .withSavedInstance(savedInstanceState)
+                .withSavedInstance(_savedInstanceState)
                 .withSelectedItem(-1)
                 .buildView();
 
-        drawer.getSlider().setBackground(grayBackground);
+        _drawer.getSlider().setBackground(grayBackground);
 
-        ((ViewGroup) findViewById(R.id.frame_container)).addView(drawer.getSlider());
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        drawer.setSelection(-1);
-    }
-
-    @Override
-    public void onSuccess() {
-
-    }
-
-    @Override
-    public void onError() {
-
+        ViewGroup view = (ViewGroup) findViewById(R.id.frame_container);
+        view.removeAllViews();
+        view.addView(_drawer.getSlider());
     }
 }

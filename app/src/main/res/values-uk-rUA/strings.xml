@@ -33,6 +33,8 @@
     <string name="notifications_big_events">Повідомлення про великі події</string>
     <string name="notifications">сповіщення</string>
     <string name="change_email">змінити електронну пошту</string>
+    <string name="change_email_failed">Зміна пароля не вдалося!</string>
+    <string name="change_email_succeed">Зміна електронної пошти була успішною!</string>
     <string name="change_password">змінити пароль</string>
     <string name="change_name">Я беру це</string>
     <string name="reauthenticate">Я знову ввійду</string>
@@ -64,4 +66,5 @@
     <string name = "or">або</string>
     <string name = "Name">ім\'я</string>
     <string name="continueWith">або продовжувати</string>
+    <string name="emailAlreadyInUse">Надана електронна адреса вже використовується іншим акаунтом.</string>
 </resources>

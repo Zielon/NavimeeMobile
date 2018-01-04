@@ -26,11 +26,11 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
         super.detachView();
     }
 
-    public String getEmail(){
+    public String getEmail() {
         return firebaseUser.getEmail();
     }
 
-    public String getName(){
+    public String getName() {
         return firebaseUser.getDisplayName();
     }
 }

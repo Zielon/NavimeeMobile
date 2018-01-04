@@ -33,6 +33,8 @@
     <string name="notifications_big_events">Powiadomienia o dużych wydarzeniach</string>
     <string name="notifications">Powiadomienia</string>
     <string name="change_email">Zmień email</string>
+    <string name="change_email_failed">Zmiana email się niepowiodła!</string>
+    <string name="change_email_succeed">Zmiana email się udała!</string>
     <string name="change_password">Zmień hasło</string>
     <string name="change_name">Zmień imię</string>
     <string name="reauthenticate">Zaloguje się ponwonie</string>
@@ -65,4 +67,5 @@
     <string name="or">lub</string>
     <string name="name">Imię</string>
     <string name="continueWith">lub kontynuuj z</string>
+    <string name="emailAlreadyInUse">Podany adres e-mail jest już używany przez inne konto.</string>
 </resources>

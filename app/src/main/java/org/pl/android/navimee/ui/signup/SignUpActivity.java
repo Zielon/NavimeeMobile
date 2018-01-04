@@ -8,6 +8,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
 
@@ -22,7 +24,7 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
     private static final String TAG = "SignUpActivity";
 
     @Inject
-    SignUpPresenter mSignUpPresenter;
+    SignUpPresenter _signUpPresenter;
 
     @BindView(R.id.input_name)
     EditText _nameText;
@@ -39,15 +41,15 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
     @BindView(R.id.btn_signup)
     Button _signupButton;
 
-    ProgressDialog progressDialog;
+    ProgressDialog _progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activityComponent().inject(this);
+        activityComponent().inject(SignUpActivity.this);
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
-        mSignUpPresenter.attachView(this);
+        _signUpPresenter.attachView(this);
 
         _titleTextView.setTypeface(Typeface.createFromAsset(getAssets(), "NexaBold.ttf"));
 
@@ -57,13 +59,13 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
     public void signUp() {
         Timber.d(TAG, "Signup");
 
-        progressDialog = new ProgressDialog(SignUpActivity.this, R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage(getResources().getString(R.string.create_account_progress));
-        progressDialog.show();
+        _progressDialog = new ProgressDialog(SignUpActivity.this, R.style.AppTheme_Dark_Dialog);
+        _progressDialog.setIndeterminate(true);
+        _progressDialog.setMessage(getResources().getString(R.string.create_account_progress));
+        _progressDialog.show();
 
         if (!validate()) {
-            onError();
+            onError(null);
             return;
         }
 
@@ -73,7 +75,7 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
-        mSignUpPresenter.register(email, password, name);
+        _signUpPresenter.register(email, password, name);
     }
 
 
@@ -111,16 +113,22 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
     @Override
     public void onSuccess() {
         _signupButton.setEnabled(true);
-        mSignUpPresenter.registerMessagingToken();
-        progressDialog.dismiss();
+        _signUpPresenter.registerMessagingToken();
+        _progressDialog.dismiss();
         setResult(RESULT_OK, null);
         finish();
     }
 
     @Override
-    public void onError() {
-        Toast.makeText(getBaseContext(), getResources().getString(R.string.register_failed), Toast.LENGTH_LONG).show();
+    public void onError(Throwable throwable) {
+        _progressDialog.dismiss();
+
+        if(throwable != null && throwable instanceof FirebaseAuthUserCollisionException)
+            Toast.makeText(getBaseContext(), getResources().getString(R.string.emailAlreadyInUse), Toast.LENGTH_LONG).show();
+        else
+            Toast.makeText(getBaseContext(), getResources().getString(R.string.register_failed), Toast.LENGTH_LONG).show();
+
         _signupButton.setEnabled(true);
-        progressDialog.dismiss();
+        _progressDialog.dismiss();
     }
 }
