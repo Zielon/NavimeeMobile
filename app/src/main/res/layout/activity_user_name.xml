@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary_dark"
     tools:context="org.pl.android.navimee.ui.settings.user.name.UserNameChangeActivity">
 
     <android.support.design.widget.TextInputLayout
@@ -12,15 +11,12 @@
         android:paddingLeft="50dp"
         android:paddingRight="50dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColorHint="@color/white">
+        android:layout_height="wrap_content">
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/name"
-            android:textColorHighlight="@color/white"
-            android:textColorHint="@color/white"
             android:textColor="@color/white"
             android:inputType="textPassword" />
 
@@ -33,7 +29,6 @@
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
         android:backgroundTint="@color/button_background"
-        android:textColor="@color/white"
         android:textAlignment="center"
         android:layout_below="@id/layout_name"
         android:text="@string/save" />
