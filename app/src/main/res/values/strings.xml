@@ -35,6 +35,8 @@
     <string name="notifications">Notifications</string>
     <string name="change_email">Change email</string>
     <string name="change_password">Change password</string>
+    <string name="change_name">Change name</string>
+    <string name="reauthenticate">Reauthenticate</string>
     <string name="privacy_conditions">Privacy Policy</string>
     <string name="help">Help</string>
     <string name="visible_on_map">Visible on map</string>

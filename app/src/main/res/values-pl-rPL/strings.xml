@@ -34,6 +34,8 @@
     <string name="notifications">Powiadomienia</string>
     <string name="change_email">Zmień email</string>
     <string name="change_password">Zmień hasło</string>
+    <string name="change_name">Zmień imię</string>
+    <string name="reauthenticate">Zaloguje się ponwonie</string>
     <string name="privacy_conditions">Polityka Prywatności</string>
     <string name="help">Pomoc</string>
     <string name="visible_on_map">Widoczne na mapie</string>

@@ -34,6 +34,8 @@
     <string name="notifications">сповіщення</string>
     <string name="change_email">змінити електронну пошту</string>
     <string name="change_password">змінити пароль</string>
+    <string name="change_name">Я беру це</string>
+    <string name="reauthenticate">Я знову ввійду</string>
     <string name="privacy_conditions">політика конфіденційності</string>
     <string name="help">допомогти</string>
     <string name="visible_on_map">видимий на карті</string>
