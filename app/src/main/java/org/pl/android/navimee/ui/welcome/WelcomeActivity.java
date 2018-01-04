@@ -47,6 +47,11 @@ public class WelcomeActivity extends BaseActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        // ignore the back button pressed event
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REQUEST_SIGN)
             if(resultCode == RESULT_OK)
