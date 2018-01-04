@@ -19,10 +19,10 @@ import timber.log.Timber;
 
 public class SignUpActivity extends BaseActivity implements SignUpMvpView {
 
+    private static final String TAG = "SignUpActivity";
+
     @Inject
     SignUpPresenter mSignUpPresenter;
-
-    private static final String TAG = "SignUpActivity";
 
     @BindView(R.id.input_name)
     EditText _nameText;
@@ -49,7 +49,7 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
         ButterKnife.bind(this);
         mSignUpPresenter.attachView(this);
 
-        _titleTextView.setTypeface(Typeface.createFromAsset(getAssets(),"NexaBold.ttf"));
+        _titleTextView.setTypeface(Typeface.createFromAsset(getAssets(), "NexaBold.ttf"));
 
         _signupButton.setOnClickListener(v -> signUp());
     }
@@ -119,7 +119,7 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
 
     @Override
     public void onError() {
-        Toast.makeText(getBaseContext(),getResources().getString(R.string.register_failed), Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), getResources().getString(R.string.register_failed), Toast.LENGTH_LONG).show();
         _signupButton.setEnabled(true);
         progressDialog.dismiss();
     }

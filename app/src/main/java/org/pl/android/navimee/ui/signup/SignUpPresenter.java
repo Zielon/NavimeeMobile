@@ -1,9 +1,5 @@
 package org.pl.android.navimee.ui.signup;
 
-import android.support.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.kelvinapps.rxfirebase.RxFirebaseAuth;
@@ -42,7 +38,7 @@ public class SignUpPresenter extends BasePresenter<SignUpMvpView> {
 
     public void register(String email, String password, String name) {
         RxFirebaseAuth
-                .createUserWithEmailAndPassword(mDataManager.getFirebaseService().getFirebaseAuth(),email, password)
+                .createUserWithEmailAndPassword(mDataManager.getFirebaseService().getFirebaseAuth(), email, password)
                 .flatMap(x -> RxFirebaseUser.getToken(mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser(), false))
                 .subscribe(token -> {
                     Timber.i("RxFirebaseSample", "user token: " + token.getToken());
@@ -58,29 +54,27 @@ public class SignUpPresenter extends BasePresenter<SignUpMvpView> {
     }
 
     public void registerMessagingToken() {
-        if(mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() != null) {
+        if (mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() != null) {
+
             String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
             String token = mDataManager.getPreferencesHelper().getValueString(Const.MESSAGING_TOKEN);
             String name = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getDisplayName();
+
             Map<String, Object> user = new HashMap<>();
+
             user.put("token", token);
             user.put("email", mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getEmail());
-            user.put("id",userId);
-            user.put("name",name);
+            user.put("id", userId);
+            user.put("name", name);
             user.put("bigEventsNotification", true);
             user.put("dayScheduleNotification", true);
-            mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Timber.i("DocumentSnapshot successfully written!");
-                }
-            })
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Timber.w("Error writing document", e);
-                }
-            });
+
+            mDataManager.getFirebaseService()
+                    .getFirebaseFirestore()
+                    .collection("USERS").document(userId)
+                    .set(user)
+                    .addOnSuccessListener(aVoid -> Timber.i("DocumentSnapshot successfully written!"))
+                    .addOnFailureListener(e -> Timber.w("Error writing document", e));
         }
     }
 }
