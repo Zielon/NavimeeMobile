@@ -73,7 +73,7 @@ public class SignInPresenter extends BasePresenter<SignInMvpView> {
     }
 
 
-    public void loginInWithFacebook(AuthCredential credential) {
+    public void loginInWithFacebookOrGoogle(AuthCredential credential) {
         RxFirebaseAuth.signInWithCredential(mDataManager.getFirebaseService().getFirebaseAuth(),credential)
                 .flatMap(x -> RxFirebaseUser.getToken(mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser(), false))
                 .subscribe(token -> {
@@ -83,7 +83,6 @@ public class SignInPresenter extends BasePresenter<SignInMvpView> {
                     Timber.e("RxFirebaseSample", throwable.toString());
                     mMvpView.onError();
                 });
-
     }
 
     public void registerMessagingToken() {

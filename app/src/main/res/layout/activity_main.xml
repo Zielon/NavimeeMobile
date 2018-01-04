@@ -28,8 +28,9 @@
     <com.roughike.bottombar.BottomBar
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="63dp"
         android:layout_alignParentBottom="true"
+        android:background="@color/primary_dark"
         app:bb_tabXmlResource="@xml/bottombar_tabs" />
 
 </RelativeLayout>

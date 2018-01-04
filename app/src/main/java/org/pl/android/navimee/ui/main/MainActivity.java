@@ -20,6 +20,7 @@ import org.pl.android.navimee.ui.events.EventsFragment;
 import org.pl.android.navimee.ui.hotspot.HotSpotFragment;
 import org.pl.android.navimee.ui.intro.IntroActivity;
 import org.pl.android.navimee.ui.signin.SignInActivity;
+import org.pl.android.navimee.ui.welcome.WelcomeActivity;
 
 import java.util.Collections;
 import java.util.List;
@@ -165,12 +166,10 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     private void checkLogin() {
         FirebaseUser user = mMainPresenter.checkLogin();
         if (user == null) {
-            Intent intent = new Intent(this, SignInActivity.class);
+            Intent intent = new Intent(this, WelcomeActivity.class);
             startActivity(intent);
         }
     }
-
-
 
     /***** MVP View methods implementation *****/
 

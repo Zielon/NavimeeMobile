@@ -17,6 +17,7 @@
     <color name="filters_header">#303f9f</color>
     <color name="filters_buttons">#ff4081</color>
     <color name="filters_buttons_selected">#c2185b</color>
-    <color name="button_backgrtound">#E40455</color>
+    <color name="button_background">#E40455</color>
+    <color name="button_background_dark">#323640</color>
     <color name="settings_switch_color">#e6e40455</color>
 </resources>
