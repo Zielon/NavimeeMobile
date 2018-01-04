@@ -14,6 +14,7 @@
     <string name="delete">видалити</string>
     <string name="save">економити</string>
     <string name="drive_now">йди вже</string>
+    <string name="check_in_app">перевірити в заявці</string>
     <string name="create_account_progress">створення рахунку..</string>
     <string name="valid_email_address">Введіть правильний електронний лист</string>
     <string name="valid_name">Назва повинна містити більше 4 символів</string>

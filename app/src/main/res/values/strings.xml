@@ -14,6 +14,7 @@
     <string name="delete">Delete</string>
     <string name="save">Save</string>
     <string name="drive_now">Go now</string>
+    <string name="check_in_app">Check in app</string>
     <string name="create_account_progress">Creating Account...</string>
     <string name="valid_email_address">Type correct email address</string>
     <string name="valid_name">A name must contain more than 4 characters</string>
@@ -61,7 +62,7 @@
     <string name="onboarding_2_title">Events</string>
     <string name="onboarding_2_body">Look through all the events near your place and make a plan for the upcoming days!</string>
     <string name="onboarding_3_title">Schedule</string>
-    <string name="onboarding_3_body">To keep your things organized add events to Schedule.</string>
+    <string name="onboarding_3_body">To keep your things organized add events to the Schedule.</string>
     <string name="onboarding_4_title">Hotspot</string>
     <string name="onboarding_4_body"> All popular and crowded place are now available on the map.</string>
     <string name="or">or</string>
