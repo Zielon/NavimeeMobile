@@ -17,7 +17,8 @@
     <string name="check_in_app">Check in app</string>
     <string name="create_account_progress">Creating Account...</string>
     <string name="valid_email_address">Type correct email address</string>
-    <string name="valid_password">Password must contain from 6 to 10 characters</string>
+    <string name="valid_name">A name must contain more than 4 characters</string>
+    <string name="valid_password">A password must contain from 6 to 10 characters</string>
     <string name="register_failed">Registration failed</string>
     <string name="save_day_schedule">Added to Schedule</string>
     <string name="delete_day_schedule">Removed from Schedule</string>
@@ -63,6 +64,8 @@
     <string name="onboarding_3_title">Schedule</string>
     <string name="onboarding_3_body">To keep your things organized add events to the Schedule.</string>
     <string name="onboarding_4_title">Hotspot</string>
-    <string name="onboarding_4_body"> All popular and crowded places are now available on your map.</string>
-
+    <string name="onboarding_4_body"> All popular and crowded place are now available on the map.</string>
+    <string name="or">or</string>
+    <string name="name">Name</string>
+    <string name="continueWith">or continue with</string>
 </resources>

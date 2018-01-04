@@ -19,55 +19,52 @@
         android:id="@+id/button_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_anchor="@id/mapView"
-        app:layout_anchorGravity="bottom|right|end"
         android:layout_margin="16dp"
         android:background="@android:color/transparent"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        app:layout_anchor="@id/mapView"
+        app:layout_anchorGravity="top|right">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_my_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        app:fabSize="mini"
-        android:tint="@color/white"
-        app:backgroundTint="@color/primary_dark"
-        android:src="@drawable/ic_my_location_white_24dp"
-        />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_my_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/ic_my_location_white_24dp"
+            android:tint="@color/white"
+            app:backgroundTint="@color/primary_dark"
+            app:fabSize="mini" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_plus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        app:fabSize="mini"
-        android:tint="@color/white"
-        app:backgroundTint="@color/primary_dark"
-        android:src="@drawable/ic_add_circle_outline_white_24dp"
-        />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_plus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/ic_add_circle_outline_white_24dp"
+            android:tint="@color/white"
+            app:backgroundTint="@color/primary_dark"
+            app:fabSize="mini" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_minus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:fabSize="mini"
-        android:layout_marginBottom="20dp"
-        android:tint="@color/white"
-        app:backgroundTint="@color/primary_dark"
-        android:src="@drawable/ic_remove_circle_outline_white_24dp"
-         />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_minus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/ic_remove_circle_outline_white_24dp"
+            android:tint="@color/white"
+            app:backgroundTint="@color/primary_dark"
+            app:fabSize="mini" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:fabSize="mini"
-        android:tint="@color/white"
-        app:backgroundTint="@color/primary_dark"
-        android:src="@drawable/ic_filter"
-        app:elevation="5dp" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_filter"
+            android:tint="@color/white"
+            app:backgroundTint="@color/primary_dark"
+            app:elevation="5dp"
+            app:fabSize="mini" />
 
     </LinearLayout>
 

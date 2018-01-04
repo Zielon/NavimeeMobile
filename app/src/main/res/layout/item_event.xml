@@ -25,7 +25,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-
             <TextView
                 android:id="@+id/text_name"
                 android:layout_width="wrap_content"
@@ -35,8 +34,19 @@
                 android:textColor="@color/white"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_toLeftOf="@+id/driveButton"
-                android:layout_toStartOf="@+id/driveButton" />
+                />
+
+            <ImageView
+                android:id="@+id/image_address_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_name"
+                android:layout_centerVertical="true"
+                android:paddingBottom="5dp"
+                android:paddingStart="10dp"
+                android:paddingTop="5dp"
+                android:src="@drawable/location_name_24dp"
+                android:paddingLeft="10dp" />
 
             <TextView
                 android:id="@+id/text_address_name"
@@ -44,12 +54,23 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/text_name"
                 android:layout_marginTop="5dp"
+                android:layout_toRightOf="@+id/image_address_name"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="5dp"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_small_body"
-                tools:text="developer"
-                android:layout_toLeftOf="@+id/driveButton"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                tools:text="developer" />
+
+            <ImageView
+                android:id="@+id/image_text_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_address_name"
+                android:layout_centerVertical="true"
+                android:paddingStart="10dp"
+                android:src="@drawable/location_address_24dp"
+                android:paddingLeft="10dp" />
 
             <TextView
                 android:id="@+id/text_address"
@@ -57,12 +78,12 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/text_address_name"
                 android:layout_marginTop="5dp"
+                android:layout_toRightOf="@+id/image_text_address"
+                android:paddingStart="10dp"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_small_body"
                 tools:text="developer"
-                android:layout_toLeftOf="@+id/driveButton"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:paddingLeft="10dp" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -70,32 +91,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/content"
-            android:layout_marginTop="10dp">
+            android:layout_marginBottom="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="0dp">
 
             <ImageView
                 android:id="@+id/imageCount"
-                android:layout_marginLeft="10dp"
                 android:layout_width="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
                 android:src="@drawable/ic_people_white" />
 
-            <TextView
-                android:id="@+id/viewTextCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_margin="1dp"
-                android:layout_toRightOf="@+id/imageCount"
-                android:text="1000"
-                android:textColor="@color/white" />
 
             <ImageView
                 android:id="@+id/imageTime"
-                android:layout_toRightOf="@+id/viewTextCount"
                 android:layout_width="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/imageCount"
+                android:paddingLeft="10dp"
                 android:src="@drawable/end_time_24dp" />
 
             <TextView
@@ -104,36 +119,41 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/imageTime"
+                android:paddingLeft="10dp"
                 android:text="18:30"
                 android:textColor="@color/white" />
 
             <ImageView
                 android:id="@+id/imageMaybe"
-                android:layout_toRightOf="@+id/viewTextTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/viewTextTime"
+                android:paddingLeft="10dp"
                 android:src="@drawable/visibilty_on_24dp" />
 
             <TextView
                 android:id="@+id/viewTextMaybe"
                 android:layout_width="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/imageMaybe"
+                android:layout_centerVertical="true"
                 android:layout_margin="1dp"
+                android:layout_toRightOf="@+id/imageMaybe"
+                android:paddingLeft="10dp"
                 android:text="18:30"
                 android:textColor="@color/white" />
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/addButton"
                 android:layout_width="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_height="wrap_content"
-                app:borderWidth="0dp"
-                app:backgroundTint="@color/button_backgrtound"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="10dp"
                 android:src="@drawable/bell_24dp"
-                />
+                app:backgroundTint="@color/button_background"
+                app:borderWidth="0dp"
+                android:layout_marginRight="10dp" />
         </RelativeLayout>
 
     </RelativeLayout>
