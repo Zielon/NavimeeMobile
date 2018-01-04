@@ -26,6 +26,7 @@ public class FourSquarePlace implements Serializable {
     private String locationPostalCode;
     private String locationCity;
     private String locationCountry;
+    private String mainCategory;
     private double locationLat;
     private double locationLng;
 
@@ -37,7 +38,7 @@ public class FourSquarePlace implements Serializable {
     public FourSquarePlace() {
     }
 
-    public FourSquarePlace(String id, String name, double rating, int likesCount, String likesSummary, int statsCheckinsCount, int statsUsersCount, int statsTipCount, int statsVisitsCount, String locationAddress, String locationCrossStreet, String locationPostalCode, String locationCity, String locationCountry, double locationLat, double locationLng, String popularStatus, boolean popularIsOpen, boolean popularIsLocalHoliday,Const.HotSpotType hotspotType) {
+    public FourSquarePlace(String id, String name, double rating, int likesCount, String likesSummary, int statsCheckinsCount, int statsUsersCount, int statsTipCount, int statsVisitsCount, String locationAddress, String locationCrossStreet, String locationPostalCode, String locationCity, String locationCountry, double locationLat, double locationLng, String popularStatus, boolean popularIsOpen, boolean popularIsLocalHoliday,Const.HotSpotType hotspotType, String mainCategory) {
         this.id = id;
         this.name = name;
         this.rating = rating;
@@ -58,6 +59,7 @@ public class FourSquarePlace implements Serializable {
         this.popularIsOpen = popularIsOpen;
         this.popularIsLocalHoliday = popularIsLocalHoliday;
         this.hotspotType = hotspotType;
+        this.mainCategory = mainCategory;
     }
 
     public String getId() {
@@ -218,5 +220,13 @@ public class FourSquarePlace implements Serializable {
 
     public void setHotspotType(Const.HotSpotType hotspotType) {
         this.hotspotType = hotspotType;
+    }
+
+    public String getMainCategory() {
+        return mainCategory;
+    }
+
+    public void setMainCategory(String mainCategory) {
+        this.mainCategory = mainCategory;
     }
 }

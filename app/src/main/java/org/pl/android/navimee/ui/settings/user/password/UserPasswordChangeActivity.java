@@ -9,7 +9,7 @@ import org.pl.android.navimee.ui.base.BaseActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class UserPasswordChangeActivity extends BaseActivity{
+public class UserPasswordChangeActivity extends BaseActivity {
 
     @BindView(R.id.save)
     Button _saveButton;
@@ -20,7 +20,7 @@ public class UserPasswordChangeActivity extends BaseActivity{
         setContentView(R.layout.activity_user_password_change);
         ButterKnife.bind(this);
 
-        _saveButton.setOnClickListener(v -> {
+    public void onClick(View v) {
 
         });
     }
