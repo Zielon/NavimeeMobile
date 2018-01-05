@@ -46,6 +46,8 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setElevation(0);
         activityComponent().inject(SignUpActivity.this);
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);

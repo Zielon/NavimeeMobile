@@ -65,6 +65,8 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setElevation(0);
         activityComponent().inject(this);
         setContentView(R.layout.activity_sign_in);
         ButterKnife.bind(this);
