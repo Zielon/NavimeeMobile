@@ -555,9 +555,11 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     }
     @OnClick(R.id.fab_my_location)
     public void myLocation(View view) {
-        CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLngCurrent, 14);
-        mHotspotPresenter.setLastLocationLatLng(latLngCurrent);
-        googleMap.moveCamera(yourLocation);
+        if(latLngCurrent != null) {
+            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLngCurrent, 14);
+            mHotspotPresenter.setLastLocationLatLng(latLngCurrent);
+            googleMap.moveCamera(yourLocation);
+        }
     }
     @OnClick(R.id.fab_minus)
     public void zoomOut(View view) {
@@ -714,7 +716,27 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     public void showFoursquareOnMap(FourSquarePlace fourSquarePlace) {
         Timber.d(fourSquarePlace.getName());
         if(!eventsOnMap.containsKey(fourSquarePlace.getId())) {
-            ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(fourSquarePlace.getId(), new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()), fourSquarePlace.getName(), String.valueOf(fourSquarePlace.getStatsVisitsCount()), fourSquarePlace.getHotspotType(), R.drawable.people);
+           int picture = R.drawable.people;
+            if(fourSquarePlace.getMainCategory().equals("NIGHTLIFE SPOT")) {
+                picture = R.drawable.category_nightlife_spot_24dp;
+            } else if (fourSquarePlace.getMainCategory().equals("OUTDOORS & RECREATION")) {
+                picture = R.drawable.category_outdoor_24dp;
+            } else if (fourSquarePlace.getMainCategory().equals("TRAVEL & TRANSPORT")) {
+                picture = R.drawable.category_transport_24dp;
+            } else if (fourSquarePlace.getMainCategory().equals("ARTS & ENTERTAINMENT")) {
+                picture = R.drawable.category_arts_24dp;
+            } else if (fourSquarePlace.getMainCategory().equals("PROFESSIONAL & OTHER PLACES")) {
+                picture = R.drawable.category_professional_24dp;
+            } else if (fourSquarePlace.getMainCategory().equals("COLLEGE & UNIVERSITY")) {
+                picture = R.drawable.category_universtiy_24dp;
+            } else if (fourSquarePlace.getMainCategory().equals("FOOD")) {
+                picture = R.drawable.category_food_24dp;
+            } else if (fourSquarePlace.getMainCategory().equals("RESIDENCE")) {
+                picture = R.drawable.category_residence_24dp;
+            }  else if (fourSquarePlace.getMainCategory().equals("SHOP & SERVICE")) {
+                picture = R.drawable.category_shop_24dp;
+            }
+            ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(fourSquarePlace.getId(), new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()), fourSquarePlace.getName(), String.valueOf(fourSquarePlace.getStatsVisitsCount()), fourSquarePlace.getHotspotType(),picture);
             eventsOnMap.put(fourSquarePlace.getId(), clusterItemGoogleMap);
             if(mClusterManager != null)
                 mClusterManager.addItem(clusterItemGoogleMap);
@@ -802,15 +824,16 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
 
                 }
             }
-            //handle result
         }
+
+        if(latLngCurrent == null) return;
+
         this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
         this.geoQuery.addGeoQueryEventListener(this);
+
         eventsOnMap.clear();
         mClusterManager.clearItems();
-
     }
-
 
     private class ErrorHandler implements Consumer<Throwable> {
         @Override
@@ -819,8 +842,6 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
             Log.d("MainActivity", "Error occurred", throwable);
         }
     }
-
-
 
     public void route(LatLng start,LatLng end,String eventName,String eventCount)
     {

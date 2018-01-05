@@ -14,6 +14,7 @@
     <string name="add">Dodaj do Planu Dnia</string>
     <string name="delete">Usuń</string>
     <string name="drive_now">Jedź teraz</string>
+    <string name="check_in_app">Sprawdź w aplikacji</string>
     <string name="create_account_progress">Tworzenie konta trwa..</string>
     <string name="valid_email_address">Wprowadź poprawny adres email</string>
     <string name="valid_name">Imię musi zawierać wiecej niż 4 znaki</string>
@@ -33,7 +34,11 @@
     <string name="notifications_big_events">Powiadomienia o dużych wydarzeniach</string>
     <string name="notifications">Powiadomienia</string>
     <string name="change_email">Zmień email</string>
+    <string name="change_email_failed">Zmiana email się niepowiodła!</string>
+    <string name="change_email_succeed">Zmiana email się udała!</string>
     <string name="change_password">Zmień hasło</string>
+    <string name="change_name">Zmień imię</string>
+    <string name="reauthenticate">Zaloguje się ponwonie</string>
     <string name="privacy_conditions">Polityka Prywatności</string>
     <string name="help">Pomoc</string>
     <string name="visible_on_map">Widoczne na mapie</string>
@@ -46,21 +51,22 @@
     <string name="yes_work">Tak, udało się</string>
     <string name="no_work">Nie udało się</string>
     <string name="no_drive">Nie pojechałem tam</string>
-    <string name="feedback">Feedback</string>
     <string name="email">Email</string>
     <string name="no_account_yet">Nie masz jeszcze konta? Stwórz konto</string>
+    <string name="feedback">Twoja ocena</string>
     <string name="feeback_custom_text">Hej %1$s, udało Ci się złapać klienta po dotarciu do %2$s?</string>
     <string name="feeback_normal_text">Twoja odpowiedź sprawi, że aplikacja będzie działać coraz lepiej!</string>
-    <string name="notification_time">Czas zakończenia %1$d:%2$d</string>
+    <string name="notification_time">Czas zakończenia %1$d:%2$s</string>
     <string name="onboarding_1_title">Hej!</string>
     <string name="onboarding_1_body">To pierwszy krok do większych zysków, zapnij pasy i zaczynamy!</string>
     <string name="onboarding_2_title">Wydarzenia</string>
-    <string name="onboarding_2_body">Przeglądaj wydarzenia na kolejne dni i stwórz swój własny plan na cały tydzień.</string>
+    <string name="onboarding_2_body">Przeglądaj wydarzenia na najbliższe dni i stwórz swój własny plan na cały tydzień.</string>
     <string name="onboarding_3_title">Plan Dnia</string>
-    <string name="onboarding_3_body">Dobra organizacja to podstawa. Tutaj szybko sprawdzisz co masz w grafiku na dziś i następne dni.</string>
+    <string name="onboarding_3_body">Dobra organizacja to podstawa. Tutaj szybko sprawdzisz co masz w grafiku na dziś i kolejne dni.</string>
     <string name="onboarding_4_title">Hotspot</string>
     <string name="onboarding_4_body">Na mapie zobaczysz wszystkie popularne miejsca. Dzięki temu w skuteczny sposób sprawdzisz gdzie warto podjechać.</string>
     <string name="or">lub</string>
     <string name="name">Imię</string>
     <string name="continueWith">lub kontynuuj z</string>
+    <string name="emailAlreadyInUse">Podany adres e-mail jest już używany przez inne konto.</string>
 </resources>

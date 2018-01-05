@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
+import org.pl.android.navimee.ui.main.MainActivity;
 import org.pl.android.navimee.ui.signin.SignInActivity;
 import org.pl.android.navimee.ui.signup.SignUpActivity;
 
@@ -48,13 +49,17 @@ public class WelcomeActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        // ignore the back button pressed event
+        this.finishAffinity();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_SIGN)
-            if (resultCode == RESULT_OK)
+        if (requestCode == REQUEST_SIGN) {
+            if (resultCode == RESULT_OK) {
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
                 this.finish();
+            }
+        }
     }
 }

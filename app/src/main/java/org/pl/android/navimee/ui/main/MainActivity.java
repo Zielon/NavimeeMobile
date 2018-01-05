@@ -13,17 +13,13 @@ import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
 import org.pl.android.navimee.R;
-import org.pl.android.navimee.data.model.Ribot;
 import org.pl.android.navimee.ui.base.BaseActivityFragment;
 import org.pl.android.navimee.ui.dayschedule.DayScheduleFragment;
 import org.pl.android.navimee.ui.events.EventsFragment;
 import org.pl.android.navimee.ui.hotspot.HotSpotFragment;
 import org.pl.android.navimee.ui.intro.IntroActivity;
-import org.pl.android.navimee.ui.signin.SignInActivity;
 import org.pl.android.navimee.ui.welcome.WelcomeActivity;
 
-import java.util.Collections;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -37,7 +33,6 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
 
 
     @Inject MainPresenter mMainPresenter;
-    @Inject RibotsAdapter mRibotsAdapter;
     static final int SETTINGS_REQUEST = 1;  // The request code
     boolean isFromNotification = false;
     double lat,lng;
@@ -122,7 +117,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
                 }
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.frame_layout, selectedFragment);
-                transaction.commit();
+                transaction.commitAllowingStateLoss();
             }
         });
 
@@ -167,17 +162,13 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         FirebaseUser user = mMainPresenter.checkLogin();
         if (user == null) {
             Intent intent = new Intent(this, WelcomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
     }
 
     /***** MVP View methods implementation *****/
 
-    @Override
-    public void showRibots(List<Ribot> ribots) {
-        mRibotsAdapter.setRibots(ribots);
-        mRibotsAdapter.notifyDataSetChanged();
-    }
 
     @Override
     public void showError() {
@@ -188,11 +179,6 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         super.onResume();
     }
 
-    @Override
-    public void showRibotsEmpty() {
-        mRibotsAdapter.setRibots(Collections.<Ribot>emptyList());
-        mRibotsAdapter.notifyDataSetChanged();
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

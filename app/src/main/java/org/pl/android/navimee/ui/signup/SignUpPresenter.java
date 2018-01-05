@@ -49,7 +49,7 @@ public class SignUpPresenter extends BasePresenter<SignUpMvpView> {
                     });
                 }, throwable -> {
                     Timber.e("RxFirebaseSample", throwable.toString());
-                    mMvpView.onError();
+                    mMvpView.onError(throwable);
                 });
     }
 

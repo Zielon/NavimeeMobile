@@ -11,6 +11,7 @@ import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import org.pl.android.navimee.R;
@@ -18,15 +19,19 @@ import org.pl.android.navimee.ui.base.BaseActivity;
 import org.pl.android.navimee.ui.settings.notification.NotificationActivity;
 import org.pl.android.navimee.ui.settings.user.UserSettingsActivity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import timber.log.Timber;
 
 public class SettingsActivity extends BaseActivity implements SettingsMvpView {
 
+    private static final int REQUEST_SETTINGS = 1;
     @Inject
     SettingsPresenter settingsPresenter;
-    private Drawer result = null;
+    private Drawer drawer = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,23 +44,55 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
         TextView textView = (TextView) findViewById(R.id.text_user_name);
         textView.setText(settingsPresenter.getName());
 
-        result = new DrawerBuilder()
+        List<IDrawerItem> drawerItems = new ArrayList<>();
+
+        if (!settingsPresenter.isExternalProvider())
+            drawerItems.add(new PrimaryDrawerItem().withName(R.string.user)
+                    .withIcon(R.drawable.happy_user_24dp)
+                    .withIdentifier(2)
+                    .withTextColor(getResources().getColor(R.color.white)));
+
+        drawerItems.add(new PrimaryDrawerItem().withName(R.string.settings)
+                .withIcon(R.drawable.settings_24dp)
+                .withIdentifier(0)
+                .withTextColor(getResources().getColor(R.color.white)));
+
+        drawerItems.add(new PrimaryDrawerItem().withName("Uber")
+                .withIcon(R.drawable.uber_icon_24dp)
+                .withIdentifier(1)
+                .withTextColor(getResources().getColor(R.color.white)));
+
+        drawerItems.add(new PrimaryDrawerItem().withName(R.string.logout)
+                .withIcon(R.drawable.logout_24dp)
+                .withIdentifier(3)
+                .withTextColor(getResources().getColor(R.color.white)));
+
+        drawerItems.add(new DividerDrawerItem().withEnabled(true));
+
+        drawerItems.add(new PrimaryDrawerItem().withName(R.string.privacy_conditions)
+                .withIcon(R.drawable.legal_privacy_24dp)
+                .withIdentifier(4)
+                .withTextColor(getResources().getColor(R.color.white)));
+
+        drawerItems.add(new PrimaryDrawerItem().withName(R.string.help)
+                .withIcon(R.drawable.help_circle_24dp)
+                .withIdentifier(5)
+                .withTextColor(getResources().getColor(R.color.white)));
+
+        drawerItems.add(new PrimaryDrawerItem().withName(R.string.rate_app)
+                .withIcon(R.drawable.rate_app_24dp)
+                .withIdentifier(6)
+                .withTextColor(getResources().getColor(R.color.white)));
+
+        drawer = new DrawerBuilder()
                 .withActivity(this)
                 .withTranslucentStatusBar(false)
-                .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.settings).withIcon(R.drawable.settings_24dp).withIdentifier(1).withTextColor(getResources().getColor(R.color.white)),
-                        new PrimaryDrawerItem().withName("Uber").withIcon(R.drawable.uber_icon_24dp).withIdentifier(2).withTextColor(getResources().getColor(R.color.white)),
-                        new PrimaryDrawerItem().withName(R.string.user).withIcon(R.drawable.happy_user_24dp).withIdentifier(3).withTextColor(getResources().getColor(R.color.white)),
-                        new PrimaryDrawerItem().withName(R.string.logout).withIcon(R.drawable.logout_24dp).withIdentifier(4).withTextColor(getResources().getColor(R.color.white)),
-                        new DividerDrawerItem().withEnabled(true),
-                        new PrimaryDrawerItem().withName(R.string.privacy_conditions).withIcon(R.drawable.legal_privacy_24dp).withTextColor(getResources().getColor(R.color.white)),
-                        new PrimaryDrawerItem().withName(R.string.help).withIcon(R.drawable.help_circle_24dp).withTextColor(getResources().getColor(R.color.white)),
-                        new PrimaryDrawerItem().withName(R.string.rate_app).withIcon(R.drawable.rate_app_24dp).withTextColor(getResources().getColor(R.color.white))
-                )
+                .addDrawerItems(drawerItems.toArray(new IDrawerItem[drawerItems.size()]))
                 .withSliderBackgroundColor(0)
                 .withOnDrawerItemClickListener((view, position, drawerItem) -> {
                     if (drawerItem instanceof Nameable) {
                         Intent intent = null;
+                        position = (int) drawerItem.getIdentifier();
                         if (position == 0) {
                             Timber.d(String.valueOf(position));
                             intent = new Intent(SettingsActivity.this, NotificationActivity.class);
@@ -64,15 +101,12 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
                         } else if (position == 2) {
                             Timber.d(String.valueOf(position));
                             intent = new Intent(SettingsActivity.this, UserSettingsActivity.class);
-                            intent.putExtra("EMAIL", settingsPresenter.getEmail());
-                            intent.putExtra("NAME", settingsPresenter.getName());
-                            intent.putExtra("EXTERNAL", settingsPresenter.isExternalProvider());
                         } else if (position == 3) {
                             settingsPresenter.logout();
                         }
 
                         if (intent != null) {
-                            SettingsActivity.this.startActivity(intent);
+                            SettingsActivity.this.startActivityForResult(intent, REQUEST_SETTINGS);
                         }
                     }
                     return false;
@@ -81,13 +115,18 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
                 .withSelectedItem(-1)
                 .buildView();
 
-        result.getSlider().setBackground(grayBackground);
+        drawer.getSlider().setBackground(grayBackground);
 
-        ((ViewGroup) findViewById(R.id.frame_container)).addView(result.getSlider());
+        ((ViewGroup) findViewById(R.id.frame_container)).addView(drawer.getSlider());
     }
 
     @Override
     public void onSuccess() {
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        drawer.setSelection(-1);
     }
 
     @Override

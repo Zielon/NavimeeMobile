@@ -47,19 +47,4 @@ public class FirebaseService {
         this.firebaseFirestore = firebaseFirestore;
     }
 
-    public void signUp(String email, String password) {
-       firebaseAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Timber.d("createUser:onComplete:" + task.isSuccessful());
-                        if (task.isSuccessful()) {
-                            Timber.d("createUser:onComplete:" + task.isSuccessful());
-                        } else {
-                            Timber.d("createUser:onComplete:" + task.isSuccessful());
-                        }
-                    }
-                });
-    }
-
 }

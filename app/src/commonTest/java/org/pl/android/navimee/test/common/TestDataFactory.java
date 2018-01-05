@@ -5,10 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import org.pl.android.navimee.data.model.Name;
-import org.pl.android.navimee.data.model.Profile;
-import org.pl.android.navimee.data.model.Ribot;
-
 /**
  * Factory class that makes instances of data models with random field values.
  * The aim of this class is to help setting up test fixtures.
