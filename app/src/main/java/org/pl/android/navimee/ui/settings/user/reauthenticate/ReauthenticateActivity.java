@@ -1,7 +1,9 @@
 package org.pl.android.navimee.ui.settings.user.reauthenticate;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -9,6 +11,7 @@ import android.widget.Toast;
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
 import org.pl.android.navimee.ui.settings.user.UserSettingsChangeMvpView;
+import org.pl.android.navimee.ui.settings.user.email.UserEmailChangeActivity;
 
 import javax.inject.Inject;
 
@@ -34,6 +37,7 @@ public class ReauthenticateActivity extends BaseActivity implements UserSettings
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_reauthenticate);
         ButterKnife.bind(this);
         activityComponent().inject(this);
@@ -90,4 +94,18 @@ public class ReauthenticateActivity extends BaseActivity implements UserSettings
         _emailText.setText("");
         _progressDialog.dismiss();
     }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
 }
