@@ -9,7 +9,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="100dp"
+        android:paddingTop="70dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
 
@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="60sp"
-            android:textColor="#e40455"
+            android:textColor="@color/button_background"
             android:gravity="center_horizontal"
             android:text="Drively" />
 
@@ -27,7 +27,7 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="45dp"
             android:layout_marginBottom="8dp">
             <EditText android:id="@+id/input_name"
                 android:layout_width="match_parent"

@@ -49,7 +49,7 @@ public class WelcomeActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        // ignore the back button pressed event
+        this.finishAffinity();
     }
 
     @Override

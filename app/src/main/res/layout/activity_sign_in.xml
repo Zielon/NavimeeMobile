@@ -2,15 +2,16 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:paddingTop="70dp"
         android:paddingLeft="24dp"
-        android:paddingRight="24dp"
-        android:paddingTop="100dp">
+        android:paddingRight="24dp">
 
         <TextView
             android:id="@+id/title"
@@ -18,7 +19,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:text="Drively"
-            android:textColor="#e40455"
+            android:textColor="@color/button_background"
             android:textSize="60sp" />
 
         <!--  Email Label -->
@@ -26,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_marginTop="25dp">
+            android:layout_marginTop="45dp">
 
             <EditText
                 android:id="@+id/input_email"
@@ -42,6 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            app:passwordToggleTint="@color/white"
             android:layout_marginTop="8dp">
 
             <EditText
