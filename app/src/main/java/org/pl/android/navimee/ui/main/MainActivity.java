@@ -162,6 +162,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         FirebaseUser user = mMainPresenter.checkLogin();
         if (user == null) {
             Intent intent = new Intent(this, WelcomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
     }
