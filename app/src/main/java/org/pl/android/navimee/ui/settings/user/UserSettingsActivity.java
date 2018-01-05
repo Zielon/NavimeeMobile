@@ -45,7 +45,8 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        initDrawer();
+        if(resultCode == RESULT_OK)
+            initDrawer();
     }
 
     @Override

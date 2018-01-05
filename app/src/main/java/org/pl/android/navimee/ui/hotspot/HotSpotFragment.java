@@ -824,13 +824,15 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
             }
             //handle result
         }
+
+        if(latLngCurrent == null) return;
+
         this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
         this.geoQuery.addGeoQueryEventListener(this);
+
         eventsOnMap.clear();
         mClusterManager.clearItems();
-
     }
-
 
     private class ErrorHandler implements Consumer<Throwable> {
         @Override
@@ -839,8 +841,6 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
             Log.d("MainActivity", "Error occurred", throwable);
         }
     }
-
-
 
     public void route(LatLng start,LatLng end,String eventName,String eventCount)
     {
