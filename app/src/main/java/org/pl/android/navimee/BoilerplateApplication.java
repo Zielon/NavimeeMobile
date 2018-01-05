@@ -4,6 +4,9 @@ import android.app.Application;
 import android.content.Context;
 
 import com.crashlytics.android.Crashlytics;
+import com.github.stkent.amplify.feedback.DefaultEmailFeedbackCollector;
+import com.github.stkent.amplify.feedback.GooglePlayStoreFeedbackCollector;
+import com.github.stkent.amplify.tracking.Amplify;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -25,6 +28,14 @@ public class BoilerplateApplication extends Application  {
             Timber.plant(new Timber.DebugTree());
             Fabric.with(this, new Crashlytics());
         }
+        Amplify.initSharedInstance(this)
+                .setPositiveFeedbackCollectors(new DefaultEmailFeedbackCollector("wojciech.grazawski@wp.pl"))
+                .setCriticalFeedbackCollectors(new DefaultEmailFeedbackCollector("wojciech.grazawski@wp.pl"))
+            //    .setInstallTimeCooldownDays(1)   // Prompt not shown within two weeks of initial install.
+            //    .setLastUpdateTimeCooldownDays(1) // Prompt not shown within one week of most recent update.
+               // .setLastCrashTimeCooldownDays(1) // Prompt not shown within one week of most recent crash.
+                .setAlwaysShow(BuildConfig.DEBUG)
+                .applyAllDefaultRules();
     }
 
     public static BoilerplateApplication get(Context context) {

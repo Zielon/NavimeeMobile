@@ -33,4 +33,21 @@
         android:background="@color/primary_dark"
         app:bb_tabXmlResource="@xml/bottombar_tabs" />
 
+    <com.github.stkent.amplify.prompt.DefaultLayoutPromptView
+        android:id="@+id/prompt_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:prompt_view_user_opinion_question_title="@string/user_opinion_question_title"
+        app:prompt_view_user_opinion_question_subtitle="@string/user_opinion_question_subtitle"
+        app:prompt_view_user_opinion_question_positive_button_label="@string/user_opinion_question_positive_button_label"
+        app:prompt_view_user_opinion_question_negative_button_label="@string/user_opinion_question_negative_button_label"
+        app:prompt_view_positive_feedback_question_title="@string/positive_feedback_question_title"
+        app:prompt_view_positive_feedback_question_positive_button_label="@string/positive_feedback_question_positive_button_label"
+        app:prompt_view_positive_feedback_question_negative_button_label="@string/positive_feedback_question_negative_button_label"
+        app:prompt_view_critical_feedback_question_title="@string/critical_feedback_question_title"
+        app:prompt_view_critical_feedback_question_positive_button_label="@string/critical_feedback_question_positive_button_label"
+        app:prompt_view_critical_feedback_question_negative_button_label="@string/critical_feedback_question_negative_button_label"
+        app:prompt_view_thanks_title="@string/view_thanks_title"
+        app:prompt_view_thanks_display_time_ms="10000" />
+
 </RelativeLayout>
