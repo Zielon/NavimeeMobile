@@ -38,6 +38,8 @@
     <string name="change_email_succeed">Zmiana email się udała!</string>
     <string name="change_password">Zmień hasło</string>
     <string name="change_name">Zmień imię</string>
+    <string name="change_name_failed">Zmiana imienia się nie powiodła!</string>
+    <string name="change_name_succeed">Zmiana imienia się powiodła!</string>
     <string name="reauthenticate">Zaloguje się ponwonie</string>
     <string name="privacy_conditions">Polityka Prywatności</string>
     <string name="help">Pomoc</string>

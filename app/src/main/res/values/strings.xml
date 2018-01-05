@@ -39,6 +39,8 @@
     <string name="change_email_succeed">Change email succeed!</string>
     <string name="change_password">Change password</string>
     <string name="change_name">Change name</string>
+    <string name="change_name_failed">Change name failed!</string>
+    <string name="change_name_succeed">Change name succeed!</string>
     <string name="reauthenticate">Reauthenticate</string>
     <string name="privacy_conditions">Privacy Policy</string>
     <string name="help">Help</string>

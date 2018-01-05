@@ -38,6 +38,8 @@
     <string name="change_email_succeed">Зміна електронної пошти була успішною!</string>
     <string name="change_password">змінити пароль</string>
     <string name="change_name">Я беру це</string>
+    <string name="change_name_failed">Не вдалося змінити ім\'я!</string>
+    <string name="change_name_succeed">Зміни назви були успішними!</string>
     <string name="reauthenticate">Я знову ввійду</string>
     <string name="privacy_conditions">політика конфіденційності</string>
     <string name="help">допомогти</string>
