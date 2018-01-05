@@ -29,7 +29,7 @@
         android:paddingRight="50dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:passwordToggleTint="#FFF"
+        app:passwordToggleTint="@color/white"
         app:passwordToggleEnabled="true"
         app:passwordToggleDrawable="@drawable/visibility_off_white_48px" >
 
