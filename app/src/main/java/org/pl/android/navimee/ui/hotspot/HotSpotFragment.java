@@ -555,9 +555,11 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     }
     @OnClick(R.id.fab_my_location)
     public void myLocation(View view) {
-        CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLngCurrent, 14);
-        mHotspotPresenter.setLastLocationLatLng(latLngCurrent);
-        googleMap.moveCamera(yourLocation);
+        if(latLngCurrent != null) {
+            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLngCurrent, 14);
+            mHotspotPresenter.setLastLocationLatLng(latLngCurrent);
+            googleMap.moveCamera(yourLocation);
+        }
     }
     @OnClick(R.id.fab_minus)
     public void zoomOut(View view) {
@@ -822,7 +824,6 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
 
                 }
             }
-            //handle result
         }
 
         if(latLngCurrent == null) return;

@@ -117,7 +117,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
                 }
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.frame_layout, selectedFragment);
-                transaction.commit();
+                transaction.commitAllowingStateLoss();
             }
         });
 
