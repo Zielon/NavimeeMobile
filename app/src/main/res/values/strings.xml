@@ -75,4 +75,15 @@
     <string name="name">Name</string>
     <string name="continueWith">or continue with</string>
     <string name="emailAlreadyInUse">The email address is already in use by another account.</string>
+    <string name="user_opinion_question_title">Rate this app</string>
+    <string name="user_opinion_question_subtitle">Do you like it ?</string>
+    <string name="user_opinion_question_positive_button_label">Yes</string>
+    <string name="user_opinion_question_negative_button_label">No</string>
+    <string name="positive_feedback_question_title">Awesome! Send your opinion</string>
+    <string name="positive_feedback_question_positive_button_label">Sure thing!</string>
+    <string name="positive_feedback_question_negative_button_label">Not right now</string>
+    <string name="critical_feedback_question_title">Bummer! Would you like to send feedback</string>
+    <string name="critical_feedback_question_positive_button_label">Sure thing!</string>
+    <string name="critical_feedback_question_negative_button_label">Not right now</string>
+    <string name="view_thanks_title">Thank you for feedback</string>
 </resources>

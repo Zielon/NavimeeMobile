@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 
+import com.github.stkent.amplify.prompt.DefaultLayoutPromptView;
+import com.github.stkent.amplify.tracking.Amplify;
 import com.google.firebase.auth.FirebaseUser;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
@@ -54,11 +56,19 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         activityComponent().inject(this);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.app_bar);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        if (savedInstanceState == null) {
+            DefaultLayoutPromptView promptView
+                    = (DefaultLayoutPromptView) findViewById(R.id.prompt_view);
+
+            Amplify.getSharedInstance().promptIfReady(promptView);
+        }
 
 
      /*   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
