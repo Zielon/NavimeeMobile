@@ -27,11 +27,14 @@ import org.reactivestreams.Subscription;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -48,6 +51,11 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
     public Subscription mSubscription;
 
     private ListenerRegistration mListener;
+
+    private List<Event> eventList = new ArrayList<Event>();
+
+    private Set<String> eventsKeyList = new HashSet<>();
+
 
     private List<Event> dayScheduleList = new ArrayList<>();
 
@@ -68,6 +76,8 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
 
 
     public void loadEvents(Date date, String key) {
+
+        eventsKeyList.add(key);
 
         // today
         Calendar dt = new GregorianCalendar();
@@ -104,14 +114,27 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
                     Timber.e("Listen failed.", e);
                     return;
                 }
+                eventsKeyList.remove(snapshot.getId());
                 if (snapshot != null && snapshot.exists() && snapshot.get("hotspotType").equals(Const.HotSpotType.EVENT.name())) {
                         Event event = snapshot.toObject(Event.class);
                         if (event.getEndTime() !=null && event.getEndTime().after(finalDateFinal) && event.getEndTime().before(dt.getTime())) {
-                            if(getMvpView() != null) {
+                           /* if(getMvpView() != null) {
                                 getMvpView().showEvent(snapshot.toObject(Event.class));
-                            }
+                            }*/
+                            eventList.add(event);
                         }
                  }
+                 if(eventsKeyList.isEmpty()) {
+                     if(getMvpView() != null) {
+                         if(eventList.isEmpty()) {
+                             getMvpView().showEventsEmpty();
+                         } else {
+                             Collections.sort(eventList);
+                             getMvpView().showEvents(eventList);
+                         }
+                     }
+                 }
+
             }
         });
 
@@ -204,5 +227,17 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
 
     public void setDayScheduleList(List<Event> dayScheduleList) {
         this.dayScheduleList = dayScheduleList;
+    }
+
+    public Set<String> getEventsKeyList() {
+        return eventsKeyList;
+    }
+
+    public void setEventsKeyList(Set<String> eventsKeyList) {
+        this.eventsKeyList = eventsKeyList;
+    }
+
+    public void clearEvents() {
+        eventList.clear();
     }
 }

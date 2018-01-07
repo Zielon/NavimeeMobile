@@ -21,5 +21,10 @@
         android:paddingBottom="6dp"
         android:paddingTop="6dp"
         android:scrollbars="vertical" />
+    <include layout="@layout/events_empty"
+        android:layout_below="@+id/calendarView"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

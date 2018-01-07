@@ -143,8 +143,20 @@ public  class Event implements Comparable<Event>, Serializable {
     }
 
     @Override
-    public int compareTo(@NonNull Event o) {
-        return 0;
+    public int compareTo(@NonNull Event event) {
+        if(event.getEndTime().after(endTime)) {
+            return -1;
+        } else if(event.getEndTime().before(endTime)) {
+            return 1;
+        } else {
+            if(event.getRank() > rank) {
+                return 1;
+            } else if(event.getRank() < rank) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
     }
 
     @Override

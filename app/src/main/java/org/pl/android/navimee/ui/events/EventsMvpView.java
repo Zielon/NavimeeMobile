@@ -12,11 +12,12 @@ import java.util.Map;
 
 public interface EventsMvpView extends MvpView {
 
-    void showEvent(Event event);
 
     void showEventsEmpty();
 
     void showError();
 
     void onSuccessSave();
+
+    void showEvents(List<Event> eventsList);
 }

@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.HorizontalCalendarListener;
 import devs.mulham.horizontalcalendar.HorizontalCalendarView;
@@ -45,9 +47,12 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
     @BindView(R.id.recycler_view_day_schedule)
     RecyclerView mDayScheduleRecycler;
 
+    @BindView(R.id.day_schedule_empty)
+    RelativeLayout mDayScheduleEmptyLayout;
+
     Date today;
     SkeletonScreen skeletonScreen;
-    
+    HorizontalCalendar horizontalCalendar;
     
     public static DayScheduleFragment newInstance() {
         DayScheduleFragment fragment = new DayScheduleFragment();
@@ -74,7 +79,7 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
 
         today = Calendar.getInstance().getTime();
 
-        HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(fragmentView, R.id.calendarView)
+        horizontalCalendar = new HorizontalCalendar.Builder(fragmentView, R.id.calendarView)
                 .startDate(startDate.getTime())
                 .endDate(endDate.getTime())
                 .datesNumberOnScreen(5)   // Number of Dates cells shown on screen (Recommended 5)
@@ -89,6 +94,8 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Date date, int position) {
+                mDayScheduleRecycler.setVisibility(View.VISIBLE);
+                mDayScheduleEmptyLayout.setVisibility(View.GONE);
                 skeletonScreen.show();
                 mDaySchedulePresenter.loadEvents(date);
             }
@@ -142,7 +149,14 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
 
     @Override
     public void showEventsEmpty() {
+        mDayScheduleRecycler.setVisibility(View.GONE);
+        mDayScheduleEmptyLayout.setVisibility(View.VISIBLE);
         skeletonScreen.hide();
+    }
+
+    @OnClick(R.id.day_schedule_another_date)
+    public void goToEvents(View view) {
+        ((MainActivity) getActivity()).getBottomBar().selectTabWithId(R.id.tab_events);
     }
 
     @Override

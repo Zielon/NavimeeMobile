@@ -98,7 +98,12 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
                         eventList.add(event);
                     }
                     if(getMvpView() != null) {
-                        getMvpView().showEvents(eventList);
+                        if(eventList.isEmpty()) {
+                            getMvpView().showEventsEmpty();
+                        } else {
+                            getMvpView().showEvents(eventList);
+                        }
+
                     }
                 } else {
                     Timber.e("Error getting documents: ", task.getException());

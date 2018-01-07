@@ -20,6 +20,8 @@ import org.pl.android.navimee.injection.ActivityContext;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -114,14 +116,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         return mEvents.size();
     }
 
+
  /*   public void setEvents(List<Event> events) {
         mEvents = events;
     }*/
 
-    public void addEvent(Event event) {
-        if(!mEvents.contains(event)) {
-            mEvents.add(event);
-        }
+    public void addEvents(List<Event> eventList) {
+        mEvents.addAll(eventList);
     }
 
     public void clearEvents() {

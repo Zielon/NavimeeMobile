@@ -71,15 +71,8 @@
     <string name="name">Imię</string>
     <string name="continueWith">lub kontynuuj z</string>
     <string name="emailAlreadyInUse">Podany adres e-mail jest już używany przez inne konto.</string>
-    <string name="user_opinion_question_title">Oceń aplikacje</string>
-    <string name="user_opinion_question_subtitle">Czy Ci się podoba ?</string>
-    <string name="user_opinion_question_positive_button_label">Tak</string>
-    <string name="user_opinion_question_negative_button_label">Nie</string>
-    <string name="positive_feedback_question_title">Super! Wyslij nam swoją opinię</string>
-    <string name="positive_feedback_question_positive_button_label">Jasne!</string>
-    <string name="positive_feedback_question_negative_button_label">Nie teraz</string>
-    <string name="critical_feedback_question_title">Niedobrze! Wyślesz nam feedback?</string>
-    <string name="critical_feedback_question_positive_button_label">Jasne!</string>
-    <string name="critical_feedback_question_negative_button_label">Nie teraz</string>
-    <string name="view_thanks_title">Dziękujemy za feedback</string>
+    <string name="events_empty_text">Wygląda na to, że w tym dniu nie ma żadnego wydarzenia.</string>
+    <string name="events_check_another_date">Sprawdź inną datę</string>
+    <string name="day_schedule_text">Dodaj wydarzenia do Planu Dnia i łap nowych klientów.</string>
+    <string name="day_schedule_events_route">Przejdź do Wydarzeń</string>
 </resources>

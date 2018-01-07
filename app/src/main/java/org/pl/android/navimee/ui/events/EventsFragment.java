@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.HorizontalCalendarListener;
 import devs.mulham.horizontalcalendar.HorizontalCalendarView;
@@ -50,8 +52,12 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
     @BindView(R.id.recycler_view_events)
     RecyclerView mEventsRecycler;
 
+    @BindView(R.id.events_empty)
+    RelativeLayout mEventsEmptyLayout;
+
     Date today;
     SkeletonScreen skeletonScreen;
+    HorizontalCalendar horizontalCalendar;
 
     GeoFire geoFire;
 
@@ -74,7 +80,6 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
                              Bundle savedInstanceState) {
 
         View fragmentView = inflater.inflate(R.layout.events_fragment, container, false);
-
         Calendar endDate = Calendar.getInstance();
         endDate.add(Calendar.DAY_OF_WEEK, 6);
         Calendar startDate = Calendar.getInstance();
@@ -82,7 +87,7 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
 
         today = Calendar.getInstance().getTime();
 
-        HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(fragmentView, R.id.calendarView)
+        horizontalCalendar = new HorizontalCalendar.Builder(fragmentView, R.id.calendarView)
                 .startDate(startDate.getTime())
                 .endDate(endDate.getTime())
                 .datesNumberOnScreen(5)   // Number of Dates cells shown on screen (Recommended 5)
@@ -98,8 +103,11 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Date date, int position) {
+                mEventsRecycler.setVisibility(View.VISIBLE);
+                mEventsEmptyLayout.setVisibility(View.GONE);
                 skeletonScreen.show();
                 mEventsAdapter.clearEvents();
+                mEventsPresenter.clearEvents();
                 double latitude = mEventsPresenter.getLastLat();
                 double longitude = mEventsPresenter.getLastLng();
                 geoFire.queryAtLocation(new GeoLocation(latitude, longitude),16).addGeoQueryEventListener(new GeoQueryEventListener() {
@@ -122,7 +130,7 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
 
                     @Override
                     public void onGeoQueryReady() {
-                        skeletonScreen.hide();
+                      //  skeletonScreen.hide();
                         Timber.i("All initial data has been loaded and events have been fired!");
                     }
 
@@ -178,15 +186,21 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
         mEventsPresenter.detachView();
     }
 
-    @Override
-    public void showEvent(Event event) {
-        mEventsAdapter.addEvent(event);
-        mEventsAdapter.notifyDataSetChanged();
-        skeletonScreen.hide();
+    @OnClick(R.id.events_check_another_date)
+    public void checkAnotherDate(View view) {
+        Date dt = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(horizontalCalendar.getSelectedDate());
+        c.add(Calendar.DATE, 1);
+        dt = c.getTime();
+        horizontalCalendar.selectDate(dt,true);
     }
+
 
     @Override
     public void showEventsEmpty() {
+        mEventsRecycler.setVisibility(View.GONE);
+        mEventsEmptyLayout.setVisibility(View.VISIBLE);
         skeletonScreen.hide();
     }
 
@@ -199,6 +213,13 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
     @Override
     public void onSuccessSave() {
         Toast.makeText(getActivity(),getResources().getString(R.string.save_day_schedule), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showEvents(List<Event> eventsList) {
+        mEventsAdapter.addEvents(eventsList);
+        mEventsAdapter.notifyDataSetChanged();
+        skeletonScreen.hide();
     }
 
 }

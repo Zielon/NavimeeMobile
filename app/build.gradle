@@ -184,7 +184,6 @@ dependencies {
     compile("com.mikepenz:materialdrawer:6.0.2@aar") {
         transitive = true
     }
-    compile 'com.github.stkent:amplify:2.2.0'
 
     //google map
     compile 'com.github.jd-alexander:library:1.1.0'

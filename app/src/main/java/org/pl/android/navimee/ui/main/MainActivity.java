@@ -8,8 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 
-import com.github.stkent.amplify.prompt.DefaultLayoutPromptView;
-import com.github.stkent.amplify.tracking.Amplify;
 import com.google.firebase.auth.FirebaseUser;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
@@ -39,6 +37,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     boolean isFromNotification = false;
     double lat,lng;
     String name,count;
+    BottomBar bottomBar;
 
    // @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
 
@@ -63,12 +62,6 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        if (savedInstanceState == null) {
-            DefaultLayoutPromptView promptView
-                    = (DefaultLayoutPromptView) findViewById(R.id.prompt_view);
-
-            Amplify.getSharedInstance().promptIfReady(promptView);
-        }
 
 
      /*   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -99,7 +92,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         mMainPresenter.attachView(this);
 
 
-        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
@@ -205,5 +198,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         }
     }
 
-
+    public BottomBar getBottomBar() {
+        return bottomBar;
+    }
 }
