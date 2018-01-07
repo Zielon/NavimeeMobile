@@ -34,7 +34,7 @@ public class BoilerplateApplication extends Application  {
             //    .setInstallTimeCooldownDays(1)   // Prompt not shown within two weeks of initial install.
             //    .setLastUpdateTimeCooldownDays(1) // Prompt not shown within one week of most recent update.
                // .setLastCrashTimeCooldownDays(1) // Prompt not shown within one week of most recent crash.
-                .setAlwaysShow(BuildConfig.DEBUG)
+              //  .setAlwaysShow(BuildConfig.DEBUG)
                 .applyAllDefaultRules();
     }
 

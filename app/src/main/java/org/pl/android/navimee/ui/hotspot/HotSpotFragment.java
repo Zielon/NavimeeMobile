@@ -116,10 +116,8 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     TextView mTextPlaceTime;
     @BindView(R.id.text_place_event_name)
     TextView mTextPlaceName;
-    @BindView(R.id.text_place_event_count)
-    TextView mTextPlaceCount;
     @BindView(R.id.place_driveButton)
-    Button mPlaceDriveButton;
+    FloatingActionButton mPlaceDriveButton;
     @BindView(R.id.place_closeBotton)
     ImageButton mPlaceCloseButton;
     @BindView(R.id.fab)
@@ -634,12 +632,8 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         //add route(s) to the map.
 
         for (int i = 0; i <route.size(); i++) {
-
-            //In case of more than 5 alternative routes
-            int colorIndex = i % COLORS.length;
-
             PolylineOptions polyOptions = new PolylineOptions();
-            polyOptions.color(getResources().getColor(COLORS[colorIndex]));
+            polyOptions.color(getResources().getColor(R.color.filters_buttons));
             polyOptions.width(10 + i * 3);
             polyOptions.addAll(route.get(i).getPoints());
             Polyline polyline = googleMap.addPolyline(polyOptions);
@@ -651,7 +645,6 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
             distanceValue = route.get(i).getDistanceValue();
             locationGeo = route.get(i).getLatLgnBounds().getCenter();
             mTextPlaceName.setText(sEventName);
-            mTextPlaceCount.setText(sEventCount);
         }
 
         // Start marker

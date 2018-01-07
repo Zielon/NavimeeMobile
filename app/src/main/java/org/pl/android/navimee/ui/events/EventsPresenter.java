@@ -170,7 +170,9 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
             @Override
             public void onSuccess(Void aVoid) {
                 Timber.i("Event saved");
-                getMvpView().onSuccessSave();
+                if(getMvpView() != null) {
+                    getMvpView().onSuccessSave();
+                }
             }
         })
         .addOnFailureListener(new OnFailureListener() {

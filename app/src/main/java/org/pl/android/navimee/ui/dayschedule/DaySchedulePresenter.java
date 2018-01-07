@@ -113,7 +113,9 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        getMvpView().onSuccessDelete(event);
+                        if(getMvpView() != null) {
+                            getMvpView().onSuccessDelete(event);
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
