@@ -46,11 +46,10 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
 
         List<IDrawerItem> drawerItems = new ArrayList<>();
 
-        if (!settingsPresenter.isExternalProvider())
-            drawerItems.add(new PrimaryDrawerItem().withName(R.string.user)
-                    .withIcon(R.drawable.happy_user_24dp)
-                    .withIdentifier(2)
-                    .withTextColor(getResources().getColor(R.color.white)));
+        drawerItems.add(new PrimaryDrawerItem().withName(R.string.user)
+                .withIcon(R.drawable.happy_user_24dp)
+                .withIdentifier(2)
+                .withTextColor(getResources().getColor(R.color.white)));
 
         drawerItems.add(new PrimaryDrawerItem().withName(R.string.settings)
                 .withIcon(R.drawable.settings_24dp)

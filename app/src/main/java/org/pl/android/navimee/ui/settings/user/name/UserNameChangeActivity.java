@@ -35,14 +35,14 @@ public class UserNameChangeActivity extends BaseActivity implements UserSettings
 
         _userNameChangePresenter.attachView(this);
 
-        _saveButton.setOnClickListener(v ->{
+        _saveButton.setOnClickListener(v -> {
             String name = _nameText.getText().toString();
 
-            if(name.equals("")) {
+            if (name.equals("")) {
                 _nameText.setError(getResources().getString(R.string.change_name_failed));
                 return;
             }
-            
+
             this.startActivityForResult(new Intent(this, ReauthenticateActivity.class), REQUEST_REAUTHENTICATE);
         });
     }

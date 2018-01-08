@@ -1,8 +1,8 @@
 package org.pl.android.navimee.ui.settings.user.reauthenticate;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,12 +11,14 @@ import android.widget.Toast;
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
 import org.pl.android.navimee.ui.settings.user.UserSettingsChangeMvpView;
-import org.pl.android.navimee.ui.settings.user.email.UserEmailChangeActivity;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static org.pl.android.navimee.util.UserInputValidation.isEmailValid;
+import static org.pl.android.navimee.util.UserInputValidation.isPasswordValid;
 
 public class ReauthenticateActivity extends BaseActivity implements UserSettingsChangeMvpView {
 
@@ -24,7 +26,7 @@ public class ReauthenticateActivity extends BaseActivity implements UserSettings
     EditText _emailText;
 
     @BindView(R.id.input_password)
-    EditText _passwordText;
+    TextInputEditText _passwordText;
 
     @BindView(R.id.reauthenticate)
     Button _reauthenticateButton;
@@ -55,14 +57,14 @@ public class ReauthenticateActivity extends BaseActivity implements UserSettings
 
             boolean valid = true;
 
-            if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            if (!isEmailValid(email)) {
                 _emailText.setError(getResources().getString(R.string.valid_email_address));
                 valid = false;
             } else {
                 _emailText.setError(null);
             }
 
-            if (password.isEmpty() || password.length() < 6 || password.length() > 10) {
+            if (!isPasswordValid(password)) {
                 _passwordText.setError(getResources().getString(R.string.valid_password));
                 valid = false;
             } else {

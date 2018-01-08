@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -39,6 +40,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
+import static org.pl.android.navimee.util.UserInputValidation.isEmailValid;
+import static org.pl.android.navimee.util.UserInputValidation.isPasswordValid;
+
 public class SignInActivity extends BaseActivity implements SignInMvpView {
 
     private static final int REQUEST_SIGNUP = 0;
@@ -53,7 +57,7 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
     @BindView(R.id.input_email)
     EditText _emailText;
     @BindView(R.id.input_password)
-    EditText _passwordText;
+    TextInputEditText _passwordText;
     @BindView(R.id.btn_login)
     Button _loginButton;
     @BindView(R.id.title)
@@ -192,14 +196,14 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        if (!isEmailValid(email)) {
             _emailText.setError(getResources().getString(R.string.valid_email_address));
             valid = false;
         } else {
             _emailText.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 6 || password.length() > 10) {
+        if (!isPasswordValid(password)) {
             _passwordText.setError(getResources().getString(R.string.valid_password));
             valid = false;
         } else {
@@ -260,7 +264,7 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
         // Find the TextView that is inside of the SignInButton and set its text
         for (int i = 0; i < signInButton.getChildCount(); i++) {
             View v = signInButton.getChildAt(i);
-
+            buttonText += "           "; // A workaround for centering text in the button.
             if (v instanceof TextView) {
                 TextView tv = (TextView) v;
                 tv.setText(buttonText);

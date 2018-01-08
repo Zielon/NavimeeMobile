@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/name"
+            android:textSize="14sp"
             android:textColor="@color/white" />
 
     </android.support.design.widget.TextInputLayout>
@@ -30,6 +31,7 @@
         android:layout_marginRight="50dp"
         android:backgroundTint="@color/button_background"
         android:textAlignment="center"
+        android:textSize="12sp"
         android:layout_below="@id/layout_name"
         android:text="@string/save" />
 

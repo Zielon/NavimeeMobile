@@ -1,7 +1,7 @@
-package org.pl.android.navimee.ui.settings.user.name;
+package org.pl.android.navimee.ui.settings.user.password;
+
 
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.kelvinapps.rxfirebase.RxFirebaseUser;
 
 import org.pl.android.navimee.data.DataManager;
@@ -10,13 +10,13 @@ import org.pl.android.navimee.ui.settings.user.UserSettingsChangeMvpView;
 
 import javax.inject.Inject;
 
-public class UserNameChangePresenter extends BasePresenter<UserSettingsChangeMvpView> {
+public class UserPasswordChangePresenter extends BasePresenter<UserSettingsChangeMvpView> {
 
     private final DataManager _dataManager;
     private UserSettingsChangeMvpView _mvpView;
 
     @Inject
-    public UserNameChangePresenter(DataManager dataManager) {
+    public UserPasswordChangePresenter(DataManager dataManager) {
         _dataManager = dataManager;
     }
 
@@ -25,11 +25,10 @@ public class UserNameChangePresenter extends BasePresenter<UserSettingsChangeMvp
         _mvpView = mvpView;
     }
 
-    public void changeName(String name) {
+    public void changePassword(String password) {
         FirebaseUser user = _dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
         if (user == null) return;
-        UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
-        RxFirebaseUser.updateProfile(user, profile)
+        RxFirebaseUser.updatePassword(user, password)
                 .subscribe(sub -> _mvpView.onSuccess(), throwable -> _mvpView.onError());
     }
 }

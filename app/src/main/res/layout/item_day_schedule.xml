@@ -145,7 +145,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/viewTextTime"
                 android:paddingLeft="10dp"
-                android:src="@drawable/visibilty_on_24dp" />
+                android:src="@drawable/visibility_on_24dp" />
 
             <TextView
                 android:id="@+id/viewTextMaybe"

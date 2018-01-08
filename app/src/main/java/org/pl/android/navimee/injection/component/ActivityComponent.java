@@ -14,6 +14,8 @@ import org.pl.android.navimee.ui.main.MainActivity;
 import org.pl.android.navimee.ui.settings.notification.NotificationActivity;
 import org.pl.android.navimee.ui.settings.SettingsActivity;
 import org.pl.android.navimee.ui.settings.user.name.UserNameChangeActivity;
+import org.pl.android.navimee.ui.settings.user.password.UserPasswordChangeActivity;
+import org.pl.android.navimee.ui.settings.user.password.UserPasswordChangePresenter;
 import org.pl.android.navimee.ui.settings.user.reauthenticate.ReauthenticateActivity;
 import org.pl.android.navimee.ui.settings.user.UserSettingsActivity;
 import org.pl.android.navimee.ui.settings.user.email.UserEmailChangeActivity;
@@ -38,6 +40,7 @@ public interface ActivityComponent {
     void inject(ReauthenticateActivity reauthenticateActivity);
     void inject(UserSettingsActivity userSettingsActivity);
     void inject(UserNameChangeActivity userNameChangeActivity);
+    void inject(UserPasswordChangeActivity userPasswordChangeActivity);
 
     @ActivityContext
     Context provideContext();

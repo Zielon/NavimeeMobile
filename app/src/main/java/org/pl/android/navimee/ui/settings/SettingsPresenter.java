@@ -3,14 +3,11 @@ package org.pl.android.navimee.ui.settings;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FieldValue;
 
-import org.apache.commons.collections4.ListUtils;
 import org.pl.android.navimee.data.DataManager;
 import org.pl.android.navimee.injection.ConfigPersistent;
 import org.pl.android.navimee.ui.base.BasePresenter;
-import org.pl.android.navimee.util.ExternalProviders;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -60,12 +57,5 @@ public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
 
     public String getEmail() {
         return firebaseUser.getEmail();
-    }
-
-    public boolean isExternalProvider() {
-        List<String> actualProviders = firebaseUser.getProviders();
-        if (actualProviders == null) return false;
-
-        return ListUtils.intersection(actualProviders, ExternalProviders.getExternalProviders()).size() > 0;
     }
 }

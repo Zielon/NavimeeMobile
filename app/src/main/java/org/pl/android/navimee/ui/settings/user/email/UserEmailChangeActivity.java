@@ -17,6 +17,8 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static org.pl.android.navimee.util.UserInputValidation.isEmailValid;
+
 public class UserEmailChangeActivity extends BaseActivity implements UserEmailChangeMvpView {
 
     private static final int REQUEST_REAUTHENTICATE = 0;
@@ -37,9 +39,7 @@ public class UserEmailChangeActivity extends BaseActivity implements UserEmailCh
         _userEmailChangePresenter.attachView(this);
 
         _saveButton.setOnClickListener(v -> {
-            String email = _emailText.getText().toString();
-            boolean isValid = isEmailValid(email);
-            if (!isValid) {
+            if (!isEmailValid(_emailText.getText().toString())) {
                 _emailText.setError(getResources().getString(R.string.valid_email_address));
                 return;
             } else
@@ -59,10 +59,6 @@ public class UserEmailChangeActivity extends BaseActivity implements UserEmailCh
             }
     }
 
-    private boolean isEmailValid(String email) {
-        return !email.isEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
     @Override
     public void onSuccess() {
         Toast.makeText(getBaseContext(), getResources().getString(R.string.change_email_succeed), Toast.LENGTH_LONG).show();
@@ -73,8 +69,7 @@ public class UserEmailChangeActivity extends BaseActivity implements UserEmailCh
 
     @Override
     public void onError(Throwable throwable) {
-
-        if(throwable != null && throwable instanceof FirebaseAuthUserCollisionException)
+        if (throwable != null && throwable instanceof FirebaseAuthUserCollisionException)
             Toast.makeText(getBaseContext(), getResources().getString(R.string.emailAlreadyInUse), Toast.LENGTH_LONG).show();
         else
             Toast.makeText(getBaseContext(), getResources().getString(R.string.change_email_failed), Toast.LENGTH_LONG).show();

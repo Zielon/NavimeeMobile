@@ -3,6 +3,7 @@ package org.pl.android.navimee.ui.signup;
 import android.app.ProgressDialog;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -19,6 +20,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
+import static org.pl.android.navimee.util.UserInputValidation.isEmailValid;
+import static org.pl.android.navimee.util.UserInputValidation.isPasswordValid;
+
 public class SignUpActivity extends BaseActivity implements SignUpMvpView {
 
     private static final String TAG = "SignUpActivity";
@@ -33,7 +37,7 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
     EditText _emailText;
 
     @BindView(R.id.input_password)
-    EditText _passwordText;
+    TextInputEditText _passwordText;
 
     @BindView(R.id.title)
     TextView _titleTextView;
@@ -95,14 +99,14 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
             _nameText.setError(null);
         }
 
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        if (!isEmailValid(email)) {
             _emailText.setError(getResources().getString(R.string.valid_email_address));
             valid = false;
         } else {
             _emailText.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 6 || password.length() > 10) {
+        if (!isPasswordValid(password)) {
             _passwordText.setError(getResources().getString(R.string.valid_password));
             valid = false;
         } else {
@@ -125,7 +129,7 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
     public void onError(Throwable throwable) {
         _progressDialog.dismiss();
 
-        if(throwable != null && throwable instanceof FirebaseAuthUserCollisionException)
+        if (throwable != null && throwable instanceof FirebaseAuthUserCollisionException)
             Toast.makeText(getBaseContext(), getResources().getString(R.string.emailAlreadyInUse), Toast.LENGTH_LONG).show();
         else
             Toast.makeText(getBaseContext(), getResources().getString(R.string.register_failed), Toast.LENGTH_LONG).show();

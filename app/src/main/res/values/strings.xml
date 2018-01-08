@@ -16,7 +16,7 @@
     <string name="drive_now">Go now</string>
     <string name="check_in_app">Check in app</string>
     <string name="create_account_progress">Creating Account...</string>
-    <string name="valid_email_address">Type correct email address</string>
+    <string name="valid_email_address">Type a correct email address</string>
     <string name="valid_name">A name must contain more than 4 characters</string>
     <string name="valid_password">A password must contain from 6 to 10 characters</string>
     <string name="register_failed">Registration failed</string>
@@ -27,7 +27,7 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="create_account">Create account</string>
-    <string name="already_member_login"> Already have an account? Login in</string>
+    <string name="already_member_login">Already have an account? Login in</string>
     <string name="login">Log in</string>
     <string name="logout">Sign out</string>
     <string name="settings">Settings</string>
@@ -35,12 +35,14 @@
     <string name="notifications_big_events">Notifications on Big Events</string>
     <string name="notifications">Notifications</string>
     <string name="change_email">Change email</string>
-    <string name="change_email_failed">Change email failed!</string>
-    <string name="change_email_succeed">Change email succeed!</string>
+    <string name="change_email_failed">Failed to change your email!</string>
+    <string name="change_email_succeed">Your email was changed successfully!</string>
     <string name="change_password">Change password</string>
+    <string name="change_password_failed">Failed to change your password!</string>
+    <string name="change_password_succeed">Your password was changed successfully!</string>
     <string name="change_name">Change name</string>
-    <string name="change_name_failed">Change name failed!</string>
-    <string name="change_name_succeed">Change name succeed!</string>
+    <string name="change_name_failed">Failed to change your name!</string>
+    <string name="change_name_succeed">Your name was changed successfully!</string>
     <string name="reauthenticate">Reauthenticate</string>
     <string name="privacy_conditions">Privacy Policy</string>
     <string name="help">Help</string>

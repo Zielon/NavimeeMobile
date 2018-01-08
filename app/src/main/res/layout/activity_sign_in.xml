@@ -44,13 +44,17 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             app:passwordToggleTint="@color/white"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleDrawable="@drawable/ic_password_visibility_selector"
             android:layout_marginTop="8dp">
 
-            <EditText
+            <android.support.design.widget.TextInputEditText
                 android:id="@+id/input_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/password"
+                android:imeOptions="actionDone"
+                android:maxLines="1"
                 android:textSize="14sp"
                 android:inputType="textPassword" />
         </android.support.design.widget.TextInputLayout>
@@ -78,7 +82,7 @@
             android:textColor="@color/white"
             android:text="@string/continueWith" />
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal">
@@ -86,20 +90,24 @@
             <com.facebook.login.widget.LoginButton
                 xmlns:facebook="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/facebook_login_button"
-                android:layout_width="140dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
-                android:layout_marginRight="20dp"
                 android:layout_marginTop="4dp"
+                android:layout_marginLeft="70dp"
+                android:layout_marginRight="70dp"
                 facebook:com_facebook_login_text="Facebook" />
 
             <com.google.android.gms.common.SignInButton
                 android:id="@+id/sign_in_google_button"
-                android:layout_width="140dp"
+                android:layout_width="match_parent"
                 android:layout_height="42dp"
-                android:layout_marginLeft="20dp" />
-        </LinearLayout>
+                android:layout_marginLeft="66dp"
+                android:layout_marginRight="66dp"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/facebook_login_button"/>
+        </RelativeLayout>
 
     </LinearLayout>
 </ScrollView>

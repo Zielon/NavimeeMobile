@@ -45,7 +45,7 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == RESULT_OK)
+        if (resultCode == RESULT_OK)
             initDrawer();
         else
             _drawer.setSelection(-1);
@@ -85,7 +85,9 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
                 .addDrawerItems(drawerItems.toArray(new IDrawerItem[drawerItems.size()]))
                 .withSliderBackgroundColor(0)
                 .withOnDrawerItemClickListener((view, position, drawerItem) -> {
-                    if (drawerItem instanceof Nameable) {
+                    if(_userSettingsPresenter.isExternalProvider()){
+                        _drawer.setSelection(-1);
+                    }else if (drawerItem instanceof Nameable) {
                         Intent intent = null;
                         if (position == 0) {
                             Timber.d(String.valueOf(position));
