@@ -10,6 +10,7 @@ import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
 import org.pl.android.navimee.ui.settings.user.UserSettingsChangeMvpView;
 import org.pl.android.navimee.ui.settings.user.reauthenticate.ReauthenticateActivity;
+import org.pl.android.navimee.util.HideKeyboard;
 
 import javax.inject.Inject;
 
@@ -32,6 +33,7 @@ public class UserNameChangeActivity extends BaseActivity implements UserSettings
         setContentView(R.layout.activity_user_name);
         ButterKnife.bind(this);
         activityComponent().inject(this);
+        HideKeyboard.setupUI(findViewById(R.id.layout_name_change), this);
 
         _userNameChangePresenter.attachView(this);
 

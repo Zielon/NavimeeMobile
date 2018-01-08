@@ -11,6 +11,7 @@ import android.widget.Toast;
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
 import org.pl.android.navimee.ui.settings.user.UserSettingsChangeMvpView;
+import org.pl.android.navimee.util.HideKeyboard;
 
 import javax.inject.Inject;
 
@@ -43,6 +44,7 @@ public class ReauthenticateActivity extends BaseActivity implements UserSettings
         setContentView(R.layout.activity_reauthenticate);
         ButterKnife.bind(this);
         activityComponent().inject(this);
+        HideKeyboard.setupUI(findViewById(R.id.reauthenticate_layout), this);
 
         _reauthenticatePresenter.attachView(this);
 

@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
+import org.pl.android.navimee.util.HideKeyboard;
 
 import javax.inject.Inject;
 
@@ -56,6 +57,8 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
         _signUpPresenter.attachView(this);
+
+        HideKeyboard.setupUI(findViewById(R.id.sing_up_layout), this);
 
         _titleTextView.setTypeface(Typeface.createFromAsset(getAssets(), "NexaBold.ttf"));
 

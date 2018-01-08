@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
 import org.pl.android.navimee.ui.settings.user.reauthenticate.ReauthenticateActivity;
+import org.pl.android.navimee.util.HideKeyboard;
 
 import javax.inject.Inject;
 
@@ -35,6 +36,7 @@ public class UserEmailChangeActivity extends BaseActivity implements UserEmailCh
         setContentView(R.layout.activity_user_email_change);
         ButterKnife.bind(this);
         activityComponent().inject(this);
+        HideKeyboard.setupUI(findViewById(R.id.layout_email_change), this);
 
         _userEmailChangePresenter.attachView(this);
 

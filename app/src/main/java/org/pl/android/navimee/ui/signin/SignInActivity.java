@@ -33,6 +33,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
+import org.pl.android.navimee.util.HideKeyboard;
 
 import javax.inject.Inject;
 
@@ -79,6 +80,8 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         LoginManager.getInstance().logOut();
+
+        HideKeyboard.setupUI(findViewById(R.id.sing_in_layout), this);
 
         mSignInPresenter.attachView(this);
 
