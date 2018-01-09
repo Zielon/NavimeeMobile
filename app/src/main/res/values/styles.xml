@@ -33,4 +33,8 @@
         <item name="android:background">@color/primary</item>
     </style>
 
+    <style name="SwitchCompatTheme" >
+        <item name="colorControlActivated">@color/button_background</item>
+    </style>
+
 </resources>

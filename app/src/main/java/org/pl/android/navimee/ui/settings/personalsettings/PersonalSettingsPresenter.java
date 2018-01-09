@@ -1,4 +1,4 @@
-package org.pl.android.navimee.ui.settings.notification;
+package org.pl.android.navimee.ui.settings.personalsettings;
 
 import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
@@ -17,18 +17,18 @@ import javax.inject.Inject;
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
-public class NotificationPresenter extends BasePresenter<NotificationMvpView> {
+public class PersonalSettingsPresenter extends BasePresenter<PersonalSettingsMvpView> {
 
     private final DataManager mDataManager;
     private Disposable mDisposable;
 
     @Inject
-    public NotificationPresenter(DataManager dataManager) {
+    public PersonalSettingsPresenter(DataManager dataManager) {
         mDataManager = dataManager;
     }
 
     @Override
-    public void attachView(NotificationMvpView mvpView) {
+    public void attachView(PersonalSettingsMvpView mvpView) {
         super.attachView(mvpView);
     }
 

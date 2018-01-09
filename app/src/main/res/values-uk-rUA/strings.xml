@@ -30,8 +30,8 @@
     <string name="login">Увійдіть</string>
     <string name="logout">вийти</string>
     <string name="settings">налаштування</string>
-    <string name="notifications_day_schedule">Повідомлення про події з дня плану</string>
-    <string name="notifications_big_events">Повідомлення про великі події</string>
+    <string name="notifications_day_schedule">План Дня</string>
+    <string name="notifications_day_schedule_description">Повідомте про завершальні події з Денного плану</string>
     <string name="notifications">сповіщення</string>
     <string name="change_email">змінити електронну пошту</string>
     <string name="change_email_failed">Зміна пароля не вдалося!</string>

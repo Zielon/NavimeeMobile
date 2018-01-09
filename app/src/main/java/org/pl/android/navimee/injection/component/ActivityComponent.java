@@ -11,11 +11,10 @@ import org.pl.android.navimee.ui.dayschedule.DayScheduleFragment;
 import org.pl.android.navimee.ui.events.EventsFragment;
 import org.pl.android.navimee.ui.hotspot.HotSpotFragment;
 import org.pl.android.navimee.ui.main.MainActivity;
-import org.pl.android.navimee.ui.settings.notification.NotificationActivity;
+import org.pl.android.navimee.ui.settings.personalsettings.PersonalSettingsActivity;
 import org.pl.android.navimee.ui.settings.SettingsActivity;
 import org.pl.android.navimee.ui.settings.user.name.UserNameChangeActivity;
 import org.pl.android.navimee.ui.settings.user.password.UserPasswordChangeActivity;
-import org.pl.android.navimee.ui.settings.user.password.UserPasswordChangePresenter;
 import org.pl.android.navimee.ui.settings.user.reauthenticate.ReauthenticateActivity;
 import org.pl.android.navimee.ui.settings.user.UserSettingsActivity;
 import org.pl.android.navimee.ui.settings.user.email.UserEmailChangeActivity;
@@ -28,7 +27,7 @@ import org.pl.android.navimee.ui.welcome.WelcomeActivity;
 public interface ActivityComponent {
 
     void inject(MainActivity mainActivity);
-    void inject(NotificationActivity notificationActivity);
+    void inject(PersonalSettingsActivity notificationActivity);
     void inject(EventsFragment eventsFragment);
     void inject(HotSpotFragment hotSpotFragment);
     void inject(DayScheduleFragment dayScheduleFragment);

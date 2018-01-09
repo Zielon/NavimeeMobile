@@ -30,8 +30,8 @@
     <string name="login">Zaloguj się</string>
     <string name="logout">Wyloguj się</string>
     <string name="settings">Ustawienia</string>
-    <string name="notifications_day_schedule">Powiadomienia o wydarzeniach z Planu Dnia</string>
-    <string name="notifications_big_events">Powiadomienia o dużych wydarzeniach</string>
+    <string name="notifications_day_schedule">Plan Dnia</string>
+    <string name="notifications_day_schedule_description">Powiadom o kończących się wydarzeniach z Planu Dnia</string>
     <string name="notifications">Powiadomienia</string>
     <string name="change_email">Zmień email</string>
     <string name="change_email_failed">Zmiana email się niepowiodła!</string>

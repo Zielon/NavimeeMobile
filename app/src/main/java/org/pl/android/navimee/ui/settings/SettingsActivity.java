@@ -16,7 +16,7 @@ import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
-import org.pl.android.navimee.ui.settings.notification.NotificationActivity;
+import org.pl.android.navimee.ui.settings.personalsettings.PersonalSettingsActivity;
 import org.pl.android.navimee.ui.settings.user.UserSettingsActivity;
 
 import java.util.ArrayList;
@@ -94,7 +94,7 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
                         position = (int) drawerItem.getIdentifier();
                         if (position == 0) {
                             Timber.d(String.valueOf(position));
-                            intent = new Intent(SettingsActivity.this, NotificationActivity.class);
+                            intent = new Intent(SettingsActivity.this, PersonalSettingsActivity.class);
                         } else if (position == 1) {
                             Timber.d(String.valueOf(position));
                         } else if (position == 2) {
