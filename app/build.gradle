@@ -195,15 +195,6 @@ dependencies {
     // Google Sign In SDK (only required for Google Sign In)
     compile "com.google.android.gms:play-services-auth:$PLAY_SERVICES_VERSION"
 
-    // Replace provided dependency below with official AutoValue once this issue is fixed
-    // https://github.com/google/auto/issues/268
-    provided "com.jakewharton.auto.value:auto-value-annotations:$AUTO_VALUE_VERSION"
-    provided "com.ryanharter.auto.value:auto-value-gson:$AUTO_VALUE_GSON_VERSION"
-    annotationProcessor "com.google.auto.value:auto-value:$AUTO_VALUE_VERSION"
-    annotationProcessor 'com.ryanharter.auto.value:auto-value-parcel:0.2.4-rc2'
-    annotationProcessor "com.ryanharter.auto.value:auto-value-gson:$AUTO_VALUE_GSON_VERSION"
-    annotationProcessor 'com.squareup:javapoet:1.7.0'
-    // https://github.com/rharter/auto-value-parcel/issues/64
 
     compile "com.google.dagger:dagger:$DAGGER_VERSION"
     provided 'org.glassfish:javax.annotation:10.0-b28' //Required by Dagger2

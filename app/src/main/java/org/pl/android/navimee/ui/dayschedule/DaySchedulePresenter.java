@@ -85,7 +85,8 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
             dateFinal = dt1.getTime();
         }
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("NOTIFICATIONS").whereEqualTo("userId",userId).whereGreaterThan("endTime",dateFinal).whereLessThan("endTime", dt.getTime()).get()
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection("NOTIFICATIONS").whereEqualTo("userId",userId)
+                    .whereGreaterThan("endTime",dateFinal).whereLessThan("endTime", dt.getTime()).orderBy("endTime").orderBy("rank").get()
         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @SuppressLint("TimberArgCount")
             @Override
