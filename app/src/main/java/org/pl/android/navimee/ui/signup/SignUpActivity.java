@@ -95,7 +95,7 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
-        if (name.isEmpty() || name.length() < 4) {
+        if (name.isEmpty()) {
             _nameText.setError(getResources().getString(R.string.valid_name));
             valid = false;
         } else {
