@@ -736,6 +736,14 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         }
     }
 
+    @Override
+    public void clusterMap() {
+        if(mClusterManager != null) {
+            Timber.i("Cluster size from presenter" +mClusterManager.getAlgorithm().getItems().size());
+            mClusterManager.cluster();
+        }
+    }
+
 
     protected GoogleMap getMap() {
         return googleMap;
@@ -771,9 +779,10 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     @Override
     public void onGeoQueryReady() {
         Timber.i("All initial data has been loaded and events have been fired!");
-        if(mClusterManager != null) {
+      /*  if(mClusterManager != null) {
+            Timber.i("Cluster size" +mClusterManager.getAlgorithm().getItems().size());
             mClusterManager.cluster();
-        }
+        }*/
     }
 
     @Override

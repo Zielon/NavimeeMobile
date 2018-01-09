@@ -12,5 +12,6 @@ public interface HotSpotMvpView  extends MvpView {
 
     void  showEventOnMap(Event event);
     void  showFoursquareOnMap(FourSquarePlace fourSquarePlace);
+    void  clusterMap();
 
 }

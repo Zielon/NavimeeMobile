@@ -42,6 +42,7 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
     private ListenerRegistration mListener;
 
     private Set<Const.HotSpotType> filterList = new HashSet<>();
+    private Set<String> hotspotKeyList = new HashSet<>();
 
     @Inject
     public HotSpotPresenter(DataManager dataManager) {
@@ -81,6 +82,7 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
     }
 
     public void loadHotSpotPlace(String key){
+        hotspotKeyList.add(key);
         mListener =  mDataManager.getFirebaseService().getFirebaseFirestore().collection("HOTSPOT").document(key).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @SuppressLint("TimberArgCount")
             @Override
@@ -90,7 +92,7 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
                     Timber.e( "Listen failed.", e);
                     return;
                 }
-
+                hotspotKeyList.remove(key);
                 if (snapshot != null && snapshot.exists()) {
                    // Timber.d("Current data: " + snapshot.getData());
                     if(snapshot.get("hotspotType").equals(Const.HotSpotType.EVENT.name()) && (filterList.contains(Const.HotSpotType.EVENT) || filterList.isEmpty())) {
@@ -103,6 +105,12 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
                         }
                     }
 
+                }
+
+                if(hotspotKeyList.isEmpty()) {
+                    if(getMvpView() != null) {
+                        getMvpView().clusterMap();
+                    }
                 }
             }
         });
