@@ -68,13 +68,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         }
         holder.maybeTextView.setText(String.valueOf(event.getRank()));
         holder.addButton.setTag(0);
-        if(event.getRank() >= 0 && event.getRank() <= 20) {
+        if(event.getRank() == 1) {
             holder.imageCount.setImageResource(R.drawable.ranking_1_24dp);
-        }  else if(event.getRank() >= 21 && event.getRank() <= 40) {
+        }  else if(event.getRank() == 2) {
             holder.imageCount.setImageResource(R.drawable.ranking_2_24dp);
-        } else if(event.getRank() >= 41 && event.getRank() <= 60) {
+        } else if(event.getRank() == 3) {
             holder.imageCount.setImageResource(R.drawable.ranking_3_24dp);
-        } else if(event.getRank() >= 61 && event.getRank() <= 80) {
+        } else if(event.getRank() == 4) {
             holder.imageCount.setImageResource(R.drawable.ranking_4_24dp);
         } else {
             holder.imageCount.setImageResource(R.drawable.ranking_5_24dp);
@@ -122,6 +122,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
     }*/
 
     public void addEvents(List<Event> eventList) {
+        mEvents.clear();
         mEvents.addAll(eventList);
     }
 
