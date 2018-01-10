@@ -75,4 +75,5 @@
     <string name="events_check_another_date">Sprawdź inną datę</string>
     <string name="day_schedule_text">Dodaj wydarzenia do Planu Dnia i łap nowych klientów.</string>
     <string name="day_schedule_events_route">Przejdź do Wydarzeń</string>
+    <string name="chat">Chat</string>
 </resources>

@@ -7,6 +7,7 @@ import dagger.Subcomponent;
 import org.pl.android.navimee.injection.ActivityContext;
 import org.pl.android.navimee.injection.PerActivity;
 import org.pl.android.navimee.injection.module.ActivityModule;
+import org.pl.android.navimee.ui.chat.ChatFragment;
 import org.pl.android.navimee.ui.dayschedule.DayScheduleFragment;
 import org.pl.android.navimee.ui.events.EventsFragment;
 import org.pl.android.navimee.ui.hotspot.HotSpotFragment;
@@ -40,6 +41,7 @@ public interface ActivityComponent {
     void inject(UserSettingsActivity userSettingsActivity);
     void inject(UserNameChangeActivity userNameChangeActivity);
     void inject(UserPasswordChangeActivity userPasswordChangeActivity);
+    void inject(ChatFragment chatFragment);
 
     @ActivityContext
     Context provideContext();

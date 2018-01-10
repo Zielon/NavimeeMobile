@@ -82,4 +82,6 @@
     <string name="events_check_another_date">Check another date</string>
     <string name="day_schedule_text">Add events to the Day Plan and catch new customers.</string>
     <string name="day_schedule_events_route">Go to Events</string>
+    <string name="chat">Chat</string>
+
 </resources>

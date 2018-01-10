@@ -14,6 +14,7 @@ import com.roughike.bottombar.OnTabSelectListener;
 
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivityFragment;
+import org.pl.android.navimee.ui.chat.ChatFragment;
 import org.pl.android.navimee.ui.dayschedule.DayScheduleFragment;
 import org.pl.android.navimee.ui.events.EventsFragment;
 import org.pl.android.navimee.ui.hotspot.HotSpotFragment;
@@ -117,6 +118,10 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
                             selectedFragment.setArguments(bundle);
                         }
                         break;
+                    case R.id.tab_chat:
+                        selectedFragment = ChatFragment.newInstance();
+                        break;
+
                 }
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.frame_layout, selectedFragment);
