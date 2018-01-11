@@ -6,6 +6,7 @@ public class User {
     public String name;
     public String email;
     public String avata;
+    public String id;
     public Status status;
     public Message message;
 
@@ -19,5 +20,6 @@ public class User {
         message.idSender = "0";
         message.text = "";
         message.timestamp = 0;
+        avata = "default";
     }
 }

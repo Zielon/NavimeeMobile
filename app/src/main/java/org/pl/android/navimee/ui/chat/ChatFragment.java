@@ -2,6 +2,7 @@ package org.pl.android.navimee.ui.chat;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
+import org.pl.android.navimee.ui.chat.service.ServiceUtils;
 import org.pl.android.navimee.ui.events.EventsFragment;
 import org.pl.android.navimee.ui.hotspot.HotSpotFragment;
 import org.pl.android.navimee.ui.main.MainActivity;
@@ -90,8 +92,8 @@ public class ChatFragment extends Fragment implements ChatMvpView {
         adapter.addFrag(new FriendsFragment(), STR_FRIEND_FRAGMENT);
         adapter.addFrag(new GroupFragment(), STR_GROUP_FRAGMENT);
         viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(3);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        viewPager.setOffscreenPageLimit(2);
+       /* viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -99,25 +101,25 @@ public class ChatFragment extends Fragment implements ChatMvpView {
 
             @Override
             public void onPageSelected(int position) {
-           /*     ServiceUtils.stopServiceFriendChat(MainActivity.this.getApplicationContext(), false);
+               ServiceUtils.stopServiceFriendChat(getActivity().getApplicationContext(), false);
                 if (adapter.getItem(position) instanceof FriendsFragment) {
                     floatButton.setVisibility(View.VISIBLE);
-                    floatButton.setOnClickListener(((FriendsFragment) adapter.getItem(position)).onClickFloatButton.getInstance(MainActivity.this));
+                    floatButton.setOnClickListener(((FriendsFragment) adapter.getItem(position)).onClickFloatButton.getInstance(getActivity()));
                     floatButton.setImageResource(R.drawable.plus);
                 } else if (adapter.getItem(position) instanceof GroupFragment) {
                     floatButton.setVisibility(View.VISIBLE);
-                    floatButton.setOnClickListener(((GroupFragment) adapter.getItem(position)).onClickFloatButton.getInstance(MainActivity.this));
+                    floatButton.setOnClickListener(((GroupFragment) adapter.getItem(position)).onClickFloatButton.getInstance(getActivity()));
                     floatButton.setImageResource(R.drawable.ic_float_add_group);
                 } else {
                     floatButton.setVisibility(View.GONE);
-                }*/
+                }
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
 
             }
-        });
+        });*/
     }
 
     private void setupTabIcons() {

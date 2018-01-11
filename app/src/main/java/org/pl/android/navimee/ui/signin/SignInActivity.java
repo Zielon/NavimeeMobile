@@ -240,6 +240,7 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
     public void onSuccess() {
         _loginButton.setEnabled(true);
         mSignInPresenter.registerMessagingToken();
+        mSignInPresenter.saveUserInfo();
         progressDialog.dismiss();
         setResult(RESULT_OK, null);
         finish();

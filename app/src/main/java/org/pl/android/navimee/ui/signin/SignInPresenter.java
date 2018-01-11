@@ -1,13 +1,21 @@
 package org.pl.android.navimee.ui.signin;
 
+import android.annotation.SuppressLint;
+
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.SetOptions;
 import com.kelvinapps.rxfirebase.RxFirebaseAuth;
 import com.kelvinapps.rxfirebase.RxFirebaseUser;
 
 import org.pl.android.navimee.data.DataManager;
+import org.pl.android.navimee.data.model.Event;
+import org.pl.android.navimee.data.model.FourSquarePlace;
+import org.pl.android.navimee.data.model.chat.User;
 import org.pl.android.navimee.ui.base.BasePresenter;
+import org.pl.android.navimee.ui.chat.data.SharedPreferenceHelper;
 import org.pl.android.navimee.util.Const;
 import org.reactivestreams.Subscription;
 
@@ -104,5 +112,27 @@ public class SignInPresenter extends BasePresenter<SignInMvpView> {
                         }
                     });
         }
+    }
+
+    public void saveUserInfo() {
+        String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+        mDataManager.getFirebaseService()
+                .getFirebaseFirestore()
+                .collection("USERS").document(userId)
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @SuppressLint("TimberArgCount")
+                    @Override
+                    public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Timber.e( "Listen failed.", e);
+                            return;
+                        }
+                        if (documentSnapshot != null && documentSnapshot.exists()) {
+                            // Timber.d("Current data: " + snapshot.getData());
+                           User user =  documentSnapshot.toObject(User.class);
+                           mDataManager.getPreferencesHelper().saveUserInfo(user);
+                        }
+                    }
+                });
     }
 }

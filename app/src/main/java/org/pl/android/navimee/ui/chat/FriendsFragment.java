@@ -41,6 +41,8 @@ import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.data.model.chat.Friend;
 import org.pl.android.navimee.data.model.chat.ListFriend;
+import org.pl.android.navimee.ui.chat.data.FriendDB;
+import org.pl.android.navimee.ui.chat.service.ServiceUtils;
 import org.pl.android.navimee.util.Const;
 
 import java.text.SimpleDateFormat;
@@ -85,8 +87,8 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         detectFriendOnline = new CountDownTimer(System.currentTimeMillis(), Const.TIME_TO_REFRESH) {
             @Override
             public void onTick(long l) {
-             //   ServiceUtils.updateFriendStatus(getContext(), dataListFriend);
-              //  ServiceUtils.updateUserStatus(getContext());
+               ServiceUtils.updateFriendStatus(getContext(), dataListFriend);
+               ServiceUtils.updateUserStatus(getContext());
             }
 
             @Override
@@ -95,14 +97,14 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             }
         };
         if (dataListFriend == null) {
-         //   dataListFriend = FriendDB.getInstance(getContext()).getListFriend();
-           /* if (dataListFriend.getListFriend().size() > 0) {
+           dataListFriend = FriendDB.getInstance(getContext()).getListFriend();
+            if (dataListFriend.getListFriend().size() > 0) {
                 listFriendID = new ArrayList<>();
-              /*  for (Friend friend : dataListFriend.getListFriend()) {
+                for (Friend friend : dataListFriend.getListFriend()) {
                     listFriendID.add(friend.id);
-                }*/
-               // detectFriendOnline.start();
-          //  }
+                }
+               detectFriendOnline.start();
+            }
         }
         View layout = inflater.inflate(R.layout.fragment_people, container, false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
