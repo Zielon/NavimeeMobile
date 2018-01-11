@@ -16,7 +16,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.pl.android.navimee.data.model.chat.Friend;
 import org.pl.android.navimee.data.model.chat.ListFriend;
-import org.pl.android.navimee.ui.chat.data.SharedPreferenceHelper;
 import org.pl.android.navimee.util.Const;
 
 import java.util.HashMap;
@@ -111,13 +110,13 @@ public class ServiceUtils {
     }
 
     public static void updateUserStatus(Context context){
-        if(isNetworkConnected(context)) {
-            String uid = SharedPreferenceHelper.getInstance(context).getUID();
+       /* if(isNetworkConnected(context)) {
+          //  String uid = SharedPreferenceHelper.getInstance(context).getUID();
             if (!uid.equals("")) {
                 FirebaseDatabase.getInstance().getReference().child("user/" + uid + "/status/isOnline").setValue(true);
                 FirebaseDatabase.getInstance().getReference().child("user/" + uid + "/status/timestamp").setValue(System.currentTimeMillis());
             }
-        }
+        }*/
     }
 
     public static void updateFriendStatus(Context context, ListFriend listFriend){

@@ -22,10 +22,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
+import org.pl.android.navimee.BoilerplateApplication;
 import org.pl.android.navimee.R;
+import org.pl.android.navimee.data.DataManager;
 import org.pl.android.navimee.data.model.chat.Friend;
 import org.pl.android.navimee.data.model.chat.Group;
 import org.pl.android.navimee.data.model.chat.ListFriend;
+import org.pl.android.navimee.injection.ActivityContext;
+import org.pl.android.navimee.injection.ApplicationContext;
 import org.pl.android.navimee.ui.chat.data.FriendDB;
 import org.pl.android.navimee.ui.chat.data.GroupDB;
 import org.pl.android.navimee.ui.main.MainActivity;
@@ -34,6 +38,8 @@ import org.pl.android.navimee.util.Const;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 
 public class FriendChatService extends Service {
@@ -49,6 +55,17 @@ public class FriendChatService extends Service {
     public ArrayList<Group> listGroup;
     public CountDownTimer updateOnline;
 
+    @Inject
+    DataManager dataManager;
+
+    @Inject
+    @ApplicationContext
+    Context mContext;
+
+
+
+
+
     public FriendChatService() {
     }
 
@@ -56,6 +73,7 @@ public class FriendChatService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        BoilerplateApplication.get(this).getComponent().inject(this);
         mapMark = new HashMap<>();
         mapQuery = new HashMap<>();
         mapChildEventListenerMap = new HashMap<>();
@@ -66,7 +84,7 @@ public class FriendChatService extends Service {
         updateOnline = new CountDownTimer(System.currentTimeMillis(), Const.TIME_TO_REFRESH) {
             @Override
             public void onTick(long l) {
-                ServiceUtils.updateUserStatus(getApplicationContext());
+           //     ServiceUtils.updateUserStatus(montext);
             }
 
             @Override

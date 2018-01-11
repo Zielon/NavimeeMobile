@@ -1,16 +1,14 @@
-package org.pl.android.navimee.ui.chat;
+package org.pl.android.navimee.ui.chat.group;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -36,14 +34,17 @@ import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.data.model.chat.Group;
 import org.pl.android.navimee.data.model.chat.ListFriend;
+import org.pl.android.navimee.ui.base.BaseActivity;
 import org.pl.android.navimee.util.Const;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import javax.inject.Inject;
 
-public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+
+public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,GroupMvpView{
     private RecyclerView recyclerListGroups;
     public FragGroupClickFloatButton onClickFloatButton;
     private ArrayList<Group> listGroup;
@@ -55,6 +56,10 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public static final int REQUEST_EDIT_GROUP = 0;
     public static final String CONTEXT_MENU_KEY_INTENT_DATA_POS = "pos";
 
+
+    @Inject
+    GroupPresenter mGroupPresenter;
+
     LovelyProgressDialog progressDialog, waitingLeavingGroup;
 
     public GroupFragment() {
@@ -64,12 +69,14 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ((BaseActivity) getActivity()).activityComponent().inject(this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_group, container, false);
+        mGroupPresenter.attachView(this);
 
         listGroup = new ArrayList<>();//GroupDB.getInstance(getContext()).getListGroups();
         recyclerListGroups = (RecyclerView) layout.findViewById(R.id.recycleListGroup);
@@ -98,6 +105,12 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             getListGroup();
         }
         return layout;
+    }
+
+    @Override
+    public void onDestroyView (){
+        super.onDestroyView();
+        mGroupPresenter.detachView();
     }
 
     private void getListGroup(){
@@ -344,6 +357,11 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                                 .show();
                     }
                 });
+
+    }
+
+    @Override
+    public void showError() {
 
     }
 

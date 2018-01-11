@@ -11,11 +11,8 @@ import com.kelvinapps.rxfirebase.RxFirebaseAuth;
 import com.kelvinapps.rxfirebase.RxFirebaseUser;
 
 import org.pl.android.navimee.data.DataManager;
-import org.pl.android.navimee.data.model.Event;
-import org.pl.android.navimee.data.model.FourSquarePlace;
 import org.pl.android.navimee.data.model.chat.User;
 import org.pl.android.navimee.ui.base.BasePresenter;
-import org.pl.android.navimee.ui.chat.data.SharedPreferenceHelper;
 import org.pl.android.navimee.util.Const;
 import org.reactivestreams.Subscription;
 

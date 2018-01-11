@@ -1,4 +1,4 @@
-package org.pl.android.navimee.ui.chat;
+package org.pl.android.navimee.ui.chat.friends;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -41,6 +41,7 @@ import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.data.model.chat.Friend;
 import org.pl.android.navimee.data.model.chat.ListFriend;
+import org.pl.android.navimee.ui.base.BaseActivity;
 import org.pl.android.navimee.ui.chat.data.FriendDB;
 import org.pl.android.navimee.ui.chat.service.ServiceUtils;
 import org.pl.android.navimee.util.Const;
@@ -54,9 +55,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, FriendsMvpView {
 
     private RecyclerView recyclerListFrends;
     private ListFriendsAdapter adapter;
@@ -67,6 +70,9 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private CountDownTimer detectFriendOnline;
     public static int ACTION_START_CHAT = 1;
+
+    @Inject
+    FriendsPresenter mFriendsPresenter;
 
     public static final String ACTION_DELETE_FRIEND = "com.android.rivchat.DELETE_FRIEND";
 
@@ -79,16 +85,20 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ((BaseActivity) getActivity()).activityComponent().inject(this);
     }
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        mFriendsPresenter.attachView(this);
         detectFriendOnline = new CountDownTimer(System.currentTimeMillis(), Const.TIME_TO_REFRESH) {
             @Override
             public void onTick(long l) {
-               ServiceUtils.updateFriendStatus(getContext(), dataListFriend);
-               ServiceUtils.updateUserStatus(getContext());
+                mFriendsPresenter.updateUserStatus();
+                mFriendsPresenter.updateFriendStatus(dataListFriend);
+
             }
 
             @Override
@@ -149,7 +159,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     @Override
     public void onDestroyView (){
         super.onDestroyView();
-
+        mFriendsPresenter.detachView();
         getContext().unregisterReceiver(deleteFriendReceiver);
     }
 
@@ -169,6 +179,11 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
        // FriendDB.getInstance(getContext()).dropDB();
         detectFriendOnline.cancel();
         getListFriendUId();
+    }
+
+    @Override
+    public void showError() {
+
     }
 
     public class FragFriendClickFloatButton implements View.OnClickListener {

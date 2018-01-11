@@ -2,7 +2,6 @@ package org.pl.android.navimee.ui.chat;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,9 +14,8 @@ import android.widget.TextView;
 
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.ui.base.BaseActivity;
-import org.pl.android.navimee.ui.chat.service.ServiceUtils;
-import org.pl.android.navimee.ui.events.EventsFragment;
-import org.pl.android.navimee.ui.hotspot.HotSpotFragment;
+import org.pl.android.navimee.ui.chat.friends.FriendsFragment;
+import org.pl.android.navimee.ui.chat.group.GroupFragment;
 import org.pl.android.navimee.ui.main.MainActivity;
 
 import java.util.ArrayList;
@@ -63,6 +61,7 @@ public class ChatFragment extends Fragment implements ChatMvpView {
 
         View fragmentView = inflater.inflate(R.layout.chat_fragment, container, false);
         ButterKnife.bind(this, fragmentView);
+        mChatPresenter.attachView(this);
         initTab();
         return fragmentView;
     }
