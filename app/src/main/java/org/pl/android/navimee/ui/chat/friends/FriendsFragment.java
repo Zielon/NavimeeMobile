@@ -11,6 +11,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -41,7 +42,9 @@ import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 import org.pl.android.navimee.R;
 import org.pl.android.navimee.data.model.chat.Friend;
 import org.pl.android.navimee.data.model.chat.ListFriend;
+import org.pl.android.navimee.data.model.chat.User;
 import org.pl.android.navimee.ui.base.BaseActivity;
+import org.pl.android.navimee.ui.chat.ChatActivity;
 import org.pl.android.navimee.ui.chat.data.FriendDB;
 import org.pl.android.navimee.ui.chat.service.ServiceUtils;
 import org.pl.android.navimee.util.Const;
@@ -57,6 +60,8 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, FriendsMvpView {
@@ -70,9 +75,14 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private CountDownTimer detectFriendOnline;
     public static int ACTION_START_CHAT = 1;
+    private LovelyProgressDialog dialogWait;
+
 
     @Inject
     FriendsPresenter mFriendsPresenter;
+
+    @BindView(R.id.fab_friends)
+    FloatingActionButton fabFriendsButton;
 
     public static final String ACTION_DELETE_FRIEND = "com.android.rivchat.DELETE_FRIEND";
 
@@ -92,7 +102,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mFriendsPresenter.attachView(this);
         detectFriendOnline = new CountDownTimer(System.currentTimeMillis(), Const.TIME_TO_REFRESH) {
             @Override
             public void onTick(long l) {
@@ -117,6 +126,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             }
         }
         View layout = inflater.inflate(R.layout.fragment_people, container, false);
+        ButterKnife.bind(this, layout);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerListFrends = (RecyclerView) layout.findViewById(R.id.recycleListFriend);
         recyclerListFrends.setLayoutManager(linearLayoutManager);
@@ -125,6 +135,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         adapter = new ListFriendsAdapter(getContext(), dataListFriend, this);
         recyclerListFrends.setAdapter(adapter);
         dialogFindAllFriend = new LovelyProgressDialog(getContext());
+        dialogWait = new LovelyProgressDialog((getContext()));
         if (listFriendID == null) {
             listFriendID = new ArrayList<>();
             dialogFindAllFriend.setCancelable(false)
@@ -149,7 +160,8 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 adapter.notifyDataSetChanged();
             }
         };
-
+        fabFriendsButton.setOnClickListener(onClickFloatButton.getInstance(getContext()));
+        mFriendsPresenter.attachView(this);
         IntentFilter intentFilter = new IntentFilter(ACTION_DELETE_FRIEND);
         getContext().registerReceiver(deleteFriendReceiver, intentFilter);
 
@@ -186,16 +198,148 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     }
 
+    @Override
+    public void userNotFound() {
+        new LovelyInfoDialog(getContext())
+                .setTopColorRes(R.color.colorAccent)
+                .setIcon(R.drawable.ic_add_friend)
+                .setTitle("Fail")
+                .setMessage("Email not found")
+                .show();
+    }
+
+    @Override
+    public void userFound(User user) {
+        if (user.id.equals(Const.UID)) {
+            new LovelyInfoDialog(getContext())
+                    .setTopColorRes(R.color.colorAccent)
+                    .setIcon(R.drawable.ic_add_friend)
+                    .setTitle("Fail")
+                    .setMessage("Email not valid")
+                    .show();
+        } else {
+            Friend friend = new Friend();
+            friend.name = user.name;
+            friend.email = user.email;
+            friend.avata = user.avata;
+            friend.id = user.id;
+            friend.idRoom = user.id.compareTo(Const.UID) > 0 ? (Const.UID + user.id).hashCode() + "" : "" + (user.id + Const.UID).hashCode();
+            checkBeforAddFriend(user.id, friend);
+        }
+    }
+
+    private void checkBeforAddFriend(final String idFriend, Friend userInfo) {
+        dialogWait.setCancelable(false)
+                .setIcon(R.drawable.ic_add_friend)
+                .setTitle("Add friend....")
+                .setTopColorRes(R.color.colorPrimary)
+                .show();
+
+        //Check xem da ton tai id trong danh sach id chua
+        if (listFriendID.contains(idFriend)) {
+            dialogWait.dismiss();
+            new LovelyInfoDialog(getContext())
+                    .setTopColorRes(R.color.colorPrimary)
+                    .setIcon(R.drawable.ic_add_friend)
+                    .setTitle("Friend")
+                    .setMessage("User "+userInfo.email + " has been friend")
+                    .show();
+        } else {
+            addFriend(idFriend, true);
+            listFriendID.add(idFriend);
+            dataListFriend.getListFriend().add(userInfo);
+            //  FriendDB.getInstance(getContext()).addFriend(userInfo);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    /**
+     * Add friend
+     *
+     * @param idFriend
+     */
+    private void addFriend(final String idFriend, boolean isIdFriend) {
+        if (idFriend != null) {
+            if (isIdFriend) {
+                FirebaseDatabase.getInstance().getReference().child("friend/" + Const.UID).push().setValue(idFriend)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    addFriend(idFriend, false);
+                                }
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                dialogWait.dismiss();
+                                new LovelyInfoDialog(getContext())
+                                        .setTopColorRes(R.color.colorAccent)
+                                        .setIcon(R.drawable.ic_add_friend)
+                                        .setTitle("False")
+                                        .setMessage("False to add friend success")
+                                        .show();
+                            }
+                        });
+            } else {
+                FirebaseDatabase.getInstance().getReference().child("friend/" + idFriend).push().setValue(Const.UID).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            addFriend(null, false);
+                        }
+                    }
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                dialogWait.dismiss();
+                                new LovelyInfoDialog(getContext())
+                                        .setTopColorRes(R.color.colorAccent)
+                                        .setIcon(R.drawable.ic_add_friend)
+                                        .setTitle("False")
+                                        .setMessage("False to add friend success")
+                                        .show();
+                            }
+                        });
+            }
+        } else {
+            dialogWait.dismiss();
+            new LovelyInfoDialog(getContext())
+                    .setTopColorRes(R.color.colorPrimary)
+                    .setIcon(R.drawable.ic_add_friend)
+                    .setTitle("Success")
+                    .setMessage("Add friend success")
+                    .show();
+        }
+    }
+
+
+    /**
+     * TIm id cua email tren server
+     *
+     * @param email
+     */
+    private void findIDEmail(String email) {
+        dialogWait.setCancelable(false)
+                .setIcon(R.drawable.ic_add_friend)
+                .setTitle("Finding friend....")
+                .setTopColorRes(R.color.colorPrimary)
+                .show();
+        mFriendsPresenter.findByEmail(email);
+    }
+
+
+
     public class FragFriendClickFloatButton implements View.OnClickListener {
         Context context;
-        LovelyProgressDialog dialogWait;
 
         public FragFriendClickFloatButton() {
         }
 
         public FragFriendClickFloatButton getInstance(Context context) {
             this.context = context;
-            dialogWait = new LovelyProgressDialog(context);
             return this;
         }
 
@@ -227,150 +371,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                     })
                     .show();
         }
-
-        /**
-         * TIm id cua email tren server
-         *
-         * @param email
-         */
-        private void findIDEmail(String email) {
-            dialogWait.setCancelable(false)
-                    .setIcon(R.drawable.ic_add_friend)
-                    .setTitle("Finding friend....")
-                    .setTopColorRes(R.color.colorPrimary)
-                    .show();
-            FirebaseDatabase.getInstance().getReference().child("user").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    dialogWait.dismiss();
-                    if (dataSnapshot.getValue() == null) {
-                        //email not found
-                        new LovelyInfoDialog(context)
-                                .setTopColorRes(R.color.colorAccent)
-                                .setIcon(R.drawable.ic_add_friend)
-                                .setTitle("Fail")
-                                .setMessage("Email not found")
-                                .show();
-                    } else {
-                        String id = ((HashMap) dataSnapshot.getValue()).keySet().iterator().next().toString();
-                        if (id.equals(Const.UID)) {
-                            new LovelyInfoDialog(context)
-                                    .setTopColorRes(R.color.colorAccent)
-                                    .setIcon(R.drawable.ic_add_friend)
-                                    .setTitle("Fail")
-                                    .setMessage("Email not valid")
-                                    .show();
-                        } else {
-                            HashMap userMap = (HashMap) ((HashMap) dataSnapshot.getValue()).get(id);
-                            Friend user = new Friend();
-                            user.name = (String) userMap.get("name");
-                            user.email = (String) userMap.get("email");
-                            user.avata = (String) userMap.get("avata");
-                            user.id = id;
-                            user.idRoom = id.compareTo(Const.UID) > 0 ? (Const.UID + id).hashCode() + "" : "" + (id + Const.UID).hashCode();
-                            checkBeforAddFriend(id, user);
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        }
-
-        /**
-         * Lay danh sach friend cua một UID
-         */
-        private void checkBeforAddFriend(final String idFriend, Friend userInfo) {
-            dialogWait.setCancelable(false)
-                    .setIcon(R.drawable.ic_add_friend)
-                    .setTitle("Add friend....")
-                    .setTopColorRes(R.color.colorPrimary)
-                    .show();
-
-            //Check xem da ton tai id trong danh sach id chua
-            if (listFriendID.contains(idFriend)) {
-                dialogWait.dismiss();
-                new LovelyInfoDialog(context)
-                        .setTopColorRes(R.color.colorPrimary)
-                        .setIcon(R.drawable.ic_add_friend)
-                        .setTitle("Friend")
-                        .setMessage("User "+userInfo.email + " has been friend")
-                        .show();
-            } else {
-                addFriend(idFriend, true);
-                listFriendID.add(idFriend);
-                dataListFriend.getListFriend().add(userInfo);
-              //  FriendDB.getInstance(getContext()).addFriend(userInfo);
-                adapter.notifyDataSetChanged();
-            }
-        }
-
-        /**
-         * Add friend
-         *
-         * @param idFriend
-         */
-        private void addFriend(final String idFriend, boolean isIdFriend) {
-            if (idFriend != null) {
-                if (isIdFriend) {
-                    FirebaseDatabase.getInstance().getReference().child("friend/" + Const.UID).push().setValue(idFriend)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        addFriend(idFriend, false);
-                                    }
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    dialogWait.dismiss();
-                                    new LovelyInfoDialog(context)
-                                            .setTopColorRes(R.color.colorAccent)
-                                            .setIcon(R.drawable.ic_add_friend)
-                                            .setTitle("False")
-                                            .setMessage("False to add friend success")
-                                            .show();
-                                }
-                            });
-                } else {
-                    FirebaseDatabase.getInstance().getReference().child("friend/" + idFriend).push().setValue(Const.UID).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                addFriend(null, false);
-                            }
-                        }
-                    })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    dialogWait.dismiss();
-                                    new LovelyInfoDialog(context)
-                                            .setTopColorRes(R.color.colorAccent)
-                                            .setIcon(R.drawable.ic_add_friend)
-                                            .setTitle("False")
-                                            .setMessage("False to add friend success")
-                                            .show();
-                                }
-                            });
-                }
-            } else {
-                dialogWait.dismiss();
-                new LovelyInfoDialog(context)
-                        .setTopColorRes(R.color.colorPrimary)
-                        .setIcon(R.drawable.ic_add_friend)
-                        .setTitle("Success")
-                        .setMessage("Add friend success")
-                        .show();
-            }
-        }
-
-
     }
 
     /**
@@ -481,7 +481,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     public void onClick(View view) {
                         ((ItemFriendViewHolder) holder).txtMessage.setTypeface(Typeface.DEFAULT);
                         ((ItemFriendViewHolder) holder).txtName.setTypeface(Typeface.DEFAULT);
-                      /*  Intent intent = new Intent(context, ChatActivity.class);
+                       Intent intent = new Intent(context, ChatActivity.class);
                         intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, name);
                         ArrayList<CharSequence> idFriend = new ArrayList<CharSequence>();
                         idFriend.add(id);
@@ -493,10 +493,10 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             ChatActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length));
                         } else {
                             ChatActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avata));
-                        }*/
+                        }
 
-                      //  mapMark.put(id, null);
-                       // fragment.startActivityForResult(intent, FriendsFragment.ACTION_START_CHAT);
+                        mapMark.put(id, null);
+                        fragment.startActivityForResult(intent, FriendsFragment.ACTION_START_CHAT);
                     }
                 });
 

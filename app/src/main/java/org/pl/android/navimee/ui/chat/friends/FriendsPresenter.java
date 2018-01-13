@@ -1,19 +1,25 @@
 package org.pl.android.navimee.ui.chat.friends;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.pl.android.navimee.data.DataManager;
+import org.pl.android.navimee.data.model.Event;
 import org.pl.android.navimee.data.model.chat.Friend;
 import org.pl.android.navimee.data.model.chat.ListFriend;
+import org.pl.android.navimee.data.model.chat.User;
 import org.pl.android.navimee.injection.ActivityContext;
-import org.pl.android.navimee.injection.ConfigPersistent;
-import org.pl.android.navimee.injection.PerActivity;
 import org.pl.android.navimee.ui.base.BasePresenter;
 import org.pl.android.navimee.util.Const;
 import org.pl.android.navimee.util.NetworkUtil;
@@ -83,5 +89,29 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                 });
             }
         }
+    }
+
+    public void findByEmail(String email) {
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").whereEqualTo("email",email).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (DocumentSnapshot document : task.getResult()) {
+                        for (DocumentSnapshot documentSnapshot : task.getResult().getDocuments()) {
+                            User user = documentSnapshot.toObject(User.class);
+                            if(getMvpView() != null) {
+                                getMvpView().userFound(user);
+                            }
+                            break;
+                        }
+                    }
+                } else {
+                    if(getMvpView() != null) {
+                        getMvpView().userNotFound();
+                    }
+
+                }
+            }
+        });
     }
 }

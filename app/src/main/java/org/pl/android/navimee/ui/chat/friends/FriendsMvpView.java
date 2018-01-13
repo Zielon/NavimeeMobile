@@ -1,5 +1,6 @@
 package org.pl.android.navimee.ui.chat.friends;
 
+import org.pl.android.navimee.data.model.chat.User;
 import org.pl.android.navimee.ui.base.MvpView;
 
 /**
@@ -10,5 +11,9 @@ public interface FriendsMvpView extends MvpView {
 
 
     void showError();
+
+    void userNotFound();
+
+    void userFound(User user);
 
 }
