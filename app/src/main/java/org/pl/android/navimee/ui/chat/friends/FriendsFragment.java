@@ -263,6 +263,8 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         if (idFriend != null) {
             if (isIdFriend) {
                 mFriendsPresenter.addFriend(idFriend);
+            } else {
+                mFriendsPresenter.addFriendForFriendId(idFriend);
             }
         } else {
             dialogWait.dismiss();
@@ -279,13 +281,13 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     @Override
     public void addFriendSuccess(String idFriend) {
         addFriend(idFriend, false);
-        dialogWait.dismiss();
+       /* dialogWait.dismiss();
         new LovelyInfoDialog(getContext())
                 .setTopColorRes(R.color.colorPrimary)
                 .setIcon(R.drawable.ic_add_friend)
                 .setTitle("Success")
                 .setMessage("Add friend success")
-                .show();
+                .show();*/
     }
 
     @Override
@@ -297,6 +299,11 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 .setTitle("False")
                 .setMessage("False to add friend success")
                 .show();
+    }
+
+    @Override
+    public void addFriendIsNotIdFriend() {
+        addFriend(null, false);
     }
 
 

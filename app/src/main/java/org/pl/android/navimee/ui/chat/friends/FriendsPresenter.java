@@ -202,4 +202,24 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         });
     }
 
+    public void addFriendForFriendId(String idFriend) {
+        String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+        Map<String, Object> friendMap = new HashMap<>();
+        friendMap.put("id",userId);
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(idFriend).collection("FRIENDS").add(friendMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                if (getMvpView() != null) {
+                    getMvpView().addFriendIsNotIdFriend();
+                }
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        getMvpView().addFriendFailure();
+                    }
+                });
+    }
+
 }

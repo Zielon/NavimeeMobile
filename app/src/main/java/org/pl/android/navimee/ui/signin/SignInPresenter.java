@@ -113,6 +113,7 @@ public class SignInPresenter extends BasePresenter<SignInMvpView> {
 
     public void saveUserInfo() {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+        Const.UID = userId;
         mDataManager.getFirebaseService()
                 .getFirebaseFirestore()
                 .collection("USERS").document(userId)
