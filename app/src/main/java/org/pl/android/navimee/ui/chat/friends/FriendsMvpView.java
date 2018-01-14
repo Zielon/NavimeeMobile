@@ -27,8 +27,6 @@ public interface FriendsMvpView extends MvpView {
 
     void addFriendSuccess(String idFriend);
 
-    void addFriendIsNotIdFriend();
-
     void addFriendFailure();
 
 }

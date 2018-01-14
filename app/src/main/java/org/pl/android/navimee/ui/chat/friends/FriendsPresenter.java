@@ -35,6 +35,7 @@ import java.net.ContentHandler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -154,16 +155,17 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).collection("FRIENDS").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                getMvpView().listFriendNotFound(); //mock
                 if (task.isSuccessful()) {
+                    List friends = new ArrayList<String>();
                     for (DocumentSnapshot document : task.getResult()) {
                         for (DocumentSnapshot documentSnapshot : task.getResult().getDocuments()) {
-                            User user = documentSnapshot.toObject(User.class);
-                            if (getMvpView() != null) {
-                                getMvpView().listFriendFound(new ArrayList<>());
-                            }
-                            break;
+                            friends.add(documentSnapshot.get("id"));
                         }
+                        if (getMvpView() != null) {
+                            getMvpView().listFriendFound(friends);
+                            friends.clear();
+                        }
+
                     }
                 } else {
                     if (getMvpView() != null) {
@@ -195,23 +197,4 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         });
     }
 
-    public void addFriendIsNotIdFriend(String idFriend) {
-        String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        Map<String, Object> friendMap = new HashMap<>();
-        friendMap.put("id",idFriend);
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).collection("FRIENDS").add(friendMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-            @Override
-            public void onSuccess(DocumentReference documentReference) {
-                if (getMvpView() != null) {
-                    getMvpView().addFriendIsNotIdFriend();
-                }
-            }
-        })
-        .addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                getMvpView().addFriendFailure();
-            }
-        });
-    }
 }

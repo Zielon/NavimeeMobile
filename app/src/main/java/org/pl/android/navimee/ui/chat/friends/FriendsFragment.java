@@ -277,10 +277,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         }
     }
 
-    @Override
-    public void addFriendIsNotIdFriend() {
-        addFriend(null, false);
-    }
 
     @Override
     public void addFriendSuccess(String idFriend) {
@@ -372,6 +368,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     @Override
     public void listFriendFound(List<String> friendList) {
+        listFriendID.clear();
         listFriendID.addAll(friendList);
         getAllFriendInfo(0);
     }
@@ -401,7 +398,9 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     @Override
     public void friendInfoFound(int index, Friend friend) {
-        dataListFriend.getListFriend().add(friend);
+        if(!dataListFriend.getListFriend().contains(friend)) {
+            dataListFriend.getListFriend().add(friend);
+        }
         FriendDB.getInstance(getContext()).addFriend(friend);
         getAllFriendInfo(index + 1);
     }
