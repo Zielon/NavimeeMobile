@@ -222,4 +222,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                 });
     }
 
+    public String getId() {
+        return mDataManager.getPreferencesHelper().getUID();
+    }
 }

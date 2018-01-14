@@ -223,7 +223,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             friend.email = user.email;
             friend.avata = user.avata;
             friend.id = user.id;
-            friend.idRoom = user.id.compareTo(Const.UID) > 0 ? (Const.UID + user.id).hashCode() + "" : "" + (user.id + Const.UID).hashCode();
+            friend.idRoom = user.id.compareTo(mFriendsPresenter.getId()) > 0 ? (mFriendsPresenter.getId() + user.id).hashCode() + "" : "" + (user.id + mFriendsPresenter.getId()).hashCode();
             checkBeforAddFriend(user.id, friend);
         }
     }
