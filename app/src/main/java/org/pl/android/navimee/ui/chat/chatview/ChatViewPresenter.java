@@ -49,6 +49,7 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
 
     public void setMessageListener(String roomId) {
         mDataManager.getFirebaseService().getFirebaseFirestore().collection("MESSAGES").document(roomId).collection("MESSAGES")
+                    .orderBy("timestamp")
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @SuppressLint("TimberArgCount")
                         @Override
