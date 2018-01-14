@@ -6,6 +6,8 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -91,34 +93,7 @@ public class ChatFragment extends Fragment implements ChatMvpView {
         adapter.addFrag(new FriendsFragment(), STR_FRIEND_FRAGMENT);
         adapter.addFrag(new GroupFragment(), STR_GROUP_FRAGMENT);
         viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(2);
-       /* viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-               ServiceUtils.stopServiceFriendChat(getActivity().getApplicationContext(), false);
-                if (adapter.getItem(position) instanceof FriendsFragment) {
-                    floatButton.setVisibility(View.VISIBLE);
-                    floatButton.setOnClickListener(((FriendsFragment) adapter.getItem(position)).onClickFloatButton.getInstance(getActivity()));
-                    floatButton.setImageResource(R.drawable.plus);
-                } else if (adapter.getItem(position) instanceof GroupFragment) {
-                    floatButton.setVisibility(View.VISIBLE);
-                    floatButton.setOnClickListener(((GroupFragment) adapter.getItem(position)).onClickFloatButton.getInstance(getActivity()));
-                    floatButton.setImageResource(R.drawable.ic_float_add_group);
-                } else {
-                    floatButton.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });*/
+      //  viewPager.setOffscreenPageLimit(2);
     }
 
     private void setupTabIcons() {
@@ -131,7 +106,7 @@ public class ChatFragment extends Fragment implements ChatMvpView {
         tabLayout.getTabAt(1).setIcon(tabIcons[1]);
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
+    class ViewPagerAdapter extends FragmentStatePagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 
@@ -159,6 +134,14 @@ public class ChatFragment extends Fragment implements ChatMvpView {
 
             // return null to display only the icon
             return null;
+        }
+
+
+        // This is called when notifyDataSetChanged() is called
+        @Override
+        public int getItemPosition(Object object) {
+            // refresh all fragments when data set changed
+            return PagerAdapter.POSITION_NONE;
         }
     }
 }
