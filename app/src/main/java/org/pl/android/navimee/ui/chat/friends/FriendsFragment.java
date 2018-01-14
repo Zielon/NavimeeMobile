@@ -54,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -188,7 +189,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         listFriendID.clear();
         dataListFriend.getListFriend().clear();
         adapter.notifyDataSetChanged();
-       // FriendDB.getInstance(getContext()).dropDB();
+        FriendDB.getInstance(getContext()).dropDB();
         detectFriendOnline.cancel();
         getListFriendUId();
     }
@@ -248,7 +249,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             addFriend(idFriend, true);
             listFriendID.add(idFriend);
             dataListFriend.getListFriend().add(userInfo);
-            //  FriendDB.getInstance(getContext()).addFriend(userInfo);
+            FriendDB.getInstance(getContext()).addFriend(userInfo);
             adapter.notifyDataSetChanged();
         }
     }
@@ -261,6 +262,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private void addFriend(final String idFriend, boolean isIdFriend) {
         if (idFriend != null) {
             if (isIdFriend) {
+
                 FirebaseDatabase.getInstance().getReference().child("friend/" + Const.UID).push().setValue(idFriend)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
@@ -423,7 +425,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                         user.id = id;
                         user.idRoom = id.compareTo(Const.UID) > 0 ? (Const.UID + id).hashCode() + "" : "" + (id + Const.UID).hashCode();
                         dataListFriend.getListFriend().add(user);
-                       // FriendDB.getInstance(getContext()).addFriend(user);
+                        FriendDB.getInstance(getContext()).addFriend(user);
                     }
                     getAllFriendInfo(index + 1);
                 }
@@ -662,7 +664,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return 0;//listFriend.getListFriend() != null ? listFriend.getListFriend().size() : 0;
+        return listFriend.getListFriend() != null ? listFriend.getListFriend().size() : 0;
     }
 
     /**
