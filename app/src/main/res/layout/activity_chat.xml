@@ -45,6 +45,7 @@
         android:background="@drawable/edittext_boder"
         android:drawablePadding="20dp"
         android:inputType="textLongMessage"
+        android:textColor="@color/primary"
         android:maxLines="1"
         android:paddingLeft="7dp"
         android:paddingRight="7dp"
