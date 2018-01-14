@@ -56,10 +56,10 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
                 .withIdentifier(0)
                 .withTextColor(getResources().getColor(R.color.white)));
 
-        drawerItems.add(new PrimaryDrawerItem().withName("Uber")
+/*        drawerItems.add(new PrimaryDrawerItem().withName("Uber")
                 .withIcon(R.drawable.uber_icon_24dp)
                 .withIdentifier(1)
-                .withTextColor(getResources().getColor(R.color.white)));
+                .withTextColor(getResources().getColor(R.color.white)));*/
 
         drawerItems.add(new PrimaryDrawerItem().withName(R.string.logout)
                 .withIcon(R.drawable.logout_24dp)
@@ -68,7 +68,7 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
 
         drawerItems.add(new DividerDrawerItem().withEnabled(true));
 
-        drawerItems.add(new PrimaryDrawerItem().withName(R.string.privacy_conditions)
+/*        drawerItems.add(new PrimaryDrawerItem().withName(R.string.privacy_conditions)
                 .withIcon(R.drawable.legal_privacy_24dp)
                 .withIdentifier(4)
                 .withTextColor(getResources().getColor(R.color.white)));
@@ -81,7 +81,7 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
         drawerItems.add(new PrimaryDrawerItem().withName(R.string.rate_app)
                 .withIcon(R.drawable.rate_app_24dp)
                 .withIdentifier(6)
-                .withTextColor(getResources().getColor(R.color.white)));
+                .withTextColor(getResources().getColor(R.color.white)));*/
 
         drawer = new DrawerBuilder()
                 .withActivity(this)
