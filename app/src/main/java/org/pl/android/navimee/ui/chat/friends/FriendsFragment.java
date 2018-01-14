@@ -209,6 +209,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 .show();
     }
 
+
     @Override
     public void userFound(User user) {
         if (user.id.equals(Const.UID)) {
@@ -228,6 +229,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             checkBeforAddFriend(user.id, friend);
         }
     }
+
 
     private void checkBeforAddFriend(final String idFriend, Friend userInfo) {
         dialogWait.setCancelable(false)
@@ -262,49 +264,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private void addFriend(final String idFriend, boolean isIdFriend) {
         if (idFriend != null) {
             if (isIdFriend) {
-
-                FirebaseDatabase.getInstance().getReference().child("friend/" + Const.UID).push().setValue(idFriend)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    addFriend(idFriend, false);
-                                }
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                dialogWait.dismiss();
-                                new LovelyInfoDialog(getContext())
-                                        .setTopColorRes(R.color.colorAccent)
-                                        .setIcon(R.drawable.ic_add_friend)
-                                        .setTitle("False")
-                                        .setMessage("False to add friend success")
-                                        .show();
-                            }
-                        });
-            } else {
-                FirebaseDatabase.getInstance().getReference().child("friend/" + idFriend).push().setValue(Const.UID).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            addFriend(null, false);
-                        }
-                    }
-                })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                dialogWait.dismiss();
-                                new LovelyInfoDialog(getContext())
-                                        .setTopColorRes(R.color.colorAccent)
-                                        .setIcon(R.drawable.ic_add_friend)
-                                        .setTitle("False")
-                                        .setMessage("False to add friend success")
-                                        .show();
-                            }
-                        });
+                mFriendsPresenter.addFriend(idFriend);
             }
         } else {
             dialogWait.dismiss();
@@ -315,6 +275,34 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                     .setMessage("Add friend success")
                     .show();
         }
+    }
+
+    @Override
+    public void addFriendIsNotIdFriend() {
+        addFriend(null, false);
+    }
+
+    @Override
+    public void addFriendSuccess(String idFriend) {
+        addFriend(idFriend, false);
+        dialogWait.dismiss();
+        new LovelyInfoDialog(getContext())
+                .setTopColorRes(R.color.colorPrimary)
+                .setIcon(R.drawable.ic_add_friend)
+                .setTitle("Success")
+                .setMessage("Add friend success")
+                .show();
+    }
+
+    @Override
+    public void addFriendFailure() {
+        dialogWait.dismiss();
+        new LovelyInfoDialog(getContext())
+                .setTopColorRes(R.color.colorAccent)
+                .setIcon(R.drawable.ic_add_friend)
+                .setTitle("False")
+                .setMessage("False to add friend success")
+                .show();
     }
 
 
@@ -379,27 +367,20 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
      * Lay danh sach ban be tren server
      */
     private void getListFriendUId() {
-        FirebaseDatabase.getInstance().getReference().child("friend/" + Const.UID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() != null) {
-                    HashMap mapRecord = (HashMap) dataSnapshot.getValue();
-                    Iterator listKey = mapRecord.keySet().iterator();
-                    while (listKey.hasNext()) {
-                        String key = listKey.next().toString();
-                        listFriendID.add(mapRecord.get(key).toString());
-                    }
-                    getAllFriendInfo(0);
-                } else {
-                    dialogFindAllFriend.dismiss();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+        mFriendsPresenter.getListFriendUId();
     }
+
+    @Override
+    public void listFriendFound(List<String> friendList) {
+        listFriendID.addAll(friendList);
+        getAllFriendInfo(0);
+    }
+
+    @Override
+    public void listFriendNotFound() {
+        dialogFindAllFriend.dismiss();
+    }
+
 
     /**
      * Truy cap bang user lay thong tin id nguoi dung
@@ -413,29 +394,16 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             detectFriendOnline.start();
         } else {
             final String id = listFriendID.get(index);
-            FirebaseDatabase.getInstance().getReference().child("user/" + id).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.getValue() != null) {
-                        Friend user = new Friend();
-                        HashMap mapUserInfo = (HashMap) dataSnapshot.getValue();
-                        user.name = (String) mapUserInfo.get("name");
-                        user.email = (String) mapUserInfo.get("email");
-                        user.avata = (String) mapUserInfo.get("avata");
-                        user.id = id;
-                        user.idRoom = id.compareTo(Const.UID) > 0 ? (Const.UID + id).hashCode() + "" : "" + (id + Const.UID).hashCode();
-                        dataListFriend.getListFriend().add(user);
-                        FriendDB.getInstance(getContext()).addFriend(user);
-                    }
-                    getAllFriendInfo(index + 1);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
+            mFriendsPresenter.getAllFriendInfo(index, id);
         }
+    }
+
+
+    @Override
+    public void friendInfoFound(int index, Friend friend) {
+        dataListFriend.getListFriend().add(friend);
+        FriendDB.getInstance(getContext()).addFriend(friend);
+        getAllFriendInfo(index + 1);
     }
 }
 
