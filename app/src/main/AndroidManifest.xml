@@ -108,7 +108,7 @@
             android:theme="@style/AppTheme"
             android:launchMode="singleTop" />
         <activity
-            android:name=".ui.chat.ChatActivity"
+            android:name=".ui.chat.chatview.ChatViewActivity"
             android:screenOrientation="portrait"
             android:parentActivityName=".ui.main.MainActivity"/>
 

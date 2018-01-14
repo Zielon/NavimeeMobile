@@ -139,6 +139,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                 }
                 if (snapshot != null && snapshot.exists()) {
                     Friend friend = snapshot.toObject(Friend.class);
+                    friend.idRoom = friend.id.compareTo(Const.UID) > 0 ? (Const.UID + friend.id).hashCode() + "" : "" + (friend.id + Const.UID).hashCode();
                     if (getMvpView() != null) {
                         getMvpView().friendInfoFound(index,friend);
                     }
@@ -157,6 +158,10 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     List friends = new ArrayList<String>();
+                    if(task.getResult().size() == 0) {
+                        getMvpView().listFriendNotFound();
+                        return;
+                    }
                     for (DocumentSnapshot document : task.getResult()) {
                         for (DocumentSnapshot documentSnapshot : task.getResult().getDocuments()) {
                             friends.add(documentSnapshot.get("id"));

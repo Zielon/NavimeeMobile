@@ -8,6 +8,7 @@ import org.pl.android.navimee.injection.ActivityContext;
 import org.pl.android.navimee.injection.PerActivity;
 import org.pl.android.navimee.injection.module.ActivityModule;
 import org.pl.android.navimee.ui.chat.ChatFragment;
+import org.pl.android.navimee.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.navimee.ui.chat.friends.FriendsFragment;
 import org.pl.android.navimee.ui.chat.group.GroupFragment;
 import org.pl.android.navimee.ui.dayschedule.DayScheduleFragment;
@@ -46,6 +47,7 @@ public interface ActivityComponent {
     void inject(UserNameChangeActivity userNameChangeActivity);
     void inject(UserPasswordChangeActivity userPasswordChangeActivity);
     void inject(ChatFragment chatFragment);
+    void inject(ChatViewActivity chatViewActivity);
 
     @ActivityContext
     Context provideContext();

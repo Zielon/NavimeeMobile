@@ -44,16 +44,14 @@ import org.pl.android.navimee.data.model.chat.Friend;
 import org.pl.android.navimee.data.model.chat.ListFriend;
 import org.pl.android.navimee.data.model.chat.User;
 import org.pl.android.navimee.ui.base.BaseActivity;
-import org.pl.android.navimee.ui.chat.ChatActivity;
+import org.pl.android.navimee.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.navimee.ui.chat.data.FriendDB;
-import org.pl.android.navimee.ui.chat.service.ServiceUtils;
 import org.pl.android.navimee.util.Const;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -450,18 +448,18 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     public void onClick(View view) {
                         ((ItemFriendViewHolder) holder).txtMessage.setTypeface(Typeface.DEFAULT);
                         ((ItemFriendViewHolder) holder).txtName.setTypeface(Typeface.DEFAULT);
-                       Intent intent = new Intent(context, ChatActivity.class);
+                       Intent intent = new Intent(context, ChatViewActivity.class);
                         intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, name);
                         ArrayList<CharSequence> idFriend = new ArrayList<CharSequence>();
                         idFriend.add(id);
                         intent.putCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID, idFriend);
                         intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, idRoom);
-                        ChatActivity.bitmapAvataFriend = new HashMap<>();
+                        ChatViewActivity.bitmapAvataFriend = new HashMap<>();
                         if (!avata.equals(Const.STR_DEFAULT_BASE64)) {
                             byte[] decodedString = Base64.decode(avata, Base64.DEFAULT);
-                            ChatActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length));
+                            ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length));
                         } else {
-                            ChatActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avata));
+                            ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avata));
                         }
 
                         mapMark.put(id, null);
