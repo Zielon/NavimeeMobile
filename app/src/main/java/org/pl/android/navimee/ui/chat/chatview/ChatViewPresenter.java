@@ -86,4 +86,8 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
                     });
 
     }
+
+    public String getId() {
+        return mDataManager.getPreferencesHelper().getUID();
+    }
 }

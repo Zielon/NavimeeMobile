@@ -139,7 +139,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                 }
                 if (snapshot != null && snapshot.exists()) {
                     Friend friend = snapshot.toObject(Friend.class);
-                    friend.idRoom = friend.id.compareTo(Const.UID) > 0 ? (Const.UID + friend.id).hashCode() + "" : "" + (friend.id + Const.UID).hashCode();
+                    friend.idRoom = friend.id.compareTo(getId()) > 0 ? (getId() + friend.id).hashCode() + "" : "" + (friend.id + getId()).hashCode();
                     if (getMvpView() != null) {
                         getMvpView().friendInfoFound(index,friend);
                     }

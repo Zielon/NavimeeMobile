@@ -52,6 +52,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
     private LinearLayoutManager linearLayoutManager;
     public static HashMap<String, Bitmap> bitmapAvataFriend;
     public Bitmap bitmapAvataUser;
+    public String UID;
 
     @Inject
     ChatViewPresenter mChatViewPresenter;
@@ -86,7 +87,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
             linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
             recyclerChat = (RecyclerView) findViewById(R.id.recyclerChat);
             recyclerChat.setLayoutManager(linearLayoutManager);
-            adapter = new ListMessageAdapter(this, consersation, bitmapAvataFriend, bitmapAvataUser);
+            adapter = new ListMessageAdapter(this, consersation, bitmapAvataFriend, bitmapAvataUser, mChatViewPresenter.getId());
             mChatViewPresenter.setMessageListener(roomId);
             recyclerChat.setAdapter(adapter);
         }
@@ -134,7 +135,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
                 editWriteMessage.setText("");
                 Message newMessage = new Message();
                 newMessage.text = content;
-                newMessage.idSender = Const.UID;
+                newMessage.idSender =  mChatViewPresenter.getId();
                 newMessage.idReceiver = roomId;
                 newMessage.timestamp = System.currentTimeMillis();
                 mChatViewPresenter.addMessage(roomId, newMessage);
@@ -151,13 +152,15 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private HashMap<String, Bitmap> bitmapAvata;
     private HashMap<String, DatabaseReference> bitmapAvataDB;
     private Bitmap bitmapAvataUser;
+    private String mUID;
 
-    public ListMessageAdapter(Context context, Consersation consersation, HashMap<String, Bitmap> bitmapAvata, Bitmap bitmapAvataUser) {
+    public ListMessageAdapter(Context context, Consersation consersation, HashMap<String, Bitmap> bitmapAvata, Bitmap bitmapAvataUser,String UID) {
         this.context = context;
         this.consersation = consersation;
         this.bitmapAvata = bitmapAvata;
         this.bitmapAvataUser = bitmapAvataUser;
         bitmapAvataDB = new HashMap<>();
+        mUID = UID;
     }
 
     @Override
@@ -215,7 +218,7 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        return consersation.getListMessageData().get(position).idSender.equals(Const.UID) ? ChatViewActivity.VIEW_TYPE_USER_MESSAGE : ChatViewActivity.VIEW_TYPE_FRIEND_MESSAGE;
+        return consersation.getListMessageData().get(position).idSender.equals(mUID) ? ChatViewActivity.VIEW_TYPE_USER_MESSAGE : ChatViewActivity.VIEW_TYPE_FRIEND_MESSAGE;
     }
 
     @Override

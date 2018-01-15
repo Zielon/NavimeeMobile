@@ -281,13 +281,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     @Override
     public void addFriendSuccess(String idFriend) {
         addFriend(idFriend, false);
-       /* dialogWait.dismiss();
-        new LovelyInfoDialog(getContext())
-                .setTopColorRes(R.color.colorPrimary)
-                .setIcon(R.drawable.ic_add_friend)
-                .setTitle("Success")
-                .setMessage("Add friend success")
-                .show();*/
     }
 
     @Override
@@ -405,9 +398,9 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     public void friendInfoFound(int index, Friend friend) {
         if(!dataListFriend.getListFriend().contains(friend)) {
             dataListFriend.getListFriend().add(friend);
+            FriendDB.getInstance(getContext()).addFriend(friend);
+            getAllFriendInfo(index + 1);
         }
-        FriendDB.getInstance(getContext()).addFriend(friend);
-        getAllFriendInfo(index + 1);
     }
 }
 
@@ -455,7 +448,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     public void onClick(View view) {
                         ((ItemFriendViewHolder) holder).txtMessage.setTypeface(Typeface.DEFAULT);
                         ((ItemFriendViewHolder) holder).txtName.setTypeface(Typeface.DEFAULT);
-                       Intent intent = new Intent(context, ChatViewActivity.class);
+                        Intent intent = new Intent(context, ChatViewActivity.class);
                         intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, name);
                         ArrayList<CharSequence> idFriend = new ArrayList<CharSequence>();
                         idFriend.add(id);
