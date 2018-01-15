@@ -191,6 +191,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SETTINGS_REQUEST) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
