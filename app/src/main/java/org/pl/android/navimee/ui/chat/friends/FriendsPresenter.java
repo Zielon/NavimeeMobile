@@ -19,6 +19,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.pl.android.navimee.data.DataManager;
@@ -214,15 +215,19 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                 }
             }
         })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        getMvpView().addFriendFailure();
-                    }
-                });
+        .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                getMvpView().addFriendFailure();
+            }
+        });
     }
 
     public String getId() {
         return mDataManager.getPreferencesHelper().getUID();
+    }
+
+    public Query getLastMessage(String idRoom) {
+        return mDataManager.getFirebaseService().getFirebaseFirestore().collection("MESSAGES").document(idRoom).collection("MESSAGES").orderBy("timestamp", Query.Direction.DESCENDING).limit(1);
     }
 }

@@ -20,8 +20,6 @@ import org.pl.android.navimee.injection.ActivityContext;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
