@@ -7,6 +7,3 @@
 *iml
 *.iml
 */build
-
-/app/src/main/google_services.json
-/app/src/debug/google_services.json
