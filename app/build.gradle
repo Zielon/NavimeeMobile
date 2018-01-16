@@ -10,15 +10,17 @@ repositories {
 }
 buildscript {
     repositories {
+        jcenter()
         maven { url 'https://maven.fabric.io/public' }
+        maven { url 'https://maven.google.com' }
+        mavenLocal()
     }
 
     dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.3'
         classpath 'io.fabric.tools:gradle:1.+'
     }
 }
-
-
 
 android {
     compileSdkVersion 25
@@ -239,4 +241,29 @@ configurations.all {
             }
         }
     }
+}
+
+def appModuleRootFolder = '.'
+def srcDir = 'src'
+def googleServicesJson = 'google-services.json'
+
+task switchToDebug(type: Copy) {
+    def buildType = 'debug'
+    description = 'Switches to DEBUG google-services.json'
+    from "${srcDir}/${buildType}"
+    include "$googleServicesJson"
+    into "$appModuleRootFolder"
+}
+
+task switchToRelease(type: Copy) {
+    def buildType = 'release'
+    description = 'Switches to RELEASE google-services.json'
+    from "${srcDir}/${buildType}/"
+    include "$googleServicesJson"
+    into "$appModuleRootFolder"
+}
+
+afterEvaluate {
+    processDebugGoogleServices.dependsOn switchToDebug
+    processReleaseGoogleServices.dependsOn switchToRelease
 }
