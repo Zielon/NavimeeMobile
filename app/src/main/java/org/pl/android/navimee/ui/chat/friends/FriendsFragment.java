@@ -35,6 +35,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -178,6 +179,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     public void onDestroyView (){
         super.onDestroyView();
         mFriendsPresenter.detachView();
+        FriendDB.getInstance(getContext()).dropDB();
         getContext().unregisterReceiver(deleteFriendReceiver);
     }
 
@@ -418,9 +420,9 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ListFriend listFriend;
     private Context context;
     public static Map<String, Query> mapQuery;
-    public static Map<String, DatabaseReference> mapQueryOnline;
+    public static Map<String, DocumentReference> mapQueryOnline;
     public static Map<String, EventListener<QuerySnapshot>> mapChildListener;
-    public static Map<String, EventListener<QuerySnapshot>> mapChildListenerOnline;
+    public static Map<String, EventListener<DocumentSnapshot>> mapChildListenerOnline;
     public static Map<String, Boolean> mapMark;
     private FriendsFragment fragment;
     LovelyProgressDialog dialogWaitDeleting;
@@ -579,42 +581,23 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
         if (mapQueryOnline.get(id) == null && mapChildListenerOnline.get(id) == null) {
-            mapQueryOnline.put(id, FirebaseDatabase.getInstance().getReference().child("user/" + id+"/status"));
-          /*  mapChildListenerOnline.put(id, new ChildEventListener() {
+            mapQueryOnline.put(id,this.fragment.mFriendsPresenter.getStatus(id));
+            mapChildListenerOnline.put(id, new EventListener<DocumentSnapshot>() {
+                @SuppressLint("TimberArgCount")
                 @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    if(dataSnapshot.getValue() != null && dataSnapshot.getKey().equals("isOnline")) {
-                        Log.d("FriendsFragment add " + id,  (boolean)dataSnapshot.getValue() +"");
-                        listFriend.getListFriend().get(position).status.isOnline = (boolean)dataSnapshot.getValue();
+                public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Timber.w("Listen failed.", e);
+                        return;
+                    }
+                    if (documentSnapshot != null && documentSnapshot.get("isOnline") != null) {
+                        listFriend.getListFriend().get(position).status.isOnline = (boolean) documentSnapshot.get("isOnline");
                         notifyDataSetChanged();
                     }
                 }
 
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                    if(dataSnapshot.getValue() != null&& dataSnapshot.getKey().equals("isOnline")) {
-                        Log.d("FriendsFragment change " + id,  (boolean)dataSnapshot.getValue() +"");
-                        listFriend.getListFriend().get(position).status.isOnline = (boolean)dataSnapshot.getValue();
-                        notifyDataSetChanged();
-                    }
-                }
-
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                }
-
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
             });
-            mapQueryOnline.get(id).addChildEventListener(mapChildListenerOnline.get(id));*/
+            mapQueryOnline.get(id).addSnapshotListener(mapChildListenerOnline.get(id));
         }
 
         if (listFriend.getListFriend().get(position).status.isOnline) {

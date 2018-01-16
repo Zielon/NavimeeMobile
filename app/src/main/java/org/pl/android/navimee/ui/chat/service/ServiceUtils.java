@@ -120,7 +120,7 @@ public class ServiceUtils {
     }
 
     public static void updateFriendStatus(Context context, ListFriend listFriend){
-        if(isNetworkConnected(context)) {
+      /*  if(isNetworkConnected(context)) {
             for (Friend friend : listFriend.getListFriend()) {
                 final String fid = friend.id;
                 FirebaseDatabase.getInstance().getReference().child("user/" + fid + "/status").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -140,7 +140,7 @@ public class ServiceUtils {
                     }
                 });
             }
-        }
+        }*/
     }
 
     public static boolean isNetworkConnected(Context context) {

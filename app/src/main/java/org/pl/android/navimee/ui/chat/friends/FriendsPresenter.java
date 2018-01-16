@@ -73,10 +73,12 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
 
     public void updateUserStatus() {
         if (NetworkUtil.isNetworkConnected(mContext)) {
-            String uid = mDataManager.getPreferencesHelper().getUID();
-            if (!uid.equals("")) {
-                FirebaseDatabase.getInstance().getReference().child("user/" + uid + "/status/isOnline").setValue(true);
-                FirebaseDatabase.getInstance().getReference().child("user/" + uid + "/status/timestamp").setValue(System.currentTimeMillis());
+            String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+            if (!userId.equals("")) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("isOnline", true);
+                data.put("timestamp", System.currentTimeMillis());
+                mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).update(data);
             }
         }
     }
@@ -85,20 +87,23 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         if (NetworkUtil.isNetworkConnected(mContext)) {
             for (Friend friend : listFriend.getListFriend()) {
                 final String fid = friend.id;
-                FirebaseDatabase.getInstance().getReference().child("user/" + fid + "/status").addListenerForSingleValueEvent(new ValueEventListener() {
+                mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(fid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @SuppressLint("TimberArgCount")
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() != null) {
-                            HashMap mapStatus = (HashMap) dataSnapshot.getValue();
-                            if ((boolean) mapStatus.get("isOnline") && (System.currentTimeMillis() - (long) mapStatus.get("timestamp")) > Const.TIME_TO_OFFLINE) {
-                                FirebaseDatabase.getInstance().getReference().child("user/" + fid + "/status/isOnline").setValue(false);
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document != null) {
+                                if (task.getResult().getData().get("isOnline") != null && task.getResult().getData().get("timestamp") != null && (boolean) task.getResult().getData().get("isOnline")
+                                        && (System.currentTimeMillis() - (long) task.getResult().getData().get("timestamp")) > Const.TIME_TO_OFFLINE) {
+                                    mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(fid).update("isOnline",false);
+                                }
+                            } else {
+                               Timber.d( "No such document");
                             }
+                        } else {
+                            Timber.e("get failed with ", task.getException());
                         }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
                     }
                 });
             }
@@ -229,5 +234,9 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
 
     public Query getLastMessage(String idRoom) {
         return mDataManager.getFirebaseService().getFirebaseFirestore().collection("MESSAGES").document(idRoom).collection("MESSAGES").orderBy("timestamp", Query.Direction.DESCENDING).limit(1);
+    }
+
+    public DocumentReference getStatus(String id) {
+        return mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(id);
     }
 }
