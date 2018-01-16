@@ -266,6 +266,6 @@ task switchToRelease(type: Copy) {
 }
 
 afterEvaluate {
-    processDebugGoogleServices.dependsOn switchToDebug
-    processReleaseGoogleServices.dependsOn switchToRelease
+    project.tasks.findByName('processDebugGoogleServices')?.dependsOn switchToDebug
+    project.tasks.findByName('processReleaseGoogleServices')?.dependsOn switchToRelease
 }
