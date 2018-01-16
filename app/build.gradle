@@ -27,7 +27,7 @@ android {
     buildToolsVersion '25.0.3'
 
     defaultConfig {
-        applicationId 'org.pl.android.navimee'
+        applicationId 'org.pl.android.drively'
         minSdkVersion 16
         targetSdkVersion 25
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
