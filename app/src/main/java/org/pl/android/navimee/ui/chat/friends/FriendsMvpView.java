@@ -31,4 +31,7 @@ public interface FriendsMvpView extends MvpView {
 
     void addFriendIsNotIdFriend();
 
+    void onSuccessDeleteFriend(String idFriend);
+
+    void onFailureDeleteFriend();
 }
