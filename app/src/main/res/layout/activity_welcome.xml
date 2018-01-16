@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.pl.android.navimee.ui.welcome.WelcomeActivity">
+    tools:context="org.pl.android.drively.ui.welcome.WelcomeActivity">
 
     <TextView
         android:id="@+id/title"
