@@ -74,4 +74,5 @@
     <string name="events_check_another_date">Check another date</string>
     <string name="day_schedule_text">Додайте події до дня. Плануйте та заходьте нових клієнтів.</string>
     <string name="day_schedule_events_route">Перейти до подій</string>
+    <string name="chat">чат</string>
 </resources>

@@ -19,5 +19,13 @@
         inActiveColor="@color/colorLine"
         title="@string/day_schedule" />
 
+    <tab
+        id="@+id/tab_chat"
+        icon="@drawable/ic_action_people"
+        activeColor="@color/settings_switch_color"
+        inActiveColor="@color/colorLine"
+        title="@string/chat" />
+
+
 
 </tabs>

@@ -37,4 +37,9 @@
         <item name="colorControlActivated">@color/button_background</item>
     </style>
 
+
+    <style name="EditTextTintTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorPrimaryDark">#0288D1</item>
+    </style>
+
 </resources>

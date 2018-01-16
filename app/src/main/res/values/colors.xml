@@ -20,4 +20,5 @@
     <color name="button_background">#E40455</color>
     <color name="button_background_dark">#323640</color>
     <color name="settings_switch_color">#e6e40455</color>
+    <color name="colorCardView">#f7f7f7</color>
 </resources>
