@@ -258,7 +258,7 @@ task switchToDebug(type: Copy) {
 }
 
 task switchToRelease(type: Copy) {
-    def buildType = 'release'
+    def buildType = 'main'
     description = 'Switches to RELEASE google-services.json'
     from "${srcDir}/${buildType}/"
     include "$googleServicesJson"
@@ -266,6 +266,9 @@ task switchToRelease(type: Copy) {
 }
 
 afterEvaluate {
-    processDebugGoogleServices.dependsOn switchToDebug
-    processReleaseGoogleServices.dependsOn switchToRelease
+    if (!android.applicationVariants.matching { it.buildType.name == 'release' }.isEmpty()) {
+        processReleaseGoogleServices.dependsOn switchToRelease
+    } else {
+        processDebugGoogleServices.dependsOn switchToDebug
+    }
 }
