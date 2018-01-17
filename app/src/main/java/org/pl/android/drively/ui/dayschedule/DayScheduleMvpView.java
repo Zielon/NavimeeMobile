@@ -5,11 +5,7 @@ import org.pl.android.drively.ui.base.MvpView;
 
 import java.util.List;
 
-/**
- * Created by Wojtek on 2017-10-30.
- */
-
-public interface DayScheduleMvpView  extends MvpView {
+public interface DayScheduleMvpView extends MvpView {
 
     void showEvents(List<Event> events);
 

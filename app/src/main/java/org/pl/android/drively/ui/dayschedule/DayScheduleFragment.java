@@ -37,7 +37,8 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
     @Inject
     DaySchedulePresenter mDaySchedulePresenter;
 
-    @Inject DayScheduleAdapter mDayScheduleAdapter;
+    @Inject
+    DayScheduleAdapter mDayScheduleAdapter;
 
     @BindView(R.id.recycler_view_day_schedule)
     RecyclerView mDayScheduleRecycler;
@@ -48,7 +49,7 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
     Date today;
     SkeletonScreen skeletonScreen;
     HorizontalCalendar horizontalCalendar;
-    
+
     public static DayScheduleFragment newInstance() {
         DayScheduleFragment fragment = new DayScheduleFragment();
         return fragment;
@@ -78,11 +79,11 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
                 .startDate(startDate.getTime())
                 .endDate(endDate.getTime())
                 .datesNumberOnScreen(5)   // Number of Dates cells shown on screen (Recommended 5)
-                .dayNameFormat("EEE")	  // WeekDay text format
+                .dayNameFormat("EEE")      // WeekDay text format
                 .dayNumberFormat("dd")// Date format
-                .monthFormat("MMM") 	  // Month format
-                .showDayName(true)	  // Show or Hide dayName text
-                .showMonthName(false)	  // Show or Hide month text
+                .monthFormat("MMM")      // Month format
+                .showDayName(true)      // Show or Hide dayName text
+                .showMonthName(false)      // Show or Hide month text
                 .defaultSelectedDate(today)  // Date to be seleceted at start (default to Today)
                 .build();
 
@@ -165,6 +166,6 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
     public void onSuccessDelete(Event event) {
         mDayScheduleAdapter.deleteEvent(event);
         mDayScheduleAdapter.notifyDataSetChanged();
-        Toast.makeText(getActivity(),getResources().getString(R.string.delete_day_schedule), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), getResources().getString(R.string.delete_day_schedule), Toast.LENGTH_SHORT).show();
     }
 }
