@@ -112,6 +112,11 @@
             android:screenOrientation="portrait"
             android:parentActivityName="org.pl.android.drively.ui.main.MainActivity"/>
 
+        <activity
+            android:name="org.pl.android.drively.ui.chat.addgroup.AddGroupActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName="org.pl.android.drively.ui.main.MainActivity"/>
+
     </application>
 
 </manifest>

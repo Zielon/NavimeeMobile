@@ -83,5 +83,6 @@
     <string name="day_schedule_text">Add events to the Day Plan and catch new customers.</string>
     <string name="day_schedule_events_route">Go to Events</string>
     <string name="chat">Chat</string>
-
+    <string name="enter_group_name">Enter group name</string>
+    <string name="create_group">Create group</string>
 </resources>

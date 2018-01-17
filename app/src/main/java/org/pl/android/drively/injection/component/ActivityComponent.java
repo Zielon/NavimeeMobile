@@ -8,6 +8,7 @@ import org.pl.android.drively.injection.ActivityContext;
 import org.pl.android.drively.injection.PerActivity;
 import org.pl.android.drively.injection.module.ActivityModule;
 import org.pl.android.drively.ui.chat.ChatFragment;
+import org.pl.android.drively.ui.chat.addgroup.AddGroupActivity;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.ui.chat.friends.FriendsFragment;
 import org.pl.android.drively.ui.chat.group.GroupFragment;
@@ -48,6 +49,7 @@ public interface ActivityComponent {
     void inject(UserPasswordChangeActivity userPasswordChangeActivity);
     void inject(ChatFragment chatFragment);
     void inject(ChatViewActivity chatViewActivity);
+    void inject(AddGroupActivity addGroupActivity);
 
     @ActivityContext
     Context provideContext();
