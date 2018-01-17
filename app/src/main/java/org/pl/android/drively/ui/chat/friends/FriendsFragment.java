@@ -456,7 +456,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         mapChildListenerOnline = new HashMap<>();
         mapQueryOnline = new HashMap<>();
         this.fragment = fragment;
-        this.dialogWaitDeleting = new LovelyProgressDialog(context);
+        this.dialogWaitDeleting = dialogWaitDeleting;
     }
 
     @Override
