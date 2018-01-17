@@ -1,6 +1,5 @@
 package org.pl.android.drively.ui.chat.addgroup;
 
-import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -10,7 +9,6 @@ import com.google.firebase.firestore.DocumentReference;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.chat.Room;
 import org.pl.android.drively.ui.base.BasePresenter;
-import org.pl.android.drively.ui.chat.chatview.ChatViewMvpView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,21 +44,20 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
 
 
     public void createGroup(String idGroup, Room room) {
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("GROUP").document(idGroup).set(room).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                if (getMvpView() != null) {
-                    getMvpView().addRoomForUser(idGroup,0);
-                }
-            }
-        })
-        .addOnFailureListener(new OnFailureListener() {
-            @SuppressLint("TimberArgCount")
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Timber.w("Error writing document", e);
-            }
-        });
+
+        Map<String, String> map = new HashMap<>();
+        for (String i : room.member) map.put(i,"empty");
+        map.putAll(room.groupInfo);
+
+        mDataManager.getFirebaseService().getFirebaseFirestore()
+                .collection("GROUP")
+                .document(idGroup).set(map)
+                .addOnSuccessListener(aVoid -> {
+                    if (getMvpView() != null) {
+                        getMvpView().addRoomForUser(idGroup,0);
+                    }
+                })
+                .addOnFailureListener(e -> Timber.w("Error writing document", e));
     }
 
     public void addRoomForUser(String roomId, int userIndex, String userId) {
