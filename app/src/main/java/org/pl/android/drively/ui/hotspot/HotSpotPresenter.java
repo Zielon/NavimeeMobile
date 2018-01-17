@@ -1,14 +1,8 @@
 package org.pl.android.drively.ui.hotspot;
 
-import android.annotation.SuppressLint;
-import android.support.annotation.Nullable;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 
 import org.pl.android.drively.data.DataManager;
@@ -26,10 +20,6 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import timber.log.Timber;
-
-/**
- * Created by Wojtek on 2017-10-28.
- */
 
 public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
 
@@ -80,34 +70,29 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
 
     public void loadHotSpotPlace(String key) {
         hotspotKeyList.add(key);
-        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("HOTSPOT").document(key).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @SuppressLint("TimberArgCount")
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot snapshot,
-                                @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Timber.e("Listen failed.", e);
-                    return;
-                }
-                hotspotKeyList.remove(key);
-                if (snapshot != null && snapshot.exists()) {
-                    // Timber.d("Current data: " + snapshot.getData());
-                    if (snapshot.get("hotspotType").equals(Const.HotSpotType.EVENT.name()) && (filterList.contains(Const.HotSpotType.EVENT) || filterList.isEmpty())) {
-                        if (getMvpView() != null) {
-                            getMvpView().showEventOnMap(snapshot.toObject(Event.class));
-                        }
-                    } else if (snapshot.get("hotspotType").equals(Const.HotSpotType.FOURSQUARE_PLACE.name()) && (filterList.contains(Const.HotSpotType.FOURSQUARE_PLACE) || filterList.isEmpty())) {
-                        if (getMvpView() != null) {
-                            getMvpView().showFoursquareOnMap(snapshot.toObject(FourSquarePlace.class));
-                        }
-                    }
-
-                }
-
-                if (hotspotKeyList.isEmpty()) {
+        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("HOTSPOT").document(key).addSnapshotListener((snapshot, e) -> {
+            if (e != null) {
+                Timber.e("Listen failed.", e);
+                return;
+            }
+            hotspotKeyList.remove(key);
+            if (snapshot != null && snapshot.exists()) {
+                // Timber.d("Current data: " + snapshot.getData());
+                if (snapshot.get("hotspotType").equals(Const.HotSpotType.EVENT.name()) && (filterList.contains(Const.HotSpotType.EVENT) || filterList.isEmpty())) {
                     if (getMvpView() != null) {
-                        getMvpView().clusterMap();
+                        getMvpView().showEventOnMap(snapshot.toObject(Event.class));
                     }
+                } else if (snapshot.get("hotspotType").equals(Const.HotSpotType.FOURSQUARE_PLACE.name()) && (filterList.contains(Const.HotSpotType.FOURSQUARE_PLACE) || filterList.isEmpty())) {
+                    if (getMvpView() != null) {
+                        getMvpView().showFoursquareOnMap(snapshot.toObject(FourSquarePlace.class));
+                    }
+                }
+
+            }
+
+            if (hotspotKeyList.isEmpty()) {
+                if (getMvpView() != null) {
+                    getMvpView().clusterMap();
                 }
             }
         });
@@ -158,6 +143,4 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
     public void clearFilterList() {
         filterList.clear();
     }
-
-
 }
