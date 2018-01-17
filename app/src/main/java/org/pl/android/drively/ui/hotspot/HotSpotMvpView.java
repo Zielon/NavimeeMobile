@@ -8,10 +8,12 @@ import org.pl.android.drively.ui.base.MvpView;
  * Created by Wojtek on 2017-10-28.
  */
 
-public interface HotSpotMvpView  extends MvpView {
+public interface HotSpotMvpView extends MvpView {
 
-    void  showEventOnMap(Event event);
-    void  showFoursquareOnMap(FourSquarePlace fourSquarePlace);
-    void  clusterMap();
+    void showEventOnMap(Event event);
+
+    void showFoursquareOnMap(FourSquarePlace fourSquarePlace);
+
+    void clusterMap();
 
 }

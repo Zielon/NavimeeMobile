@@ -75,28 +75,28 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
     }
 
     public String getUid() {
-       return mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+        return mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
     }
 
-    public void loadHotSpotPlace(String key){
+    public void loadHotSpotPlace(String key) {
         hotspotKeyList.add(key);
-        mListener =  mDataManager.getFirebaseService().getFirebaseFirestore().collection("HOTSPOT").document(key).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("HOTSPOT").document(key).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @SuppressLint("TimberArgCount")
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
                                 @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
-                    Timber.e( "Listen failed.", e);
+                    Timber.e("Listen failed.", e);
                     return;
                 }
                 hotspotKeyList.remove(key);
                 if (snapshot != null && snapshot.exists()) {
-                   // Timber.d("Current data: " + snapshot.getData());
-                    if(snapshot.get("hotspotType").equals(Const.HotSpotType.EVENT.name()) && (filterList.contains(Const.HotSpotType.EVENT) || filterList.isEmpty())) {
+                    // Timber.d("Current data: " + snapshot.getData());
+                    if (snapshot.get("hotspotType").equals(Const.HotSpotType.EVENT.name()) && (filterList.contains(Const.HotSpotType.EVENT) || filterList.isEmpty())) {
                         if (getMvpView() != null) {
                             getMvpView().showEventOnMap(snapshot.toObject(Event.class));
                         }
-                    } else if(snapshot.get("hotspotType").equals(Const.HotSpotType.FOURSQUARE_PLACE.name()) && (filterList.contains(Const.HotSpotType.FOURSQUARE_PLACE) || filterList.isEmpty())) {
+                    } else if (snapshot.get("hotspotType").equals(Const.HotSpotType.FOURSQUARE_PLACE.name()) && (filterList.contains(Const.HotSpotType.FOURSQUARE_PLACE) || filterList.isEmpty())) {
                         if (getMvpView() != null) {
                             getMvpView().showFoursquareOnMap(snapshot.toObject(FourSquarePlace.class));
                         }
@@ -104,8 +104,8 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
 
                 }
 
-                if(hotspotKeyList.isEmpty()) {
-                    if(getMvpView() != null) {
+                if (hotspotKeyList.isEmpty()) {
+                    if (getMvpView() != null) {
                         getMvpView().clusterMap();
                     }
                 }
@@ -113,15 +113,15 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
         });
     }
 
-    public void setRouteFromDriver(String locationAddress,String locationName,int durationInSec, int distanceValue,LatLng latLng) {
+    public void setRouteFromDriver(String locationAddress, String locationName, int durationInSec, int distanceValue, LatLng latLng) {
         HashMap<String, Object> feedBackObject = new HashMap<>();
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
         feedBackObject.put("userId", userId);
         feedBackObject.put("locationAddress", locationAddress);
         feedBackObject.put("locationName", locationName);
-        feedBackObject.put("durationInSec",durationInSec);
-        feedBackObject.put("distance",distanceValue);
-        feedBackObject.put("geoPoint",latLng);
+        feedBackObject.put("durationInSec", durationInSec);
+        feedBackObject.put("distance", distanceValue);
+        feedBackObject.put("geoPoint", latLng);
         mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child("FEEDBACK").push().setValue(feedBackObject);
     }
 
@@ -138,7 +138,7 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
     }
 
     public void setFeedbackBoolean(boolean var) {
-        mDataManager.getPreferencesHelper().setValue(Const.IS_FEEDBACK,var);
+        mDataManager.getPreferencesHelper().setValue(Const.IS_FEEDBACK, var);
     }
 
     public String getFeedbackValue(String name) {
