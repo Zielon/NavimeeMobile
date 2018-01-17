@@ -32,10 +32,6 @@ import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.HorizontalCalendarListener;
 import devs.mulham.horizontalcalendar.HorizontalCalendarView;
 
-/**
- * Created by Wojtek on 2017-10-21.
- */
-
 public class DayScheduleFragment extends Fragment implements DayScheduleMvpView {
 
     @Inject
@@ -119,12 +115,14 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
         skeletonScreen = Skeleton.bind(mDayScheduleRecycler)
                 .adapter(mDayScheduleAdapter)
                 .shimmer(true)
-                .angle(20)
+                .load(R.layout.item_skeleton_day_schedule)
+                .color(R.color.primary_dark)
+                .angle(10)
                 .duration(1200)
-                .count(10).show();
+                .count(1).show();
+
         return fragmentView;
     }
-
 
     @Override
     public void onStart() {

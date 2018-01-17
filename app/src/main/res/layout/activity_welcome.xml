@@ -12,47 +12,47 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="115dp"
-        android:textSize="60sp"
-        android:textColor="#e40455"
         android:gravity="center_horizontal"
-        android:text="Drively" />
+        android:text="Drively"
+        android:textColor="#e40455"
+        android:textSize="60sp" />
 
     <Button
         android:id="@+id/loginButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="177dp"
+        android:layout_below="@+id/title"
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
-        android:textAlignment="center"
+        android:layout_marginTop="177dp"
         android:backgroundTint="@color/button_background_dark"
-        android:textColor="@color/white"
-        android:layout_below="@+id/title"
-        android:text="@string/login" />
+        android:text="@string/login"
+        android:textAlignment="center"
+        android:textColor="@color/white" />
 
     <TextView
         android:id="@+id/or"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/loginButton"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"
-        android:textSize="12sp"
-        android:textColor="#ffffff"
         android:gravity="center_horizontal"
-        android:layout_below="@+id/loginButton"
-        android:text="@string/or" />
+        android:text="@string/or"
+        android:textColor="#ffffff"
+        android:textSize="12sp" />
 
     <Button
         android:id="@+id/createAccountButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_below="@+id/or"
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
-        android:textAlignment="center"
+        android:layout_marginTop="5dp"
         android:backgroundTint="@color/button_background"
-        android:textColor="@color/white"
-        android:layout_below="@+id/or"
-        android:text="@string/create_account" />
+        android:text="@string/create_account"
+        android:textAlignment="center"
+        android:textColor="@color/white" />
 
 </RelativeLayout>

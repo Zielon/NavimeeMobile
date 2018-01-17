@@ -5,34 +5,33 @@
     android:layout_width="match_parent"
     android:layout_height="70dp"
     android:layout_marginBottom="5dp"
-    android:layout_marginTop="5dp"
-    android:layout_marginStart="15dp"
     android:layout_marginEnd="15dp"
+    android:layout_marginStart="15dp"
+    android:layout_marginTop="5dp"
     card_view:cardBackgroundColor="@color/colorCardView"
     card_view:cardCornerRadius="5dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="horizontal">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/icon_avata"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_margin="10dp"
             android:layout_weight="1"
-            app:civ_border_color="@color/colorPrimary"/>
+            app:civ_border_color="@color/colorPrimary" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
             android:layout_weight="5"
-            android:orientation="vertical"
-            android:layout_marginLeft="10dp">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -48,8 +47,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="4"
                     android:gravity="center_vertical"
-                    android:textColor="@color/primary"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/primary" />
 
                 <TextView
                     android:id="@+id/txtTime"
@@ -57,9 +56,9 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1.5"
                     android:gravity="center_vertical|right"
-                    android:textColor="@color/primary"
                     android:paddingRight="10dp"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/primary" />
             </LinearLayout>
 
             <TextView
@@ -67,12 +66,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:gravity="center_vertical"
                 android:ellipsize="end"
+                android:gravity="center_vertical"
                 android:lines="1"
                 android:paddingBottom="10dp"
-                android:textColor="@color/primary"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/primary" />
         </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

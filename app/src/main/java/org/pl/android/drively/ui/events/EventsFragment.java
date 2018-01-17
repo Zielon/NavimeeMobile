@@ -165,11 +165,12 @@ public class EventsFragment extends Fragment  implements EventsMvpView {
        skeletonScreen = Skeleton.bind(mEventsRecycler)
                 .adapter(mEventsAdapter)
                 .shimmer(true)
-                .load(R.layout.item_skeleton)
-                .color(R.color.shimmer_color)
-                .angle(20)
+                .load(R.layout.item_skeleton_event)
+                .color(R.color.primary_dark)
+                .angle(10)
                 .duration(1200)
-                .count(10).show();
+                .count(1).show();
+
         return fragmentView;
     }
 
