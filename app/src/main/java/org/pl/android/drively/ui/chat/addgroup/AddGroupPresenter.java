@@ -4,23 +4,22 @@ import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.chat.Room;
 import org.pl.android.drively.ui.base.BasePresenter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
-
-/**
- * Created by Wojtek on 2018-01-17.
- */
 
 public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
     private final DataManager mDataManager;
@@ -42,19 +41,31 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
         if (mDisposable != null) mDisposable.dispose();
     }
 
-
     public void createGroup(String idGroup, Room room) {
-
-        Map<String, String> map = new HashMap<>();
-        for (String i : room.member) map.put(i,"member");
-        map.putAll(room.groupInfo);
-
         mDataManager.getFirebaseService().getFirebaseFirestore()
                 .collection("GROUP")
-                .document(idGroup).set(map)
+                .document(idGroup).set(room.groupInfo)
                 .addOnSuccessListener(aVoid -> {
-                    if (getMvpView() != null) {
-                        getMvpView().addRoomForUser(idGroup,0);
+                    List<Task<Void>> tasks = new ArrayList<>();
+                    Map<String, String> member = new HashMap<>();
+                    for (String memberId: room.member) {
+                        member.put("memberId", memberId);
+                        tasks.add(mDataManager.getFirebaseService()
+                                .getFirebaseFirestore()
+                                .collection("GROUP")
+                                .document(idGroup)
+                                .collection("MEMBERS").document(memberId).set(member));
+                        member.clear();
+                    }
+
+                    try {
+                        // Wait for all
+                        for (Task<Void> task: tasks) task.getResult();
+                        if (getMvpView() != null) {
+                            getMvpView().addRoomForUser(idGroup,0);
+                        }
+                    }catch (Exception e){
+                        Timber.w(e.getMessage());
                     }
                 })
                 .addOnFailureListener(e -> Timber.w("Error writing document", e));
