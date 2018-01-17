@@ -46,7 +46,7 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
     public void createGroup(String idGroup, Room room) {
 
         Map<String, String> map = new HashMap<>();
-        for (String i : room.member) map.put(i,"empty");
+        for (String i : room.member) map.put(i,"member");
         map.putAll(room.groupInfo);
 
         mDataManager.getFirebaseService().getFirebaseFirestore()
