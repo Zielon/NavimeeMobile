@@ -152,18 +152,20 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
 
     public void loadDayScheduleEvents() {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("NOTIFICATIONS").whereEqualTo("userId",userId).addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @SuppressLint("TimberArgCount")
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value,
-                                @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Timber.e("Listen failed.", e);
-                    return;
-                }
-                setDayScheduleList(value.toObjects(Event.class));
-            }
-        });
+        mDataManager.getFirebaseService().getFirebaseFirestore()
+                .collection("NOTIFICATIONS")
+                .whereEqualTo("userId",userId)
+                .addSnapshotListener((value, e) -> {
+                        if (e != null) {
+                            Timber.e("Listen failed.", e);
+                            return;
+                        }
+                        try {
+                            setDayScheduleList(value.toObjects(Event.class));
+                        }catch (Exception parse){
+                            Timber.e("Listen failed.", parse);
+                        }
+                    });
     }
 
 
