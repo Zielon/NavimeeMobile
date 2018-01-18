@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -22,82 +20,31 @@
             android:id="@+id/content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp">
-
-
-            <TextView
-                android:id="@+id/text_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_body"
-                tools:text="Antony Ribot" />
+            android:padding="15dp">
 
             <ImageView
                 android:id="@+id/image_address_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/text_name"
-                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/title"
+                android:layout_marginTop="15dp"
                 android:paddingBottom="5dp"
                 android:paddingLeft="10dp"
                 android:paddingStart="10dp"
-                android:paddingTop="5dp"
+                android:tint="@color/primary_dark"
                 android:src="@drawable/location_name_24dp" />
-
-            <TextView
-                android:id="@+id/text_address_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/text_name"
-                android:layout_marginTop="5dp"
-                android:layout_toRightOf="@+id/image_address_name"
-                android:paddingBottom="5dp"
-                android:paddingLeft="10dp"
-                android:paddingTop="5dp"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_small_body"
-                tools:text="developer" />
 
             <ImageView
                 android:id="@+id/image_text_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/text_address_name"
-                android:layout_centerVertical="true"
+                android:layout_below="@id/image_address_name"
                 android:paddingLeft="10dp"
                 android:paddingStart="10dp"
+                android:tint="@color/primary_dark"
                 android:src="@drawable/location_address_24dp" />
-
-            <TextView
-                android:id="@+id/text_address"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/text_address_name"
-                android:layout_marginTop="5dp"
-                android:layout_toRightOf="@+id/image_text_address"
-                android:paddingLeft="10dp"
-                android:paddingStart="10dp"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_small_body"
-                tools:text="developer" />
-
-            <ImageButton
-                android:id="@+id/deleteButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="false"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:background="@android:color/transparent"
-                android:padding="0dp"
-                android:src="@drawable/close_x_24dp" />
-
 
         </RelativeLayout>
 
@@ -105,6 +52,8 @@
             android:id="@+id/buttons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@+id/content"
             android:layout_marginTop="10dp">
 
@@ -114,8 +63,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
+                android:tint="@color/primary_dark"
                 android:src="@drawable/ic_people_white" />
-
 
             <ImageView
                 android:id="@+id/imageTime"
@@ -124,6 +73,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/imageCount"
                 android:paddingLeft="10dp"
+                android:tint="@color/primary_dark"
                 android:src="@drawable/end_time_24dp" />
 
             <TextView
@@ -133,8 +83,8 @@
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/imageTime"
                 android:paddingLeft="10dp"
-                android:text="18:30"
-                android:textColor="@color/white" />
+                android:text="00:00"
+                android:textColor="@color/primary_dark" />
 
             <ImageView
                 android:id="@+id/imageMaybe"
@@ -143,33 +93,20 @@
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/viewTextTime"
                 android:paddingLeft="10dp"
+                android:tint="@color/primary_dark"
                 android:src="@drawable/visibility_on_24dp" />
 
-            <TextView
-                android:id="@+id/viewTextMaybe"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_margin="1dp"
-                android:layout_toRightOf="@+id/imageMaybe"
-                android:paddingLeft="10dp"
-                android:text="18:30"
-                android:textColor="@color/white" />
-
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/driveButton"
+            <ImageView
+                android:id="@+id/addButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginBottom="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
-                android:src="@drawable/ringing_bell_24dp"
-                app:backgroundTint="@color/button_background"
-                app:borderWidth="0dp" />
+                android:tint="@color/primary_dark"
+                android:src="@drawable/bell_24dp" />
         </RelativeLayout>
-
 
     </RelativeLayout>
 

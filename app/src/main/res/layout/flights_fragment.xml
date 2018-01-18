@@ -11,6 +11,6 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:text="Flights Fragment"
-        android:textSize="30sp"/>
+        android:textSize="30sp" />
 
 </RelativeLayout>

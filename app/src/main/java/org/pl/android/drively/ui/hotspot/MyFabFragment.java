@@ -19,23 +19,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.allattentionhere.fabulousfilter.AAH_FabulousFragment;
+import com.google.android.flexbox.FlexboxLayout;
 
 import org.pl.android.drively.R;
-
-import com.google.android.flexbox.FlexboxLayout;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-
-/**
- * Created by krupenghetiya on 23/06/17.
- */
-
 public class MyFabFragment extends AAH_FabulousFragment {
-
 
     ArrayMap<String, List<String>> applied_filters = new ArrayMap<>();
     List<TextView> textviews = new ArrayList<>();
@@ -77,22 +70,14 @@ public class MyFabFragment extends AAH_FabulousFragment {
         ViewPager vp_types = (ViewPager) contentView.findViewById(R.id.vp_types);
         tabs_types = (TabLayout) contentView.findViewById(R.id.tabs_types);
 
-        imgbtn_apply.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeFilter(applied_filters);
+        imgbtn_apply.setOnClickListener(v -> closeFilter(applied_filters));
+        imgbtn_refresh.setOnClickListener(v -> {
+            for (TextView tv : textviews) {
+                tv.setTag("unselected");
+                tv.setBackgroundResource(R.drawable.chip_unselected);
+                tv.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
             }
-        });
-        imgbtn_refresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                for (TextView tv : textviews) {
-                    tv.setTag("unselected");
-                    tv.setBackgroundResource(R.drawable.chip_unselected);
-                    tv.setTextColor(ContextCompat.getColor(getContext(), R.color.filters_chips));
-                }
-                applied_filters.clear();
-            }
+            applied_filters.clear();
         });
 
         mAdapter = new SectionsPagerAdapter();
@@ -106,7 +91,7 @@ public class MyFabFragment extends AAH_FabulousFragment {
         setAnimationDuration(600); //optional; default 500ms
         setPeekHeight(300); // optional; default 400dp
         //setCallbacks((Callbacks) getActivity()); //optional; to get back result
-       // setAnimationListener((AnimationListener) getActivity()); //optional; to get animation callbacks
+        // setAnimationListener((AnimationListener) getActivity()); //optional; to get animation callbacks
         setViewgroupStatic(ll_buttons); // optional; layout to stick at bottom on slide
         setViewPager(vp_types); //optional; if you use viewpager that has scrollview
         setViewMain(rl_content); //necessary; main bottomsheet view
@@ -114,61 +99,10 @@ public class MyFabFragment extends AAH_FabulousFragment {
         super.setupDialog(dialog, style); //call super at last
     }
 
-    public class SectionsPagerAdapter extends PagerAdapter {
-
-        @Override
-        public Object instantiateItem(ViewGroup collection, int position) {
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.view_filters_sorters, collection, false);
-            FlexboxLayout fbl = (FlexboxLayout) layout.findViewById(R.id.fbl);
-//            LinearLayout ll_scroll = (LinearLayout) layout.findViewById(R.id.ll_scroll);
-//            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (metrics.heightPixels-(104*metrics.density)));
-//            ll_scroll.setLayoutParams(lp);
-            switch (position) {
-                case 0:
-                    inflateLayoutWithFilters(getResources().getString(R.string.visible_on_map), fbl);
-                    break;
-                case 1:
-                    inflateLayoutWithFilters(getResources().getString(R.string.radius), fbl);
-                    break;
-            }
-            collection.addView(layout);
-            return layout;
-
-        }
-
-        @Override
-        public void destroyItem(ViewGroup collection, int position, Object view) {
-            collection.removeView((View) view);
-        }
-
-        @Override
-        public int getCount() {
-            return 2;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return getResources().getString(R.string.visible_on_map).toUpperCase();
-                case 1:
-                    return getResources().getString(R.string.radius).toUpperCase();
-            }
-            return "";
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view == object;
-        }
-
-    }
-
     private void inflateLayoutWithFilters(final String filter_category, FlexboxLayout fbl) {
         List<String> keys = new ArrayList<>();
-        if(filter_category.equals(getResources().getString(R.string.visible_on_map))) {
-            String[] chips = {getResources().getString(R.string.events_filtr),getResources().getString(R.string.popular_places),getResources().getString(R.string.uber_ratio)};
+        if (filter_category.equals(getResources().getString(R.string.visible_on_map))) {
+            String[] chips = {getResources().getString(R.string.events_filtr), getResources().getString(R.string.popular_places), getResources().getString(R.string.uber_ratio)};
             keys = Arrays.asList(chips);
         } else if (filter_category.equals(getResources().getString(R.string.radius))) {
             //  keys = ((MainActivity) getActivity()).getmData().getUniqueGenreKeys();
@@ -179,20 +113,17 @@ public class MyFabFragment extends AAH_FabulousFragment {
             tv.setText(keys.get(i));
             final int finalI = i;
             final List<String> finalKeys = keys;
-            tv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (tv.getTag() != null && tv.getTag().equals("selected")) {
-                        tv.setTag("unselected");
-                        tv.setBackgroundResource(R.drawable.chip_unselected);
-                        tv.setTextColor(ContextCompat.getColor(getContext(), R.color.filters_chips));
-                        removeFromSelectedMap(filter_category, finalKeys.get(finalI));
-                    } else {
-                        tv.setTag("selected");
-                        tv.setBackgroundResource(R.drawable.chip_selected);
-                        tv.setTextColor(ContextCompat.getColor(getContext(), R.color.filters_header));
-                        addToSelectedMap(filter_category, finalKeys.get(finalI));
-                    }
+            tv.setOnClickListener(v -> {
+                if (tv.getTag() != null && tv.getTag().equals("selected")) {
+                    tv.setTag("unselected");
+                    tv.setBackgroundResource(R.drawable.chip_unselected);
+                    tv.setTextColor(ContextCompat.getColor(getContext(), R.color.filters_chips));
+                    removeFromSelectedMap(filter_category, finalKeys.get(finalI));
+                } else {
+                    tv.setTag("selected");
+                    tv.setBackgroundResource(R.drawable.chip_selected);
+                    tv.setTextColor(ContextCompat.getColor(getContext(), R.color.filters_header));
+                    addToSelectedMap(filter_category, finalKeys.get(finalI));
                 }
             });
             try {
@@ -235,5 +166,56 @@ public class MyFabFragment extends AAH_FabulousFragment {
         } else {
             applied_filters.get(key).remove(value);
         }
+    }
+
+    public class SectionsPagerAdapter extends PagerAdapter {
+
+        @Override
+        public Object instantiateItem(ViewGroup collection, int position) {
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.view_filters_sorters, collection, false);
+            FlexboxLayout fbl = (FlexboxLayout) layout.findViewById(R.id.fbl);
+//            LinearLayout ll_scroll = (LinearLayout) layout.findViewById(R.id.ll_scroll);
+//            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (metrics.heightPixels-(104*metrics.density)));
+//            ll_scroll.setLayoutParams(lp);
+            switch (position) {
+                case 0:
+                    inflateLayoutWithFilters(getResources().getString(R.string.visible_on_map), fbl);
+                    break;
+                case 1:
+                    //inflateLayoutWithFilters(getResources().getString(R.string.radius), fbl);
+                    break;
+            }
+            collection.addView(layout);
+            return layout;
+
+        }
+
+        @Override
+        public void destroyItem(ViewGroup collection, int position, Object view) {
+            collection.removeView((View) view);
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return getResources().getString(R.string.visible_on_map).toUpperCase();
+                case 1:
+                    return getResources().getString(R.string.radius).toUpperCase();
+            }
+            return "";
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+
     }
 }

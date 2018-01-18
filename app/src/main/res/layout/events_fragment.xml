@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="org.pl.android.drively.ui.events.EventsFragment">
+
     <devs.mulham.horizontalcalendar.HorizontalCalendarView
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primary_dark"
-        app:textColorSelected="#FFFF"/>
+        app:textColorSelected="#FFFF" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_events"
         android:layout_width="match_parent"
@@ -21,10 +23,12 @@
         android:paddingBottom="6dp"
         android:paddingTop="6dp"
         android:scrollbars="vertical" />
-    <include layout="@layout/events_empty"
-        android:layout_below="@+id/calendarView"
-        android:visibility="gone"
+
+    <include
+        layout="@layout/events_empty"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/calendarView"
+        android:visibility="gone" />
 
 </RelativeLayout>

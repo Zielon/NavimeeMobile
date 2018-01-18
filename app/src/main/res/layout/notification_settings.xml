@@ -16,16 +16,16 @@
         android:paddingBottom="10dp"
         android:paddingLeft="20dp"
         android:paddingTop="10dp"
-        android:textSize="14sp"
+        android:text="@string/notifications"
         android:textColor="@color/white"
-        android:text="@string/notifications" />
+        android:textSize="14sp" />
 
     <RelativeLayout
         android:id="@+id/day_schedule_notifications_layout"
-        android:layout_below="@+id/notification_title"
-        android:background="@drawable/layout_border"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/notification_title"
+        android:background="@drawable/layout_border">
 
         <TextView
             android:id="@+id/day_schedule_notifications_text"
@@ -37,24 +37,23 @@
             android:paddingBottom="10dp"
             android:paddingLeft="20dp"
             android:paddingTop="20dp"
-            android:textSize="16sp"
+            android:text="@string/notifications_day_schedule"
             android:textColor="@color/white"
-            android:text="@string/notifications_day_schedule" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/day_schedule_notifications_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="20dp"
             android:layout_below="@id/day_schedule_notifications_text"
             android:paddingBottom="10dp"
-            android:textSize="12sp"
+            android:paddingLeft="20dp"
+            android:text="@string/notifications_day_schedule_description"
             android:textColor="@color/white"
-            android:text="@string/notifications_day_schedule_description" />
+            android:textSize="12sp" />
 
         <Switch
             android:id="@+id/day_schedule_notifications_button"
-            android:theme="@style/SwitchCompatTheme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -63,7 +62,8 @@
             android:paddingRight="20dp"
             android:paddingTop="30dp"
             android:scaleX="1.2"
-            android:scaleY="1.2" />
+            android:scaleY="1.2"
+            android:theme="@style/SwitchCompatTheme" />
     </RelativeLayout>
 
 </RelativeLayout>

@@ -5,10 +5,6 @@ import org.pl.android.drively.ui.base.MvpView;
 
 import java.util.List;
 
-/**
- * Created by Wojtek on 2017-10-21.
- */
-
 public interface EventsMvpView extends MvpView {
 
 

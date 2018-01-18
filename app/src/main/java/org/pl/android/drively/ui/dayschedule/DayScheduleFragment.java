@@ -32,16 +32,13 @@ import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.HorizontalCalendarListener;
 import devs.mulham.horizontalcalendar.HorizontalCalendarView;
 
-/**
- * Created by Wojtek on 2017-10-21.
- */
-
 public class DayScheduleFragment extends Fragment implements DayScheduleMvpView {
 
     @Inject
     DaySchedulePresenter mDaySchedulePresenter;
 
-    @Inject DayScheduleAdapter mDayScheduleAdapter;
+    @Inject
+    DayScheduleAdapter mDayScheduleAdapter;
 
     @BindView(R.id.recycler_view_day_schedule)
     RecyclerView mDayScheduleRecycler;
@@ -52,7 +49,7 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
     Date today;
     SkeletonScreen skeletonScreen;
     HorizontalCalendar horizontalCalendar;
-    
+
     public static DayScheduleFragment newInstance() {
         DayScheduleFragment fragment = new DayScheduleFragment();
         return fragment;
@@ -82,11 +79,11 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
                 .startDate(startDate.getTime())
                 .endDate(endDate.getTime())
                 .datesNumberOnScreen(5)   // Number of Dates cells shown on screen (Recommended 5)
-                .dayNameFormat("EEE")	  // WeekDay text format
+                .dayNameFormat("EEE")      // WeekDay text format
                 .dayNumberFormat("dd")// Date format
-                .monthFormat("MMM") 	  // Month format
-                .showDayName(true)	  // Show or Hide dayName text
-                .showMonthName(false)	  // Show or Hide month text
+                .monthFormat("MMM")      // Month format
+                .showDayName(true)      // Show or Hide dayName text
+                .showMonthName(false)      // Show or Hide month text
                 .defaultSelectedDate(today)  // Date to be seleceted at start (default to Today)
                 .build();
 
@@ -119,12 +116,14 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
         skeletonScreen = Skeleton.bind(mDayScheduleRecycler)
                 .adapter(mDayScheduleAdapter)
                 .shimmer(true)
-                .angle(20)
+                .load(R.layout.item_skeleton_day_schedule)
+                .color(R.color.primary_dark)
+                .angle(10)
                 .duration(1200)
-                .count(10).show();
+                .count(1).show();
+
         return fragmentView;
     }
-
 
     @Override
     public void onStart() {
@@ -167,6 +166,6 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
     public void onSuccessDelete(Event event) {
         mDayScheduleAdapter.deleteEvent(event);
         mDayScheduleAdapter.notifyDataSetChanged();
-        Toast.makeText(getActivity(),getResources().getString(R.string.delete_day_schedule), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), getResources().getString(R.string.delete_day_schedule), Toast.LENGTH_SHORT).show();
     }
 }

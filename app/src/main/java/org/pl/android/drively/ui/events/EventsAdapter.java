@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 import org.joda.time.DateTime;
 import org.joda.time.Minutes;
 import org.pl.android.drively.R;
@@ -28,12 +27,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHolder> {
+    DateTime currentDateTime;
+    @Inject
+    EventsPresenter mEventsPresenter;
     private List<Event> mEvents;
     private Context mContext;
-    DateTime currentDateTime;
-
-
-    @Inject EventsPresenter mEventsPresenter;
 
     @Inject
     public EventsAdapter(@ActivityContext Context context) {
@@ -53,35 +51,35 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
     public void onBindViewHolder(final EventsHolder holder, final int position) {
         Event event = mEvents.get(position);
         holder.nameTextView.setText(event.getTitle());
-        if(event.getPlace() != null) {
-            if(event.getPlace().getName() != null) {
-               holder.addressNameTextView.setText(event.getPlace().getName());
-           }
-            if(event.getPlace().getAddress() != null) {
-               holder.addressTextView.setText(event.getPlace().getAddress()+", "+event.getPlace().getCity());
+        if (event.getPlace() != null) {
+            if (event.getPlace().getName() != null) {
+                holder.addressNameTextView.setText(event.getPlace().getName());
+            }
+            if (event.getPlace().getAddress() != null) {
+                holder.addressTextView.setText(event.getPlace().getAddress() + ", " + event.getPlace().getCity());
             }
         }
-        if(event.getEndTime() != null) {
-            holder.timeTextView.setText(event.getEndTime().getHours()+":"+String.format("%02d",event.getEndTime().getMinutes()));
+        if (event.getEndTime() != null) {
+            holder.timeTextView.setText(event.getEndTime().getHours() + ":" + String.format("%02d", event.getEndTime().getMinutes()));
         }
         holder.maybeTextView.setText(String.valueOf(event.getRank()));
         holder.addButton.setTag(0);
-        if(event.getRank() == 1) {
+        if (event.getRank() == 1) {
             holder.imageCount.setImageResource(R.drawable.ranking_1_24dp);
-        }  else if(event.getRank() == 2) {
+        } else if (event.getRank() == 2) {
             holder.imageCount.setImageResource(R.drawable.ranking_2_24dp);
-        } else if(event.getRank() == 3) {
+        } else if (event.getRank() == 3) {
             holder.imageCount.setImageResource(R.drawable.ranking_3_24dp);
-        } else if(event.getRank() == 4) {
+        } else if (event.getRank() == 4) {
             holder.imageCount.setImageResource(R.drawable.ranking_4_24dp);
         } else {
             holder.imageCount.setImageResource(R.drawable.ranking_5_24dp);
         }
 
-        if(Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() < 30) {
+        if (Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() < 30) {
             holder.addButton.setImageResource(R.drawable.go_now_24dp);
             holder.addButton.setTag(1);
-        }  else if(mEventsPresenter.getDayScheduleList().contains(event)) {
+        } else if (mEventsPresenter.getDayScheduleList().contains(event)) {
             holder.addButton.setImageResource(R.drawable.ringing_bell_24dp);
             holder.addButton.setEnabled(false);
         }
@@ -89,7 +87,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         holder.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if((int)view.getTag() == 1){
+                if ((int) view.getTag() == 1) {
                     Uri gmmIntentUri = Uri.parse("google.navigation:q=" + String.valueOf(event.getPlace().getGeoPoint().getLatitude()) + "," +
                             String.valueOf(event.getPlace().getGeoPoint().getLongitude()));
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
@@ -104,7 +102,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
                 }
             }
         });
-
 
 
     }
@@ -133,11 +130,16 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
 
         @BindView(R.id.imageCount)
         ImageView imageCount;
-        @BindView(R.id.text_name) TextView nameTextView;
-        @BindView(R.id.text_address_name) TextView addressNameTextView;
-        @BindView(R.id.text_address) TextView addressTextView;
-        @BindView(R.id.viewTextTime) TextView timeTextView;
-        @BindView(R.id.viewTextMaybe) TextView maybeTextView;
+        @BindView(R.id.text_name)
+        TextView nameTextView;
+        @BindView(R.id.text_address_name)
+        TextView addressNameTextView;
+        @BindView(R.id.text_address)
+        TextView addressTextView;
+        @BindView(R.id.viewTextTime)
+        TextView timeTextView;
+        @BindView(R.id.viewTextMaybe)
+        TextView maybeTextView;
         @BindView(R.id.addButton)
         FloatingActionButton addButton;
 
@@ -147,7 +149,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         }
 
     }
-
 
 
 }

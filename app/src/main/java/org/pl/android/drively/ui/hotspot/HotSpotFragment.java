@@ -97,17 +97,13 @@ import timber.log.Timber;
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static org.pl.android.drively.util.RxUtil.dispose;
 
-/**
- * Created by Wojtek on 2017-10-21.
- */
+public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapLongClickListener,
+        AdapterView.OnItemSelectedListener, RoutingListener, GeoQueryEventListener, AAH_FabulousFragment.Callbacks {
 
-public class HotSpotFragment extends Fragment  implements HotSpotMvpView, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapLongClickListener,
-        AdapterView.OnItemSelectedListener,RoutingListener,GeoQueryEventListener, AAH_FabulousFragment.Callbacks {
-
-
+    private static final int[] COLORS = new int[]{R.color.primary_dark, R.color.primary, R.color.primary_light, R.color.accent, R.color.primary_dark_material_light};
+    private final static int REQUEST_CHECK_SETTINGS = 0;
     @BindView(R.id.mapView)
     MapView mMapView;
-
     @BindView(R.id.text_place_address)
     TextView mTextPlaceAddress;
     @BindView(R.id.text_place_distance)
@@ -128,44 +124,37 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     FloatingActionButton plusButton;
     @BindView(R.id.fab_my_location)
     FloatingActionButton myLocatioButton;
-
-
     BottomSheetBehavior mBottomSheetBehavior;
-
-    private GoogleMap googleMap;
-    private ReactiveLocationProvider locationProvider;
     RxPermissions rxPermissions;
-    private Observable<Location> locationUpdatesObservable;
-    private Observable<Location> lastKnownLocationObservable;
-    private Observable<ActivityRecognitionResult> activityObservable;
-    private Observable<String> addressObservable;
-
-    private Disposable lastKnownLocationDisposable;
-    private Disposable updatableLocationDisposable;
-    private Disposable activityDisposable;
-    private Disposable addressDisposable;
-
-    private List<Polyline> polylines;
-    LatLng latLngCurrent,latLngEnd;
-    String  sEventName,sEventCount;
-    private static final int[] COLORS = new int[]{R.color.primary_dark,R.color.primary,R.color.primary_light,R.color.accent,R.color.primary_dark_material_light};
+    LatLng latLngCurrent, latLngEnd;
+    String sEventName, sEventCount;
     GeoFire geoFire;
     GeoQuery geoQuery;
-    private ClusterManager<ClusterItemGoogleMap> mClusterManager;
-    private HashMap<String,ClusterItemGoogleMap> eventsOnMap = new HashMap<>();
     MyFabFragment dialogFrag;
     boolean isFirstAfterPermissionGranted = true;
-    int durationInSec,distanceValue;
+    int durationInSec, distanceValue;
     LatLng locationGeo;
     int radius = 10;
     double latNotification;
     double lngNotification;
     boolean isFromNotification = false;
-    String notificationName,notificationCount;
-    private final static int REQUEST_CHECK_SETTINGS = 0;
+    String notificationName, notificationCount;
+    @Inject
+    HotSpotPresenter mHotspotPresenter;
+    private GoogleMap googleMap;
+    private ReactiveLocationProvider locationProvider;
+    private Observable<Location> locationUpdatesObservable;
+    private Observable<Location> lastKnownLocationObservable;
+    private Observable<ActivityRecognitionResult> activityObservable;
+    private Observable<String> addressObservable;
+    private Disposable lastKnownLocationDisposable;
+    private Disposable updatableLocationDisposable;
+    private Disposable activityDisposable;
+    private Disposable addressDisposable;
+    private List<Polyline> polylines;
+    private ClusterManager<ClusterItemGoogleMap> mClusterManager;
+    private HashMap<String, ClusterItemGoogleMap> eventsOnMap = new HashMap<>();
     private Context context;
-
-    @Inject HotSpotPresenter mHotspotPresenter;
 
     public static HotSpotFragment newInstance() {
         HotSpotFragment fragment = new HotSpotFragment();
@@ -200,15 +189,15 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         dialogFrag = MyFabFragment.newInstance();
         dialogFrag.setParentFab(filterButton);
         dialogFrag.setCallbacks(HotSpotFragment.this);
-      //  setCallbacks((Callbacks) getActivity());
+        //  setCallbacks((Callbacks) getActivity());
         initListeners();
-        if(mHotspotPresenter.getFeedbackBoolean()) {
+        if (mHotspotPresenter.getFeedbackBoolean()) {
             mHotspotPresenter.setFeedbackBoolean(false);
             String name = mHotspotPresenter.getFeedbackValue(Const.NAME);
             String address = mHotspotPresenter.getFeedbackValue(Const.LOCATION_ADDRESS);
             String locationName = mHotspotPresenter.getFeedbackValue(Const.LOCATION_NAME);
             String feedbackId = mHotspotPresenter.getFeedbackValue(Const.FEEDBACK_ID);
-            showFeedBackDialog(name,address,locationName,feedbackId);
+            showFeedBackDialog(name, address, locationName, feedbackId);
         }
 
         try {
@@ -229,41 +218,37 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         return rootView;
     }
 
-    private void showFeedBackDialog(String name, String address, String locationName,String feedBackId) {
+    private void showFeedBackDialog(String name, String address, String locationName, String feedBackId) {
         MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                 .title(R.string.feedback)
+                .backgroundColor(getResources().getColor(R.color.primary_dark))
+                .contentColor(getResources().getColor(R.color.white))
                 .customView(R.layout.dialog_customview, true)
                 .build();
 
-         TextView feedBackTextCustom = (TextView) dialog.getCustomView().findViewById(R.id.feedback_custom_text);
-         feedBackTextCustom.setText(String.format(getString(R.string.feeback_custom_text), name,locationName));
-         TextView feedBackTextNormal = (TextView) dialog.getCustomView().findViewById(R.id.feedback_normal_text);
-         feedBackTextNormal.setText(R.string.feeback_normal_text);
-         Button yesButton = (Button) dialog.getCustomView().findViewById(R.id.yes_work);
-         Button nobutton = (Button) dialog.getCustomView().findViewById(R.id.no_work);
-         Button noDrivebutton = (Button) dialog.getCustomView().findViewById(R.id.no_drive);
-         yesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mHotspotPresenter.sendFeedbackToServer(feedBackId,0);
-                dialog.dismiss();
-            }
+        TextView feedBackTextCustom = (TextView) dialog.getCustomView().findViewById(R.id.feedback_custom_text);
+        feedBackTextCustom.setText(String.format(getString(R.string.feeback_custom_text), name, locationName));
+
+        TextView feedBackTextNormal = (TextView) dialog.getCustomView().findViewById(R.id.feedback_normal_text);
+        feedBackTextNormal.setText(R.string.feeback_normal_text);
+
+        Button yesButton = (Button) dialog.getCustomView().findViewById(R.id.yes_work);
+        Button nobutton = (Button) dialog.getCustomView().findViewById(R.id.no_work);
+        Button noDrivebutton = (Button) dialog.getCustomView().findViewById(R.id.no_drive);
+
+        yesButton.setOnClickListener(v -> {
+            mHotspotPresenter.sendFeedbackToServer(feedBackId, 0);
+            dialog.dismiss();
         });
 
-        nobutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mHotspotPresenter.sendFeedbackToServer(feedBackId,1);
-                dialog.dismiss();
-            }
+        nobutton.setOnClickListener(v -> {
+            mHotspotPresenter.sendFeedbackToServer(feedBackId, 1);
+            dialog.dismiss();
         });
 
-        noDrivebutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mHotspotPresenter.sendFeedbackToServer(feedBackId,2);
-                dialog.dismiss();
-            }
+        noDrivebutton.setOnClickListener(v -> {
+            mHotspotPresenter.sendFeedbackToServer(feedBackId, 2);
+            dialog.dismiss();
         });
 
         dialog.show();
@@ -299,6 +284,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                         break;
                 }
             }
+
             @Override
             public void onSlide(View bottomSheet, float slideOffset) {
 
@@ -309,7 +295,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
             public void onClick(View v) {
                 Uri gmmIntentUri = Uri.parse("google.navigation:q=" + String.valueOf(latLngEnd.latitude) + "," +
                         String.valueOf(latLngEnd.longitude));
-                mHotspotPresenter.setRouteFromDriver(mTextPlaceAddress.getText().toString(),sEventName,durationInSec,distanceValue,locationGeo);
+                mHotspotPresenter.setRouteFromDriver(mTextPlaceAddress.getText().toString(), sEventName, durationInSec, distanceValue, locationGeo);
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
                 if (mapIntent.resolveActivity(getContext().getPackageManager()) != null) {
@@ -321,7 +307,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         mPlaceCloseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(polylines.size()>0) {
+                if (polylines.size() > 0) {
                     for (Polyline poly : polylines) {
                         poly.remove();
                     }
@@ -395,16 +381,14 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                 .observeOn(AndroidSchedulers.mainThread());
         geoFire = new GeoFire(mHotspotPresenter.getHotSpotDatabaseRefernce());
         this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radius);
-
-
     }
 
     protected void onLocationPermissionGranted() {
         lastKnownLocationDisposable = lastKnownLocationObservable
-                .map(new Function<Location,LatLng>() {
+                .map(new Function<Location, LatLng>() {
                     @Override
                     public LatLng apply(Location s) {
-                        return new LatLng(s.getLatitude(),s.getLongitude());
+                        return new LatLng(s.getLatitude(), s.getLongitude());
                     }
                 })
                 .subscribe(new Consumer<LatLng>() {
@@ -416,37 +400,37 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                 }, new ErrorHandler());
 
         updatableLocationDisposable = locationUpdatesObservable
-                .map(new Function<Location,LatLng>() {
+                .map(new Function<Location, LatLng>() {
                     @Override
                     public LatLng apply(Location s) {
-                        return new LatLng(s.getLatitude(),s.getLongitude());
+                        return new LatLng(s.getLatitude(), s.getLongitude());
                     }
                 })
                 .subscribe(new Consumer<LatLng>() {
-                               @Override
-                               public void accept(LatLng latLng) throws Exception {
-                                   Timber.d("ON LOCATION UPDATE");
-                                   mHotspotPresenter.setLastLocationLatLng(latLng);
-                                   if (isFirstAfterPermissionGranted) {
-                                       CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 14);
-                                       googleMap.moveCamera(yourLocation);
-                                       isFirstAfterPermissionGranted = false;
-                                   } else {
-                                       CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, googleMap.getCameraPosition().zoom);
-                                       googleMap.moveCamera(yourLocation);
-                                   }
-                                   latLngCurrent = latLng;
-                                   if(isFromNotification) {
-                                       isFromNotification = false;
-                                       route(latLng,new LatLng(latNotification,lngNotification),notificationName,notificationCount);
-                                   }
-                                   geoQuery = geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
-                                   geoQuery.addGeoQueryEventListener(HotSpotFragment.this);
-                                   eventsOnMap.clear();
-                                   mClusterManager.clearItems();
+                    @Override
+                    public void accept(LatLng latLng) throws Exception {
+                        Timber.d("ON LOCATION UPDATE");
+                        mHotspotPresenter.setLastLocationLatLng(latLng);
+                        if (isFirstAfterPermissionGranted) {
+                            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 14);
+                            googleMap.moveCamera(yourLocation);
+                            isFirstAfterPermissionGranted = false;
+                        } else {
+                            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, googleMap.getCameraPosition().zoom);
+                            googleMap.moveCamera(yourLocation);
+                        }
+                        latLngCurrent = latLng;
+                        if (isFromNotification) {
+                            isFromNotification = false;
+                            route(latLng, new LatLng(latNotification, lngNotification), notificationName, notificationCount);
+                        }
+                        geoQuery = geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
+                        geoQuery.addGeoQueryEventListener(HotSpotFragment.this);
+                        eventsOnMap.clear();
+                        mClusterManager.clearItems();
 
-                               }
-                    });
+                    }
+                });
 
         activityDisposable = activityObservable
                 .map(new ToMostProbableActivity())
@@ -458,7 +442,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                     @Override
                     public void accept(String address) throws Exception {
                         mHotspotPresenter.setLastLocation(address);
-                        Timber.d("address "+address);
+                        Timber.d("address " + address);
                     }
                 }, new ErrorHandler());
 
@@ -475,7 +459,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     @Override
     public void onResume() {
         super.onResume();
-        if(mHotspotPresenter.checkLogin() != null) {
+        if (mHotspotPresenter.checkLogin() != null) {
             rxPermissions
                     .request(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
                     .subscribe((Boolean granted) -> {
@@ -488,7 +472,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                     googleMap = mMap;
                                     boolean success = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style));
 
-                                    if(!success)
+                                    if (!success)
                                         Timber.i("Map style was not loaded");
 
                                     // For showing a move to my location button
@@ -503,7 +487,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                             return true;
                                         }
                                     });*/
-                                    if(mClusterManager ==  null) {
+                                    if (mClusterManager == null) {
                                         mClusterManager = new ClusterManager<ClusterItemGoogleMap>(getContext(), googleMap);
                                         mClusterManager.setRenderer(new MapRenderer());
                                         mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<ClusterItemGoogleMap>() {
@@ -534,7 +518,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                                     googleMap = mMap;
                                     boolean success = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style));
 
-                                    if(!success)
+                                    if (!success)
                                         Timber.i("Map style was not loaded");
                                 }
                             });
@@ -546,23 +530,26 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
 
     @OnClick(R.id.fab)
     public void submit(View view) {
-        if(!dialogFrag.isAdded()) {
+        if (!dialogFrag.isAdded()) {
             dialogFrag.show(getActivity().getSupportFragmentManager(), dialogFrag.getTag());
         }
 
     }
+
     @OnClick(R.id.fab_my_location)
     public void myLocation(View view) {
-        if(latLngCurrent != null) {
+        if (latLngCurrent != null) {
             CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLngCurrent, 14);
             mHotspotPresenter.setLastLocationLatLng(latLngCurrent);
             googleMap.moveCamera(yourLocation);
         }
     }
+
     @OnClick(R.id.fab_minus)
     public void zoomOut(View view) {
         googleMap.animateCamera(CameraUpdateFactory.zoomOut());
     }
+
     @OnClick(R.id.fab_plus)
     public void szoomIn(View view) {
         googleMap.animateCamera(CameraUpdateFactory.zoomIn());
@@ -602,9 +589,9 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
 
     @Override
     public void onRoutingFailure(RouteException e) {
-        if(e != null) {
+        if (e != null) {
             Toast.makeText(getActivity(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        }else {
+        } else {
             Toast.makeText(getActivity(), "Something went wrong, Try again", Toast.LENGTH_SHORT).show();
         }
     }
@@ -622,7 +609,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         googleMap.moveCamera(center);
 
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        if(polylines.size()>0) {
+        if (polylines.size() > 0) {
             for (Polyline poly : polylines) {
                 poly.remove();
             }
@@ -631,7 +618,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         polylines = new ArrayList<>();
         //add route(s) to the map.
 
-        for (int i = 0; i <route.size(); i++) {
+        for (int i = 0; i < route.size(); i++) {
             PolylineOptions polyOptions = new PolylineOptions();
             polyOptions.color(getResources().getColor(R.color.filters_buttons));
             polyOptions.width(10 + i * 3);
@@ -648,16 +635,16 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         }
 
         // Start marker
-      //  MarkerOptions options = new MarkerOptions();
-      //  options.position(start);
+        //  MarkerOptions options = new MarkerOptions();
+        //  options.position(start);
         //options.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_calendar_plus));
-      //  googleMap.addMarker(options);
+        //  googleMap.addMarker(options);
 
         // End marker
-       // MarkerOptions options = new MarkerOptions();
-     //   options.position(latLngEnd);
-       // options.icon(BitmapDescriptorFactory.fromBitmap(bmp));
-       // googleMap.addMarker(options);
+        // MarkerOptions options = new MarkerOptions();
+        //   options.position(latLngEnd);
+        // options.icon(BitmapDescriptorFactory.fromBitmap(bmp));
+        // googleMap.addMarker(options);
     }
 
     @Override
@@ -698,9 +685,9 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     @Override
     public void showEventOnMap(Event event) {
         Timber.d(event.getTitle());
-        if(!eventsOnMap.containsKey(event.getId()) && event.getPlace() != null && event.getPlace().getGeoPoint() != null) {
-            ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(),new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()),event.getTitle(),String.valueOf(event.getRank()),event.getHotspotType(),R.drawable.hotspot_24dp);
-            eventsOnMap.put(event.getId(),clusterItemGoogleMap);
+        if (!eventsOnMap.containsKey(event.getId()) && event.getPlace() != null && event.getPlace().getGeoPoint() != null) {
+            ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(), new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()), event.getTitle(), String.valueOf(event.getRank()), event.getHotspotType(), R.drawable.hotspot_24dp);
+            eventsOnMap.put(event.getId(), clusterItemGoogleMap);
             mClusterManager.addItem(clusterItemGoogleMap);
         }
     }
@@ -708,9 +695,9 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     @Override
     public void showFoursquareOnMap(FourSquarePlace fourSquarePlace) {
         Timber.d(fourSquarePlace.getName());
-        if(!eventsOnMap.containsKey(fourSquarePlace.getId())) {
-           int picture = R.drawable.people;
-            if(fourSquarePlace.getMainCategory().equals("NIGHTLIFE SPOT")) {
+        if (!eventsOnMap.containsKey(fourSquarePlace.getId())) {
+            int picture = R.drawable.people;
+            if (fourSquarePlace.getMainCategory().equals("NIGHTLIFE SPOT")) {
                 picture = R.drawable.category_nightlife_spot_24dp;
             } else if (fourSquarePlace.getMainCategory().equals("OUTDOORS & RECREATION")) {
                 picture = R.drawable.category_outdoor_24dp;
@@ -726,20 +713,20 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                 picture = R.drawable.category_food_24dp;
             } else if (fourSquarePlace.getMainCategory().equals("RESIDENCE")) {
                 picture = R.drawable.category_residence_24dp;
-            }  else if (fourSquarePlace.getMainCategory().equals("SHOP & SERVICE")) {
+            } else if (fourSquarePlace.getMainCategory().equals("SHOP & SERVICE")) {
                 picture = R.drawable.category_shop_24dp;
             }
-            ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(fourSquarePlace.getId(), new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()), fourSquarePlace.getName(), String.valueOf(fourSquarePlace.getStatsVisitsCount()), fourSquarePlace.getHotspotType(),picture);
+            ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(fourSquarePlace.getId(), new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()), fourSquarePlace.getName(), String.valueOf(fourSquarePlace.getStatsVisitsCount()), fourSquarePlace.getHotspotType(), picture);
             eventsOnMap.put(fourSquarePlace.getId(), clusterItemGoogleMap);
-            if(mClusterManager != null)
+            if (mClusterManager != null)
                 mClusterManager.addItem(clusterItemGoogleMap);
         }
     }
 
     @Override
     public void clusterMap() {
-        if(mClusterManager != null) {
-            Timber.i("Cluster size from presenter" +mClusterManager.getAlgorithm().getItems().size());
+        if (mClusterManager != null) {
+            Timber.i("Cluster size from presenter" + mClusterManager.getAlgorithm().getItems().size());
             mClusterManager.cluster();
         }
     }
@@ -758,7 +745,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     @Override
     public void onKeyExited(String key) {
         Timber.i(String.format("Key %s is no longer in the search area", key));
-        if(eventsOnMap.containsKey(key)) {
+        if (eventsOnMap.containsKey(key)) {
             mClusterManager.removeItem((ClusterItemGoogleMap) eventsOnMap.get(key));
             eventsOnMap.remove(key);
         }
@@ -767,8 +754,8 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
     @Override
     public void onKeyMoved(String key, GeoLocation location) {
         Timber.i(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
-        if(eventsOnMap.containsKey(key)) {
-            Timber.i( "Old Location: " + eventsOnMap.get(key).getPosition());
+        if (eventsOnMap.containsKey(key)) {
+            Timber.i("Old Location: " + eventsOnMap.get(key).getPosition());
             Timber.i("New Location: " + location);
             mClusterManager.removeItem(eventsOnMap.get(key));
             eventsOnMap.get(key).setPosition(new LatLng(location.latitude, location.longitude));
@@ -805,13 +792,13 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                     //iterate over arraymap
                     for (Map.Entry<String, List<String>> entry : applied_filters.entrySet()) {
                         Log.d("k9res", "entry.key: " + entry.getKey());
-                        if(entry.getValue().contains(getResources().getString(R.string.events_filtr))){
+                        if (entry.getValue().contains(getResources().getString(R.string.events_filtr))) {
                             mHotspotPresenter.addItemToFilterList(Const.HotSpotType.EVENT);
                         }
-                        if(entry.getValue().contains(getResources().getString(R.string.popular_places))) {
+                        if (entry.getValue().contains(getResources().getString(R.string.popular_places))) {
                             mHotspotPresenter.addItemToFilterList(Const.HotSpotType.FOURSQUARE_PLACE);
                         }
-                        if(entry.getValue().contains(getResources().getString(R.string.uber_ratio))) {
+                        if (entry.getValue().contains(getResources().getString(R.string.uber_ratio))) {
                             mHotspotPresenter.addItemToFilterList(Const.HotSpotType.UBER_MULTIPLIER);
                           /*  for(ClusterItemGoogleMap item : eventsOnMap.values()) {
                                 if(item.getType().equals(Const.HotSpotType.UBER_MULTIPLIER)) {
@@ -820,7 +807,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
                             }*/
                         }
                     }
-                   // this.geoQuery.setLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), 3);
+                    // this.geoQuery.setLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), 3);
 
                 } else {
 
@@ -828,7 +815,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
             }
         }
 
-        if(latLngCurrent == null) return;
+        if (latLngCurrent == null) return;
 
         this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
         this.geoQuery.addGeoQueryEventListener(this);
@@ -837,16 +824,7 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         mClusterManager.clearItems();
     }
 
-    private class ErrorHandler implements Consumer<Throwable> {
-        @Override
-        public void accept(Throwable throwable) {
-            Toast.makeText(getApplicationContext(), "Error occurred.", Toast.LENGTH_SHORT).show();
-            Log.d("MainActivity", "Error occurred", throwable);
-        }
-    }
-
-    public void route(LatLng start,LatLng end,String eventName,String eventCount)
-    {
+    public void route(LatLng start, LatLng end, String eventName, String eventCount) {
         sEventName = eventName;
         sEventCount = eventCount;
         latLngEnd = end;
@@ -858,6 +836,13 @@ public class HotSpotFragment extends Fragment  implements HotSpotMvpView, Google
         routing.execute();
     }
 
+    private class ErrorHandler implements Consumer<Throwable> {
+        @Override
+        public void accept(Throwable throwable) {
+            Toast.makeText(getApplicationContext(), "Error occurred.", Toast.LENGTH_SHORT).show();
+            Log.d("MainActivity", "Error occurred", throwable);
+        }
+    }
 
     private class MapRenderer extends DefaultClusterRenderer<ClusterItemGoogleMap> {
         private final IconGenerator mIconGenerator = new IconGenerator(getApplicationContext());

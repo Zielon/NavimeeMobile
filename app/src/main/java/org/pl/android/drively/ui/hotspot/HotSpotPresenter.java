@@ -1,14 +1,8 @@
 package org.pl.android.drively.ui.hotspot;
 
-import android.annotation.SuppressLint;
-import android.support.annotation.Nullable;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 
 import org.pl.android.drively.data.DataManager;
@@ -26,10 +20,6 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import timber.log.Timber;
-
-/**
- * Created by Wojtek on 2017-10-28.
- */
 
 public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
 
@@ -75,53 +65,48 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
     }
 
     public String getUid() {
-       return mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+        return mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
     }
 
-    public void loadHotSpotPlace(String key){
+    public void loadHotSpotPlace(String key) {
         hotspotKeyList.add(key);
-        mListener =  mDataManager.getFirebaseService().getFirebaseFirestore().collection("HOTSPOT").document(key).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @SuppressLint("TimberArgCount")
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot snapshot,
-                                @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Timber.e( "Listen failed.", e);
-                    return;
-                }
-                hotspotKeyList.remove(key);
-                if (snapshot != null && snapshot.exists()) {
-                   // Timber.d("Current data: " + snapshot.getData());
-                    if(snapshot.get("hotspotType").equals(Const.HotSpotType.EVENT.name()) && (filterList.contains(Const.HotSpotType.EVENT) || filterList.isEmpty())) {
-                        if (getMvpView() != null) {
-                            getMvpView().showEventOnMap(snapshot.toObject(Event.class));
-                        }
-                    } else if(snapshot.get("hotspotType").equals(Const.HotSpotType.FOURSQUARE_PLACE.name()) && (filterList.contains(Const.HotSpotType.FOURSQUARE_PLACE) || filterList.isEmpty())) {
-                        if (getMvpView() != null) {
-                            getMvpView().showFoursquareOnMap(snapshot.toObject(FourSquarePlace.class));
-                        }
+        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("HOTSPOT").document(key).addSnapshotListener((snapshot, e) -> {
+            if (e != null) {
+                Timber.e("Listen failed.", e);
+                return;
+            }
+            hotspotKeyList.remove(key);
+            if (snapshot != null && snapshot.exists()) {
+                // Timber.d("Current data: " + snapshot.getData());
+                if (snapshot.get("hotspotType").equals(Const.HotSpotType.EVENT.name()) && (filterList.contains(Const.HotSpotType.EVENT) || filterList.isEmpty())) {
+                    if (getMvpView() != null) {
+                        getMvpView().showEventOnMap(snapshot.toObject(Event.class));
                     }
-
+                } else if (snapshot.get("hotspotType").equals(Const.HotSpotType.FOURSQUARE_PLACE.name()) && (filterList.contains(Const.HotSpotType.FOURSQUARE_PLACE) || filterList.isEmpty())) {
+                    if (getMvpView() != null) {
+                        getMvpView().showFoursquareOnMap(snapshot.toObject(FourSquarePlace.class));
+                    }
                 }
 
-                if(hotspotKeyList.isEmpty()) {
-                    if(getMvpView() != null) {
-                        getMvpView().clusterMap();
-                    }
+            }
+
+            if (hotspotKeyList.isEmpty()) {
+                if (getMvpView() != null) {
+                    getMvpView().clusterMap();
                 }
             }
         });
     }
 
-    public void setRouteFromDriver(String locationAddress,String locationName,int durationInSec, int distanceValue,LatLng latLng) {
+    public void setRouteFromDriver(String locationAddress, String locationName, int durationInSec, int distanceValue, LatLng latLng) {
         HashMap<String, Object> feedBackObject = new HashMap<>();
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
         feedBackObject.put("userId", userId);
         feedBackObject.put("locationAddress", locationAddress);
         feedBackObject.put("locationName", locationName);
-        feedBackObject.put("durationInSec",durationInSec);
-        feedBackObject.put("distance",distanceValue);
-        feedBackObject.put("geoPoint",latLng);
+        feedBackObject.put("durationInSec", durationInSec);
+        feedBackObject.put("distance", distanceValue);
+        feedBackObject.put("geoPoint", latLng);
         mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child("FEEDBACK").push().setValue(feedBackObject);
     }
 
@@ -138,7 +123,7 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
     }
 
     public void setFeedbackBoolean(boolean var) {
-        mDataManager.getPreferencesHelper().setValue(Const.IS_FEEDBACK,var);
+        mDataManager.getPreferencesHelper().setValue(Const.IS_FEEDBACK, var);
     }
 
     public String getFeedbackValue(String name) {
@@ -158,6 +143,4 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
     public void clearFilterList() {
         filterList.clear();
     }
-
-
 }
