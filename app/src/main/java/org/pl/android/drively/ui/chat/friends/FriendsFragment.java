@@ -18,7 +18,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.InputType;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,15 +33,15 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.yarolegovich.lovelydialog.LovelyInfoDialog;
 import com.yarolegovich.lovelydialog.LovelyProgressDialog;
-import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.chat.Friend;
 import org.pl.android.drively.data.model.chat.ListFriend;
-import org.pl.android.drively.data.model.chat.User;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.ui.chat.data.FriendDB;
+import org.pl.android.drively.ui.chat.friendsearch.FriendModel;
+import org.pl.android.drively.ui.chat.friendsearch.FriendSearchDialogCompat;
 import org.pl.android.drively.util.Const;
 
 import java.text.SimpleDateFormat;
@@ -51,17 +50,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
-import ir.mirrajabi.searchdialog.SimpleSearchDialogCompat;
-import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
-import ir.mirrajabi.searchdialog.core.SearchResultListener;
+import ir.mirrajabi.searchdialog.core.BaseFilter;
 import ir.mirrajabi.searchdialog.core.Searchable;
 import timber.log.Timber;
 
@@ -205,38 +200,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     }
 
-    @Override
-    public void userNotFound() {
-        new LovelyInfoDialog(getContext())
-                .setTopColorRes(R.color.colorAccent)
-                .setIcon(R.drawable.ic_add_friend)
-                .setTitle("Fail")
-                .setMessage("Email not found")
-                .show();
-    }
-
-
-    @Override
-    public void userFound(User user) {
-        if (user.id.equals(Const.UID)) {
-            new LovelyInfoDialog(getContext())
-                    .setTopColorRes(R.color.colorAccent)
-                    .setIcon(R.drawable.ic_add_friend)
-                    .setTitle("Fail")
-                    .setMessage("Email not valid")
-                    .show();
-        } else {
-            Friend friend = new Friend();
-            friend.name = user.name;
-            friend.email = user.email;
-            friend.avata = user.avata;
-            friend.id = user.id;
-            friend.idRoom = user.id.compareTo(mFriendsPresenter.getId()) > 0 ? (mFriendsPresenter.getId() + user.id).hashCode() + "" : "" + (user.id + mFriendsPresenter.getId()).hashCode();
-            checkBeforAddFriend(user.id, friend);
-        }
-    }
-
-
     private void checkBeforAddFriend(final String idFriend, Friend userInfo) {
         dialogWait.setCancelable(false)
                 .setIcon(R.drawable.ic_add_friend)
@@ -262,11 +225,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         }
     }
 
-    /**
-     * Add friend
-     *
-     * @param idFriend
-     */
     private void addFriend(final String idFriend, boolean isIdFriend) {
         if (idFriend != null) {
             if (isIdFriend) {
@@ -333,21 +291,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 .show();
     }
 
-
-    /**
-     * TIm id cua email tren server
-     *
-     * @param email
-     */
-    private void findIDEmail(String email) {
-        dialogWait.setCancelable(false)
-                .setIcon(R.drawable.ic_add_friend)
-                .setTitle("Finding friend....")
-                .setTopColorRes(R.color.colorPrimary)
-                .show();
-        mFriendsPresenter.findByEmail(email);
-    }
-
     public class FragFriendClickFloatButton implements View.OnClickListener {
         Context context;
 
@@ -380,33 +323,47 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         @Override
         public void onClick(final View view) {
 
-            ArrayList<SampleSearchModel> items = new ArrayList<>();
+            FriendSearchDialogCompat<FriendModel> searchDialogCompat =
+                    new FriendSearchDialogCompat<>(view.getContext(), "Find friends...",
+                    "What are you looking for...?", null, new ArrayList<>(),
+                    (dialog, item, position) -> {
+                        Toast.makeText(view.getContext(), item.getTitle(),
+                                Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    });
 
-            items.add(new SampleSearchModel("First item"));
-            items.add(new SampleSearchModel("Second item"));
-            items.add(new SampleSearchModel("Third item"));
-            items.add(new SampleSearchModel("The ultimate item"));
-            items.add(new SampleSearchModel("Last item"));
-            items.add(new SampleSearchModel("Lorem ipsum"));
-            items.add(new SampleSearchModel("Dolor sit"));
-            items.add(new SampleSearchModel("Some random word"));
-            items.add(new SampleSearchModel("guess who's back"));
+            BaseFilter apiFilter = new BaseFilter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence charSequence) {
+                    doBeforeFiltering();
+                    FilterResults results = new FilterResults();
+                    results.values = new ArrayList<FriendModel>();
+                    results.count = 0;
 
-            new SimpleSearchDialogCompat(view.getContext(), "Search...",
-                    "What are you looking for...?", null, items,
-                    new SearchResultListener<SampleSearchModel>() {
-                        @Override
-                        public void onSelected(BaseSearchDialogCompat dialog, SampleSearchModel item, int position) {
-                            Toast.makeText(view.getContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                        }
-                    }).show();
+                    ArrayList<FriendModel> users = new ArrayList<>();
+                    if(users != null) {
+                        results.values = users;
+                        results.count = users.size();
+                    }
+                    return results;
+                }
+
+                @Override
+                protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                    if(filterResults != null) {
+                        ArrayList<FriendModel> filtered = (ArrayList<FriendModel>) filterResults.values;
+                        if(filtered != null)
+                            searchDialogCompat.getFilterResultListener().onFilter(filtered);
+                        doAfterFiltering();
+                    }
+                }
+            };
+
+            searchDialogCompat.setFilter(apiFilter);
+            searchDialogCompat.show();
         }
     }
 
-    /**
-     * Lay danh sach ban be tren server
-     */
     private void getListFriendUId() {
         mFriendsPresenter.getListFriendUId();
     }
@@ -423,10 +380,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         dialogFindAllFriend.dismiss();
     }
 
-
-    /**
-     * Truy cap bang user lay thong tin id nguoi dung
-     */
     private void getAllFriendInfo(final int index) {
         if (index == listFriendID.size()) {
             //save list friend
@@ -452,8 +405,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 }
 
 class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-
 
     private ListFriend listFriend;
     private Context context;
@@ -517,7 +468,6 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     }
                 });
 
-        //nhấn giữ để xóa bạn
         ((View) ((ItemFriendViewHolder) holder).txtName.getParent().getParent().getParent())
                 .setOnLongClickListener(new View.OnLongClickListener() {
                     @Override

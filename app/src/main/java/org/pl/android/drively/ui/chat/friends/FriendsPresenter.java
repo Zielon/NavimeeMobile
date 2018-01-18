@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -35,9 +36,6 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-/**
- * Created by Wojtek on 2018-01-11.
- */
 public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
 
     private final DataManager mDataManager;
@@ -102,28 +100,12 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         }
     }
 
-    public void findByEmail(String email) {
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").whereEqualTo("email", email).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (DocumentSnapshot document : task.getResult()) {
-                        for (DocumentSnapshot documentSnapshot : task.getResult().getDocuments()) {
-                            User user = documentSnapshot.toObject(User.class);
-                            if (getMvpView() != null) {
-                                getMvpView().userFound(user);
-                            }
-                            break;
-                        }
-                    }
-                } else {
-                    if (getMvpView() != null) {
-                        getMvpView().userNotFound();
-                    }
+    public void findFriend(String stringQuery) {
 
-                }
-            }
-        });
+        CollectionReference usersReference = mDataManager.getFirebaseService()
+                .getFirebaseFirestore().collection("USERS");
+
+        usersReference.whereGreaterThanOrEqualTo("name", stringQuery).addSnapshotListener((documentSnapshots, e) -> {});
     }
 
     public void getAllFriendInfo(int index, String id) {
@@ -146,8 +128,6 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
 
         });
     }
-
-
 
     public void getListFriendUId() {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
