@@ -174,6 +174,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         mFriendsPresenter.detachView();
         detectFriendOnline.cancel();
         FriendDB.getInstance(getContext()).dropDB();
+        listFriendID = null;
         getContext().unregisterReceiver(deleteFriendReceiver);
     }
 

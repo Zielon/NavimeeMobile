@@ -65,12 +65,14 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
 
     public void updateUserStatus() {
         if (NetworkUtil.isNetworkConnected(mContext)) {
-            String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-            if (!userId.equals("")) {
-                Map<String, Object> data = new HashMap<>();
-                data.put("isOnline", true);
-                data.put("timestamp", System.currentTimeMillis());
-                mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).update(data);
+            if(mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() != null) {
+                String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+                if (!userId.equals("")) {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("isOnline", true);
+                    data.put("timestamp", System.currentTimeMillis());
+                    mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).update(data);
+                }
             }
         }
     }
@@ -162,14 +164,11 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                                 return;
                             }
                             for (DocumentSnapshot document : task.getResult()) {
-                                for (DocumentSnapshot documentSnapshot : task.getResult().getDocuments()) {
-                                    friends.add(documentSnapshot.get("id"));
-                                }
-                                if (getMvpView() != null) {
-                                    getMvpView().listFriendFound(friends);
-                                    friends.clear();
-                                }
-
+                                    friends.add(document.get("id"));
+                            }
+                            if (getMvpView() != null) {
+                                getMvpView().listFriendFound(friends);
+                                friends.clear();
                             }
                         } else {
                             if (getMvpView() != null) {
