@@ -154,6 +154,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                     if(idDeleted.equals(friend.id)){
                         ArrayList<Friend> friends = dataListFriend.getListFriend();
                         friends.remove(friend);
+                        FriendDB.getInstance(getContext()).deleteFriend(friend);
                         break;
                     }
                 }
@@ -173,7 +174,9 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         super.onDestroyView();
         mFriendsPresenter.detachView();
         detectFriendOnline.cancel();
+        dataListFriend.getListFriend().clear();
         FriendDB.getInstance(getContext()).dropDB();
+        listFriendID = null;
         getContext().unregisterReceiver(deleteFriendReceiver);
     }
 
@@ -268,6 +271,21 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     @Override
     public void onSuccessDeleteFriend(String idFriend) {
+        mFriendsPresenter.deleteFriendReference(idFriend);
+    }
+
+    @Override
+    public void onFailureDeleteFriend() {
+        dialogWaitDeleting.dismiss();
+        new LovelyInfoDialog(getContext())
+                .setTopColorRes(R.color.colorAccent)
+                .setTitle("Error")
+                .setMessage("Error occurred during deleting friend")
+                .show();
+    }
+
+    @Override
+    public void onSuccessDeleteFriendReference(String idFriend) {
         dialogWaitDeleting.dismiss();
 
         new LovelyInfoDialog(getContext())
@@ -279,16 +297,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         Intent intentDeleted = new Intent(FriendsFragment.ACTION_DELETE_FRIEND);
         intentDeleted.putExtra("idFriend", idFriend);
         getContext().sendBroadcast(intentDeleted);
-    }
-
-    @Override
-    public void onFailureDeleteFriend() {
-        dialogWaitDeleting.dismiss();
-        new LovelyInfoDialog(getContext())
-                .setTopColorRes(R.color.colorAccent)
-                .setTitle("Error")
-                .setMessage("Error occurred during deleting friend")
-                .show();
     }
 
     public class FragFriendClickFloatButton implements View.OnClickListener {

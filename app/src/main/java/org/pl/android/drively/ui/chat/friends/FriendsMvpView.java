@@ -25,4 +25,6 @@ public interface FriendsMvpView extends MvpView {
     void onSuccessDeleteFriend(String idFriend);
 
     void onFailureDeleteFriend();
+
+    void onSuccessDeleteFriendReference(String idFriend);
 }

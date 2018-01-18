@@ -79,6 +79,13 @@ public final class FriendDB {
         db.execSQL(SQL_CREATE_ENTRIES);
     }
 
+    public void deleteFriend(Friend friend) {
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        String[] whereArgs = new String[] { String.valueOf(friend.id) };
+        db.delete(FeedEntry.TABLE_NAME,FeedEntry.COLUMN_NAME_ID+"=?",whereArgs);
+
+    }
+
     /* Inner class that defines the table contents */
     public static class FeedEntry implements BaseColumns {
         static final String TABLE_NAME = "friend";

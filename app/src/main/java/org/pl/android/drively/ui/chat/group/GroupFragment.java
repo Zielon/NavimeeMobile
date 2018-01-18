@@ -91,7 +91,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mGroupPresenter.attachView(this);
         ButterKnife.bind(this, layout);
 
-        listGroup = new ArrayList<>();//GroupDB.getInstance(getContext()).getListGroups();
+        listGroup = GroupDB.getInstance(getContext()).getListGroups();
         recyclerListGroups = (RecyclerView) layout.findViewById(R.id.recycleListGroup);
         mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
@@ -336,7 +336,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         @Override
         public void onClick(View view) {
-            startActivity(new Intent(getContext(), AddGroupActivity.class));
+            startActivityForResult( new Intent(getContext(), AddGroupActivity.class),REQUEST_EDIT_GROUP);
         }
     }
 }

@@ -63,12 +63,14 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
 
     public void updateUserStatus() {
         if (NetworkUtil.isNetworkConnected(mContext)) {
-            String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-            if (!userId.equals("")) {
-                Map<String, Object> data = new HashMap<>();
-                data.put("isOnline", true);
-                data.put("timestamp", System.currentTimeMillis());
-                mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).update(data);
+            if(mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() != null) {
+                String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+                if (!userId.equals("")) {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("isOnline", true);
+                    data.put("timestamp", System.currentTimeMillis());
+                    mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).update(data);
+                }
             }
         }
     }
@@ -142,14 +144,11 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                                 return;
                             }
                             for (DocumentSnapshot document : task.getResult()) {
-                                for (DocumentSnapshot documentSnapshot : task.getResult().getDocuments()) {
-                                    friends.add(documentSnapshot.get("id"));
-                                }
-                                if (getMvpView() != null) {
-                                    getMvpView().listFriendFound(friends);
-                                    friends.clear();
-                                }
-
+                                    friends.add(document.get("id"));
+                            }
+                            if (getMvpView() != null) {
+                                getMvpView().listFriendFound(friends);
+                                friends.clear();
                             }
                         } else {
                             if (getMvpView() != null) {
@@ -203,9 +202,6 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                     });
     }
 
-    public String getId() {
-        return mDataManager.getPreferencesHelper().getUID();
-    }
 
     public Query getLastMessage(String idRoom) {
         return mDataManager.getFirebaseService().getFirebaseFirestore().collection("MESSAGES").document(idRoom)
@@ -258,4 +254,50 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                     }
                 });
     }
+
+    public void deleteFriendReference(String idFriend) {
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(idFriend).collection("FRIENDS")
+                .whereEqualTo("id",getId()).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Timber.d( document.getId() + " => " + document.getData());
+                                mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(idFriend).collection("FRIENDS")
+                                        .document(document.getId())
+                                        .delete()
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                if (getMvpView() != null) {
+                                                    getMvpView().onSuccessDeleteFriendReference(idFriend);
+                                                }
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @SuppressLint("TimberArgCount")
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Timber.w("Error deleting document", e);
+                                                if (getMvpView() != null) {
+                                                    getMvpView().onFailureDeleteFriend();
+                                                }
+                                            }
+                                        });
+                            }
+                        } else {
+                            Timber.d("Listen failed");
+                            if (getMvpView() != null) {
+                                getMvpView().onFailureDeleteFriend();
+                            }
+                        }
+                    }
+                });
+    }
+
+    public String getId() {
+        return  mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+    }
+
 }

@@ -154,7 +154,7 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
         room.groupInfo.put("name", editTextGroupName.getText().toString());
         room.groupInfo.put("admin", mAddGroupPresenter.getId());
 
-        FirebaseDatabase.getInstance().getReference().child("group/" + idGroup).setValue(room)
+       /* FirebaseDatabase.getInstance().getReference().child("group/" + idGroup).setValue(room)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -186,7 +186,7 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
                                 .show();
                     }
                 })
-        ;
+        ;*/
     }
 
     private void createGroup() {
@@ -254,7 +254,7 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
                 dialogWait.dismiss();
                 Toast.makeText(this, "Create group success", Toast.LENGTH_SHORT).show();
                 setResult(RESULT_OK, null);
-                AddGroupActivity.this.finish();
+                this.finish();
             } else {
                 deleteRoomForUser(roomId, 0);
             }
