@@ -199,6 +199,7 @@ dependencies {
     // Google Sign In SDK (only required for Google Sign In)
     compile "com.google.android.gms:play-services-auth:$PLAY_SERVICES_VERSION"
 
+    compile 'com.github.mirrajabi:search-dialog:1.2'
 
     compile "com.google.dagger:dagger:$DAGGER_VERSION"
     provided 'org.glassfish:javax.annotation:10.0-b28' //Required by Dagger2

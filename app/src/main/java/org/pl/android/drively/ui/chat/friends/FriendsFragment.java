@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -58,6 +59,10 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
+import ir.mirrajabi.searchdialog.SimpleSearchDialogCompat;
+import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
+import ir.mirrajabi.searchdialog.core.SearchResultListener;
+import ir.mirrajabi.searchdialog.core.Searchable;
 import timber.log.Timber;
 
 public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, FriendsMvpView {
@@ -343,8 +348,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         mFriendsPresenter.findByEmail(email);
     }
 
-
-
     public class FragFriendClickFloatButton implements View.OnClickListener {
         Context context;
 
@@ -356,33 +359,48 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             return this;
         }
 
+        public class SampleSearchModel implements Searchable {
+            private String mTitle;
+
+            public SampleSearchModel(String title) {
+                mTitle = title;
+            }
+
+            @Override
+            public String getTitle() {
+                return mTitle;
+            }
+
+            public SampleSearchModel setTitle(String title) {
+                mTitle = title;
+                return this;
+            }
+        }
+
         @Override
         public void onClick(final View view) {
-            new LovelyTextInputDialog(view.getContext(), R.style.EditTextTintTheme)
-                    .setTopColorRes(R.color.colorPrimary)
-                    .setTitle("Add friend")
-                    .setMessage("Enter friend email")
-                    .setIcon(R.drawable.ic_add_friend)
-                    .setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
-                    .setInputFilter("Email not found", new LovelyTextInputDialog.TextFilter() {
+
+            ArrayList<SampleSearchModel> items = new ArrayList<>();
+
+            items.add(new SampleSearchModel("First item"));
+            items.add(new SampleSearchModel("Second item"));
+            items.add(new SampleSearchModel("Third item"));
+            items.add(new SampleSearchModel("The ultimate item"));
+            items.add(new SampleSearchModel("Last item"));
+            items.add(new SampleSearchModel("Lorem ipsum"));
+            items.add(new SampleSearchModel("Dolor sit"));
+            items.add(new SampleSearchModel("Some random word"));
+            items.add(new SampleSearchModel("guess who's back"));
+
+            new SimpleSearchDialogCompat(view.getContext(), "Search...",
+                    "What are you looking for...?", null, items,
+                    new SearchResultListener<SampleSearchModel>() {
                         @Override
-                        public boolean check(String text) {
-                            Pattern VALID_EMAIL_ADDRESS_REGEX =
-                                    Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-                            Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(text);
-                            return matcher.find();
+                        public void onSelected(BaseSearchDialogCompat dialog, SampleSearchModel item, int position) {
+                            Toast.makeText(view.getContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
                         }
-                    })
-                    .setConfirmButton(android.R.string.ok, new LovelyTextInputDialog.OnTextInputConfirmListener() {
-                        @Override
-                        public void onTextInputConfirmed(String text) {
-                            //Tim id user id
-                            findIDEmail(text);
-                            //Check xem da ton tai ban ghi friend chua
-                            //Ghi them 1 ban ghi
-                        }
-                    })
-                    .show();
+                    }).show();
         }
     }
 
