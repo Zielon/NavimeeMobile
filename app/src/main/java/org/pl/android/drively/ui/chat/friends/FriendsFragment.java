@@ -306,6 +306,21 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     @Override
     public void onSuccessDeleteFriend(String idFriend) {
+        mFriendsPresenter.deleteFriendReference(idFriend);
+    }
+
+    @Override
+    public void onFailureDeleteFriend() {
+        dialogWaitDeleting.dismiss();
+        new LovelyInfoDialog(getContext())
+                .setTopColorRes(R.color.colorAccent)
+                .setTitle("Error")
+                .setMessage("Error occurred during deleting friend")
+                .show();
+    }
+
+    @Override
+    public void onSuccessDeleteFriendReference(String idFriend) {
         dialogWaitDeleting.dismiss();
 
         new LovelyInfoDialog(getContext())
@@ -317,16 +332,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         Intent intentDeleted = new Intent(FriendsFragment.ACTION_DELETE_FRIEND);
         intentDeleted.putExtra("idFriend", idFriend);
         getContext().sendBroadcast(intentDeleted);
-    }
-
-    @Override
-    public void onFailureDeleteFriend() {
-        dialogWaitDeleting.dismiss();
-        new LovelyInfoDialog(getContext())
-                .setTopColorRes(R.color.colorAccent)
-                .setTitle("Error")
-                .setMessage("Error occurred during deleting friend")
-                .show();
     }
 
 

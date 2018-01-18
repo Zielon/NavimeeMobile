@@ -87,6 +87,6 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
     }
 
     public String getId() {
-        return mDataManager.getPreferencesHelper().getUID();
+        return  mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
     }
 }
