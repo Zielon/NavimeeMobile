@@ -154,6 +154,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                     if(idDeleted.equals(friend.id)){
                         ArrayList<Friend> friends = dataListFriend.getListFriend();
                         friends.remove(friend);
+                        FriendDB.getInstance(getContext()).deleteFriend(friend);
                         break;
                     }
                 }
@@ -173,6 +174,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         super.onDestroyView();
         mFriendsPresenter.detachView();
         detectFriendOnline.cancel();
+        dataListFriend.getListFriend().clear();
         FriendDB.getInstance(getContext()).dropDB();
         listFriendID = null;
         getContext().unregisterReceiver(deleteFriendReceiver);
