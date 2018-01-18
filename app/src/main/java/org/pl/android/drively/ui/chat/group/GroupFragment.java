@@ -336,7 +336,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         @Override
         public void onClick(View view) {
-            startActivity(new Intent(getContext(), AddGroupActivity.class));
+            startActivityForResult( new Intent(getContext(), AddGroupActivity.class),REQUEST_EDIT_GROUP);
         }
     }
 }
