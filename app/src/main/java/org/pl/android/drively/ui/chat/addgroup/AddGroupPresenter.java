@@ -57,15 +57,8 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
                                 .collection("MEMBERS").document(memberId).set(member));
                         member.clear();
                     }
-
-                    try {
-                        // Wait for all
-                        for (Task<Void> task: tasks) task.getResult();
-                        if (getMvpView() != null) {
-                            getMvpView().addRoomForUser(idGroup,0);
-                        }
-                    }catch (Exception e){
-                        Timber.w(e.getMessage());
+                    if (getMvpView() != null) {
+                        getMvpView().addRoomForUser(idGroup,0);
                     }
                 })
                 .addOnFailureListener(e -> Timber.w("Error writing document", e));

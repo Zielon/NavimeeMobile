@@ -27,4 +27,10 @@ public interface GroupMvpView  extends MvpView {
     void onSuccessDeleteGroupReference(Group group, int index);
 
     void onFailureGroupReference();
+
+    void onSuccessLeaveGroup(Group group);
+
+    void onFailureLeaveGroup();
+
+    void onSuccessLeaveGroupReference(Group group);
 }

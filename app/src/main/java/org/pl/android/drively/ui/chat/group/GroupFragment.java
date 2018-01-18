@@ -25,13 +25,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.yarolegovich.lovelydialog.LovelyInfoDialog;
 import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 
@@ -291,76 +284,39 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 .show();
     }
 
+
+
     public void leaveGroup(final Group group){
         mGroupPresenter.leaveGroup(group);
-        FirebaseDatabase.getInstance().getReference().child("group/"+group.id+"/member")
-                .orderByValue().equalTo(Const.UID)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+    }
 
-                        if (dataSnapshot.getValue() == null) {
-                            //email not found
-                            waitingLeavingGroup.dismiss();
-                            new LovelyInfoDialog(getContext())
-                                    .setTopColorRes(R.color.colorAccent)
-                                    .setTitle("Error")
-                                    .setMessage("Error occurred during leaving group")
-                                    .show();
-                        } else {
-                            String memberIndex = "";
-                            ArrayList<String> result = ((ArrayList<String>)dataSnapshot.getValue());
-                            for(int i = 0; i < result.size(); i++){
-                                if(result.get(i) != null){
-                                    memberIndex = String.valueOf(i);
-                                }
-                            }
+    @Override
+    public void onSuccessLeaveGroup(Group group) {
+        mGroupPresenter.leaveGroupUserReference(group);
+    }
 
-                            FirebaseDatabase.getInstance().getReference().child("user").child(Const.UID)
-                                    .child("group").child(group.id).removeValue();
-                            FirebaseDatabase.getInstance().getReference().child("group/"+group.id+"/member")
-                                    .child(memberIndex).removeValue()
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            waitingLeavingGroup.dismiss();
+    @Override
+    public void onFailureLeaveGroup() {
+        waitingLeavingGroup.dismiss();
+        new LovelyInfoDialog(getContext())
+                .setTopColorRes(R.color.colorAccent)
+                .setTitle("Error")
+                .setMessage("Error occurred during leaving group")
+                .show();
+    }
 
-                                            listGroup.remove(group);
-                                            adapter.notifyDataSetChanged();
-                                        //    GroupDB.getInstance(getContext()).deleteGroup(group.id);
-                                            new LovelyInfoDialog(getContext())
-                                                    .setTopColorRes(R.color.colorAccent)
-                                                    .setTitle("Success")
-                                                    .setMessage("Group leaving successfully")
-                                                    .show();
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            waitingLeavingGroup.dismiss();
-                                            new LovelyInfoDialog(getContext())
-                                                    .setTopColorRes(R.color.colorAccent)
-                                                    .setTitle("Error")
-                                                    .setMessage("Error occurred during leaving group")
-                                                    .show();
-                                        }
-                                    });
-                        }
-                    }
+    @Override
+    public void onSuccessLeaveGroupReference(Group group) {
+        waitingLeavingGroup.dismiss();
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        //email not found
-                        waitingLeavingGroup.dismiss();
-                        new LovelyInfoDialog(getContext())
-                                .setTopColorRes(R.color.colorAccent)
-                                .setTitle("Error")
-                                .setMessage("Error occurred during leaving group")
-                                .show();
-                    }
-                });
-
+        listGroup.remove(group);
+        adapter.notifyDataSetChanged();
+        GroupDB.getInstance(getContext()).deleteGroup(group.id);
+        new LovelyInfoDialog(getContext())
+                .setTopColorRes(R.color.colorAccent)
+                .setTitle("Success")
+                .setMessage("Group leaving successfully")
+                .show();
     }
 
     @Override

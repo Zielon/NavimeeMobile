@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -60,28 +61,28 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
 
 
     public void getListGroup() {
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(getId()).collection("GROUP")
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(@Nullable QuerySnapshot value,
-                                    @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        if (getMvpView() != null) {
-                            getMvpView().getGroupError();
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS")
+                     .document(getId()).collection("GROUP").get()
+                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                List<String> rooms = new ArrayList<>();
+                                for (DocumentSnapshot document : task.getResult()) {
+                                        if (document.get("roomId") != null) {
+                                            rooms.add(document.getString("roomId"));
+                                        }
+                                }
+                                if (getMvpView() != null) {
+                                    getMvpView().setGroupList(rooms);
+                                }
+                            } else {
+                                if (getMvpView() != null) {
+                                    getMvpView().getGroupError();
+                                }
+                            }
                         }
-                        return;
-                    }
-                    List<String> rooms = new ArrayList<>();
-                    for (DocumentSnapshot doc : value) {
-                        if (doc.get("roomId") != null) {
-                            rooms.add(doc.getString("roomId"));
-                        }
-                    }
-                    if (getMvpView() != null) {
-                        getMvpView().setGroupList(rooms);
-                    }
-                }
-            });
+                    });
     }
 
 
@@ -92,21 +93,38 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
-                            if (document != null) {
-                                if (getMvpView() != null) {
-                                    getMvpView().setGroupInfo(groupIndex,task.getResult().toObject(Room.class));
-                                }
+                            if (document != null && document.exists()) {
+                                Room room = new Room();
+                                room.groupInfo.put("admin", task.getResult().getString("admin"));
+                                room.groupInfo.put("name",  task.getResult().getString("name"));
+                                mDataManager.getFirebaseService().getFirebaseFirestore().collection("GROUP")
+                                        .document(id).collection("MEMBERS")
+                                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (DocumentSnapshot document : task.getResult()) {
+                                                        room.member.add(document.getId());
+                                                    }
+                                                    if (getMvpView() != null) {
+                                                        getMvpView().setGroupInfo(groupIndex,room);
+                                                    }
+                                                } else {
+                                                    Timber.w("Error geting document");
+                                                }
+                                            }
+                                });
                             } else {
+                                Timber.w("Error geting document");
                             }
                         } else {
+                            Timber.w("Error geting document");
                         }
                     }
                 });
     }
 
-    public String getId() {
-        return mDataManager.getPreferencesHelper().getUID();
-    }
+
 
 
     public void deleteGroup(Group group) {
@@ -173,13 +191,76 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
     }
 
     public void leaveGroup(Group group) {
-       /* Map<String,Object> updates = new HashMap<>();
-        updates.put("member", FieldValue.delete());
-        Map<String, Object> idData = new HashMap<>();
         mDataManager.getFirebaseService().getFirebaseFirestore().collection("GROUP")
                      .document(group.id)
-                     .delete()
-        */
+                     .collection("MEMBERS")
+                     .document(getId()).delete()
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            if (getMvpView() != null) {
+                                getMvpView().onSuccessLeaveGroup(group);
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            if (getMvpView() != null) {
+                                getMvpView().onFailureLeaveGroup();
+                            }
+                        }
+                    });
+    }
+
+
+    public void leaveGroupUserReference(Group group) {
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS")
+                .document(getId())
+                .collection("GROUP").whereEqualTo("roomId",group.id)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Timber.d( document.getId() + " => " + document.getData());
+                                mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(getId()).collection("GROUP")
+                                        .document(document.getId())
+                                        .delete()
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                if (getMvpView() != null) {
+                                                    getMvpView().onSuccessLeaveGroupReference(group);
+                                                }
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @SuppressLint("TimberArgCount")
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Timber.w("Error deleting document", e);
+                                                if (getMvpView() != null) {
+                                                    getMvpView().onFailureLeaveGroup();
+                                                }
+                                            }
+                                        });
+                            }
+                        } else {
+                            Timber.d("Listen failed");
+                            if (getMvpView() != null) {
+                                getMvpView().onFailureGroupReference();
+                            }
+                        }
+                    }
+                });
 
     }
+
+
+    public String getId() {
+        return mDataManager.getPreferencesHelper().getUID();
+    }
+
 }
