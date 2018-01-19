@@ -24,6 +24,8 @@ import org.pl.android.drively.data.model.chat.ListFriend;
 import org.pl.android.drively.data.model.chat.User;
 import org.pl.android.drively.injection.ActivityContext;
 import org.pl.android.drively.ui.base.BasePresenter;
+import org.pl.android.drively.ui.chat.friendsearch.FriendModel;
+import org.pl.android.drively.ui.chat.friendsearch.FriendSearchDialogCompat;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.NetworkUtil;
 
@@ -34,6 +36,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import ir.mirrajabi.searchdialog.core.BaseFilter;
 import timber.log.Timber;
 
 public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
@@ -102,12 +105,19 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         }
     }
 
-    public void findFriend(String stringQuery) {
+    public void findFriend(BaseFilter baseFilter, FriendSearchDialogCompat<FriendModel> searchDialogCompat, String stringQuery) {
+        CollectionReference usersReference = mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS");
 
-        CollectionReference usersReference = mDataManager.getFirebaseService()
-                .getFirebaseFirestore().collection("USERS");
+        baseFilter.doBeforeFiltering();
 
-        usersReference.whereGreaterThanOrEqualTo("name", stringQuery).addSnapshotListener((documentSnapshots, e) -> {});
+        usersReference.whereEqualTo("name", stringQuery).addSnapshotListener((documentSnapshots, e) -> {
+            ArrayList<FriendModel> result = new ArrayList<>();
+            for (DocumentSnapshot snapshot: documentSnapshots.getDocuments())
+                result.add(new FriendModel(snapshot.toObject(User.class)));
+
+            searchDialogCompat.getFilterResultListener().onFilter(result);
+            baseFilter.doAfterFiltering();
+        });
     }
 
     public void getAllFriendInfo(int index, String id) {

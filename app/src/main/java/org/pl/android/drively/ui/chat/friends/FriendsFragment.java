@@ -37,6 +37,7 @@ import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.chat.Friend;
 import org.pl.android.drively.data.model.chat.ListFriend;
+import org.pl.android.drively.data.model.chat.User;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.ui.chat.data.FriendDB;
@@ -343,27 +344,12 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             BaseFilter apiFilter = new BaseFilter() {
                 @Override
                 protected FilterResults performFiltering(CharSequence charSequence) {
-                    doBeforeFiltering();
-                    FilterResults results = new FilterResults();
-                    results.values = new ArrayList<FriendModel>();
-                    results.count = 0;
-
-                    ArrayList<FriendModel> users = new ArrayList<>();
-                    if(users != null) {
-                        results.values = users;
-                        results.count = users.size();
-                    }
-                    return results;
+                    return null;
                 }
 
                 @Override
                 protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                    if(filterResults != null) {
-                        ArrayList<FriendModel> filtered = (ArrayList<FriendModel>) filterResults.values;
-                        if(filtered != null)
-                            searchDialogCompat.getFilterResultListener().onFilter(filtered);
-                        doAfterFiltering();
-                    }
+                    mFriendsPresenter.findFriend(this, searchDialogCompat, charSequence.toString());
                 }
             };
 
