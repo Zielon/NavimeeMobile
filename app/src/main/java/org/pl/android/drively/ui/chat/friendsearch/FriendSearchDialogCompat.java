@@ -20,27 +20,26 @@ import ir.mirrajabi.searchdialog.core.BaseFilter;
 import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.OnPerformFilterListener;
 import ir.mirrajabi.searchdialog.core.SearchResultListener;
-import ir.mirrajabi.searchdialog.core.Searchable;
 
-public class FriendSearchDialogCompat<T extends Searchable> extends BaseSearchDialogCompat<T> {
+public class FriendSearchDialogCompat extends BaseSearchDialogCompat<FriendModel> {
 
     private String mTitle;
     private String mSearchHint;
-    private SearchResultListener<T> mSearchResultListener;
+    private SearchResultListener<FriendModel> mSearchResultListener;
     private ProgressBar mProgressBar;
     private EditText mSearchBox;
     private Handler mHandler;
     private RecyclerView mRecyclerView;
 
     public FriendSearchDialogCompat(Context context, String title, String searchHint,
-                                     @Nullable Filter filter, ArrayList<T> items,
-                                     SearchResultListener<T> searchResultListener) {
+                                     @Nullable Filter filter, ArrayList<FriendModel> items,
+                                     SearchResultListener<FriendModel> searchResultListener) {
         super(context, items, filter, null,null);
         init(title, searchHint, searchResultListener);
     }
 
     private void init(String title, String searchHint,
-                      SearchResultListener<T> searchResultListener){
+                      SearchResultListener<FriendModel> searchResultListener){
         mTitle = title;
         mSearchHint = searchHint;
         mSearchResultListener = searchResultListener;
@@ -65,7 +64,7 @@ public class FriendSearchDialogCompat<T extends Searchable> extends BaseSearchDi
         searchBox.setHint(mSearchHint);
         view.findViewById(ir.mirrajabi.searchdialog.R.id.dummy_background).setOnClickListener(view1 -> dismiss());
 
-        final FriendModelAdapter adapter = new FriendModelAdapter<>(getContext(), R.layout.friends_search_adapter_item,getItems());
+        final FriendModelAdapter adapter = new FriendModelAdapter(getContext(), R.layout.friends_search_adapter_item,getItems());
 
         adapter.setSearchResultListener(mSearchResultListener);
         adapter.setSearchDialog(this);
@@ -76,7 +75,7 @@ public class FriendSearchDialogCompat<T extends Searchable> extends BaseSearchDi
         mHandler = new Handler();
         mSearchBox.requestFocus();
 
-        ((BaseFilter<T>)getFilter()).setOnPerformFilterListener(new OnPerformFilterListener() {
+        ((BaseFilter<FriendModel>)getFilter()).setOnPerformFilterListener(new OnPerformFilterListener() {
             @Override
             public void doBeforeFiltering() {
                 setLoading(true);
@@ -109,7 +108,7 @@ public class FriendSearchDialogCompat<T extends Searchable> extends BaseSearchDi
     }
 
     public FriendSearchDialogCompat setSearchResultListener(
-            SearchResultListener<T> searchResultListener) {
+            SearchResultListener<FriendModel> searchResultListener) {
         mSearchResultListener = searchResultListener;
         return this;
     }

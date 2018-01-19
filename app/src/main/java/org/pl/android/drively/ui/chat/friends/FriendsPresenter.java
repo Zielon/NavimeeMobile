@@ -105,7 +105,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         }
     }
 
-    public void findFriend(BaseFilter baseFilter, FriendSearchDialogCompat<FriendModel> searchDialogCompat, String stringQuery) {
+    public void findFriend(BaseFilter baseFilter, FriendSearchDialogCompat searchDialogCompat, String stringQuery) {
         CollectionReference usersReference = mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS");
 
         baseFilter.doBeforeFiltering();

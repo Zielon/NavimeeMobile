@@ -17,34 +17,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import ir.mirrajabi.searchdialog.StringsHelper;
 import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.SearchResultListener;
-import ir.mirrajabi.searchdialog.core.Searchable;
 
-public class FriendModelAdapter<T extends Searchable> extends RecyclerView.Adapter<FriendModelAdapter.ViewHolder> {
+public class FriendModelAdapter extends RecyclerView.Adapter<FriendModelAdapter.ViewHolder> {
 
     protected Context mContext;
-    private List<T> mItems = new ArrayList<>();
+    private List<FriendModel> mItems = new ArrayList<>();
     private LayoutInflater mLayoutInflater;
     private int mLayout;
     private SearchResultListener mSearchResultListener;
-    private AdapterViewBinder<T> mViewBinder;
+    private AdapterViewBinder<FriendModel> mViewBinder;
     private String mSearchTag;
     private boolean mHighlightPartsInCommon = true;
     private BaseSearchDialogCompat mSearchDialog;
 
-    public FriendModelAdapter(Context context, @LayoutRes int layout, List<T> items) {
+    public FriendModelAdapter(Context context, @LayoutRes int layout, List<FriendModel> items) {
         this(context, layout, null, items);
     }
 
-    public FriendModelAdapter(Context context, AdapterViewBinder<T> viewBinder, @LayoutRes int layout, List<T> items) {
+    public FriendModelAdapter(Context context, AdapterViewBinder<FriendModel> viewBinder, @LayoutRes int layout, List<FriendModel> items) {
         this(context, layout, viewBinder, items);
     }
 
     public FriendModelAdapter(Context context, @LayoutRes int layout,
-                              @Nullable AdapterViewBinder<T> viewBinder,
-                              List<T> items) {
+                              @Nullable AdapterViewBinder<FriendModel> viewBinder,
+                              List<FriendModel> items) {
         this.mContext = context;
         this.mLayoutInflater = LayoutInflater.from(context);
         this.mItems = items;
@@ -52,16 +50,16 @@ public class FriendModelAdapter<T extends Searchable> extends RecyclerView.Adapt
         this.mViewBinder = viewBinder;
     }
 
-    public List<T> getItems() {
+    public List<FriendModel> getItems() {
         return mItems;
     }
 
-    public void setItems(List<T> objects) {
+    public void setItems(List<FriendModel> objects) {
         this.mItems = objects;
         notifyDataSetChanged();
     }
 
-    public T getItem(int position) {
+    public FriendModel getItem(int position) {
         return mItems.get(position);
     }
 
@@ -75,7 +73,7 @@ public class FriendModelAdapter<T extends Searchable> extends RecyclerView.Adapt
         return position;
     }
 
-    public FriendModelAdapter<T> setViewBinder(AdapterViewBinder<T> viewBinder) {
+    public FriendModelAdapter setViewBinder(AdapterViewBinder<FriendModel> viewBinder) {
         this.mViewBinder = viewBinder;
         return this;
     }
@@ -93,22 +91,21 @@ public class FriendModelAdapter<T extends Searchable> extends RecyclerView.Adapt
         initializeViews(getItem(position), holder, position);
     }
 
-    private void initializeViews(final T object, final FriendModelAdapter.ViewHolder holder,
+    private void initializeViews(final FriendModel object, final FriendModelAdapter.ViewHolder holder,
                                  final int position) {
         if (mViewBinder != null)
             mViewBinder.bind(holder, object, position);
 
         LinearLayout root = holder.getViewById(R.id.root);
-        TextView text = holder.getViewById(R.id.text);
+        TextView nameText = holder.getViewById(R.id.name);
+        TextView emailText = holder.getViewById(R.id.email);
         CircleImageView avatar = holder.getViewById(R.id.image);
 
         // TODO
         // set avatar
 
-        if (mSearchTag != null && mHighlightPartsInCommon)
-            text.setText(StringsHelper.highlightLCS(object.getTitle(), getSearchTag(), R.color.white));
-
-        else text.setText(object.getTitle());
+        nameText.setText(object.getName());
+        emailText.setText(object.getEmail());
 
         if (mSearchResultListener != null)
             holder.getBaseView().setOnClickListener(view -> mSearchResultListener.onSelected(mSearchDialog, object, position));

@@ -332,8 +332,8 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         @Override
         public void onClick(final View view) {
 
-            FriendSearchDialogCompat<FriendModel> searchDialogCompat =
-                    new FriendSearchDialogCompat<>(view.getContext(), "Find friends...",
+            FriendSearchDialogCompat searchDialogCompat =
+                    new FriendSearchDialogCompat(view.getContext(), "Find friends...",
                     "What are you looking for...?", null, new ArrayList<>(),
                     (dialog, item, position) -> {
                         Toast.makeText(view.getContext(), item.getTitle(),
@@ -349,7 +349,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
                 @Override
                 protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                    mFriendsPresenter.findFriend(this, searchDialogCompat, charSequence.toString());
+                    mFriendsPresenter.findFriend(this, searchDialogCompat, charSequence.toString().trim());
                 }
             };
 
