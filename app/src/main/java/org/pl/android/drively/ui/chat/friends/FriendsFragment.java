@@ -272,6 +272,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     @Override
     public void onSuccessDeleteFriend(String idFriend) {
+        listFriendID.remove(idFriend);
         mFriendsPresenter.deleteFriendReference(idFriend);
     }
 
