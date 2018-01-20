@@ -7,10 +7,13 @@ import ir.mirrajabi.searchdialog.core.Searchable;
 public class FriendModel implements Searchable {
     private String name;
     private String email;
+    private String id;
+
 
     public FriendModel(User user) {
         name = user.name;
         email = user.email;
+        id = user.id;
     }
 
     @Override
@@ -26,6 +29,10 @@ public class FriendModel implements Searchable {
         return email;
     }
 
+    public String getId() {
+        return id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -34,13 +41,15 @@ public class FriendModel implements Searchable {
         FriendModel that = (FriendModel) o;
 
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        return email != null ? email.equals(that.email) : that.email == null;
+        if (email != null ? !email.equals(that.email) : that.email != null) return false;
+        return id != null ? id.equals(that.id) : that.id == null;
     }
 
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (id != null ? id.hashCode() : 0);
         return result;
     }
 }

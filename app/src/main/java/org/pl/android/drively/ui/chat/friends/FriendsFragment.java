@@ -336,8 +336,18 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                     new FriendSearchDialogCompat(view.getContext(), "Find friends...",
                     "What are you looking for...?", null, new ArrayList<>(),
                     (dialog, item, position) -> {
-                        Toast.makeText(view.getContext(), item.getTitle(),
-                                Toast.LENGTH_SHORT).show();
+                        if (item.getId().equals(mFriendsPresenter.getId())) {
+                            Toast.makeText(view.getContext(), "Email not valid",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            Friend friend = new Friend();
+                            friend.name = item.getName();
+                            friend.email = item.getEmail();
+                            friend.avata = "default";
+                            friend.id = item.getId();
+                            friend.idRoom = item.getId().compareTo(mFriendsPresenter.getId()) > 0 ? (mFriendsPresenter.getId() + item.getId()).hashCode() + "" : "" + (item.getId() + mFriendsPresenter.getId()).hashCode();
+                            checkBeforAddFriend(item.getId(), friend);
+                        }
                         dialog.dismiss();
                     });
 
