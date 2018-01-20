@@ -111,14 +111,31 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         baseFilter.doBeforeFiltering();
         int strlength = stringQuery.length();
         String endcode = "";
+        String upperCase = "";
+        String encodeUpperCase = "";
         if(strlength >0) {
             String strFrontCode = stringQuery.substring(0, strlength - 1);
             String strEndCode = stringQuery.substring(strlength - 1, strlength);
 
             endcode = strFrontCode + Character.toString((char) (strEndCode.charAt(0) + 1));
+            upperCase = stringQuery.substring(0, 1).toUpperCase() + stringQuery.substring(1);
+            encodeUpperCase = upperCase.substring(0, upperCase.length() -1) + Character.toString((char) (strEndCode.charAt(0) + 1));
+            if(encodeUpperCase.length() == 1) {
+                encodeUpperCase = encodeUpperCase.toUpperCase();
+            }
         }
         ArrayList<FriendModel> result = new ArrayList<>();
         usersReference.whereGreaterThanOrEqualTo("name", stringQuery).whereLessThan("name",endcode)
+                        .addSnapshotListener((documentSnapshots, e) -> {
+                            for (DocumentSnapshot snapshot: documentSnapshots.getDocuments()) {
+                                FriendModel friend = new FriendModel(snapshot.toObject(User.class));
+                                if (!result.contains(friend)) {
+                                    result.add(friend);
+                                }
+                            }
+        });
+
+        usersReference.whereGreaterThanOrEqualTo("name", upperCase).whereLessThan("name",encodeUpperCase)
                 .addSnapshotListener((documentSnapshots, e) -> {
                     for (DocumentSnapshot snapshot: documentSnapshots.getDocuments()) {
                         FriendModel friend = new FriendModel(snapshot.toObject(User.class));
@@ -126,7 +143,8 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                             result.add(friend);
                         }
                     }
-        });
+                });
+
 
         usersReference.whereGreaterThanOrEqualTo("email", stringQuery).whereLessThan("email",endcode)
                 .addSnapshotListener((documentSnapshots, e) -> {
