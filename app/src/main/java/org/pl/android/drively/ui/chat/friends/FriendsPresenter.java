@@ -109,15 +109,36 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         CollectionReference usersReference = mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS");
 
         baseFilter.doBeforeFiltering();
+        int strlength = stringQuery.length();
+        String endcode = "";
+        if(strlength >0) {
+            String strFrontCode = stringQuery.substring(0, strlength - 1);
+            String strEndCode = stringQuery.substring(strlength - 1, strlength);
 
-        usersReference.whereEqualTo("name", stringQuery).addSnapshotListener((documentSnapshots, e) -> {
-            ArrayList<FriendModel> result = new ArrayList<>();
-            for (DocumentSnapshot snapshot: documentSnapshots.getDocuments())
-                result.add(new FriendModel(snapshot.toObject(User.class)));
-
-            searchDialogCompat.getFilterResultListener().onFilter(result);
-            baseFilter.doAfterFiltering();
+            endcode = strFrontCode + Character.toString((char) (strEndCode.charAt(0) + 1));
+        }
+        ArrayList<FriendModel> result = new ArrayList<>();
+        usersReference.whereGreaterThanOrEqualTo("name", stringQuery).whereLessThan("name",endcode)
+                .addSnapshotListener((documentSnapshots, e) -> {
+                    for (DocumentSnapshot snapshot: documentSnapshots.getDocuments()) {
+                        FriendModel friend = new FriendModel(snapshot.toObject(User.class));
+                        if (!result.contains(friend)) {
+                            result.add(friend);
+                        }
+                    }
         });
+
+        usersReference.whereGreaterThanOrEqualTo("email", stringQuery).whereLessThan("email",endcode)
+                .addSnapshotListener((documentSnapshots, e) -> {
+                    for (DocumentSnapshot snapshot: documentSnapshots.getDocuments()) {
+                        FriendModel friend = new FriendModel(snapshot.toObject(User.class));
+                        if (!result.contains(friend)) {
+                            result.add(friend);
+                        }
+                    }
+                    searchDialogCompat.getFilterResultListener().onFilter(result);
+                    baseFilter.doAfterFiltering();
+                });
     }
 
     public void getAllFriendInfo(int index, String id) {
