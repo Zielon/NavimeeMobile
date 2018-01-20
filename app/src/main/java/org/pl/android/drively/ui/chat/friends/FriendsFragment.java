@@ -196,6 +196,11 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         adapter.notifyDataSetChanged();
         FriendDB.getInstance(getContext()).dropDB();
         detectFriendOnline.cancel();
+        ListFriendsAdapter.mapMark.clear();
+        ListFriendsAdapter.mapChildListener.clear();
+        ListFriendsAdapter.mapChildListenerOnline.clear();
+        ListFriendsAdapter.mapQuery.clear();
+        ListFriendsAdapter.mapQueryOnline.clear();
         getListFriendUId();
     }
 
