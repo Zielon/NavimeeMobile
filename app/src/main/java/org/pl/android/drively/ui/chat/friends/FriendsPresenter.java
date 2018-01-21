@@ -126,36 +126,50 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         }
         ArrayList<FriendModel> result = new ArrayList<>();
         usersReference.whereGreaterThanOrEqualTo("name", stringQuery).whereLessThan("name",endcode)
-                        .addSnapshotListener((documentSnapshots, e) -> {
-                            for (DocumentSnapshot snapshot: documentSnapshots.getDocuments()) {
-                                FriendModel friend = new FriendModel(snapshot.toObject(User.class));
-                                if (!result.contains(friend)) {
-                                    result.add(friend);
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                for (DocumentSnapshot document : task.getResult()) {
+                                    FriendModel friend = new FriendModel(document.toObject(User.class));
+                                    if (!result.contains(friend)) {
+                                        result.add(friend);
+                                    }
                                 }
+                            } else {
+                                Timber.w( "Error getting documents: ", task.getException());
                             }
-        });
+                        });
 
         usersReference.whereGreaterThanOrEqualTo("name", upperCase).whereLessThan("name",encodeUpperCase)
-                .addSnapshotListener((documentSnapshots, e) -> {
-                    for (DocumentSnapshot snapshot: documentSnapshots.getDocuments()) {
-                        FriendModel friend = new FriendModel(snapshot.toObject(User.class));
-                        if (!result.contains(friend)) {
-                            result.add(friend);
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (DocumentSnapshot document : task.getResult()) {
+                            FriendModel friend = new FriendModel(document.toObject(User.class));
+                            if (!result.contains(friend)) {
+                                result.add(friend);
+                            }
                         }
+                    } else {
+                        Timber.w( "Error getting documents: ", task.getException());
                     }
                 });
 
-
         usersReference.whereGreaterThanOrEqualTo("email", stringQuery).whereLessThan("email",endcode)
-                .addSnapshotListener((documentSnapshots, e) -> {
-                    for (DocumentSnapshot snapshot: documentSnapshots.getDocuments()) {
-                        FriendModel friend = new FriendModel(snapshot.toObject(User.class));
-                        if (!result.contains(friend)) {
-                            result.add(friend);
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (DocumentSnapshot document : task.getResult()) {
+                            FriendModel friend = new FriendModel(document.toObject(User.class));
+                            if (!result.contains(friend)) {
+                                result.add(friend);
+                            }
                         }
+                        searchDialogCompat.getFilterResultListener().onFilter(result);
+                        baseFilter.doAfterFiltering();
+                    } else {
+                        Timber.w( "Error getting documents: ", task.getException());
                     }
-                    searchDialogCompat.getFilterResultListener().onFilter(result);
-                    baseFilter.doAfterFiltering();
                 });
     }
 
