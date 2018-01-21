@@ -546,7 +546,13 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         for (DocumentSnapshot documentSnapshot : snapshots) {
                             if (mapMark.get(id) != null) {
                                 if (!mapMark.get(id)) {
-                                    listFriend.getListFriend().get(position).message.text = id + documentSnapshot.get("text");
+                                    if(listFriend.getListFriend().get(position).message.timestamp != documentSnapshot.getLong("timestamp")
+                                            && listFriend.getListFriend().get(position).message.text != documentSnapshot.get("text")
+                                            && listFriend.getListFriend().get(position).message.idReceiver != documentSnapshot.get("idReceiver")
+                                            && listFriend.getListFriend().get(position).message.idSender != documentSnapshot.get("idSender")) {
+
+                                        listFriend.getListFriend().get(position).message.text = id + documentSnapshot.get("text");
+                                    }
                                 } else {
                                     listFriend.getListFriend().get(position).message.text = (String) documentSnapshot.get("text");
                                 }
