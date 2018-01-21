@@ -37,11 +37,9 @@ import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.chat.Friend;
 import org.pl.android.drively.data.model.chat.ListFriend;
-import org.pl.android.drively.data.model.chat.User;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.ui.chat.data.FriendDB;
-import org.pl.android.drively.ui.chat.friendsearch.FriendModel;
 import org.pl.android.drively.ui.chat.friendsearch.FriendSearchDialogCompat;
 import org.pl.android.drively.util.Const;
 
@@ -200,6 +198,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         ListFriendsAdapter.mapChildListener.clear();
         ListFriendsAdapter.mapQuery.clear();
         ListFriendsAdapter.mapQueryOnline.clear();
+        ListFriendsAdapter.mapChildListenerOnline.clear();
         getListFriendUId();
     }
 
@@ -364,7 +363,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
                 @Override
                 protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                    mFriendsPresenter.findFriend(this, searchDialogCompat, charSequence.toString().trim());
+                    mFriendsPresenter.findFriend(this, searchDialogCompat, charSequence.toString().trim(),listFriendID);
                 }
             };
 
@@ -389,6 +388,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         dialogFindAllFriend.dismiss();
     }
 
+    @SuppressLint("TimberArgCount")
     private void getAllFriendInfo(final int index) {
         if (index == listFriendID.size()) {
             //save list friend
@@ -397,8 +397,19 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             mSwipeRefreshLayout.setRefreshing(false);
             detectFriendOnline.start();
         } else {
-            final String id = listFriendID.get(index);
-            mFriendsPresenter.getAllFriendInfo(index, id);
+            if(listFriendID.size() >= index) {
+                try {
+                    final String id = listFriendID.get(index);
+                    mFriendsPresenter.getAllFriendInfo(index, id);
+                } catch (IndexOutOfBoundsException ex) {
+                    Timber.w("Exception occured.", ex);
+                } catch (Exception ex) {
+                    Timber.w("Exception occured.", ex);
+                }
+            } else {
+                dialogFindAllFriend.dismiss();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
         }
     }
 
@@ -543,26 +554,32 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             Timber.e("Listen failed.", e);
                             return;
                         }
-                        for (DocumentSnapshot documentSnapshot : snapshots) {
-                            if (mapMark.get(id) != null) {
-                                if (!mapMark.get(id)) {
-                                    if(listFriend.getListFriend().get(position).message.timestamp != documentSnapshot.getLong("timestamp")
-                                            && listFriend.getListFriend().get(position).message.text != documentSnapshot.get("text")
-                                            && listFriend.getListFriend().get(position).message.idReceiver != documentSnapshot.get("idReceiver")
-                                            && listFriend.getListFriend().get(position).message.idSender != documentSnapshot.get("idSender")) {
+                        try {
+                            for (DocumentSnapshot documentSnapshot : snapshots) {
+                                if (mapMark.get(id) != null) {
+                                    if (!mapMark.get(id)) {
+                                        if (listFriend.getListFriend().get(position).message.timestamp != documentSnapshot.getLong("timestamp")
+                                                && listFriend.getListFriend().get(position).message.text != documentSnapshot.get("text")
+                                                && listFriend.getListFriend().get(position).message.idReceiver != documentSnapshot.get("idReceiver")
+                                                && listFriend.getListFriend().get(position).message.idSender != documentSnapshot.get("idSender")) {
 
-                                        listFriend.getListFriend().get(position).message.text = id + documentSnapshot.get("text");
+                                            listFriend.getListFriend().get(position).message.text = id + documentSnapshot.get("text");
+                                        }
+                                    } else {
+                                        listFriend.getListFriend().get(position).message.text = (String) documentSnapshot.get("text");
                                     }
+                                    notifyDataSetChanged();
+                                    mapMark.put(id, false);
                                 } else {
                                     listFriend.getListFriend().get(position).message.text = (String) documentSnapshot.get("text");
+                                    notifyDataSetChanged();
                                 }
-                                notifyDataSetChanged();
-                                mapMark.put(id, false);
-                            } else {
-                                listFriend.getListFriend().get(position).message.text = (String) documentSnapshot.get("text");
-                                notifyDataSetChanged();
+                                listFriend.getListFriend().get(position).message.timestamp = (long) documentSnapshot.get("timestamp");
                             }
-                            listFriend.getListFriend().get(position).message.timestamp = (long) documentSnapshot.get("timestamp");
+                        } catch (IndexOutOfBoundsException ex) {
+                            Timber.w("Exception occured.", ex);
+                        } catch (Exception ex) {
+                            Timber.w("Exception occured.", ex);
                         }
                     }
                 });
@@ -593,9 +610,15 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         Timber.w("Listen failed.", e);
                         return;
                     }
-                    if (documentSnapshot != null && documentSnapshot.get("isOnline") != null) {
-                        listFriend.getListFriend().get(position).status.isOnline = (boolean) documentSnapshot.get("isOnline");
-                        notifyDataSetChanged();
+                    if (documentSnapshot != null && documentSnapshot.get("isOnline") != null && listFriend.getListFriend().size() >= position) {
+                        try {
+                            listFriend.getListFriend().get(position).status.isOnline = (boolean) documentSnapshot.get("isOnline");
+                            notifyDataSetChanged();
+                        } catch (IndexOutOfBoundsException ex) {
+                            Timber.w("Exception occured.", ex);
+                        } catch (Exception ex) {
+                            Timber.w("Exception occured.", ex);
+                        }
                     }
                 }
 

@@ -105,9 +105,9 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         }
     }
 
-    public void findFriend(BaseFilter baseFilter, FriendSearchDialogCompat searchDialogCompat, String stringQuery) {
+    public void findFriend(BaseFilter baseFilter, FriendSearchDialogCompat searchDialogCompat, String stringQuery, List friendList) {
         CollectionReference usersReference = mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS");
-
+        friendList.add(getId());
         baseFilter.doBeforeFiltering();
         int strlength = stringQuery.length();
         String endcode = "";
@@ -131,7 +131,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                             if (task.isSuccessful()) {
                                 for (DocumentSnapshot document : task.getResult()) {
                                     FriendModel friend = new FriendModel(document.toObject(User.class));
-                                    if (!result.contains(friend)) {
+                                    if (!result.contains(friend) && !friendList.contains(friend.getId())) {
                                         result.add(friend);
                                     }
                                 }
@@ -146,7 +146,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                     if (task.isSuccessful()) {
                         for (DocumentSnapshot document : task.getResult()) {
                             FriendModel friend = new FriendModel(document.toObject(User.class));
-                            if (!result.contains(friend)) {
+                            if (!result.contains(friend) && !friendList.contains(friend.getId())) {
                                 result.add(friend);
                             }
                         }
@@ -161,7 +161,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                     if (task.isSuccessful()) {
                         for (DocumentSnapshot document : task.getResult()) {
                             FriendModel friend = new FriendModel(document.toObject(User.class));
-                            if (!result.contains(friend)) {
+                            if (!result.contains(friend) && !friendList.contains(friend.getId())) {
                                 result.add(friend);
                             }
                         }
