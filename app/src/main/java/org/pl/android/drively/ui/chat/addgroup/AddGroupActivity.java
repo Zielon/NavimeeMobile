@@ -22,10 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.FirebaseDatabase;
 import com.yarolegovich.lovelydialog.LovelyInfoDialog;
 import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 
@@ -154,39 +150,8 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
         room.groupInfo.put("name", editTextGroupName.getText().toString());
         room.groupInfo.put("admin", mAddGroupPresenter.getId());
 
-       /* FirebaseDatabase.getInstance().getReference().child("group/" + idGroup).setValue(room)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        addRoomForUser(idGroup, 0);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        dialogWait.dismiss();
-                        new LovelyInfoDialog(AddGroupActivity.this) {
-                            @Override
-                            public LovelyInfoDialog setConfirmButtonText(String text) {
-                                findView(com.yarolegovich.lovelydialog.R.id.ld_btn_confirm).setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        dismiss();
-                                    }
-                                });
-                                return super.setConfirmButtonText(text);
-                            }
-                        }
-                                .setTopColorRes(R.color.colorAccent)
-                                .setIcon(R.drawable.ic_add_group_dialog)
-                                .setTitle("False")
-                                .setMessage("Cannot connect database")
-                                .setCancelable(false)
-                                .setConfirmButtonText("Ok")
-                                .show();
-                    }
-                })
-        ;*/
+        mAddGroupPresenter.editGroup(idGroup,room);
+
     }
 
     private void createGroup() {
@@ -213,38 +178,7 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
             setResult(RESULT_OK, null);
             AddGroupActivity.this.finish();
         } else {
-            FirebaseDatabase.getInstance().getReference().child("user/" + listIDRemove.toArray()[userIndex] + "/group/" + roomId).removeValue()
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            deleteRoomForUser(roomId, userIndex + 1);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            dialogWait.dismiss();
-                            new LovelyInfoDialog(AddGroupActivity.this) {
-                                @Override
-                                public LovelyInfoDialog setConfirmButtonText(String text) {
-                                    findView(com.yarolegovich.lovelydialog.R.id.ld_btn_confirm).setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            dismiss();
-                                        }
-                                    });
-                                    return super.setConfirmButtonText(text);
-                                }
-                            }
-                                    .setTopColorRes(R.color.colorAccent)
-                                    .setIcon(R.drawable.ic_add_group_dialog)
-                                    .setTitle("False")
-                                    .setMessage("Cannot connect database")
-                                    .setCancelable(false)
-                                    .setConfirmButtonText("Ok")
-                                    .show();
-                        }
-                    });
+            mAddGroupPresenter.deleteUserReference((String) listIDRemove.toArray()[userIndex], roomId,userIndex);
         }
     }
     @Override
@@ -285,6 +219,67 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
                 .setConfirmButtonText("Ok")
                 .show();
     }
+
+    @Override
+    public void editGroupSuccess(String idGroup) {
+        addRoomForUser(idGroup, 0);
+    }
+
+
+    @Override
+    public void editGroupFailure() {
+        dialogWait.dismiss();
+        new LovelyInfoDialog(AddGroupActivity.this) {
+            @Override
+            public LovelyInfoDialog setConfirmButtonText(String text) {
+                findView(com.yarolegovich.lovelydialog.R.id.ld_btn_confirm).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dismiss();
+                    }
+                });
+                return super.setConfirmButtonText(text);
+            }
+        }
+                .setTopColorRes(R.color.colorAccent)
+                .setIcon(R.drawable.ic_add_group_dialog)
+                .setTitle("False")
+                .setMessage("Cannot connect database")
+                .setCancelable(false)
+                .setConfirmButtonText("Ok")
+                .show();
+    }
+
+    @Override
+    public void onSuccessDeleteGroupReference(String roomId, int userIndex) {
+        deleteRoomForUser(roomId, userIndex + 1);
+    }
+
+    @Override
+    public void onFailureGroupReference() {
+        dialogWait.dismiss();
+        new LovelyInfoDialog(AddGroupActivity.this) {
+            @Override
+            public LovelyInfoDialog setConfirmButtonText(String text) {
+                findView(com.yarolegovich.lovelydialog.R.id.ld_btn_confirm).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dismiss();
+                    }
+                });
+                return super.setConfirmButtonText(text);
+            }
+        }
+                .setTopColorRes(R.color.colorAccent)
+                .setIcon(R.drawable.ic_add_group_dialog)
+                .setTitle("False")
+                .setMessage("Cannot connect database")
+                .setCancelable(false)
+                .setConfirmButtonText("Ok")
+                .show();
+    }
+
+
 }
 
 class ListPeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

@@ -69,7 +69,7 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
                             if (task.isSuccessful()) {
                                 List<String> rooms = new ArrayList<>();
                                 for (DocumentSnapshot document : task.getResult()) {
-                                        if (document.get("roomId") != null) {
+                                        if (document.get("roomId") != null && !rooms.contains(document.get("roomId"))) {
                                             rooms.add(document.getString("roomId"));
                                         }
                                 }
