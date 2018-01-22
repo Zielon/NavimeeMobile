@@ -91,4 +91,8 @@ public class User {
     public void setBigEventsNotification(boolean bigEventsNotification) {
         this.bigEventsNotification = bigEventsNotification;
     }
+
+    public boolean isDefaultAvatar(){
+        return this.avatar.equals(DEFAULT_AVATAR);
+    }
 }

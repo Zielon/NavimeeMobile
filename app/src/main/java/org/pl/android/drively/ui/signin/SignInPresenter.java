@@ -8,7 +8,6 @@ import com.kelvinapps.rxfirebase.RxFirebaseUser;
 
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.User;
-import org.pl.android.drively.data.model.chat.ChatUser;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
@@ -126,7 +125,6 @@ public class SignInPresenter extends BasePresenter<SignInMvpView> {
                         return;
                     }
                     if (documentSnapshot != null && documentSnapshot.exists()) {
-                        // Timber.d("Current data: " + snapshot.getData());
                        User user =  documentSnapshot.toObject(User.class);
                        mDataManager.getPreferencesHelper().saveUserInfo(user);
                     }

@@ -2,10 +2,8 @@ package org.pl.android.drively.ui.settings.user;
 
 import android.net.Uri;
 
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.kelvinapps.rxfirebase.RxFirebaseStorage;
@@ -55,23 +53,18 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
         return firebaseUser.getDisplayName();
     }
 
-
-    public Task<QuerySnapshot> getAvatarQuery(){
-        return firebaseFirestore.collection(FirebasePaths.USERS).whereEqualTo("email", firebaseUser.getEmail()).get();
-    }
-
-    public StorageReference getStorageReference(String avatar ){
+    public StorageReference getStorageReference(String avatar) {
         return firebaseStorage.getReference().child(String.format("%s/%s", AVATARS, avatar));
     }
 
-    public void setNewAvatar(Uri uri, User user){
+    public void setNewAvatar(Uri uri, User user) {
         String avatar = this.firebaseUser.getEmail().replace('.', '_');
         user.setAvatar(avatar);
         String path = String.format("%s/%s", AVATARS, avatar);
         RxFirebaseStorage.putFile(firebaseStorage.getReference().child(path), uri)
                 .subscribe(
                         sub -> firebaseFirestore.collection(FirebasePaths.USERS)
-                                .document(user.getId()).set(user)
+                                .document(user.getId()).update("avatar", user.getAvatar())
                                 .addOnSuccessListener(task -> _mvpView.reloadAvatar()),
                         throwable -> _mvpView.onError());
     }

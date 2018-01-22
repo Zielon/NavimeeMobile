@@ -7,7 +7,6 @@ import com.kelvinapps.rxfirebase.RxFirebaseUser;
 
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.ui.base.BasePresenter;
-import org.pl.android.drively.ui.settings.user.UserSettingsChangeMvpView;
 
 import javax.inject.Inject;
 

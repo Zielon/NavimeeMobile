@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.ui.base.BaseActivity;
-import org.pl.android.drively.ui.settings.user.UserSettingsChangeMvpView;
 import org.pl.android.drively.util.HideKeyboard;
 
 import javax.inject.Inject;

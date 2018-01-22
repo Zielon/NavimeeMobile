@@ -13,11 +13,11 @@ import java.io.IOException;
 
 public class InternalStorageManager {
 
-    public static String AVATARS_DICTIONARY = "AVATARS";
+    public static String IMAGES_DICTIONARY = "IMAGES";
 
-    public static String saveBitmap(String DICTIONARY, String FILENAME, Bitmap bitmap, Context context){
+    public static String saveBitmap(String FILENAME, Bitmap bitmap, Context context){
         ContextWrapper cw = new ContextWrapper(context);
-        File directory = cw.getDir(DICTIONARY, Context.MODE_PRIVATE);
+        File directory = cw.getDir(IMAGES_DICTIONARY, Context.MODE_PRIVATE);
         File file = new File(directory,FILENAME);
 
         FileOutputStream fos = null;
@@ -37,8 +37,8 @@ public class InternalStorageManager {
         return directory.getAbsolutePath();
     }
 
-    public static Bitmap readBitmap(String DICTIONARY, String FILENAME){
-        File f = new File(DICTIONARY, FILENAME);
+    public static Bitmap readBitmap(String FILENAME){
+        File f = new File(IMAGES_DICTIONARY, FILENAME);
         try {
             return BitmapFactory.decodeStream(new FileInputStream(f));
         } catch (FileNotFoundException e) {

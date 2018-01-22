@@ -20,6 +20,7 @@ public class PreferencesHelper {
     private static String SHARE_KEY_NAME = "name";
     private static String SHARE_KEY_EMAIL = "email";
     private static String SHARE_KEY_AVATA = "avata";
+    private static String SHARE_KEY_USER_ID = "id";
     private static String SHARE_KEY_UID = "uid";
 
 
@@ -88,6 +89,7 @@ public class PreferencesHelper {
         e.putString(SHARE_KEY_NAME, user.getName());
         e.putString(SHARE_KEY_EMAIL, user.getEmail());
         e.putString(SHARE_KEY_AVATA, user.getAvatar());
+        e.putString(SHARE_KEY_USER_ID, user.getId());
         e.putString(SHARE_KEY_UID, Const.UID);
         e.apply();
     }
@@ -96,12 +98,15 @@ public class PreferencesHelper {
 
         String userName = mPref.getString(SHARE_KEY_NAME, "");
         String email = mPref.getString(SHARE_KEY_EMAIL, "");
-        String avatar = mPref.getString(SHARE_KEY_AVATA, "default");
+        String avatar = mPref.getString(SHARE_KEY_AVATA, "DEFAULT");
+        String id = mPref.getString(SHARE_KEY_USER_ID, "");
 
-       User user = new User();
+        User user = new User();
+
         user.setName(userName);
         user.setEmail(email);
         user.setAvatar(avatar);
+        user.setId(id);
 
         return user;
     }
@@ -109,7 +114,4 @@ public class PreferencesHelper {
     public String getUID(){
         return mPref.getString(SHARE_KEY_UID, "");
     }
-
-
-
 }
