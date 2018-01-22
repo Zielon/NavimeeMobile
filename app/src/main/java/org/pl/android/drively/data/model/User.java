@@ -14,6 +14,10 @@ public class User {
     private String avatar;
     private String token;
 
+    public User(){
+        this.avatar = "DEFAULT";
+    }
+
     public boolean isDayScheduleNotification() {
         return dayScheduleNotification;
     }
