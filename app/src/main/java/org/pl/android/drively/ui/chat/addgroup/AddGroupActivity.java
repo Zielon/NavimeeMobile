@@ -101,10 +101,10 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
             @Override
             public void onClick(View view) {
                 if (listIDChoose.size() < 3) {
-                    Toast.makeText(AddGroupActivity.this, "Add at lease two people to create group", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddGroupActivity.this, getResources().getString(R.string.at_least_two), Toast.LENGTH_SHORT).show();
                 } else {
                     if (editTextGroupName.getText().length() == 0) {
-                        Toast.makeText(AddGroupActivity.this, "Enter group name", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddGroupActivity.this,getResources().getString(R.string.enter_group_name), Toast.LENGTH_SHORT).show();
                     } else {
                         if (isEditGroup) {
                             editGroup();
@@ -157,7 +157,7 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
     private void createGroup() {
         //Show dialog wait
         dialogWait.setIcon(R.drawable.ic_add_group_dialog)
-                .setTitle("Registering....")
+                .setTitle(getResources().getString(R.string.registering))
                 .setTopColorRes(R.color.colorPrimary)
                 .show();
 
@@ -186,7 +186,7 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
         if (userIndex == listIDChoose.size()) {
             if (!isEditGroup) {
                 dialogWait.dismiss();
-                Toast.makeText(this, "Create group success", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.create_group_success), Toast.LENGTH_SHORT).show();
                 setResult(RESULT_OK, null);
                 this.finish();
             } else {
@@ -213,8 +213,8 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
                 }
                 .setTopColorRes(R.color.colorAccent)
                 .setIcon(R.drawable.ic_add_group_dialog)
-                .setTitle("False")
-                .setMessage("Create group false")
+                .setTitle(getResources().getString(R.string.failure))
+                .setMessage(getResources().getString(R.string.create_group_failure))
                 .setCancelable(false)
                 .setConfirmButtonText("Ok")
                 .show();
@@ -243,7 +243,7 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
         }
                 .setTopColorRes(R.color.colorAccent)
                 .setIcon(R.drawable.ic_add_group_dialog)
-                .setTitle("False")
+                .setTitle(getResources().getString(R.string.failure))
                 .setMessage("Cannot connect database")
                 .setCancelable(false)
                 .setConfirmButtonText("Ok")
@@ -272,8 +272,8 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
         }
                 .setTopColorRes(R.color.colorAccent)
                 .setIcon(R.drawable.ic_add_group_dialog)
-                .setTitle("False")
-                .setMessage("Cannot connect database")
+                .setTitle(getResources().getString(R.string.failure))
+                .setMessage(getResources().getString(R.string.delete_group_failure))
                 .setCancelable(false)
                 .setConfirmButtonText("Ok")
                 .show();
@@ -334,7 +334,7 @@ class ListPeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 if (listIDChoose.size() >= 3) {
                     btnAddGroup.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
                 } else {
-                    btnAddGroup.setBackgroundColor(context.getResources().getColor(R.color.iron));
+                    btnAddGroup.setBackgroundColor(context.getResources().getColor(R.color.primary));
                 }
             }
         });
