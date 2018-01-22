@@ -217,12 +217,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         //Check xem da ton tai id trong danh sach id chua
         if (listFriendID.contains(idFriend)) {
             dialogWait.dismiss();
-            new LovelyInfoDialog(getContext())
-                    .setTopColorRes(R.color.colorPrimary)
-                    .setIcon(R.drawable.ic_add_friend)
-                    .setTitle("Friend")
-                    .setMessage("ChatUser "+userInfo.email + " has been friend")
-                    .show();
         } else {
             addFriend(idFriend, true);
             listFriendID.add(idFriend);
@@ -244,8 +238,8 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             new LovelyInfoDialog(getContext())
                     .setTopColorRes(R.color.colorPrimary)
                     .setIcon(R.drawable.ic_add_friend)
-                    .setTitle("Success")
-                    .setMessage("Add friend success")
+                    .setTitle(getResources().getString(R.string.success))
+                    .setMessage(getResources().getString(R.string.add_friend_success))
                     .show();
         }
     }
@@ -262,8 +256,8 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         new LovelyInfoDialog(getContext())
                 .setTopColorRes(R.color.colorAccent)
                 .setIcon(R.drawable.ic_add_friend)
-                .setTitle("False")
-                .setMessage("False to add friend success")
+                .setTitle(getResources().getString(R.string.failure))
+                .setMessage(getResources().getString(R.string.add_friend_failure))
                 .show();
     }
 
@@ -284,8 +278,8 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         dialogWaitDeleting.dismiss();
         new LovelyInfoDialog(getContext())
                 .setTopColorRes(R.color.colorAccent)
-                .setTitle("Error")
-                .setMessage("Error occurred during deleting friend")
+                .setTitle(getResources().getString(R.string.failure))
+                .setMessage(getResources().getString(R.string.delete_friend_failure))
                 .show();
     }
 
@@ -295,8 +289,8 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
         new LovelyInfoDialog(getContext())
                 .setTopColorRes(R.color.colorAccent)
-                .setTitle("Success")
-                .setMessage("Friend deleting successfully")
+                .setTitle(getResources().getString(R.string.success))
+                .setMessage(getResources().getString(R.string.delete_friend_success))
                 .show();
 
         Intent intentDeleted = new Intent(FriendsFragment.ACTION_DELETE_FRIEND);
@@ -337,8 +331,8 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         public void onClick(final View view) {
 
             FriendSearchDialogCompat searchDialogCompat =
-                    new FriendSearchDialogCompat(view.getContext(), "Find friends...",
-                    "What are you looking for...?", null, new ArrayList<>(),
+                    new FriendSearchDialogCompat(view.getContext(), getResources().getString(R.string.find_friends),
+                            getResources().getString(R.string.find_friends_who), null, new ArrayList<>(),
                     (dialog, item, position) -> {
                         if (item.getId().equals(mFriendsPresenter.getId())) {
                             Toast.makeText(view.getContext(), "Email not valid",
@@ -494,14 +488,14 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         String friendName = (String)((ItemFriendViewHolder) holder).txtName.getText();
 
                         new AlertDialog.Builder(context)
-                                .setTitle("Delete Friend")
-                                .setMessage("Are you sure want to delete "+friendName+ "?")
+                                .setTitle(context.getResources().getString(R.string.delete_friend))
+                                .setMessage(context.getResources().getString(R.string.delete_friend_sure)+" "+friendName+ " ?")
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         dialogInterface.dismiss();
                                         final String idFriendRemoval = listFriend.getListFriend().get(position).id;
-                                        dialogWaitDeleting.setTitle("Deleting...")
+                                        dialogWaitDeleting.setTitle(context.getResources().getString(R.string.deleting))
                                                 .setCancelable(false)
                                                 .setTopColorRes(R.color.colorAccent)
                                                 .show();
@@ -649,8 +643,8 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             dialogWaitDeleting.dismiss();
             new LovelyInfoDialog(context)
                     .setTopColorRes(R.color.colorPrimary)
-                    .setTitle("Error")
-                    .setMessage("Error occurred during deleting friend")
+                    .setTitle(context.getResources().getString(R.string.failure))
+                    .setMessage(context.getResources().getString(R.string.delete_friend_failure))
                     .show();
         }
     }

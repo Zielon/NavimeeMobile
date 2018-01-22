@@ -27,7 +27,6 @@
             android:layout_weight="1"
             android:gravity="bottom"
             android:text="Nguyen Binh"
-            android:textColor="@color/primary_dark"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <TextView
@@ -36,14 +35,12 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="top"
-            android:textColor="@color/primary_dark"
             android:text="Nguyen Binh"
             android:textAppearance="?android:attr/textAppearanceSmall"/>
     </LinearLayout>
 
     <CheckBox
         android:id="@+id/checkAddPeople"
-        android:buttonTint="@color/primary_dark"
         android:layout_width="0dp"
         android:layout_height="20dp"
         android:layout_weight="1" />

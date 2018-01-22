@@ -77,4 +77,20 @@
     <string name="chat">чат</string>
     <string name="enter_group_name">Введіть назву групи</string>
     <string name="create_group">Створити групу</string>
+    <string name="success">Успіх</string>
+    <string name="add_friend_success">Користувач був успішно доданий</string>
+    <string name="failure">Невдача</string>
+    <string name="add_friend_failure">Помилка додавання користувача</string>
+    <string name="delete_friend_success">Користувача було успішно видалено</string>
+    <string name="delete_friend_failure">Помилка видалення користувача</string>
+    <string name="find_friends">Знайти користувачів...</string>
+    <string name="find_friends_who">Кого ти шукаєш...?</string>
+    <string name="delete_friend">Видалити користувача</string>
+    <string name="delete_friend_sure">Ви впевнені, що хочете видалити </string>
+    <string name="deleting">Видалення ...</string>
+    <string name="at_least_two">Додайте щонайменше двох людей для створення групи</string>
+    <string name="registering">реєструючий....</string>
+    <string name="create_group_success">Група була успішно створена</string>
+    <string name="create_group_failure">Помилка створення групи</string>
+    <string name="delete_group_failure">Помилка видалення групи</string>
 </resources>
