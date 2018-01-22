@@ -243,6 +243,9 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
         mSignInPresenter.saveUserInfo();
         progressDialog.dismiss();
         setResult(RESULT_OK, null);
+
+
+
         finish();
     }
 

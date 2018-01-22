@@ -31,7 +31,9 @@ import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.settings.user.email.UserEmailChangeActivity;
 import org.pl.android.drively.ui.settings.user.name.UserNameChangeActivity;
 import org.pl.android.drively.ui.settings.user.password.UserPasswordChangeActivity;
+import org.pl.android.drively.util.InternalStorageManager;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,7 +74,7 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
         activityComponent().inject(UserSettingsActivity.this);
         ButterKnife.bind(this);
         avatarChangeText.setVisibility(View.INVISIBLE);
-        avatarMaxSize.setVisibility(View.VISIBLE);
+        avatarMaxSize.setVisibility(View.INVISIBLE);
 
         _userSettingsPresenter.attachView(this);
         _savedInstanceState = savedInstanceState;
