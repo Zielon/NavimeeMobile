@@ -11,7 +11,7 @@ import com.kelvinapps.rxfirebase.RxFirebaseAuth;
 import com.kelvinapps.rxfirebase.RxFirebaseUser;
 
 import org.pl.android.drively.data.DataManager;
-import org.pl.android.drively.data.model.chat.User;
+import org.pl.android.drively.data.model.chat.ChatUser;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.Const;
 import org.reactivestreams.Subscription;
@@ -127,8 +127,8 @@ public class SignInPresenter extends BasePresenter<SignInMvpView> {
                         }
                         if (documentSnapshot != null && documentSnapshot.exists()) {
                             // Timber.d("Current data: " + snapshot.getData());
-                           User user =  documentSnapshot.toObject(User.class);
-                           mDataManager.getPreferencesHelper().saveUserInfo(user);
+                           ChatUser chatUser =  documentSnapshot.toObject(ChatUser.class);
+                           mDataManager.getPreferencesHelper().saveUserInfo(chatUser);
                         }
                     }
                 });

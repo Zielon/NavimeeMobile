@@ -311,9 +311,9 @@ class ListPeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((ItemFriendHolder) holder).txtName.setText(listFriend.getListFriend().get(position).name);
-        ((ItemFriendHolder) holder).txtEmail.setText(listFriend.getListFriend().get(position).email);
-        String avata = listFriend.getListFriend().get(position).avata;
+        ((ItemFriendHolder) holder).txtName.setText(listFriend.getListFriend().get(position).getName());
+        ((ItemFriendHolder) holder).txtEmail.setText(listFriend.getListFriend().get(position).getEmail());
+        String avata = listFriend.getListFriend().get(position).getAvatar();
         final String id = listFriend.getListFriend().get(position).id;
         if (!avata.equals(Const.STR_DEFAULT_BASE64)) {
             byte[] decodedString = Base64.decode(avata, Base64.DEFAULT);

@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.pl.android.drively.data.model.chat.User;
+import org.pl.android.drively.data.model.chat.ChatUser;
 import org.pl.android.drively.injection.ApplicationContext;
 import org.pl.android.drively.util.Const;
 
@@ -83,27 +83,27 @@ public class PreferencesHelper {
         e.apply();
     }
 
-    public void saveUserInfo(User user) {
+    public void saveUserInfo(ChatUser chatUser) {
         SharedPreferences.Editor e = mPref.edit();
-        e.putString(SHARE_KEY_NAME, user.name);
-        e.putString(SHARE_KEY_EMAIL, user.email);
-        e.putString(SHARE_KEY_AVATA, user.avata);
+        e.putString(SHARE_KEY_NAME, chatUser.getName());
+        e.putString(SHARE_KEY_EMAIL, chatUser.getEmail());
+        e.putString(SHARE_KEY_AVATA, chatUser.getAvatar());
         e.putString(SHARE_KEY_UID, Const.UID);
         e.apply();
     }
 
-    public User getUserInfo(){
+    public ChatUser getUserInfo(){
 
         String userName = mPref.getString(SHARE_KEY_NAME, "");
         String email = mPref.getString(SHARE_KEY_EMAIL, "");
         String avatar = mPref.getString(SHARE_KEY_AVATA, "default");
 
-        User user = new User();
-        user.name = userName;
-        user.email = email;
-        user.avata = avatar;
+        ChatUser chatUser = new ChatUser();
+        chatUser.setName(userName);
+        chatUser.setEmail(email);
+        chatUser.setAvatar(avatar);
 
-        return user;
+        return chatUser;
     }
 
     public String getUID(){
