@@ -1,21 +1,23 @@
 package org.pl.android.drively.data.model;
 
-
-import java.util.Date;
-
 public class User {
 
     private boolean dayScheduleNotification;
+    private boolean bigEventsNotification;
     private String email;
     private String id;
     private boolean isOnline;
     private String name;
-    private Date timestamp;
+    private Long timestamp;
     private String avatar;
     private String token;
 
+    public static final String DEFAULT_AVATAR = "DEFAULT.png";
+
     public User(){
-        this.avatar = "DEFAULT";
+        this.avatar = DEFAULT_AVATAR;
+        this.dayScheduleNotification = true;
+        this.bigEventsNotification = true;
     }
 
     public boolean isDayScheduleNotification() {
@@ -58,16 +60,16 @@ public class User {
         this.name = name;
     }
 
-    public Date getTimestamp() {
+    public Long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
 
     public String getAvatar() {
-        return avatar;
+        return avatar == null ? DEFAULT_AVATAR : avatar;
     }
 
     public void setAvatar(String avatar) {
@@ -80,5 +82,13 @@ public class User {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public boolean isBigEventsNotification() {
+        return bigEventsNotification;
+    }
+
+    public void setBigEventsNotification(boolean bigEventsNotification) {
+        this.bigEventsNotification = bigEventsNotification;
     }
 }

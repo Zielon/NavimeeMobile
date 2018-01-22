@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
@@ -16,6 +17,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import org.pl.android.drively.R;
+import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.settings.user.email.UserEmailChangeActivity;
 import org.pl.android.drively.ui.settings.user.name.UserNameChangeActivity;
@@ -54,10 +56,16 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
         _userSettingsPresenter.attachView(this);
         _savedInstanceState = savedInstanceState;
 
-        Glide.with(this)
-                .using(new FirebaseImageLoader())
-                .load(_userSettingsPresenter.getAvatarReference())
-                .into(avatarView);
+        _userSettingsPresenter.getAvatarQuery().addOnSuccessListener(task -> {
+            for (DocumentSnapshot document : task.getDocuments()) {
+                User user = document.toObject(User.class);
+                Glide.with(this)
+                        .using(new FirebaseImageLoader())
+                        .load(_userSettingsPresenter.getStorageReference(user.getAvatar()))
+                        .into(avatarView);
+                break;
+            }
+        });
 
         initDrawer();
     }
@@ -87,7 +95,7 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
     public void reloadAvatar() {
         Glide.with(this)
                 .using(new FirebaseImageLoader())
-                .load(_userSettingsPresenter.getAvatarReference())
+                .load(_userSettingsPresenter.getStorageReference(""))
                 .into(avatarView);
     }
 

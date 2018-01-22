@@ -2,7 +2,10 @@ package org.pl.android.drively.ui.settings.user;
 
 import android.net.Uri;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.kelvinapps.rxfirebase.RxFirebaseStorage;
@@ -11,6 +14,7 @@ import org.apache.commons.collections4.ListUtils;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.ExternalProviders;
+import org.pl.android.drively.util.FirebasePaths;
 
 import java.util.List;
 
@@ -22,15 +26,14 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
 
     private FirebaseUser firebaseUser;
     private FirebaseStorage firebaseStorage;
+    private FirebaseFirestore firebaseFirestore;
     private UserSettingsChangeMvpView _mvpView;
-
-    private String AVATAR_PATH;
 
     @Inject
     public UserSettingsPresenter(DataManager dataManager) {
         this.firebaseUser = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
         this.firebaseStorage = dataManager.getFirebaseService().getFirebaseStorage();
-        AVATAR_PATH = String.format("%s/%s", AVATARS, firebaseUser.getEmail());
+        this.firebaseFirestore = dataManager.getFirebaseService().getFirebaseFirestore();
     }
 
     @Override
@@ -51,12 +54,17 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
         return firebaseUser.getDisplayName();
     }
 
-    public StorageReference getAvatarReference(){
-        return firebaseStorage.getReference().child(AVATAR_PATH);
+
+    public Task<QuerySnapshot> getAvatarQuery(){
+        return firebaseFirestore.collection(FirebasePaths.USERS).whereEqualTo("email", firebaseUser.getEmail()).get();
+    }
+
+    public StorageReference getStorageReference(String avatar ){
+        return firebaseStorage.getReference().child(String.format("%s/%s", AVATARS, avatar));
     }
 
     public void setNewAvatar(Uri uri){
-        RxFirebaseStorage.putFile(firebaseStorage.getReference().child(AVATAR_PATH), uri)
+        RxFirebaseStorage.putFile(firebaseStorage.getReference().child(""), uri)
                 .subscribe(sub -> _mvpView.reloadAvatar(), throwable -> _mvpView.onError());
     }
 
