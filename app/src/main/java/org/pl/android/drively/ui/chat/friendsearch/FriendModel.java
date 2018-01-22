@@ -11,9 +11,9 @@ public class FriendModel implements Searchable {
 
 
     public FriendModel(ChatUser chatUser) {
-        name = chatUser.getName();
-        email = chatUser.getEmail();
-        id = chatUser.getId();
+        name = chatUser.name;
+        email = chatUser.email;
+        id = chatUser.id;
     }
 
     @Override

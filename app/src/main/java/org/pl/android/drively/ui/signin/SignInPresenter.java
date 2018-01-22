@@ -127,8 +127,8 @@ public class SignInPresenter extends BasePresenter<SignInMvpView> {
                     }
                     if (documentSnapshot != null && documentSnapshot.exists()) {
                         // Timber.d("Current data: " + snapshot.getData());
-                       ChatUser chatUser =  documentSnapshot.toObject(ChatUser.class);
-                       mDataManager.getPreferencesHelper().saveUserInfo(chatUser);
+                       User user =  documentSnapshot.toObject(User.class);
+                       mDataManager.getPreferencesHelper().saveUserInfo(user);
                     }
                 });
     }

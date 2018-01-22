@@ -35,10 +35,10 @@ public final class FriendDB {
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(FeedEntry.COLUMN_NAME_ID, friend.id);
-        values.put(FeedEntry.COLUMN_NAME_NAME, friend.getName());
-        values.put(FeedEntry.COLUMN_NAME_EMAIL, friend.getEmail());
+        values.put(FeedEntry.COLUMN_NAME_NAME, friend.name);
+        values.put(FeedEntry.COLUMN_NAME_EMAIL, friend.email);
         values.put(FeedEntry.COLUMN_NAME_ID_ROOM, friend.idRoom);
-        values.put(FeedEntry.COLUMN_NAME_AVATA, friend.getAvatar());
+        values.put(FeedEntry.COLUMN_NAME_AVATA, friend.avata);
         // Insert the new row, returning the primary key value of the new row
         return db.insert(FeedEntry.TABLE_NAME, null, values);
     }
@@ -60,10 +60,10 @@ public final class FriendDB {
             while (cursor.moveToNext()) {
                 Friend friend = new Friend();
                 friend.id = cursor.getString(0);
-                friend.setName(cursor.getString(1));
-                friend.setEmail(cursor.getString(2));
+                friend.name = cursor.getString(1);
+                friend.email = cursor.getString(2);
                 friend.idRoom = cursor.getString(3);
-                friend.setAvatar(cursor.getString(4));
+                friend.avata = cursor.getString(4);
                 listFriend.getListFriend().add(friend);
             }
             cursor.close();
