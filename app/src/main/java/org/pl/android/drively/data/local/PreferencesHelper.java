@@ -19,7 +19,7 @@ public class PreferencesHelper {
     private static String SHARE_USER_INFO = "userinfo";
     private static String SHARE_KEY_NAME = "name";
     private static String SHARE_KEY_EMAIL = "email";
-    private static String SHARE_KEY_AVATA = "avata";
+    private static String SHARE_KEY_AVATA = "avatar";
     private static String SHARE_KEY_USER_ID = "id";
     private static String SHARE_KEY_UID = "uid";
 

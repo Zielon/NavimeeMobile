@@ -174,23 +174,18 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
     }
 
     public void getAllFriendInfo(int index, String id) {
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @SuppressLint("TimberArgCount")
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Timber.e("Listen failed.", e);
-                    return;
-                }
-                if (snapshot != null && snapshot.exists()) {
-                    Friend friend = snapshot.toObject(Friend.class);
-                    friend.idRoom = friend.id.compareTo(getId()) > 0 ? (getId() + friend.id).hashCode() + "" : "" + (friend.id + getId()).hashCode();
-                    if (getMvpView() != null) {
-                        getMvpView().friendInfoFound(index,friend);
-                    }
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(id).addSnapshotListener((snapshot, e) -> {
+            if (e != null) {
+                Timber.e("Listen failed.", e);
+                return;
+            }
+            if (snapshot != null && snapshot.exists()) {
+                Friend friend = snapshot.toObject(Friend.class);
+                friend.idRoom = friend.id.compareTo(getId()) > 0 ? (getId() + friend.id).hashCode() + "" : "" + (friend.id + getId()).hashCode();
+                if (getMvpView() != null) {
+                    getMvpView().friendInfoFound(index,friend);
                 }
             }
-
         });
     }
 

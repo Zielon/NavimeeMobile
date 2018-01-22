@@ -1,13 +1,13 @@
 package org.pl.android.drively.data.model.chat;
 
 public class ChatUser  {
+
     public String name;
     public String email;
-    public String avata;
+    public String avatar;
     public String id;
     public Status status;
     public Message message;
-
 
     public ChatUser(){
         status = new Status();
@@ -18,6 +18,6 @@ public class ChatUser  {
         message.idSender = "0";
         message.text = "";
         message.timestamp = 0;
-        avata = "default";
+        avatar = "DEFAULT";
     }
 }
