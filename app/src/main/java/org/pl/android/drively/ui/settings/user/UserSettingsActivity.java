@@ -1,10 +1,15 @@
 package org.pl.android.drively.ui.settings.user;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
@@ -12,6 +17,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import org.pl.android.drively.R;
+import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.settings.user.email.UserEmailChangeActivity;
 import org.pl.android.drively.ui.settings.user.name.UserNameChangeActivity;
@@ -22,6 +28,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import agency.tango.android.avatarview.views.AvatarView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 public class UserSettingsActivity extends BaseActivity implements UserSettingsChangeMvpView {
@@ -30,15 +40,32 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
     UserSettingsPresenter _userSettingsPresenter;
     private Drawer _drawer = null;
     private Bundle _savedInstanceState;
+    private int PICK_IMAGE_REQUEST = 1;
+    private int CHANGE_SETTINGS = 2;
+
+    @BindView(R.id.avatar)
+    AvatarView avatarView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_settings);
         activityComponent().inject(UserSettingsActivity.this);
+        ButterKnife.bind(this);
 
         _userSettingsPresenter.attachView(this);
         _savedInstanceState = savedInstanceState;
+
+        _userSettingsPresenter.getAvatarQuery().addOnSuccessListener(task -> {
+            for (DocumentSnapshot document : task.getDocuments()) {
+                User user = document.toObject(User.class);
+                Glide.with(this)
+                        .using(new FirebaseImageLoader())
+                        .load(_userSettingsPresenter.getStorageReference(user.getAvatar()))
+                        .into(avatarView);
+                break;
+            }
+        });
 
         initDrawer();
     }
@@ -46,7 +73,10 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK)
-            initDrawer();
+            if (requestCode == PICK_IMAGE_REQUEST && data != null && data.getData() != null)
+                _userSettingsPresenter.setNewAvatar(data.getData());
+            else
+                initDrawer();
         else
             _drawer.setSelection(-1);
     }
@@ -61,6 +91,23 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
 
     }
 
+    @Override
+    public void reloadAvatar() {
+        Glide.with(this)
+                .using(new FirebaseImageLoader())
+                .load(_userSettingsPresenter.getStorageReference(""))
+                .into(avatarView);
+    }
+
+    @OnClick(R.id.avatar)
+    public void changeAvatar() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void initDrawer() {
 
         Drawable grayBackground = getResources().getDrawable(R.drawable.primary);
@@ -101,7 +148,7 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
                         }
 
                         if (intent != null) {
-                            UserSettingsActivity.this.startActivityForResult(intent, 1);
+                            UserSettingsActivity.this.startActivityForResult(intent, CHANGE_SETTINGS);
                         }
                     }
                     return false;

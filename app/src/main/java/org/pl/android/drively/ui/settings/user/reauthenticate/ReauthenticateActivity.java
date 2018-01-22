@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
 import static org.pl.android.drively.util.UserInputValidation.isEmailValid;
 import static org.pl.android.drively.util.UserInputValidation.isPasswordValid;
 
-public class ReauthenticateActivity extends BaseActivity implements UserSettingsChangeMvpView {
+public class ReauthenticateActivity extends BaseActivity implements ReauthenticateMvpView {
 
     @BindView(R.id.input_email)
     EditText _emailText;

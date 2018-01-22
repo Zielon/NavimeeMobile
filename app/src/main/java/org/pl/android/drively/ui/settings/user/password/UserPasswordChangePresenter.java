@@ -10,10 +10,10 @@ import org.pl.android.drively.ui.settings.user.UserSettingsChangeMvpView;
 
 import javax.inject.Inject;
 
-public class UserPasswordChangePresenter extends BasePresenter<UserSettingsChangeMvpView> {
+public class UserPasswordChangePresenter extends BasePresenter<UserPasswordChangeMvpView> {
 
     private final DataManager _dataManager;
-    private UserSettingsChangeMvpView _mvpView;
+    private UserPasswordChangeMvpView _mvpView;
 
     @Inject
     public UserPasswordChangePresenter(DataManager dataManager) {
@@ -21,7 +21,7 @@ public class UserPasswordChangePresenter extends BasePresenter<UserSettingsChang
     }
 
     @Override
-    public void attachView(UserSettingsChangeMvpView mvpView) {
+    public void attachView(UserPasswordChangeMvpView mvpView) {
         _mvpView = mvpView;
     }
 
