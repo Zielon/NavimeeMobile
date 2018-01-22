@@ -209,7 +209,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                     Toast.makeText(getActivity(), "You are not admin", Toast.LENGTH_LONG).show();
                 }
                 break;
-            case CONTEXT_MENU_EDIT:
+          /*  case CONTEXT_MENU_EDIT:
                 int posGroup1 = item.getIntent().getIntExtra(CONTEXT_MENU_KEY_INTENT_DATA_POS, -1);
                 if(((String)listGroup.get(posGroup1).groupInfo.get("admin")).equals(mGroupPresenter.getId())) {
                      Intent intent = new Intent(getContext(), AddGroupActivity.class);
@@ -219,7 +219,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                     Toast.makeText(getActivity(), "You are not admin", Toast.LENGTH_LONG).show();
                 }
 
-                break;
+                break;*/
 
             case CONTEXT_MENU_LEAVE:
                 int position = item.getIntent().getIntExtra(CONTEXT_MENU_KEY_INTENT_DATA_POS, -1);
@@ -423,7 +423,7 @@ class ItemGroupViewHolder extends RecyclerView.ViewHolder implements View.OnCrea
         menu.setHeaderTitle((String) ((Object[])btnMore.getTag())[0]);
         Intent data = new Intent();
         data.putExtra(GroupFragment.CONTEXT_MENU_KEY_INTENT_DATA_POS, (Integer) ((Object[])btnMore.getTag())[1]);
-        menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_EDIT, Menu.NONE, "Edit group").setIntent(data);
+        //menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_EDIT, Menu.NONE, "Edit group").setIntent(data);
         menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_DELETE, Menu.NONE, "Delete group").setIntent(data);
         menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_LEAVE, Menu.NONE, "Leave group").setIntent(data);
     }

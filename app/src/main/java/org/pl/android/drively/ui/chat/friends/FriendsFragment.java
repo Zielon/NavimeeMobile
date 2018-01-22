@@ -221,7 +221,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                     .setTopColorRes(R.color.colorPrimary)
                     .setIcon(R.drawable.ic_add_friend)
                     .setTitle("Friend")
-                    .setMessage("ChatUser "+userInfo.getEmail() + " has been friend")
+                    .setMessage("ChatUser "+userInfo.email + " has been friend")
                     .show();
         } else {
             addFriend(idFriend, true);
@@ -345,8 +345,8 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             Friend friend = new Friend();
-                            friend.setName(item.getName());
-                            friend.setEmail(item.getEmail());
+                            friend.name = item.getName();
+                            friend.email = item.getEmail();
                             friend.id = item.getId();
                             friend.idRoom = item.getId().compareTo(mFriendsPresenter.getId()) > 0 ? (mFriendsPresenter.getId() + item.getId()).hashCode() + "" : "" + (item.getId() + mFriendsPresenter.getId()).hashCode();
                             checkBeforAddFriend(item.getId(), friend);
@@ -456,10 +456,10 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-        final String name = listFriend.getListFriend().get(position).getName();
+        final String name = listFriend.getListFriend().get(position).name;
         final String id = listFriend.getListFriend().get(position).id;
         final String idRoom = listFriend.getListFriend().get(position).idRoom;
-        final String avata = listFriend.getListFriend().get(position).getAvatar();
+        final String avata = listFriend.getListFriend().get(position).avata;
         ((ItemFriendViewHolder) holder).txtName.setText(name);
 
         ((View) ((ItemFriendViewHolder) holder).txtName.getParent().getParent().getParent())
@@ -590,10 +590,10 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 mapMark.put(id, true);
             }
         }
-        if (listFriend.getListFriend().get(position).getAvatar().equals(Const.STR_DEFAULT_BASE64)) {
+        if (listFriend.getListFriend().get(position).avata.equals(Const.STR_DEFAULT_BASE64)) {
             ((ItemFriendViewHolder) holder).avata.setImageResource(R.drawable.default_avata);
         } else {
-            byte[] decodedString = Base64.decode(listFriend.getListFriend().get(position).getAvatar(), Base64.DEFAULT);
+            byte[] decodedString = Base64.decode(listFriend.getListFriend().get(position).avata, Base64.DEFAULT);
             Bitmap src = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             ((ItemFriendViewHolder) holder).avata.setImageBitmap(src);
         }
