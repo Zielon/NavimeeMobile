@@ -12,7 +12,7 @@ public class User {
     private String avatar;
     private String token;
 
-    public static final String DEFAULT_AVATAR = "DEFAULT.png";
+    public static final String DEFAULT_AVATAR = "DEFAULT";
 
     public User(){
         this.avatar = DEFAULT_AVATAR;

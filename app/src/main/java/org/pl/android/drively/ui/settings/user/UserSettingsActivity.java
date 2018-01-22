@@ -2,12 +2,21 @@ package org.pl.android.drively.ui.settings.user;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.mikepenz.materialdrawer.Drawer;
@@ -40,11 +49,21 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
     UserSettingsPresenter _userSettingsPresenter;
     private Drawer _drawer = null;
     private Bundle _savedInstanceState;
+
     private int PICK_IMAGE_REQUEST = 1;
     private int CHANGE_SETTINGS = 2;
+    private long FILE_MAX_SIZE_1_MB = 1000000;
+
+    private User user;
 
     @BindView(R.id.avatar)
     AvatarView avatarView;
+
+    @BindView(R.id.avatar_change)
+    TextView avatarChangeText;
+
+    @BindView(R.id.avatar_max_size)
+    TextView avatarMaxSize;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,33 +71,61 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
         setContentView(R.layout.activity_user_settings);
         activityComponent().inject(UserSettingsActivity.this);
         ButterKnife.bind(this);
+        avatarChangeText.setVisibility(View.INVISIBLE);
+        avatarMaxSize.setVisibility(View.VISIBLE);
 
         _userSettingsPresenter.attachView(this);
         _savedInstanceState = savedInstanceState;
 
+        loadAvatar();
+        initDrawer();
+    }
+
+    private void loadAvatar(){
         _userSettingsPresenter.getAvatarQuery().addOnSuccessListener(task -> {
             for (DocumentSnapshot document : task.getDocuments()) {
                 User user = document.toObject(User.class);
+                this.user = user;
                 Glide.with(this)
                         .using(new FirebaseImageLoader())
                         .load(_userSettingsPresenter.getStorageReference(user.getAvatar()))
-                        .into(avatarView);
+                        .asBitmap()
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                avatarView.setImageBitmap(resource);
+                                avatarChangeText.setVisibility(View.VISIBLE);
+                                avatarMaxSize.setVisibility(View.VISIBLE);
+                            }
+                        });
                 break;
             }
         });
-
-        initDrawer();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK)
-            if (requestCode == PICK_IMAGE_REQUEST && data != null && data.getData() != null)
-                _userSettingsPresenter.setNewAvatar(data.getData());
+            if (requestCode == PICK_IMAGE_REQUEST && data != null && data.getData() != null && this.user != null)
+                if(checkSize(data.getData()))
+                    _userSettingsPresenter.setNewAvatar(data.getData(), this.user);
             else
                 initDrawer();
         else
             _drawer.setSelection(-1);
+    }
+
+    private boolean checkSize(Uri returnUri){
+        Cursor returnCursor =
+                getContentResolver().query(returnUri, null, null, null, null);
+
+        int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+        returnCursor.moveToFirst();
+        if(returnCursor.getLong(sizeIndex) > FILE_MAX_SIZE_1_MB){
+            Toast.makeText(getBaseContext(), "The file is too big!", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -93,10 +140,7 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
 
     @Override
     public void reloadAvatar() {
-        Glide.with(this)
-                .using(new FirebaseImageLoader())
-                .load(_userSettingsPresenter.getStorageReference(""))
-                .into(avatarView);
+        loadAvatar();
     }
 
     @OnClick(R.id.avatar)

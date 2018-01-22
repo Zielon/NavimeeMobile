@@ -12,6 +12,7 @@ import com.kelvinapps.rxfirebase.RxFirebaseStorage;
 
 import org.apache.commons.collections4.ListUtils;
 import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.ExternalProviders;
 import org.pl.android.drively.util.FirebasePaths;
@@ -63,9 +64,16 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
         return firebaseStorage.getReference().child(String.format("%s/%s", AVATARS, avatar));
     }
 
-    public void setNewAvatar(Uri uri){
-        RxFirebaseStorage.putFile(firebaseStorage.getReference().child(""), uri)
-                .subscribe(sub -> _mvpView.reloadAvatar(), throwable -> _mvpView.onError());
+    public void setNewAvatar(Uri uri, User user){
+        String avatar = this.firebaseUser.getEmail().replace('.', '_');
+        user.setAvatar(avatar);
+        String path = String.format("%s/%s", AVATARS, avatar);
+        RxFirebaseStorage.putFile(firebaseStorage.getReference().child(path), uri)
+                .subscribe(
+                        sub -> firebaseFirestore.collection(FirebasePaths.USERS)
+                                .document(user.getId()).set(user)
+                                .addOnSuccessListener(task -> _mvpView.reloadAvatar()),
+                        throwable -> _mvpView.onError());
     }
 
     public boolean isExternalProvider() {

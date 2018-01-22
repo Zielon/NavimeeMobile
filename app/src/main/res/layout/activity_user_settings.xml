@@ -23,7 +23,7 @@
         app:av_text_size_percentage="35" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/avatar_change"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
@@ -33,5 +33,16 @@
         android:layout_marginTop="25dp"
         android:textColor="@color/white"
         android:text="Click to change the avatar" />
+
+    <TextView
+        android:id="@+id/avatar_max_size"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:layout_below="@+id/avatar_change"
+        android:textSize="9sp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
+        android:text="(1 MB max size)" />
 
 </RelativeLayout>
