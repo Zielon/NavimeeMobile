@@ -6,6 +6,7 @@ import android.content.Context;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
 
 import javax.inject.Singleton;
 
@@ -14,9 +15,6 @@ import dagger.Provides;
 
 import org.pl.android.drively.injection.ApplicationContext;
 
-/**
- * Provide application-level dependencies.
- */
 @Module
 public class ApplicationModule {
     protected final Application mApplication;
@@ -51,7 +49,6 @@ public class ApplicationModule {
         return firebaseAuth;
     }
 
-
     @Provides
     @Singleton
     public FirebaseFirestore provideFirebaseFirestore() {
@@ -59,4 +56,10 @@ public class ApplicationModule {
         return firebaseFirestore;
     }
 
+    @Provides
+    @Singleton
+    public FirebaseStorage provideFirebaseStorage() {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        return storage;
+    }
 }

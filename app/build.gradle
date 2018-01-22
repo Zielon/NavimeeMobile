@@ -169,8 +169,10 @@ dependencies {
     compile "com.google.firebase:firebase-database:${FIREBASE_VERSION}"
     compile "com.google.firebase:firebase-messaging:${FIREBASE_VERSION}"
     compile "com.google.firebase:firebase-firestore:${FIREBASE_VERSION}"
+    compile "com.google.firebase:firebase-storage:${FIREBASE_VERSION}"
     compile 'com.kelvinapps:rxfirebase:0.0.15'
     compile 'com.firebase:geofire-android:2.1.3'
+
 
     //gui
     compile "com.github.apl-devs:appintro:$APP_INTRO_VERSION"
