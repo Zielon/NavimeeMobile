@@ -1,6 +1,6 @@
 package org.pl.android.drively.ui.chat.friendsearch;
 
-import org.pl.android.drively.data.model.chat.User;
+import org.pl.android.drively.data.model.chat.ChatUser;
 
 import ir.mirrajabi.searchdialog.core.Searchable;
 
@@ -10,10 +10,10 @@ public class FriendModel implements Searchable {
     private String id;
 
 
-    public FriendModel(User user) {
-        name = user.name;
-        email = user.email;
-        id = user.id;
+    public FriendModel(ChatUser chatUser) {
+        name = chatUser.getName();
+        email = chatUser.getEmail();
+        id = chatUser.getId();
     }
 
     @Override

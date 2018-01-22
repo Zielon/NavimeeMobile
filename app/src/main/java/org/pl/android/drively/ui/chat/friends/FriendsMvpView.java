@@ -1,7 +1,6 @@
 package org.pl.android.drively.ui.chat.friends;
 
 import org.pl.android.drively.data.model.chat.Friend;
-import org.pl.android.drively.data.model.chat.User;
 import org.pl.android.drively.ui.base.MvpView;
 
 import java.util.List;
