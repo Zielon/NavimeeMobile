@@ -17,7 +17,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class UserNameChangeActivity extends BaseActivity implements UserSettingsChangeMvpView {
+public class UserNameChangeActivity extends BaseActivity implements UserNameChangeMvpView {
 
     private static final int REQUEST_REAUTHENTICATE = 0;
     @BindView(R.id.save)

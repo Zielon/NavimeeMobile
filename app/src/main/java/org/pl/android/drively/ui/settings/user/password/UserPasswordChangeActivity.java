@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
 
 import static org.pl.android.drively.util.UserInputValidation.isPasswordValid;
 
-public class UserPasswordChangeActivity extends BaseActivity implements UserSettingsChangeMvpView {
+public class UserPasswordChangeActivity extends BaseActivity implements UserPasswordChangeMvpView {
 
     private static final int REQUEST_REAUTHENTICATE = 0;
     @BindView(R.id.save)

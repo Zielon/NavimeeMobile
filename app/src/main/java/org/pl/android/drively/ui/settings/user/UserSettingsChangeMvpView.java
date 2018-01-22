@@ -6,4 +6,6 @@ public interface UserSettingsChangeMvpView extends MvpView {
     void onSuccess();
 
     void onError();
+
+    void reloadAvatar();
 }
