@@ -143,7 +143,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             listFriendID = new ArrayList<>();
             dialogFindAllFriend.setCancelable(false)
                     .setIcon(R.drawable.ic_add_friend)
-                    .setTitle("Get all friend....")
+                    .setTitle(getResources().getString(R.string.get_all_friend))
                     .setTopColorRes(R.color.colorPrimary)
                     .show();
             getListFriendUId();
@@ -418,6 +418,9 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             dataListFriend.getListFriend().add(friend);
             FriendDB.getInstance(getContext()).addFriend(friend);
             getAllFriendInfo(index + 1);
+        } else {
+            dialogFindAllFriend.dismiss();
+            mSwipeRefreshLayout.setRefreshing(false);
         }
     }
 }
