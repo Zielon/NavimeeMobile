@@ -71,11 +71,19 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             ext.betaDistributionReleaseNotesFilePath =
                     file('../crashlytics_release_notes.txt').absolutePath
+
+            manifestPlaceholders = [
+                    googleMapApi: "AIzaSyAfjQ9cZtSGJn0CPOEkwgRTq6QAUUm7R9k"
+            ]
         }
 
         debug {
             versionNameSuffix " Debug"
             debuggable true
+
+            manifestPlaceholders = [
+                    googleMapApi: "AIzaSyAgXri9aa6FqmOejHuvFg_vd1TivnAkhds"
+            ]
         }
     }
 

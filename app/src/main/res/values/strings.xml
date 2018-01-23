@@ -61,7 +61,7 @@
     <!-- API Keys -->
     <string name="facebook_app_id">490316121339159</string>
     <string name="fb_login_protocol_scheme">fb490316121339159</string>
-    <string name="google_maps_key">AIzaSyCm3VEK4jjMA6jl0QkyfCn-qO3LYwoOKOs</string>
+
     <string name="yes_work">Yes, it worked</string>
     <string name="no_work">No, it not worked</string>
     <string name="no_drive">I did not drive there</string>
