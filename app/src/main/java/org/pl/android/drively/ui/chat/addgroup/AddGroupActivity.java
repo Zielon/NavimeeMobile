@@ -2,8 +2,10 @@ package org.pl.android.drively.ui.chat.addgroup;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.yarolegovich.lovelydialog.LovelyInfoDialog;
 import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 
@@ -128,7 +132,7 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
 
         recyclerListFriend = (RecyclerView) findViewById(R.id.recycleListFriend);
         recyclerListFriend.setLayoutManager(linearLayoutManager);
-        adapter = new ListPeopleAdapter(this, listFriend, btnAddGroup, listIDChoose, listIDRemove, isEditGroup, groupEdit);
+        adapter = new ListPeopleAdapter(this, listFriend, btnAddGroup, listIDChoose, listIDRemove, isEditGroup, groupEdit,this);
         recyclerListFriend.setAdapter(adapter);
 
 
@@ -290,8 +294,9 @@ class ListPeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Set<String> listIDRemove;
     private boolean isEdit;
     private Group editGroup;
+    private AddGroupActivity addGroupActivity;
 
-    public ListPeopleAdapter(Context context, ListFriend listFriend, LinearLayout btnAddGroup, Set<String> listIDChoose, Set<String> listIDRemove, boolean isEdit, Group editGroup) {
+    public ListPeopleAdapter(Context context, ListFriend listFriend, LinearLayout btnAddGroup, Set<String> listIDChoose, Set<String> listIDRemove, boolean isEdit, Group editGroup, AddGroupActivity addGroupActivity) {
         this.context = context;
         this.listFriend = listFriend;
         this.btnAddGroup = btnAddGroup;
@@ -300,6 +305,8 @@ class ListPeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         this.isEdit = isEdit;
         this.editGroup = editGroup;
+        this.addGroupActivity = addGroupActivity;
+
     }
 
     @Override
@@ -315,8 +322,20 @@ class ListPeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         String avata = listFriend.getListFriend().get(position).avatar;
         final String id = listFriend.getListFriend().get(position).id;
         if (!avata.equals(Const.STR_DEFAULT_BASE64)) {
-            byte[] decodedString = Base64.decode(avata, Base64.DEFAULT);
-            ((ItemFriendHolder) holder).avata.setImageBitmap(BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length));
+            this.addGroupActivity.mAddGroupPresenter.getStorageReference(avata)
+                    .getBytes(Const.ONE_MEGABYTE)
+                    .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            Bitmap src = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            ((ItemFriendHolder) holder).avata.setImageBitmap(src);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            ((ItemFriendHolder) holder).avata.setImageResource(R.drawable.default_avata);
+                        }
+                    });
         }else{
             ((ItemFriendHolder) holder).avata.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avata));
         }

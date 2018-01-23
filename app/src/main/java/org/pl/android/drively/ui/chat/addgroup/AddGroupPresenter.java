@@ -10,6 +10,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.StorageReference;
 
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.chat.Room;
@@ -192,5 +193,9 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
                     }
                 });
 
+    }
+
+    public StorageReference getStorageReference(String avatar) {
+        return  mDataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/"+avatar);
     }
 }
