@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/primary_dark"
     android:orientation="vertical">
 
 
@@ -51,8 +51,8 @@
         android:maxLines="1"
         android:paddingLeft="7dp"
         android:paddingRight="7dp"
-        android:textColor="@color/primary"
-        android:textColorHint="#aeafaf"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
         android:textSize="15sp" />
 
 </RelativeLayout>

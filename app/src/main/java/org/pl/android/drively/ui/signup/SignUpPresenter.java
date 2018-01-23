@@ -6,8 +6,10 @@ import com.kelvinapps.rxfirebase.RxFirebaseAuth;
 import com.kelvinapps.rxfirebase.RxFirebaseUser;
 
 import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.Const;
+import org.pl.android.drively.util.FirebasePaths;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,18 +60,16 @@ public class SignUpPresenter extends BasePresenter<SignUpMvpView> {
             String token = mDataManager.getPreferencesHelper().getValueString(Const.MESSAGING_TOKEN);
             String name = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getDisplayName();
 
-            Map<String, Object> user = new HashMap<>();
+            User user = new User();
 
-            user.put("token", token);
-            user.put("email", mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getEmail());
-            user.put("id", userId);
-            user.put("name", name);
-            user.put("bigEventsNotification", true);
-            user.put("dayScheduleNotification", true);
+            user.setToken(token);
+            user.setEmail(mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getEmail());
+            user.setId(userId);
+            user.setName(name);
 
             mDataManager.getFirebaseService()
                     .getFirebaseFirestore()
-                    .collection("USERS").document(userId)
+                    .collection(FirebasePaths.USERS).document(userId)
                     .set(user)
                     .addOnSuccessListener(aVoid -> Timber.i("DocumentSnapshot successfully written!"))
                     .addOnFailureListener(e -> Timber.w("Error writing document", e));

@@ -6,14 +6,13 @@ import com.kelvinapps.rxfirebase.RxFirebaseUser;
 
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.ui.base.BasePresenter;
-import org.pl.android.drively.ui.settings.user.UserSettingsChangeMvpView;
 
 import javax.inject.Inject;
 
-public class UserNameChangePresenter extends BasePresenter<UserSettingsChangeMvpView> {
+public class UserNameChangePresenter extends BasePresenter<UserNameChangeMvpView> {
 
     private final DataManager _dataManager;
-    private UserSettingsChangeMvpView _mvpView;
+    private UserNameChangeMvpView _mvpView;
 
     @Inject
     public UserNameChangePresenter(DataManager dataManager) {
@@ -21,7 +20,7 @@ public class UserNameChangePresenter extends BasePresenter<UserSettingsChangeMvp
     }
 
     @Override
-    public void attachView(UserSettingsChangeMvpView mvpView) {
+    public void attachView(UserNameChangeMvpView mvpView) {
         _mvpView = mvpView;
     }
 

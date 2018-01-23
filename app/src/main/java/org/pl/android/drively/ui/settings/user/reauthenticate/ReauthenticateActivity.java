@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.ui.base.BaseActivity;
-import org.pl.android.drively.ui.settings.user.UserSettingsChangeMvpView;
 import org.pl.android.drively.util.HideKeyboard;
 
 import javax.inject.Inject;
@@ -21,7 +20,7 @@ import butterknife.ButterKnife;
 import static org.pl.android.drively.util.UserInputValidation.isEmailValid;
 import static org.pl.android.drively.util.UserInputValidation.isPasswordValid;
 
-public class ReauthenticateActivity extends BaseActivity implements UserSettingsChangeMvpView {
+public class ReauthenticateActivity extends BaseActivity implements ReauthenticateMvpView {
 
     @BindView(R.id.input_email)
     EditText _emailText;

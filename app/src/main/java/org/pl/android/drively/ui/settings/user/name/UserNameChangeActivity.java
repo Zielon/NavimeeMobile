@@ -8,7 +8,6 @@ import android.widget.Toast;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.ui.base.BaseActivity;
-import org.pl.android.drively.ui.settings.user.UserSettingsChangeMvpView;
 import org.pl.android.drively.ui.settings.user.reauthenticate.ReauthenticateActivity;
 import org.pl.android.drively.util.HideKeyboard;
 
@@ -17,7 +16,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class UserNameChangeActivity extends BaseActivity implements UserSettingsChangeMvpView {
+public class UserNameChangeActivity extends BaseActivity implements UserNameChangeMvpView {
 
     private static final int REQUEST_REAUTHENTICATE = 0;
     @BindView(R.id.save)

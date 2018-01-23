@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.pl.android.drively.data.model.chat.User;
+import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.injection.ApplicationContext;
 import org.pl.android.drively.util.Const;
 
@@ -19,10 +19,10 @@ public class PreferencesHelper {
     private static String SHARE_USER_INFO = "userinfo";
     private static String SHARE_KEY_NAME = "name";
     private static String SHARE_KEY_EMAIL = "email";
-    private static String SHARE_KEY_AVATA = "avata";
+    private static String SHARE_KEY_AVATA = "avatar";
+    private static String SHARE_KEY_USER_ID = "id";
     private static String SHARE_KEY_UID = "uid";
-
-
+    
     @Inject
     public PreferencesHelper(@ApplicationContext Context context) {
         mPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
@@ -85,9 +85,10 @@ public class PreferencesHelper {
 
     public void saveUserInfo(User user) {
         SharedPreferences.Editor e = mPref.edit();
-        e.putString(SHARE_KEY_NAME, user.name);
-        e.putString(SHARE_KEY_EMAIL, user.email);
-        e.putString(SHARE_KEY_AVATA, user.avata);
+        e.putString(SHARE_KEY_NAME, user.getName());
+        e.putString(SHARE_KEY_EMAIL, user.getEmail());
+        e.putString(SHARE_KEY_AVATA, user.getAvatar());
+        e.putString(SHARE_KEY_USER_ID, user.getId());
         e.putString(SHARE_KEY_UID, Const.UID);
         e.apply();
     }
@@ -96,12 +97,15 @@ public class PreferencesHelper {
 
         String userName = mPref.getString(SHARE_KEY_NAME, "");
         String email = mPref.getString(SHARE_KEY_EMAIL, "");
-        String avatar = mPref.getString(SHARE_KEY_AVATA, "default");
+        String avatar = mPref.getString(SHARE_KEY_AVATA, "DEFAULT");
+        String id = mPref.getString(SHARE_KEY_USER_ID, "");
 
         User user = new User();
-        user.name = userName;
-        user.email = email;
-        user.avata = avatar;
+
+        user.setName(userName);
+        user.setEmail(email);
+        user.setAvatar(avatar);
+        user.setId(id);
 
         return user;
     }
@@ -109,7 +113,4 @@ public class PreferencesHelper {
     public String getUID(){
         return mPref.getString(SHARE_KEY_UID, "");
     }
-
-
-
 }

@@ -38,7 +38,7 @@ public final class FriendDB {
         values.put(FeedEntry.COLUMN_NAME_NAME, friend.name);
         values.put(FeedEntry.COLUMN_NAME_EMAIL, friend.email);
         values.put(FeedEntry.COLUMN_NAME_ID_ROOM, friend.idRoom);
-        values.put(FeedEntry.COLUMN_NAME_AVATA, friend.avata);
+        values.put(FeedEntry.COLUMN_NAME_AVATA, friend.avatar);
         // Insert the new row, returning the primary key value of the new row
         return db.insert(FeedEntry.TABLE_NAME, null, values);
     }
@@ -63,7 +63,7 @@ public final class FriendDB {
                 friend.name = cursor.getString(1);
                 friend.email = cursor.getString(2);
                 friend.idRoom = cursor.getString(3);
-                friend.avata = cursor.getString(4);
+                friend.avatar = cursor.getString(4);
                 listFriend.getListFriend().add(friend);
             }
             cursor.close();
@@ -79,6 +79,13 @@ public final class FriendDB {
         db.execSQL(SQL_CREATE_ENTRIES);
     }
 
+    public void deleteFriend(Friend friend) {
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        String[] whereArgs = new String[] { String.valueOf(friend.id) };
+        db.delete(FeedEntry.TABLE_NAME,FeedEntry.COLUMN_NAME_ID+"=?",whereArgs);
+
+    }
+
     /* Inner class that defines the table contents */
     public static class FeedEntry implements BaseColumns {
         static final String TABLE_NAME = "friend";
@@ -86,7 +93,7 @@ public final class FriendDB {
         static final String COLUMN_NAME_NAME = "name";
         static final String COLUMN_NAME_EMAIL = "email";
         static final String COLUMN_NAME_ID_ROOM = "idRoom";
-        static final String COLUMN_NAME_AVATA = "avata";
+        static final String COLUMN_NAME_AVATA = "avatar";
     }
 
     private static final String TEXT_TYPE = " TEXT";

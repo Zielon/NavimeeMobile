@@ -83,5 +83,22 @@
     <string name="day_schedule_text">Add events to the Day Plan and catch new customers.</string>
     <string name="day_schedule_events_route">Go to Events</string>
     <string name="chat">Chat</string>
-
+    <string name="enter_group_name">Enter group name</string>
+    <string name="create_group">Create group</string>
+    <string name="success">Success</string>
+    <string name="add_friend_success">User has been successfully added</string>
+    <string name="failure">Failure</string>
+    <string name="add_friend_failure">Error adding user</string>
+    <string name="delete_friend_success">The user has been successfully removed</string>
+    <string name="delete_friend_failure">Error deleting the user</string>
+    <string name="find_friends">Find users...</string>
+    <string name="find_friends_who">Who are you looking for...?</string>
+    <string name="delete_friend">Delete user</string>
+    <string name="delete_friend_sure">Are you sure want to delete </string>
+    <string name="deleting">Deleting...</string>
+    <string name="at_least_two">Add at lease two people to create group</string>
+    <string name="registering">Registering....</string>
+    <string name="create_group_success">Create group success</string>
+    <string name="create_group_failure">Create group failure</string>
+    <string name="delete_group_failure">Delete group failure</string>
 </resources>

@@ -1,20 +1,16 @@
 package org.pl.android.drively.ui.signin;
 
-import android.annotation.SuppressLint;
-
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.SetOptions;
 import com.kelvinapps.rxfirebase.RxFirebaseAuth;
 import com.kelvinapps.rxfirebase.RxFirebaseUser;
 
 import org.pl.android.drively.data.DataManager;
-import org.pl.android.drively.data.model.chat.User;
+import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.Const;
-import org.reactivestreams.Subscription;
+import org.pl.android.drively.util.FirebasePaths;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +23,6 @@ public class SignInPresenter extends BasePresenter<SignInMvpView> {
 
     private final DataManager mDataManager;
     private SignInMvpView mMvpView;
-    private Subscription mSubscription;
 
     @Inject
     public SignInPresenter(DataManager dataManager) {
@@ -87,24 +82,31 @@ public class SignInPresenter extends BasePresenter<SignInMvpView> {
 
             mDataManager.getFirebaseService()
                     .getFirebaseFirestore()
-                    .collection("USERS")
+                    .collection(FirebasePaths.USERS)
                     .document(userId).set(user, SetOptions.merge())
                     .addOnSuccessListener(aVoid -> Timber.i("DocumentSnapshot successfully written!"))
                     .addOnFailureListener(e -> Timber.e("Error writing document", e));
 
             mDataManager.getFirebaseService()
                     .getFirebaseFirestore()
-                    .collection("USERS").document(userId).get()
+                    .collection(FirebasePaths.USERS).document(userId).get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             if (document != null) {
-                                if (document.get("bigEventsNotification") == null && document.get("dayScheduleNotification") == null) {
-                                    Map<String, Object> userNotification = new HashMap<>();
-                                    userNotification.put("bigEventsNotification", true);
-                                    userNotification.put("dayScheduleNotification", true);
-                                    mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).update(userNotification);
-                                }
+                                Map<String, Object> userData = new HashMap<>();
+
+                                if (document.get("bigEventsNotification") == null)
+                                    userData.put("bigEventsNotification", true);
+
+                                if(document.get("dayScheduleNotification") == null)
+                                    userData.put("dayScheduleNotification", true);
+
+                                if(document.get("avatar") == null)
+                                    userData.put("avatar", User.DEFAULT_AVATAR);
+
+                                mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).update(userData);
+
                             }
                         }
                     });
@@ -116,20 +118,15 @@ public class SignInPresenter extends BasePresenter<SignInMvpView> {
         Const.UID = userId;
         mDataManager.getFirebaseService()
                 .getFirebaseFirestore()
-                .collection("USERS").document(userId)
-                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                    @SuppressLint("TimberArgCount")
-                    @Override
-                    public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                        if (e != null) {
-                            Timber.e( "Listen failed.", e);
-                            return;
-                        }
-                        if (documentSnapshot != null && documentSnapshot.exists()) {
-                            // Timber.d("Current data: " + snapshot.getData());
-                           User user =  documentSnapshot.toObject(User.class);
-                           mDataManager.getPreferencesHelper().saveUserInfo(user);
-                        }
+                .collection(FirebasePaths.USERS).document(userId)
+                .addSnapshotListener((documentSnapshot, e) -> {
+                    if (e != null) {
+                        Timber.e( "Listen failed.", e);
+                        return;
+                    }
+                    if (documentSnapshot != null && documentSnapshot.exists()) {
+                       User user =  documentSnapshot.toObject(User.class);
+                       mDataManager.getPreferencesHelper().saveUserInfo(user);
                     }
                 });
     }

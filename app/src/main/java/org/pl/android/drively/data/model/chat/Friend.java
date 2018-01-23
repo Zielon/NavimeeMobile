@@ -1,8 +1,7 @@
 package org.pl.android.drively.data.model.chat;
 
+public class Friend extends ChatUser {
 
-
-public class Friend extends User{
     public String id;
     public String idRoom;
 

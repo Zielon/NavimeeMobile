@@ -18,12 +18,12 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.InputType;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -33,15 +33,14 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.yarolegovich.lovelydialog.LovelyInfoDialog;
 import com.yarolegovich.lovelydialog.LovelyProgressDialog;
-import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.chat.Friend;
 import org.pl.android.drively.data.model.chat.ListFriend;
-import org.pl.android.drively.data.model.chat.User;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.ui.chat.data.FriendDB;
+import org.pl.android.drively.ui.chat.friendsearch.FriendSearchDialogCompat;
 import org.pl.android.drively.util.Const;
 
 import java.text.SimpleDateFormat;
@@ -50,14 +49,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
+import ir.mirrajabi.searchdialog.core.BaseFilter;
+import ir.mirrajabi.searchdialog.core.Searchable;
 import timber.log.Timber;
 
 public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, FriendsMvpView {
@@ -154,6 +153,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                     if(idDeleted.equals(friend.id)){
                         ArrayList<Friend> friends = dataListFriend.getListFriend();
                         friends.remove(friend);
+                        FriendDB.getInstance(getContext()).deleteFriend(friend);
                         break;
                     }
                 }
@@ -172,7 +172,10 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     public void onDestroyView (){
         super.onDestroyView();
         mFriendsPresenter.detachView();
+        detectFriendOnline.cancel();
+        dataListFriend.getListFriend().clear();
         FriendDB.getInstance(getContext()).dropDB();
+        listFriendID = null;
         getContext().unregisterReceiver(deleteFriendReceiver);
     }
 
@@ -191,6 +194,11 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         adapter.notifyDataSetChanged();
         FriendDB.getInstance(getContext()).dropDB();
         detectFriendOnline.cancel();
+        ListFriendsAdapter.mapMark.clear();
+        ListFriendsAdapter.mapChildListener.clear();
+        ListFriendsAdapter.mapQuery.clear();
+        ListFriendsAdapter.mapQueryOnline.clear();
+        ListFriendsAdapter.mapChildListenerOnline.clear();
         getListFriendUId();
     }
 
@@ -198,38 +206,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     public void showError() {
 
     }
-
-    @Override
-    public void userNotFound() {
-        new LovelyInfoDialog(getContext())
-                .setTopColorRes(R.color.colorAccent)
-                .setIcon(R.drawable.ic_add_friend)
-                .setTitle("Fail")
-                .setMessage("Email not found")
-                .show();
-    }
-
-
-    @Override
-    public void userFound(User user) {
-        if (user.id.equals(Const.UID)) {
-            new LovelyInfoDialog(getContext())
-                    .setTopColorRes(R.color.colorAccent)
-                    .setIcon(R.drawable.ic_add_friend)
-                    .setTitle("Fail")
-                    .setMessage("Email not valid")
-                    .show();
-        } else {
-            Friend friend = new Friend();
-            friend.name = user.name;
-            friend.email = user.email;
-            friend.avata = user.avata;
-            friend.id = user.id;
-            friend.idRoom = user.id.compareTo(mFriendsPresenter.getId()) > 0 ? (mFriendsPresenter.getId() + user.id).hashCode() + "" : "" + (user.id + mFriendsPresenter.getId()).hashCode();
-            checkBeforAddFriend(user.id, friend);
-        }
-    }
-
 
     private void checkBeforAddFriend(final String idFriend, Friend userInfo) {
         dialogWait.setCancelable(false)
@@ -241,12 +217,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         //Check xem da ton tai id trong danh sach id chua
         if (listFriendID.contains(idFriend)) {
             dialogWait.dismiss();
-            new LovelyInfoDialog(getContext())
-                    .setTopColorRes(R.color.colorPrimary)
-                    .setIcon(R.drawable.ic_add_friend)
-                    .setTitle("Friend")
-                    .setMessage("User "+userInfo.email + " has been friend")
-                    .show();
         } else {
             addFriend(idFriend, true);
             listFriendID.add(idFriend);
@@ -256,11 +226,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         }
     }
 
-    /**
-     * Add friend
-     *
-     * @param idFriend
-     */
     private void addFriend(final String idFriend, boolean isIdFriend) {
         if (idFriend != null) {
             if (isIdFriend) {
@@ -273,8 +238,8 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             new LovelyInfoDialog(getContext())
                     .setTopColorRes(R.color.colorPrimary)
                     .setIcon(R.drawable.ic_add_friend)
-                    .setTitle("Success")
-                    .setMessage("Add friend success")
+                    .setTitle(getResources().getString(R.string.success))
+                    .setMessage(getResources().getString(R.string.add_friend_success))
                     .show();
         }
     }
@@ -291,8 +256,8 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         new LovelyInfoDialog(getContext())
                 .setTopColorRes(R.color.colorAccent)
                 .setIcon(R.drawable.ic_add_friend)
-                .setTitle("False")
-                .setMessage("False to add friend success")
+                .setTitle(getResources().getString(R.string.failure))
+                .setMessage(getResources().getString(R.string.add_friend_failure))
                 .show();
     }
 
@@ -304,17 +269,8 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     @Override
     public void onSuccessDeleteFriend(String idFriend) {
-        dialogWaitDeleting.dismiss();
-
-        new LovelyInfoDialog(getContext())
-                .setTopColorRes(R.color.colorAccent)
-                .setTitle("Success")
-                .setMessage("Friend deleting successfully")
-                .show();
-
-        Intent intentDeleted = new Intent(FriendsFragment.ACTION_DELETE_FRIEND);
-        intentDeleted.putExtra("idFriend", idFriend);
-        getContext().sendBroadcast(intentDeleted);
+        listFriendID.remove(idFriend);
+        mFriendsPresenter.deleteFriendReference(idFriend);
     }
 
     @Override
@@ -322,27 +278,25 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         dialogWaitDeleting.dismiss();
         new LovelyInfoDialog(getContext())
                 .setTopColorRes(R.color.colorAccent)
-                .setTitle("Error")
-                .setMessage("Error occurred during deleting friend")
+                .setTitle(getResources().getString(R.string.failure))
+                .setMessage(getResources().getString(R.string.delete_friend_failure))
                 .show();
     }
 
+    @Override
+    public void onSuccessDeleteFriendReference(String idFriend) {
+        dialogWaitDeleting.dismiss();
 
-    /**
-     * TIm id cua email tren server
-     *
-     * @param email
-     */
-    private void findIDEmail(String email) {
-        dialogWait.setCancelable(false)
-                .setIcon(R.drawable.ic_add_friend)
-                .setTitle("Finding friend....")
-                .setTopColorRes(R.color.colorPrimary)
+        new LovelyInfoDialog(getContext())
+                .setTopColorRes(R.color.colorAccent)
+                .setTitle(getResources().getString(R.string.success))
+                .setMessage(getResources().getString(R.string.delete_friend_success))
                 .show();
-        mFriendsPresenter.findByEmail(email);
+
+        Intent intentDeleted = new Intent(FriendsFragment.ACTION_DELETE_FRIEND);
+        intentDeleted.putExtra("idFriend", idFriend);
+        getContext().sendBroadcast(intentDeleted);
     }
-
-
 
     public class FragFriendClickFloatButton implements View.OnClickListener {
         Context context;
@@ -355,39 +309,62 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             return this;
         }
 
+        public class SampleSearchModel implements Searchable {
+            private String mTitle;
+
+            public SampleSearchModel(String title) {
+                mTitle = title;
+            }
+
+            @Override
+            public String getTitle() {
+                return mTitle;
+            }
+
+            public SampleSearchModel setTitle(String title) {
+                mTitle = title;
+                return this;
+            }
+        }
+
         @Override
         public void onClick(final View view) {
-            new LovelyTextInputDialog(view.getContext(), R.style.EditTextTintTheme)
-                    .setTopColorRes(R.color.colorPrimary)
-                    .setTitle("Add friend")
-                    .setMessage("Enter friend email")
-                    .setIcon(R.drawable.ic_add_friend)
-                    .setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
-                    .setInputFilter("Email not found", new LovelyTextInputDialog.TextFilter() {
-                        @Override
-                        public boolean check(String text) {
-                            Pattern VALID_EMAIL_ADDRESS_REGEX =
-                                    Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-                            Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(text);
-                            return matcher.find();
+
+            FriendSearchDialogCompat searchDialogCompat =
+                    new FriendSearchDialogCompat(view.getContext(), getResources().getString(R.string.find_friends),
+                            getResources().getString(R.string.find_friends_who), null, new ArrayList<>(),
+                    (dialog, item, position) -> {
+                        if (item.getId().equals(mFriendsPresenter.getId())) {
+                            Toast.makeText(view.getContext(), "Email not valid",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            Friend friend = new Friend();
+                            friend.name = item.getName();
+                            friend.email = item.getEmail();
+                            friend.id = item.getId();
+                            friend.idRoom = item.getId().compareTo(mFriendsPresenter.getId()) > 0 ? (mFriendsPresenter.getId() + item.getId()).hashCode() + "" : "" + (item.getId() + mFriendsPresenter.getId()).hashCode();
+                            checkBeforAddFriend(item.getId(), friend);
                         }
-                    })
-                    .setConfirmButton(android.R.string.ok, new LovelyTextInputDialog.OnTextInputConfirmListener() {
-                        @Override
-                        public void onTextInputConfirmed(String text) {
-                            //Tim id user id
-                            findIDEmail(text);
-                            //Check xem da ton tai ban ghi friend chua
-                            //Ghi them 1 ban ghi
-                        }
-                    })
-                    .show();
+                        dialog.dismiss();
+                    });
+
+            BaseFilter apiFilter = new BaseFilter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence charSequence) {
+                    return null;
+                }
+
+                @Override
+                protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                    mFriendsPresenter.findFriend(this, searchDialogCompat, charSequence.toString().trim(),listFriendID);
+                }
+            };
+
+            searchDialogCompat.setFilter(apiFilter);
+            searchDialogCompat.show();
         }
     }
 
-    /**
-     * Lay danh sach ban be tren server
-     */
     private void getListFriendUId() {
         mFriendsPresenter.getListFriendUId();
     }
@@ -404,10 +381,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         dialogFindAllFriend.dismiss();
     }
 
-
-    /**
-     * Truy cap bang user lay thong tin id nguoi dung
-     */
+    @SuppressLint("TimberArgCount")
     private void getAllFriendInfo(final int index) {
         if (index == listFriendID.size()) {
             //save list friend
@@ -416,8 +390,19 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             mSwipeRefreshLayout.setRefreshing(false);
             detectFriendOnline.start();
         } else {
-            final String id = listFriendID.get(index);
-            mFriendsPresenter.getAllFriendInfo(index, id);
+            if(listFriendID.size() >= index) {
+                try {
+                    final String id = listFriendID.get(index);
+                    mFriendsPresenter.getAllFriendInfo(index, id);
+                } catch (IndexOutOfBoundsException ex) {
+                    Timber.w("Exception occured.", ex);
+                } catch (Exception ex) {
+                    Timber.w("Exception occured.", ex);
+                }
+            } else {
+                dialogFindAllFriend.dismiss();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
         }
     }
 
@@ -433,8 +418,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 }
 
 class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-
 
     private ListFriend listFriend;
     private Context context;
@@ -470,7 +453,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         final String name = listFriend.getListFriend().get(position).name;
         final String id = listFriend.getListFriend().get(position).id;
         final String idRoom = listFriend.getListFriend().get(position).idRoom;
-        final String avata = listFriend.getListFriend().get(position).avata;
+        final String avata = listFriend.getListFriend().get(position).avatar;
         ((ItemFriendViewHolder) holder).txtName.setText(name);
 
         ((View) ((ItemFriendViewHolder) holder).txtName.getParent().getParent().getParent())
@@ -498,7 +481,6 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     }
                 });
 
-        //nhấn giữ để xóa bạn
         ((View) ((ItemFriendViewHolder) holder).txtName.getParent().getParent().getParent())
                 .setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
@@ -506,14 +488,14 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         String friendName = (String)((ItemFriendViewHolder) holder).txtName.getText();
 
                         new AlertDialog.Builder(context)
-                                .setTitle("Delete Friend")
-                                .setMessage("Are you sure want to delete "+friendName+ "?")
+                                .setTitle(context.getResources().getString(R.string.delete_friend))
+                                .setMessage(context.getResources().getString(R.string.delete_friend_sure)+" "+friendName+ " ?")
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         dialogInterface.dismiss();
                                         final String idFriendRemoval = listFriend.getListFriend().get(position).id;
-                                        dialogWaitDeleting.setTitle("Deleting...")
+                                        dialogWaitDeleting.setTitle(context.getResources().getString(R.string.deleting))
                                                 .setCancelable(false)
                                                 .setTopColorRes(R.color.colorAccent)
                                                 .show();
@@ -565,20 +547,32 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             Timber.e("Listen failed.", e);
                             return;
                         }
-                        for (DocumentSnapshot documentSnapshot : snapshots) {
-                            if (mapMark.get(id) != null) {
-                                if (!mapMark.get(id)) {
-                                    listFriend.getListFriend().get(position).message.text = id + documentSnapshot.get("text");
+                        try {
+                            for (DocumentSnapshot documentSnapshot : snapshots) {
+                                if (mapMark.get(id) != null) {
+                                    if (!mapMark.get(id)) {
+                                        if (listFriend.getListFriend().get(position).message.timestamp != documentSnapshot.getLong("timestamp")
+                                                && listFriend.getListFriend().get(position).message.text != documentSnapshot.get("text")
+                                                && listFriend.getListFriend().get(position).message.idReceiver != documentSnapshot.get("idReceiver")
+                                                && listFriend.getListFriend().get(position).message.idSender != documentSnapshot.get("idSender")) {
+
+                                            listFriend.getListFriend().get(position).message.text = id + documentSnapshot.get("text");
+                                        }
+                                    } else {
+                                        listFriend.getListFriend().get(position).message.text = (String) documentSnapshot.get("text");
+                                    }
+                                    notifyDataSetChanged();
+                                    mapMark.put(id, false);
                                 } else {
                                     listFriend.getListFriend().get(position).message.text = (String) documentSnapshot.get("text");
+                                    notifyDataSetChanged();
                                 }
-                                notifyDataSetChanged();
-                                mapMark.put(id, false);
-                            } else {
-                                listFriend.getListFriend().get(position).message.text = (String) documentSnapshot.get("text");
-                                notifyDataSetChanged();
+                                listFriend.getListFriend().get(position).message.timestamp = (long) documentSnapshot.get("timestamp");
                             }
-                            listFriend.getListFriend().get(position).message.timestamp = (long) documentSnapshot.get("timestamp");
+                        } catch (IndexOutOfBoundsException ex) {
+                            Timber.w("Exception occured.", ex);
+                        } catch (Exception ex) {
+                            Timber.w("Exception occured.", ex);
                         }
                     }
                 });
@@ -590,10 +584,10 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 mapMark.put(id, true);
             }
         }
-        if (listFriend.getListFriend().get(position).avata.equals(Const.STR_DEFAULT_BASE64)) {
+        if (listFriend.getListFriend().get(position).avatar.equals(Const.STR_DEFAULT_BASE64)) {
             ((ItemFriendViewHolder) holder).avata.setImageResource(R.drawable.default_avata);
         } else {
-            byte[] decodedString = Base64.decode(listFriend.getListFriend().get(position).avata, Base64.DEFAULT);
+            byte[] decodedString = Base64.decode(listFriend.getListFriend().get(position).avatar, Base64.DEFAULT);
             Bitmap src = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             ((ItemFriendViewHolder) holder).avata.setImageBitmap(src);
         }
@@ -609,9 +603,15 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         Timber.w("Listen failed.", e);
                         return;
                     }
-                    if (documentSnapshot != null && documentSnapshot.get("isOnline") != null) {
-                        listFriend.getListFriend().get(position).status.isOnline = (boolean) documentSnapshot.get("isOnline");
-                        notifyDataSetChanged();
+                    if (documentSnapshot != null && documentSnapshot.get("isOnline") != null && listFriend.getListFriend().size() >= position) {
+                        try {
+                            listFriend.getListFriend().get(position).status.isOnline = (boolean) documentSnapshot.get("isOnline");
+                            notifyDataSetChanged();
+                        } catch (IndexOutOfBoundsException ex) {
+                            Timber.w("Exception occured.", ex);
+                        } catch (Exception ex) {
+                            Timber.w("Exception occured.", ex);
+                        }
                     }
                 }
 
@@ -643,8 +643,8 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             dialogWaitDeleting.dismiss();
             new LovelyInfoDialog(context)
                     .setTopColorRes(R.color.colorPrimary)
-                    .setTitle("Error")
-                    .setMessage("Error occurred during deleting friend")
+                    .setTitle(context.getResources().getString(R.string.failure))
+                    .setMessage(context.getResources().getString(R.string.delete_friend_failure))
                     .show();
         }
     }

@@ -76,4 +76,22 @@
     <string name="day_schedule_text">Dodaj wydarzenia do Planu Dnia i łap nowych klientów.</string>
     <string name="day_schedule_events_route">Przejdź do Wydarzeń</string>
     <string name="chat">Chat</string>
+    <string name="enter_group_name">Podaj nazwę grupy</string>
+    <string name="create_group">Stwórz grupe</string>
+    <string name="success">Sukces</string>
+    <string name="add_friend_success">Pomyślnie dodano użytkownika</string>
+    <string name="failure">Błąd</string>
+    <string name="add_friend_failure">Błąd podczas dodawania użytkownika</string>
+    <string name="delete_friend_success">Pomyślnie usunięto użytkownika</string>
+    <string name="delete_friend_failure">Błąd podczas usuwania użytkownika</string>
+    <string name="find_friends">Znajdź użytkowników...</string>
+    <string name="find_friends_who">Kogo szukasz...?</string>
+    <string name="delete_friend">Usuń użytkownika</string>
+    <string name="delete_friend_sure">Czy na pewno chcesz usunąć </string>
+    <string name="deleting">Usuwam ...</string>
+    <string name="at_least_two">Dodaj co najmniej dwie osoby, aby utworzyć grupę</string>
+    <string name="registering">Rejestruję....</string>
+    <string name="create_group_success">Pomyślnie utworzono grupę</string>
+    <string name="create_group_failure">Błąd podczas tworzenia grupy</string>
+    <string name="delete_group_failure">Błąd podczas usuwania grupy</string>
 </resources>
