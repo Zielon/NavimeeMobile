@@ -2,13 +2,10 @@ package org.pl.android.drively.ui.signup;
 
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
-
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -18,9 +15,8 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.ui.base.BaseActivity;
-import org.pl.android.drively.ui.regulations.RegulationsFragment;
+import org.pl.android.drively.ui.regulations.RegulationsActivity;
 import org.pl.android.drively.util.HideKeyboard;
-
 
 import javax.inject.Inject;
 
@@ -54,9 +50,6 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
     @BindView(R.id.btn_signup)
     Button _signupButton;
 
-    @BindView(R.id.regulation)
-    TextView _regulationTextView;
-
     ProgressDialog _progressDialog;
 
     @Override
@@ -73,7 +66,6 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
 
         _titleTextView.setTypeface(Typeface.createFromAsset(getAssets(), "NexaBold.ttf"));
         _signupButton.setOnClickListener(v -> signUp());
-
     }
 
     public void signUp() {
@@ -154,10 +146,7 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
 
     @OnClick(R.id.regulation)
     public void showRegulation() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Fragment fragment = new RegulationsFragment();
-        fragmentTransaction.add(R.id.sign_up_main_layout, fragment);
-        fragmentTransaction.commit();
+        Intent intent = new Intent(this, RegulationsActivity.class);
+        this.startActivityForResult(intent, 0);
     }
 }

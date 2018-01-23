@@ -33,12 +33,14 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.ui.base.BaseActivity;
+import org.pl.android.drively.ui.regulations.RegulationsActivity;
 import org.pl.android.drively.util.HideKeyboard;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 import static org.pl.android.drively.util.UserInputValidation.isEmailValid;
@@ -275,6 +277,12 @@ public class SignInActivity extends BaseActivity implements SignInMvpView {
                 return;
             }
         }
+    }
+
+    @OnClick(R.id.regulation)
+    public void showRegulation() {
+        Intent intent = new Intent(this, RegulationsActivity.class);
+        this.startActivityForResult(intent, 0);
     }
 }
 

@@ -111,7 +111,7 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK)
-            if (requestCode == PICK_IMAGE_REQUEST && data != null && data.getData() != null)
+            if (requestCode == PICK_IMAGE_REQUEST && data != null && data.getData() != null){
                 if (checkSize(data.getData())) {
                     Bitmap bitmap = null;
                     try {
@@ -119,12 +119,19 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+
+                    if(bitmap == null){
+                        Toast.makeText(getBaseContext(), "An incorrect file!", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
                     avatarLayout.setVisibility(View.INVISIBLE);
                     avatarProgressBar.setVisibility(View.VISIBLE);
                     User user = _userSettingsPresenter.setNewAvatar(bitmap, _preferencesHelper.getUserInfo(), this);
                     _preferencesHelper.saveUserInfo(user);
-                } else
-                    initDrawer();
+                }
+            } else
+                initDrawer();
             else
                 _drawer.setSelection(-1);
     }
