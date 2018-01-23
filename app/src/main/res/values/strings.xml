@@ -1,4 +1,9 @@
 <resources>
+    <!-- API Keys -->
+    <string name="facebook_app_id">1184457824990855</string>
+    <string name="fb_login_protocol_scheme">fb490316121339159</string>
+
+    <!-- Translations -->
     <string name="app_name">Drively</string>
     <string name="dialog_action_ok">Ok</string>
     <string name="dialog_error_title">Sorry</string>
@@ -57,10 +62,6 @@
     <string name="no_account_yet">No account yet? Sign up</string>
     <string name="avatar_change">Click to change the avatar</string>
     <string name="avatar_max_size">(1 MB max size)</string>
-
-    <!-- API Keys -->
-    <string name="fb_login_protocol_scheme">fb490316121339159</string>
-
     <string name="yes_work">Yes, it worked</string>
     <string name="no_work">No, it not worked</string>
     <string name="no_drive">I did not drive there</string>

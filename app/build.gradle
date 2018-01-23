@@ -69,8 +69,7 @@ android {
 
             // API KEYS
             manifestPlaceholders = [
-                    googleMapApi: "AIzaSyAfjQ9cZtSGJn0CPOEkwgRTq6QAUUm7R9k",
-                    facebookAppId: "1184457824990855"
+                    googleMapApi: "AIzaSyAfjQ9cZtSGJn0CPOEkwgRTq6QAUUm7R9k"
             ]
         }
 
@@ -80,8 +79,7 @@ android {
 
             // API KEYS
             manifestPlaceholders = [
-                    googleMapApi: "AIzaSyAgXri9aa6FqmOejHuvFg_vd1TivnAkhds",
-                    facebookAppId: "163302027628633"
+                    googleMapApi: "AIzaSyAgXri9aa6FqmOejHuvFg_vd1TivnAkhds"
             ]
         }
     }
