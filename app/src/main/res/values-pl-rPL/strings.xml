@@ -55,6 +55,8 @@
     <string name="no_drive">Nie pojechałem tam</string>
     <string name="email">Email</string>
     <string name="no_account_yet">Nie masz jeszcze konta? Stwórz konto</string>
+    <string name="avatar_change">Kliknij żeby zmienieć avatar</string>
+    <string name="avatar_max_size">(1 MB max rozmiaru)</string>
     <string name="feedback">Twoja ocena</string>
     <string name="feeback_custom_text">Hej %1$s, udało Ci się złapać klienta po dotarciu do %2$s?</string>
     <string name="feeback_normal_text">Twoja odpowiedź sprawi, że aplikacja będzie działać coraz lepiej!</string>

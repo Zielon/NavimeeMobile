@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ import org.pl.android.drively.ui.settings.user.email.UserEmailChangeActivity;
 import org.pl.android.drively.ui.settings.user.name.UserNameChangeActivity;
 import org.pl.android.drively.ui.settings.user.password.UserPasswordChangeActivity;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,9 +95,7 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap avatar, GlideAnimation<? super Bitmap> glideAnimation) {
-                        avatarLayout.setVisibility(View.VISIBLE);
-                        avatarProgressBar.setVisibility(View.INVISIBLE);
-
+                        onSuccess();
                         avatarView.setImageBitmap(avatar);
                         avatarView.refreshDrawableState();
                     }
@@ -103,7 +103,7 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
                         super.onLoadFailed(e, errorDrawable);
-                        e.printStackTrace();
+                        onError(e);
                     }
                 });
     }
@@ -113,10 +113,15 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
         if (resultCode == RESULT_OK)
             if (requestCode == PICK_IMAGE_REQUEST && data != null && data.getData() != null)
                 if (checkSize(data.getData())) {
+                    Bitmap bitmap = null;
+                    try {
+                        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     avatarLayout.setVisibility(View.INVISIBLE);
                     avatarProgressBar.setVisibility(View.VISIBLE);
-
-                    User user = _userSettingsPresenter.setNewAvatar(data.getData(), _preferencesHelper.getUserInfo());
+                    User user = _userSettingsPresenter.setNewAvatar(bitmap, _preferencesHelper.getUserInfo(), this);
                     _preferencesHelper.saveUserInfo(user);
                 } else
                     initDrawer();
@@ -139,12 +144,14 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
 
     @Override
     public void onSuccess() {
-
+        avatarLayout.setVisibility(View.VISIBLE);
+        avatarProgressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void onError(Throwable throwable) {
-        throwable.printStackTrace();
+        avatarLayout.setVisibility(View.VISIBLE);
+        avatarProgressBar.setVisibility(View.INVISIBLE);
         Toast.makeText(getBaseContext(), "Something went wrong!", Toast.LENGTH_LONG).show();
     }
 
@@ -153,7 +160,7 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
         loadAvatar();
     }
 
-    @OnClick(R.id.avatar)
+    @OnClick(R.id.avatar_layout)
     public void changeAvatar() {
         Intent intent = new Intent();
         intent.setType("image/*");

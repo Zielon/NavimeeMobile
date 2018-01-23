@@ -1,6 +1,9 @@
 package org.pl.android.drively.ui.settings.user;
 
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -14,7 +17,14 @@ import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.ExternalProviders;
 import org.pl.android.drively.util.FirebasePaths;
+import org.pl.android.drively.util.InternalStorageManager;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +32,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static org.pl.android.drively.util.FirebasePaths.AVATARS;
+import static org.pl.android.drively.util.InternalStorageManager.*;
 
 public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpView> {
 
@@ -59,7 +70,7 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
         return firebaseStorage.getReference().child(String.format("%s/%s", AVATARS, avatar));
     }
 
-    public User setNewAvatar(Uri uri, User user) {
+    public User setNewAvatar(Bitmap bitmap, User user, Context context) {
         String path = String.format("%s/%s", AVATARS, user.getAvatar());
         if (!user.getAvatar().equals(User.DEFAULT_AVATAR))
             RxFirebaseStorage.delete(firebaseStorage.getReference().child(path)).subscribe(success -> {
@@ -68,12 +79,19 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
         String avatar = this.firebaseUser.getEmail().replace('.', '_') + "_" + currentTime.getTime();
         user.setAvatar(avatar);
         path = String.format("%s/%s", AVATARS, avatar);
+
+        bitmap = scaleDown(bitmap, 200, true);
+
+        Uri uri = saveBitmap(user.getId(), bitmap, context);
+
         RxFirebaseStorage.putFile(firebaseStorage.getReference().child(path), uri)
                 .subscribe(
-                        sub -> firebaseFirestore.collection(FirebasePaths.USERS)
+                        sub -> {
+                            firebaseFirestore.collection(FirebasePaths.USERS)
                                 .document(user.getId()).update("avatar", user.getAvatar())
                                 .addOnSuccessListener(task -> _mvpView.reloadAvatar())
-                                .addOnFailureListener(throwable -> _mvpView.onError(throwable)),
+                                .addOnFailureListener(throwable -> _mvpView.onError(throwable));
+                        },
                         throwable -> _mvpView.onError(throwable));
 
         return user;
@@ -84,5 +102,17 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
         if (actualProviders == null) return false;
 
         return ListUtils.intersection(actualProviders, ExternalProviders.getExternalProviders()).size() > 0;
+    }
+
+    public static Bitmap scaleDown(Bitmap realImage, float maxImageSize, boolean filter) {
+
+        float ratio = Math.min(
+                maxImageSize / realImage.getWidth(),
+                maxImageSize / realImage.getHeight());
+
+        int width = Math.round(ratio * realImage.getWidth());
+        int height = Math.round(ratio * realImage.getHeight());
+
+        return Bitmap.createScaledBitmap(realImage, width, height, filter);
     }
 }
