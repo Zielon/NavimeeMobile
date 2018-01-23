@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
@@ -16,6 +17,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -71,24 +74,54 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         btnSend = (ImageButton) findViewById(R.id.btnSend);
         btnSend.setOnClickListener(this);
 
-        String base64AvataUser =  "default";// SharedPreferenceHelper.getInstance(this).getUserInfo().avatar;
+        String base64AvataUser =  mChatViewPresenter.getUserInfo().getAvatar();
         if (!base64AvataUser.equals(Const.STR_DEFAULT_BASE64)) {
-            byte[] decodedString = Base64.decode(base64AvataUser, Base64.DEFAULT);
-            bitmapAvataUser = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            mChatViewPresenter.getStorageReference(base64AvataUser)
+                    .getBytes(Const.ONE_MEGABYTE)
+                    .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            bitmapAvataUser = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            if (idFriend != null && nameFriend != null) {
+                                getSupportActionBar().setTitle(nameFriend);
+                                linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+                                recyclerChat = (RecyclerView) findViewById(R.id.recyclerChat);
+                                recyclerChat.setLayoutManager(linearLayoutManager);
+                                adapter = new ListMessageAdapter(getApplicationContext(), consersation, bitmapAvataFriend, bitmapAvataUser, mChatViewPresenter.getId());
+                                mChatViewPresenter.setMessageListener(roomId);
+                                recyclerChat.setAdapter(adapter);
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                bitmapAvataUser = null;
+                                if (idFriend != null && nameFriend != null) {
+                                    getSupportActionBar().setTitle(nameFriend);
+                                    linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+                                    recyclerChat = (RecyclerView) findViewById(R.id.recyclerChat);
+                                    recyclerChat.setLayoutManager(linearLayoutManager);
+                                    adapter = new ListMessageAdapter(getApplicationContext(), consersation, bitmapAvataFriend, bitmapAvataUser, mChatViewPresenter.getId());
+                                    mChatViewPresenter.setMessageListener(roomId);
+                                    recyclerChat.setAdapter(adapter);
+                                }
+                            }
+                        });
         } else {
             bitmapAvataUser = null;
+            if (idFriend != null && nameFriend != null) {
+                getSupportActionBar().setTitle(nameFriend);
+                linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+                recyclerChat = (RecyclerView) findViewById(R.id.recyclerChat);
+                recyclerChat.setLayoutManager(linearLayoutManager);
+                adapter = new ListMessageAdapter(getApplicationContext(), consersation, bitmapAvataFriend, bitmapAvataUser, mChatViewPresenter.getId());
+                mChatViewPresenter.setMessageListener(roomId);
+                recyclerChat.setAdapter(adapter);
+            }
         }
 
         editWriteMessage = (EditText) findViewById(R.id.editWriteMessage);
-        if (idFriend != null && nameFriend != null) {
-            getSupportActionBar().setTitle(nameFriend);
-            linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-            recyclerChat = (RecyclerView) findViewById(R.id.recyclerChat);
-            recyclerChat.setLayoutManager(linearLayoutManager);
-            adapter = new ListMessageAdapter(this, consersation, bitmapAvataFriend, bitmapAvataUser, mChatViewPresenter.getId());
-            mChatViewPresenter.setMessageListener(roomId);
-            recyclerChat.setAdapter(adapter);
-        }
+
     }
 
 
