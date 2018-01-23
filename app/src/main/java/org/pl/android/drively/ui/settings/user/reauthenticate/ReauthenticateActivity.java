@@ -98,7 +98,6 @@ public class ReauthenticateActivity extends BaseActivity implements Reauthentica
         _progressDialog.dismiss();
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -109,6 +108,4 @@ public class ReauthenticateActivity extends BaseActivity implements Reauthentica
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 }

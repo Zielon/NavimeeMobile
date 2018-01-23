@@ -1,4 +1,9 @@
 <resources>
+    <!-- API Keys -->
+    <string name="facebook_app_id">1184457824990855</string>
+    <string name="fb_login_protocol_scheme">fb490316121339159</string>
+
+    <!-- Translations -->
     <string name="app_name">Drively</string>
     <string name="dialog_action_ok">Ok</string>
     <string name="dialog_error_title">Sorry</string>
@@ -55,10 +60,8 @@
     <string name="rate_app">Rate App</string>
     <string name="delete_account">Delete account</string>
     <string name="no_account_yet">No account yet? Sign up</string>
-    <!-- API Keys -->
-    <string name="facebook_app_id">490316121339159</string>
-    <string name="fb_login_protocol_scheme">fb490316121339159</string>
-    <string name="google_maps_key">AIzaSyCm3VEK4jjMA6jl0QkyfCn-qO3LYwoOKOs</string>
+    <string name="avatar_change">Click to change the avatar</string>
+    <string name="avatar_max_size">(1 MB max size)</string>
     <string name="yes_work">Yes, it worked</string>
     <string name="no_work">No, it not worked</string>
     <string name="no_drive">I did not drive there</string>
@@ -101,4 +104,7 @@
     <string name="create_group_success">Create group success</string>
     <string name="create_group_failure">Create group failure</string>
     <string name="delete_group_failure">Delete group failure</string>
+    <string name="accept_regulation">Logging to the application you accept the <u>regulations</u></string>
+    <string name="title_activity_regulations">RegulationsActivity</string>
+    <string name="get_all_friend">Get all users...</string>
 </resources>

@@ -21,6 +21,7 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
+import com.google.firebase.storage.StorageReference;
 
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.chat.Group;
@@ -325,6 +326,10 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
 
     public String getId() {
         return mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+    }
+
+    public StorageReference getStorageReference(String avatar) {
+        return  mDataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/"+avatar);
     }
 
 }

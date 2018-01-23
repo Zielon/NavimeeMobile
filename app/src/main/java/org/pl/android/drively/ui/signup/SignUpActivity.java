@@ -1,6 +1,8 @@
 package org.pl.android.drively.ui.signup;
 
+
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
@@ -13,12 +15,14 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.ui.base.BaseActivity;
+import org.pl.android.drively.ui.regulations.RegulationsActivity;
 import org.pl.android.drively.util.HideKeyboard;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 import static org.pl.android.drively.util.UserInputValidation.isEmailValid;
@@ -61,7 +65,6 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
         HideKeyboard.setupUI(findViewById(R.id.sing_up_layout), this);
 
         _titleTextView.setTypeface(Typeface.createFromAsset(getAssets(), "NexaBold.ttf"));
-
         _signupButton.setOnClickListener(v -> signUp());
     }
 
@@ -139,5 +142,11 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
 
         _signupButton.setEnabled(true);
         _progressDialog.dismiss();
+    }
+
+    @OnClick(R.id.regulation)
+    public void showRegulation() {
+        Intent intent = new Intent(this, RegulationsActivity.class);
+        this.startActivityForResult(intent, 0);
     }
 }

@@ -41,11 +41,7 @@ android {
         exclude 'META-INF/rxjava.properties'
     }
 
-
     signingConfigs {
-        // You must set up an environment var before release signing
-        // Run: export APP_KEY={password}
-        // TODO Add your release keystore in /keystore folder
         release {
             storeFile file('keystore/release.keystore')
             keyAlias 'releasekey'
@@ -69,13 +65,22 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            ext.betaDistributionReleaseNotesFilePath =
-                    file('../crashlytics_release_notes.txt').absolutePath
+            ext.betaDistributionReleaseNotesFilePath = file('../crashlytics_release_notes.txt').absolutePath
+
+            // API KEYS
+            manifestPlaceholders = [
+                    googleMapApi: "AIzaSyAfjQ9cZtSGJn0CPOEkwgRTq6QAUUm7R9k"
+            ]
         }
 
         debug {
             versionNameSuffix " Debug"
             debuggable true
+
+            // API KEYS
+            manifestPlaceholders = [
+                    googleMapApi: "AIzaSyAgXri9aa6FqmOejHuvFg_vd1TivnAkhds"
+            ]
         }
     }
 
@@ -157,6 +162,7 @@ dependencies {
     compile 'com.jakewharton.timber:timber:4.1.2'
     compile "com.jakewharton:butterknife:$BUTTERKNIFE_VERSION"
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:support-v4:25.4.0'
     annotationProcessor "com.jakewharton:butterknife-compiler:$BUTTERKNIFE_VERSION"
 
     //rx permissions
@@ -173,6 +179,9 @@ dependencies {
     compile 'com.firebaseui:firebase-ui-storage:0.6.0'
     compile 'com.kelvinapps:rxfirebase:0.0.15'
     compile 'com.firebase:geofire-android:2.1.3'
+
+    // utils
+    compile 'com.github.barteksc:android-pdf-viewer:2.8.2'
 
     //gui
     compile 'agency.tango.android:avatar-view:0.0.2'

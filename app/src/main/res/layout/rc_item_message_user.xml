@@ -6,16 +6,26 @@
     android:layout_marginBottom="5dp"
     android:layout_marginTop="5dp">
 
+    <TextView
+        android:id="@+id/message_info_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:layout_centerHorizontal="true"
+        android:textSize="9dp"
+        android:textColor="@color/white"
+        android:text="MON AT 00:00" />
+
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/imageView2"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:id="@+id/avatar_img_user"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_marginEnd="5dp"
         android:layout_marginRight="5dp"
-        android:src="@drawable/default_avata" />
+        android:src="@drawable/default_avatar" />
 
     <TextView
         android:id="@+id/textContentUser"
@@ -26,9 +36,9 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="5dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_toLeftOf="@id/imageView2"
-        android:layout_toStartOf="@id/imageView2"
+        android:layout_marginTop="13dp"
+        android:layout_toLeftOf="@id/avatar_img_user"
+        android:layout_toStartOf="@id/avatar_img_user"
         android:background="@drawable/rounded_corner1"
         android:padding="10dp"
         android:text="a"

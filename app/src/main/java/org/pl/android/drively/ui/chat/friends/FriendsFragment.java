@@ -9,8 +9,10 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -18,13 +20,14 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -73,6 +76,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private LovelyProgressDialog dialogWait;
     LovelyProgressDialog dialogWaitDeleting;
 
+    private View layout;
 
     @Inject
     FriendsPresenter mFriendsPresenter;
@@ -122,7 +126,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                detectFriendOnline.start();
             }
         }
-        View layout = inflater.inflate(R.layout.fragment_people, container, false);
+        layout = inflater.inflate(R.layout.fragment_people, container, false);
         ButterKnife.bind(this, layout);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerListFrends = (RecyclerView) layout.findViewById(R.id.recycleListFriend);
@@ -139,7 +143,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             listFriendID = new ArrayList<>();
             dialogFindAllFriend.setCancelable(false)
                     .setIcon(R.drawable.ic_add_friend)
-                    .setTitle("Get all friend....")
+                    .setTitle(getResources().getString(R.string.get_all_friend))
                     .setTopColorRes(R.color.colorPrimary)
                     .show();
             getListFriendUId();
@@ -342,6 +346,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                             friend.name = item.getName();
                             friend.email = item.getEmail();
                             friend.id = item.getId();
+                            friend.avatar = item.getAvatar();
                             friend.idRoom = item.getId().compareTo(mFriendsPresenter.getId()) > 0 ? (mFriendsPresenter.getId() + item.getId()).hashCode() + "" : "" + (item.getId() + mFriendsPresenter.getId()).hashCode();
                             checkBeforAddFriend(item.getId(), friend);
                         }
@@ -413,6 +418,9 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             dataListFriend.getListFriend().add(friend);
             FriendDB.getInstance(getContext()).addFriend(friend);
             getAllFriendInfo(index + 1);
+        } else {
+            dialogFindAllFriend.dismiss();
+            mSwipeRefreshLayout.setRefreshing(false);
         }
     }
 }
@@ -470,10 +478,10 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, idRoom);
                         ChatViewActivity.bitmapAvataFriend = new HashMap<>();
                         if (!avata.equals(Const.STR_DEFAULT_BASE64)) {
-                            byte[] decodedString = Base64.decode(avata, Base64.DEFAULT);
-                            ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length));
+                            BitmapDrawable bitmapDrawable =(BitmapDrawable)((ItemFriendViewHolder) holder).avata.getDrawable();
+                            ChatViewActivity.bitmapAvataFriend.put(id,  bitmapDrawable.getBitmap());
                         } else {
-                            ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avata));
+                            ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
                         }
 
                         mapMark.put(id, null);
@@ -585,11 +593,22 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         }
         if (listFriend.getListFriend().get(position).avatar.equals(Const.STR_DEFAULT_BASE64)) {
-            ((ItemFriendViewHolder) holder).avata.setImageResource(R.drawable.default_avata);
+            ((ItemFriendViewHolder) holder).avata.setImageResource(R.drawable.default_avatar);
         } else {
-            byte[] decodedString = Base64.decode(listFriend.getListFriend().get(position).avatar, Base64.DEFAULT);
-            Bitmap src = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            ((ItemFriendViewHolder) holder).avata.setImageBitmap(src);
+            this.fragment.mFriendsPresenter.getStorageReference(listFriend.getListFriend().get(position).avatar)
+                                            .getBytes(Const.ONE_MEGABYTE)
+                                            .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                                @Override
+                                                public void onSuccess(byte[] bytes) {
+                                                    Bitmap src = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                                    ((ItemFriendViewHolder) holder).avata.setImageBitmap(src);
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception exception) {
+                                                    ((ItemFriendViewHolder) holder).avata.setImageResource(R.drawable.default_avatar);
+                                                }
+                                            });
         }
 
 
@@ -621,6 +640,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         if (listFriend.getListFriend().get(position).status.isOnline) {
             ((ItemFriendViewHolder) holder).avata.setBorderWidth(10);
+            ((ItemFriendViewHolder) holder).avata.setBorderColor(context.getResources().getColor(R.color.button_background));
         } else {
             ((ItemFriendViewHolder) holder).avata.setBorderWidth(0);
         }

@@ -10,8 +10,10 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.StorageReference;
 
 import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.data.model.chat.Message;
 import org.pl.android.drively.injection.ConfigPersistent;
 import org.pl.android.drively.ui.base.BasePresenter;
@@ -88,5 +90,13 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
 
     public String getId() {
         return  mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+    }
+
+    public User getUserInfo() {
+        return  mDataManager.getPreferencesHelper().getUserInfo();
+    }
+
+    public StorageReference getStorageReference(String avatar) {
+        return  mDataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/"+avatar);
     }
 }

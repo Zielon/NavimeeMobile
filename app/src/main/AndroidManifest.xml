@@ -16,12 +16,15 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup">
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="${googleMapApi}" />
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -35,6 +38,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <service android:name="org.pl.android.drively.notifications.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
@@ -51,62 +55,75 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name="org.pl.android.drively.ui.intro.IntroActivity"
             android:label="@string/app_name" />
+
         <activity
             android:name="org.pl.android.drively.ui.welcome.WelcomeActivity"
             android:theme="@style/AppTheme.Dark" />
+
         <activity
             android:name="org.pl.android.drively.ui.signin.SignInActivity"
             android:launchMode="singleTop"
             android:parentActivityName="org.pl.android.drively.ui.welcome.WelcomeActivity"
             android:theme="@style/AppTheme" />
+
         <activity
             android:name="org.pl.android.drively.ui.signup.SignUpActivity"
             android:launchMode="singleTop"
             android:parentActivityName="org.pl.android.drively.ui.welcome.WelcomeActivity"
             android:theme="@style/AppTheme" />
+
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
+
         <activity
             android:name="org.pl.android.drively.ui.settings.SettingsActivity"
             android:label="Menu"
             android:launchMode="singleTop"
             android:parentActivityName="org.pl.android.drively.ui.main.MainActivity" />
+
         <activity
             android:name="org.pl.android.drively.ui.settings.personalsettings.PersonalSettingsActivity"
             android:label="@string/settings"
             android:parentActivityName="org.pl.android.drively.ui.settings.SettingsActivity"
             android:theme="@style/AppTheme" />
+
         <activity
             android:name="org.pl.android.drively.ui.settings.user.UserSettingsActivity"
             android:label="@string/user"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme"
             android:parentActivityName="org.pl.android.drively.ui.settings.SettingsActivity" />
+
         <activity
             android:name="org.pl.android.drively.ui.settings.user.password.UserPasswordChangeActivity"
             android:label="@string/change_password"
             android:launchMode="singleTop"
             android:parentActivityName="org.pl.android.drively.ui.settings.user.UserSettingsActivity" />
+
         <activity
             android:name="org.pl.android.drively.ui.settings.user.email.UserEmailChangeActivity"
             android:label="@string/change_email"
             android:launchMode="singleTop"
             android:parentActivityName="org.pl.android.drively.ui.settings.user.UserSettingsActivity" />
+
         <activity
             android:name="org.pl.android.drively.ui.settings.user.name.UserNameChangeActivity"
             android:label="@string/change_name"
             android:launchMode="singleTop"
             android:parentActivityName="org.pl.android.drively.ui.settings.user.UserSettingsActivity" />
+
         <activity
             android:name="org.pl.android.drively.ui.settings.user.reauthenticate.ReauthenticateActivity"
             android:label="@string/reauthenticate"
             android:theme="@style/AppTheme"
             android:launchMode="singleTop" />
+
         <activity
             android:name="org.pl.android.drively.ui.chat.chatview.ChatViewActivity"
             android:screenOrientation="portrait"
@@ -116,6 +133,10 @@
             android:name="org.pl.android.drively.ui.chat.addgroup.AddGroupActivity"
             android:screenOrientation="portrait"
             android:parentActivityName="org.pl.android.drively.ui.main.MainActivity"/>
+
+        <activity
+            android:name=".ui.regulations.RegulationsActivity"
+            android:label="@string/title_activity_regulations"/>
 
     </application>
 
