@@ -27,7 +27,9 @@ import org.pl.android.drively.data.model.chat.Consersation;
 import org.pl.android.drively.data.model.chat.Message;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.util.Const;
+import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -193,7 +195,7 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                     byte[] decodedString = Base64.decode(avataStr, Base64.DEFAULT);
                                     ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length));
                                 }else{
-                                    ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avata));
+                                    ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
                                 }
                                 notifyDataSetChanged();
                             }
@@ -208,6 +210,8 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         } else if (holder instanceof ItemMessageUserHolder) {
             ((ItemMessageUserHolder) holder).txtContent.setText(consersation.getListMessageData().get(position).text);
+            String time = new SimpleDateFormat("EEE 'AT' HH:mm").format(consersation.getListMessageData().get(position).timestamp).toUpperCase();
+            ((ItemMessageUserHolder) holder).timeStamp.setText(time);
             if (bitmapAvataUser != null) {
                 ((ItemMessageUserHolder) holder).avata.setImageBitmap(bitmapAvataUser);
             }
@@ -227,22 +231,26 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 class ItemMessageUserHolder extends RecyclerView.ViewHolder {
     public TextView txtContent;
+    public TextView timeStamp;
     public CircleImageView avata;
 
     public ItemMessageUserHolder(View itemView) {
         super(itemView);
         txtContent = (TextView) itemView.findViewById(R.id.textContentUser);
-        avata = (CircleImageView) itemView.findViewById(R.id.imageView2);
+        timeStamp = (TextView) itemView.findViewById(R.id.message_info_user);
+        avata = (CircleImageView) itemView.findViewById(R.id.avatar_img_user);
     }
 }
 
 class ItemMessageFriendHolder extends RecyclerView.ViewHolder {
     public TextView txtContent;
+    public TextView timeStamp;
     public CircleImageView avata;
 
     public ItemMessageFriendHolder(View itemView) {
         super(itemView);
         txtContent = (TextView) itemView.findViewById(R.id.textContentFriend);
-        avata = (CircleImageView) itemView.findViewById(R.id.imageView3);
+        timeStamp = (TextView) itemView.findViewById(R.id.message_info_user);
+        avata = (CircleImageView) itemView.findViewById(R.id.avatar_img_friend);
     }
 }

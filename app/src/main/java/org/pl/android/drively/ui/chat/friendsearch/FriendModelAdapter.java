@@ -19,13 +19,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import org.pl.android.drively.R;
-import org.pl.android.drively.ui.chat.friends.FriendsPresenter;
 import org.pl.android.drively.util.Const;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
@@ -117,7 +114,7 @@ public class FriendModelAdapter extends RecyclerView.Adapter<FriendModelAdapter.
         // TODO
         // set avatar
         if(object.getAvatar().equals(Const.STR_DEFAULT_BASE64)) {
-            avatar.setImageResource(R.drawable.default_avata);
+            avatar.setImageResource(R.drawable.default_avatar);
         } else {
             FirebaseStorage.getInstance().getReference("AVATARS/" + object.getAvatar())
                     .getBytes(Const.ONE_MEGABYTE)
@@ -130,7 +127,7 @@ public class FriendModelAdapter extends RecyclerView.Adapter<FriendModelAdapter.
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
-                    avatar.setImageResource(R.drawable.default_avata);
+                    avatar.setImageResource(R.drawable.default_avatar);
                 }
             });
         }

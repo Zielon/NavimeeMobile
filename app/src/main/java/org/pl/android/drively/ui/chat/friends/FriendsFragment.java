@@ -20,7 +20,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -479,7 +478,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             BitmapDrawable bitmapDrawable =(BitmapDrawable)((ItemFriendViewHolder) holder).avata.getDrawable();
                             ChatViewActivity.bitmapAvataFriend.put(id,  bitmapDrawable.getBitmap());
                         } else {
-                            ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avata));
+                            ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
                         }
 
                         mapMark.put(id, null);
@@ -591,7 +590,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         }
         if (listFriend.getListFriend().get(position).avatar.equals(Const.STR_DEFAULT_BASE64)) {
-            ((ItemFriendViewHolder) holder).avata.setImageResource(R.drawable.default_avata);
+            ((ItemFriendViewHolder) holder).avata.setImageResource(R.drawable.default_avatar);
         } else {
             this.fragment.mFriendsPresenter.getStorageReference(listFriend.getListFriend().get(position).avatar)
                                             .getBytes(Const.ONE_MEGABYTE)
@@ -604,7 +603,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                             }).addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception exception) {
-                                                    ((ItemFriendViewHolder) holder).avata.setImageResource(R.drawable.default_avata);
+                                                    ((ItemFriendViewHolder) holder).avata.setImageResource(R.drawable.default_avatar);
                                                 }
                                             });
         }
