@@ -76,7 +76,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private LovelyProgressDialog dialogWait;
     LovelyProgressDialog dialogWaitDeleting;
 
-
+    private View layout;
 
     @Inject
     FriendsPresenter mFriendsPresenter;
@@ -126,7 +126,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                detectFriendOnline.start();
             }
         }
-        View layout = inflater.inflate(R.layout.fragment_people, container, false);
+        layout = inflater.inflate(R.layout.fragment_people, container, false);
         ButterKnife.bind(this, layout);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerListFrends = (RecyclerView) layout.findViewById(R.id.recycleListFriend);
@@ -640,6 +640,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         if (listFriend.getListFriend().get(position).status.isOnline) {
             ((ItemFriendViewHolder) holder).avata.setBorderWidth(10);
+            ((ItemFriendViewHolder) holder).avata.setBorderColor(context.getResources().getColor(R.color.button_background));
         } else {
             ((ItemFriendViewHolder) holder).avata.setBorderWidth(0);
         }
