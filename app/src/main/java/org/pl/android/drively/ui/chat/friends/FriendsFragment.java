@@ -9,8 +9,10 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -25,6 +27,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -72,6 +76,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     public static int ACTION_START_CHAT = 1;
     private LovelyProgressDialog dialogWait;
     LovelyProgressDialog dialogWaitDeleting;
+
 
 
     @Inject
@@ -342,6 +347,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                             friend.name = item.getName();
                             friend.email = item.getEmail();
                             friend.id = item.getId();
+                            friend.avatar = item.getAvatar();
                             friend.idRoom = item.getId().compareTo(mFriendsPresenter.getId()) > 0 ? (mFriendsPresenter.getId() + item.getId()).hashCode() + "" : "" + (item.getId() + mFriendsPresenter.getId()).hashCode();
                             checkBeforAddFriend(item.getId(), friend);
                         }
@@ -470,8 +476,8 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, idRoom);
                         ChatViewActivity.bitmapAvataFriend = new HashMap<>();
                         if (!avata.equals(Const.STR_DEFAULT_BASE64)) {
-                            byte[] decodedString = Base64.decode(avata, Base64.DEFAULT);
-                            ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length));
+                            BitmapDrawable bitmapDrawable =(BitmapDrawable)((ItemFriendViewHolder) holder).avata.getDrawable();
+                            ChatViewActivity.bitmapAvataFriend.put(id,  bitmapDrawable.getBitmap());
                         } else {
                             ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avata));
                         }
@@ -587,9 +593,20 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (listFriend.getListFriend().get(position).avatar.equals(Const.STR_DEFAULT_BASE64)) {
             ((ItemFriendViewHolder) holder).avata.setImageResource(R.drawable.default_avata);
         } else {
-            byte[] decodedString = Base64.decode(listFriend.getListFriend().get(position).avatar, Base64.DEFAULT);
-            Bitmap src = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            ((ItemFriendViewHolder) holder).avata.setImageBitmap(src);
+            this.fragment.mFriendsPresenter.getStorageReference(listFriend.getListFriend().get(position).avatar)
+                                            .getBytes(Const.ONE_MEGABYTE)
+                                            .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                                @Override
+                                                public void onSuccess(byte[] bytes) {
+                                                    Bitmap src = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                                    ((ItemFriendViewHolder) holder).avata.setImageBitmap(src);
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception exception) {
+                                                    ((ItemFriendViewHolder) holder).avata.setImageResource(R.drawable.default_avata);
+                                                }
+                                            });
         }
 
 

@@ -21,7 +21,7 @@ public class Const {
     public static String STR_EXTRA_ACTION = "action";
     public static String STR_EXTRA_USERNAME = "username";
     public static String STR_EXTRA_PASSWORD = "password";
-    public static String STR_DEFAULT_BASE64 = "default";
+    public static String STR_DEFAULT_BASE64 = "DEFAULT";
     public static String UID = "";
     //TODO only use this UID for debug mode
 //    public static String UID = "6kU0SbJPF5QJKZTfvW1BqKolrx22";
@@ -31,6 +31,7 @@ public class Const {
     public static String INTENT_KEY_CHAT_ROOM_ID = "roomid";
     public static long TIME_TO_REFRESH = 10 * 1000;
     public static long TIME_TO_OFFLINE = 2 * 60 * 1000;
+    public static long ONE_MEGABYTE = 1024 * 1024;
 
     public enum HotSpotType {
         EVENT,
