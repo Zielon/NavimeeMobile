@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +28,7 @@ import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.local.PreferencesHelper;
+import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.settings.user.email.UserEmailChangeActivity;
 import org.pl.android.drively.ui.settings.user.name.UserNameChangeActivity;
@@ -55,6 +58,10 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
     TextView avatarChangeText;
     @BindView(R.id.avatar_max_size)
     TextView avatarMaxSize;
+    @BindView(R.id.avatar_loader)
+    ProgressBar avatarProgressBar;
+    @BindView(R.id.avatar_layout)
+    RelativeLayout avatarLayout;
     private Drawer _drawer = null;
     private Bundle _savedInstanceState;
     private int PICK_IMAGE_REQUEST = 1;
@@ -67,8 +74,9 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
         setContentView(R.layout.activity_user_settings);
         activityComponent().inject(UserSettingsActivity.this);
         ButterKnife.bind(this);
-        avatarChangeText.setVisibility(View.INVISIBLE);
-        avatarMaxSize.setVisibility(View.INVISIBLE);
+
+        avatarLayout.setVisibility(View.INVISIBLE);
+        avatarProgressBar.setVisibility(View.VISIBLE);
 
         _userSettingsPresenter.attachView(this);
         _savedInstanceState = savedInstanceState;
@@ -85,11 +93,17 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap avatar, GlideAnimation<? super Bitmap> glideAnimation) {
-                        avatarView.destroyDrawingCache();
-                        avatarView.refreshDrawableState();
+                        avatarLayout.setVisibility(View.VISIBLE);
+                        avatarProgressBar.setVisibility(View.INVISIBLE);
+
                         avatarView.setImageBitmap(avatar);
-                        avatarChangeText.setVisibility(View.VISIBLE);
-                        avatarMaxSize.setVisibility(View.VISIBLE);
+                        avatarView.refreshDrawableState();
+                    }
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        super.onLoadFailed(e, errorDrawable);
+                        e.printStackTrace();
                     }
                 });
     }
@@ -99,7 +113,11 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
         if (resultCode == RESULT_OK)
             if (requestCode == PICK_IMAGE_REQUEST && data != null && data.getData() != null)
                 if (checkSize(data.getData())) {
-                    _userSettingsPresenter.setNewAvatar(data.getData(), _preferencesHelper.getUserInfo());
+                    avatarLayout.setVisibility(View.INVISIBLE);
+                    avatarProgressBar.setVisibility(View.VISIBLE);
+
+                    User user = _userSettingsPresenter.setNewAvatar(data.getData(), _preferencesHelper.getUserInfo());
+                    _preferencesHelper.saveUserInfo(user);
                 } else
                     initDrawer();
             else
@@ -125,14 +143,13 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
     }
 
     @Override
-    public void onError() {
+    public void onError(Throwable throwable) {
+        throwable.printStackTrace();
         Toast.makeText(getBaseContext(), "Something went wrong!", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void reloadAvatar() {
-        avatarChangeText.setVisibility(View.INVISIBLE);
-        avatarMaxSize.setVisibility(View.INVISIBLE);
         loadAvatar();
     }
 

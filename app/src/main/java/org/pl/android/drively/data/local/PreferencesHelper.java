@@ -22,8 +22,7 @@ public class PreferencesHelper {
     private static String SHARE_KEY_AVATA = "avatar";
     private static String SHARE_KEY_USER_ID = "id";
     private static String SHARE_KEY_UID = "uid";
-
-
+    
     @Inject
     public PreferencesHelper(@ApplicationContext Context context) {
         mPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
