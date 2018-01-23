@@ -59,7 +59,6 @@
     <string name="avatar_max_size">(1 MB max size)</string>
 
     <!-- API Keys -->
-    <string name="facebook_app_id">490316121339159</string>
     <string name="fb_login_protocol_scheme">fb490316121339159</string>
 
     <string name="yes_work">Yes, it worked</string>

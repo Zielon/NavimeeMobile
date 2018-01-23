@@ -41,11 +41,7 @@ android {
         exclude 'META-INF/rxjava.properties'
     }
 
-
     signingConfigs {
-        // You must set up an environment var before release signing
-        // Run: export APP_KEY={password}
-        // TODO Add your release keystore in /keystore folder
         release {
             storeFile file('keystore/release.keystore')
             keyAlias 'releasekey'
@@ -69,11 +65,12 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            ext.betaDistributionReleaseNotesFilePath =
-                    file('../crashlytics_release_notes.txt').absolutePath
+            ext.betaDistributionReleaseNotesFilePath = file('../crashlytics_release_notes.txt').absolutePath
 
+            // API KEYS
             manifestPlaceholders = [
-                    googleMapApi: "AIzaSyAfjQ9cZtSGJn0CPOEkwgRTq6QAUUm7R9k"
+                    googleMapApi: "AIzaSyAfjQ9cZtSGJn0CPOEkwgRTq6QAUUm7R9k",
+                    facebookAppId: "1184457824990855"
             ]
         }
 
@@ -81,8 +78,10 @@ android {
             versionNameSuffix " Debug"
             debuggable true
 
+            // API KEYS
             manifestPlaceholders = [
-                    googleMapApi: "AIzaSyAgXri9aa6FqmOejHuvFg_vd1TivnAkhds"
+                    googleMapApi: "AIzaSyAgXri9aa6FqmOejHuvFg_vd1TivnAkhds",
+                    facebookAppId: "163302027628633"
             ]
         }
     }
