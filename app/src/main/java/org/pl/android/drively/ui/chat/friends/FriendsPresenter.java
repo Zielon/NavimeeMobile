@@ -64,7 +64,6 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         super.detachView();
     }
 
-
     public void updateUserStatus() {
         if (NetworkUtil.isNetworkConnected(mContext)) {
             if(mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() != null) {
@@ -114,6 +113,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         String endcode = "";
         String upperCase = "";
         String encodeUpperCase = "";
+
         if(strlength >0) {
             String strFrontCode = stringQuery.substring(0, strlength - 1);
             String strEndCode = stringQuery.substring(strlength - 1, strlength);
@@ -125,52 +125,61 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                 encodeUpperCase = encodeUpperCase.toUpperCase();
             }
         }
+
         ArrayList<FriendModel> result = new ArrayList<>();
-        usersReference.whereGreaterThanOrEqualTo("name", stringQuery).whereLessThan("name",endcode)
-                        .get()
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                for (DocumentSnapshot document : task.getResult()) {
-                                    FriendModel friend = new FriendModel(document.toObject(ChatUser.class));
-                                    if (!result.contains(friend) && !friendList.contains(friend.getId())) {
-                                        result.add(friend);
+        searchDialogCompat.getItems().clear();
+
+        String finalUpperCase = upperCase;
+        String finalEncodeUpperCase = encodeUpperCase;
+        String finalEndcode = endcode;
+        usersReference
+                .whereGreaterThanOrEqualTo("name", stringQuery).whereLessThan("name", finalEndcode)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (DocumentSnapshot document : task.getResult()) {
+                            FriendModel friend = new FriendModel(document.toObject(ChatUser.class));
+                            if (!result.contains(friend) && !friendList.contains(friend.getId())) {
+                                result.add(friend);
+                            }
+                        }
+                    } else {
+                        Timber.w( "Error getting documents: ", task.getException());
+                    }
+
+                    usersReference.whereGreaterThanOrEqualTo("name", finalUpperCase).whereLessThan("name", finalEncodeUpperCase)
+                            .get()
+                            .addOnCompleteListener(upperTask -> {
+                                if (upperTask.isSuccessful()) {
+                                    for (DocumentSnapshot document : task.getResult()) {
+                                        FriendModel friend = new FriendModel(document.toObject(ChatUser.class));
+                                        if (!result.contains(friend) && !friendList.contains(friend.getId())) {
+                                            result.add(friend);
+                                        }
                                     }
+                                } else {
+                                    Timber.w( "Error getting documents: ", task.getException());
                                 }
-                            } else {
-                                Timber.w( "Error getting documents: ", task.getException());
-                            }
-                        });
 
-        usersReference.whereGreaterThanOrEqualTo("name", upperCase).whereLessThan("name",encodeUpperCase)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (DocumentSnapshot document : task.getResult()) {
-                            FriendModel friend = new FriendModel(document.toObject(ChatUser.class));
-                            if (!result.contains(friend) && !friendList.contains(friend.getId())) {
-                                result.add(friend);
-                            }
-                        }
-                    } else {
-                        Timber.w( "Error getting documents: ", task.getException());
-                    }
-                });
+                                usersReference.whereGreaterThanOrEqualTo("email", stringQuery).whereLessThan("email", finalEndcode)
+                                        .get()
+                                        .addOnCompleteListener(stringTask -> {
+                                            if (stringTask.isSuccessful()) {
+                                                for (DocumentSnapshot document : task.getResult()) {
+                                                    FriendModel friend = new FriendModel(document.toObject(ChatUser.class));
+                                                    if (!result.contains(friend) && !friendList.contains(friend.getId())) {
+                                                        result.add(friend);
+                                                    }
+                                                }
+                                                searchDialogCompat.getFilterResultListener().onFilter(result);
+                                                baseFilter.doAfterFiltering();
 
-        usersReference.whereGreaterThanOrEqualTo("email", stringQuery).whereLessThan("email",endcode)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (DocumentSnapshot document : task.getResult()) {
-                            FriendModel friend = new FriendModel(document.toObject(ChatUser.class));
-                            if (!result.contains(friend) && !friendList.contains(friend.getId())) {
-                                result.add(friend);
-                            }
-                        }
-                        searchDialogCompat.getFilterResultListener().onFilter(result);
-                        baseFilter.doAfterFiltering();
-                    } else {
-                        Timber.w( "Error getting documents: ", task.getException());
-                    }
+                                            } else {
+                                                Timber.w( "Error getting documents: ", task.getException());
+                                            }
+                                        });
+                            });
+
                 });
     }
 

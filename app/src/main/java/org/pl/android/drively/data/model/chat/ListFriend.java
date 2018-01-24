@@ -14,6 +14,15 @@ public class ListFriend {
         listFriend = new ArrayList<>();
     }
 
+    public Friend getById(String id){
+        for(Friend friend: listFriend){
+            if(id.equals(friend.id)){
+                return friend;
+            }
+        }
+        return null;
+    }
+
     public String getAvataById(String id){
         for(Friend friend: listFriend){
             if(id.equals(friend.id)){

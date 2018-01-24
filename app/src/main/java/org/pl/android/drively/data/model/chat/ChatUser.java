@@ -18,6 +18,8 @@ public class ChatUser  {
         message.idSender = "0";
         message.text = "";
         message.timestamp = 0;
+        message.emailSender = "";
+        message.nameSender = "";
         avatar = "DEFAULT";
     }
 }

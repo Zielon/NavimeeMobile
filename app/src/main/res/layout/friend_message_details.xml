@@ -1,20 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/root"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="5dp"
-    android:layout_marginBottom="5dp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
-    android:orientation="horizontal"
-    android:background="@color/primary"
-    android:textColor="@color/white"
-    android:padding="12dp">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/image"
+        android:id="@+id/avatar"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_gravity="center_vertical"
@@ -25,24 +15,36 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/name"
+            android:id="@+id/message_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="16dp"
-            android:textColor="@color/white"
-            android:textSize="14sp"/>
-
-        <TextView
-            android:id="@+id/email"
-            android:layout_below="@id/name"
-            android:layout_marginTop="5dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:textAlignment="center"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="16dp"
             android:textColor="@color/white"
             android:textSize="10sp"/>
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_below="@id/message_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="16dp"
+            android:textColor="@color/white"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/email"
+            android:layout_below="@id/name"
+            android:layout_width="match_parent"
+            android:textAlignment="center"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="16dp"
+            android:textColor="@color/white"
+            android:textSize="12sp"/>
     </RelativeLayout>
 
 </LinearLayout>
