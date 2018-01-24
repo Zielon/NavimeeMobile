@@ -56,7 +56,7 @@
 -dontwarn com.google.android.gms.**
 -dontwarn com.facebook.internal.Utility
 
--keepclassmembers class org.pl.android.navimee.data.model.** { *; }
+-keepclassmembers class org.pl.android.drively.data.model.** { *; }
 
 # Otto rules
 -keepclassmembers class ** {
@@ -73,16 +73,8 @@
 # Gson rules
 -keepattributes Signature
 -keep class sun.misc.Unsafe { *; }
-# TODO change to match your package model
-# Keep non static or private fields of models so Gson can find their names
--keepclassmembers class uk.co.ribot.androidboilerplate.data.model.** {
-    !static !private <fields>;
-}
-# TODO change to match your Retrofit services (only if using inner models withing the service)
-# Some models used by gson are inner classes inside the retrofit service
--keepclassmembers class uk.co.ribot.androidboilerplate.data.remote.RibotsService$** {
-    !static !private <fields>;
-}
+
+
 
 # Produces useful obfuscated stack traces
 # http://proguard.sourceforge.net/manual/examples.html#stacktrace
