@@ -102,10 +102,8 @@ public class MyFabFragment extends AAH_FabulousFragment {
     private void inflateLayoutWithFilters(final String filter_category, FlexboxLayout fbl) {
         List<String> keys = new ArrayList<>();
         if (filter_category.equals(getResources().getString(R.string.visible_on_map))) {
-            String[] chips = {getResources().getString(R.string.events_filtr), getResources().getString(R.string.popular_places), getResources().getString(R.string.uber_ratio)};
+            String[] chips = {getResources().getString(R.string.events_filtr), getResources().getString(R.string.popular_places)};
             keys = Arrays.asList(chips);
-        } else if (filter_category.equals(getResources().getString(R.string.radius))) {
-            //  keys = ((MainActivity) getActivity()).getmData().getUniqueGenreKeys();
         }
         for (int i = 0; i < keys.size(); i++) {
             View subchild = getActivity().getLayoutInflater().inflate(R.layout.single_chip, null);
@@ -198,7 +196,7 @@ public class MyFabFragment extends AAH_FabulousFragment {
 
         @Override
         public int getCount() {
-            return 2;
+            return 1;
         }
 
         @Override
@@ -206,8 +204,6 @@ public class MyFabFragment extends AAH_FabulousFragment {
             switch (position) {
                 case 0:
                     return getResources().getString(R.string.visible_on_map).toUpperCase();
-                case 1:
-                    return getResources().getString(R.string.radius).toUpperCase();
             }
             return "";
         }
