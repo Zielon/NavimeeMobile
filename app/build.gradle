@@ -272,7 +272,7 @@ task switchToDebug(type: Copy) {
 }
 
 task switchToRelease(type: Copy) {
-    def buildType = 'main'
+    def buildType = 'release'
     description = 'Switches to RELEASE google-services.json'
     from "${srcDir}/${buildType}/"
     include "$googleServicesJson"
