@@ -384,6 +384,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     @Override
     public void listFriendNotFound() {
         dialogFindAllFriend.dismiss();
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @SuppressLint("TimberArgCount")
