@@ -10,7 +10,7 @@ import java.util.List;
  * Created by Wojtek on 2018-01-11.
  */
 
-public interface GroupMvpView  extends MvpView {
+public interface GroupMvpView extends MvpView {
 
     void showError();
 

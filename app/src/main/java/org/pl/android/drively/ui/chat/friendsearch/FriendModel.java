@@ -23,7 +23,7 @@ public class FriendModel implements Searchable {
         return name;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 

@@ -12,14 +12,24 @@ import org.pl.android.drively.data.model.chat.ListFriend;
 
 
 public final class FriendDB {
+    private static final String TEXT_TYPE = " TEXT";
+    private static final String COMMA_SEP = ",";
+    private static final String SQL_CREATE_ENTRIES =
+            "CREATE TABLE " + FeedEntry.TABLE_NAME + " (" +
+                    FeedEntry.COLUMN_NAME_ID + " TEXT PRIMARY KEY," +
+                    FeedEntry.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
+                    FeedEntry.COLUMN_NAME_EMAIL + TEXT_TYPE + COMMA_SEP +
+                    FeedEntry.COLUMN_NAME_ID_ROOM + TEXT_TYPE + COMMA_SEP +
+                    FeedEntry.COLUMN_NAME_AVATA + TEXT_TYPE + " )";
+    private static final String SQL_DELETE_ENTRIES =
+            "DROP TABLE IF EXISTS " + FeedEntry.TABLE_NAME;
     private static FriendDBHelper mDbHelper = null;
+    private static FriendDB instance = null;
 
     // To prevent someone from accidentally instantiating the contract class,
     // make the constructor private.
     private FriendDB() {
     }
-
-    private static FriendDB instance = null;
 
     public static FriendDB getInstance(Context context) {
         if (instance == null) {
@@ -28,7 +38,6 @@ public final class FriendDB {
         }
         return instance;
     }
-
 
     public long addFriend(Friend friend) {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
@@ -43,9 +52,8 @@ public final class FriendDB {
         return db.insert(FeedEntry.TABLE_NAME, null, values);
     }
 
-
-    public void addListFriend(ListFriend listFriend){
-        for(Friend friend: listFriend.getListFriend()){
+    public void addListFriend(ListFriend listFriend) {
+        for (Friend friend : listFriend.getListFriend()) {
             addFriend(friend);
         }
     }
@@ -67,13 +75,13 @@ public final class FriendDB {
                 listFriend.getListFriend().add(friend);
             }
             cursor.close();
-        }catch (Exception e){
+        } catch (Exception e) {
             return new ListFriend();
         }
         return listFriend;
     }
 
-    public void dropDB(){
+    public void dropDB() {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(SQL_DELETE_ENTRIES);
         db.execSQL(SQL_CREATE_ENTRIES);
@@ -81,8 +89,8 @@ public final class FriendDB {
 
     public void deleteFriend(Friend friend) {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        String[] whereArgs = new String[] { String.valueOf(friend.id) };
-        db.delete(FeedEntry.TABLE_NAME,FeedEntry.COLUMN_NAME_ID+"=?",whereArgs);
+        String[] whereArgs = new String[]{String.valueOf(friend.id)};
+        db.delete(FeedEntry.TABLE_NAME, FeedEntry.COLUMN_NAME_ID + "=?", whereArgs);
 
     }
 
@@ -95,20 +103,6 @@ public final class FriendDB {
         static final String COLUMN_NAME_ID_ROOM = "idRoom";
         static final String COLUMN_NAME_AVATA = "avatar";
     }
-
-    private static final String TEXT_TYPE = " TEXT";
-    private static final String COMMA_SEP = ",";
-    private static final String SQL_CREATE_ENTRIES =
-            "CREATE TABLE " + FeedEntry.TABLE_NAME + " (" +
-                    FeedEntry.COLUMN_NAME_ID + " TEXT PRIMARY KEY," +
-                    FeedEntry.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
-                    FeedEntry.COLUMN_NAME_EMAIL + TEXT_TYPE + COMMA_SEP +
-                    FeedEntry.COLUMN_NAME_ID_ROOM + TEXT_TYPE + COMMA_SEP +
-                    FeedEntry.COLUMN_NAME_AVATA + TEXT_TYPE + " )";
-
-    private static final String SQL_DELETE_ENTRIES =
-            "DROP TABLE IF EXISTS " + FeedEntry.TABLE_NAME;
-
 
     private static class FriendDBHelper extends SQLiteOpenHelper {
         // If you change the database schema, you must increment the database version.

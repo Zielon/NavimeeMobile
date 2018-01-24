@@ -23,7 +23,7 @@
             android:layout_height="50dp"
             android:layout_margin="10dp"
             android:layout_weight="1"
-            app:civ_border_color="@color/colorPrimary" />
+            app:civ_border_color="@color/primary_dark" />
 
         <LinearLayout
             android:layout_width="0dp"

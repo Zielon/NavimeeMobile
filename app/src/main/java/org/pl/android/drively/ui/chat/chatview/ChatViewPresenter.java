@@ -50,53 +50,53 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
 
     public void setMessageListener(String roomId) {
         mDataManager.getFirebaseService().getFirebaseFirestore().collection("MESSAGES").document(roomId).collection("MESSAGES")
-                    .orderBy("timestamp")
-                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                        @SuppressLint("TimberArgCount")
-                        @Override
-                        public void onEvent(@Nullable QuerySnapshot value,
-                                            @Nullable FirebaseFirestoreException e) {
-                            if (e != null) {
-                                Timber.w( "Listen failed.", e);
-                                return;
-                            }
-                            List messageList = value.toObjects(Message.class);
-                            if (getMvpView() != null) {
-                                getMvpView().roomChangesListerSet(messageList);
-                            }
+                .orderBy("timestamp")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @SuppressLint("TimberArgCount")
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Timber.w("Listen failed.", e);
+                            return;
                         }
-                    });
+                        List messageList = value.toObjects(Message.class);
+                        if (getMvpView() != null) {
+                            getMvpView().roomChangesListerSet(messageList);
+                        }
+                    }
+                });
 
     }
 
     public void addMessage(String roomId, Message newMessage) {
         mDataManager.getFirebaseService().getFirebaseFirestore().collection("MESSAGES")
-                    .document(roomId).collection("MESSAGES").add(newMessage)
-                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                            Timber.w( "DocumentSnapshot successfully written!");
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @SuppressLint("TimberArgCount")
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Timber.w( "Error writing document", e);
-                        }
-                    });
+                .document(roomId).collection("MESSAGES").add(newMessage)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Timber.w("DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @SuppressLint("TimberArgCount")
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Timber.w("Error writing document", e);
+                    }
+                });
 
     }
 
     public String getId() {
-        return  mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+        return mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
     }
 
     public User getUserInfo() {
-        return  mDataManager.getPreferencesHelper().getUserInfo();
+        return mDataManager.getPreferencesHelper().getUserInfo();
     }
 
     public StorageReference getStorageReference(String avatar) {
-        return  mDataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/"+avatar);
+        return mDataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + avatar);
     }
 }

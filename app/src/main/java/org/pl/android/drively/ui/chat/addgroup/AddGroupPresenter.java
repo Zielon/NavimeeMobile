@@ -53,7 +53,7 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
                 .addOnSuccessListener(aVoid -> {
                     List<Task<Void>> tasks = new ArrayList<>();
                     Map<String, String> member = new HashMap<>();
-                    for (String memberId: room.member) {
+                    for (String memberId : room.member) {
                         member.put("memberId", memberId);
                         tasks.add(mDataManager.getFirebaseService()
                                 .getFirebaseFirestore()
@@ -63,7 +63,7 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
                         member.clear();
                     }
                     if (getMvpView() != null) {
-                        getMvpView().addRoomForUser(idGroup,0);
+                        getMvpView().addRoomForUser(idGroup, 0);
                     }
                 })
                 .addOnFailureListener(e -> Timber.w("Error writing document", e));
@@ -77,7 +77,7 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         if (getMvpView() != null) {
-                            getMvpView().addRoomForUser(roomId,userIndex+1);
+                            getMvpView().addRoomForUser(roomId, userIndex + 1);
                         }
                     }
                 })
@@ -85,14 +85,14 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         if (getMvpView() != null) {
-                            getMvpView().addRoomForUser(roomId,userIndex+1);
+                            getMvpView().addRoomForUser(roomId, userIndex + 1);
                         }
                     }
                 });
     }
 
     public String getId() {
-        return  mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+        return mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
     }
 
     public void editGroup(String idGroup, Room room) {
@@ -109,7 +109,7 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
                                 .document(idGroup).set(room.groupInfo)
                                 .addOnSuccessListener(aVoidd -> {
                                     Map<String, String> member = new HashMap<>();
-                                    for (String memberId: room.member) {
+                                    for (String memberId : room.member) {
                                         member.put("memberId", memberId);
                                         mDataManager.getFirebaseService()
                                                 .getFirebaseFirestore()
@@ -142,26 +142,25 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
                 });
 
 
-
     }
 
     public void deleteUserReference(String userId, String roomId, int userIndex) {
 
         mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS")
                 .document(userId)
-                .collection("GROUP").whereEqualTo("roomId",roomId)
+                .collection("GROUP").whereEqualTo("roomId", roomId)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            if(task.getResult().size() == 0) {
+                            if (task.getResult().size() == 0) {
                                 if (getMvpView() != null) {
                                     getMvpView().onFailureGroupReference();
                                 }
                             }
                             for (DocumentSnapshot document : task.getResult()) {
-                                Timber.d( document.getId() + " => " + document.getData());
+                                Timber.d(document.getId() + " => " + document.getData());
                                 mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).collection("GROUP")
                                         .document(document.getId())
                                         .delete()
@@ -169,7 +168,7 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
                                             @Override
                                             public void onSuccess(Void aVoid) {
                                                 if (getMvpView() != null) {
-                                                    getMvpView().onSuccessDeleteGroupReference(roomId,userIndex);
+                                                    getMvpView().onSuccessDeleteGroupReference(roomId, userIndex);
                                                 }
                                             }
                                         })
@@ -196,6 +195,6 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
     }
 
     public StorageReference getStorageReference(String avatar) {
-        return  mDataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/"+avatar);
+        return mDataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + avatar);
     }
 }

@@ -6,13 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,10 +22,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.kelvinapps.rxfirebase.RxFirebaseStorage;
 import com.yarolegovich.lovelydialog.LovelyInfoDialog;
 import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 
@@ -53,28 +47,22 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 
 
-public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,GroupMvpView{
-    private RecyclerView recyclerListGroups;
-    public FragGroupClickFloatButton onClickFloatButton;
-    private ArrayList<Group> listGroup;
-    private ListGroupsAdapter adapter;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, GroupMvpView {
     public static final int CONTEXT_MENU_DELETE = 1;
     public static final int CONTEXT_MENU_EDIT = 2;
     public static final int CONTEXT_MENU_LEAVE = 3;
     public static final int REQUEST_EDIT_GROUP = 0;
     public static final String CONTEXT_MENU_KEY_INTENT_DATA_POS = "pos";
-
-
+    public FragGroupClickFloatButton onClickFloatButton;
     @Inject
     GroupPresenter mGroupPresenter;
-
-
     @BindView(R.id.fab_group)
     FloatingActionButton fabGroupButton;
-
-
     LovelyProgressDialog progressDialog, waitingLeavingGroup;
+    private RecyclerView recyclerListGroups;
+    private ArrayList<Group> listGroup;
+    private ListGroupsAdapter adapter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public GroupFragment() {
         // Required empty public constructor
@@ -114,7 +102,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 .setTitle("Group leaving....")
                 .setTopColorRes(R.color.colorAccent);
 
-        if(listGroup.size() == 0){
+        if (listGroup.size() == 0) {
             //Ket noi server hien thi group
             mSwipeRefreshLayout.setRefreshing(true);
             getListGroup();
@@ -124,18 +112,18 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     @Override
-    public void onDestroyView (){
+    public void onDestroyView() {
         super.onDestroyView();
         mGroupPresenter.detachView();
     }
 
-    private void getListGroup(){
+    private void getListGroup() {
         mGroupPresenter.getListGroup();
     }
 
     @Override
     public void setGroupList(List<String> rooms) {
-        for(String room :rooms) {
+        for (String room : rooms) {
             Group newGroup = new Group();
             newGroup.id = room;
             listGroup.add(newGroup);
@@ -150,11 +138,10 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_EDIT_GROUP && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_EDIT_GROUP && resultCode == Activity.RESULT_OK) {
             listGroup.clear();
             ListGroupsAdapter.listFriend = null;
             GroupDB.getInstance(getContext()).dropDB();
@@ -162,28 +149,27 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         }
     }
 
-    private void getGroupInfo(final int indexGroup){
-        if(indexGroup == listGroup.size()){
+    private void getGroupInfo(final int indexGroup) {
+        if (indexGroup == listGroup.size()) {
             adapter.notifyDataSetChanged();
             mSwipeRefreshLayout.setRefreshing(false);
-        }else {
-            mGroupPresenter.getGroupInfo(indexGroup,listGroup.get(indexGroup).id);
+        } else {
+            mGroupPresenter.getGroupInfo(indexGroup, listGroup.get(indexGroup).id);
         }
     }
 
     @SuppressLint("TimberArgCount")
     @Override
     public void setGroupInfo(int groupIndex, Room room) {
-        for(String member : room.member) {
+        for (String member : room.member) {
             listGroup.get(groupIndex).member.add(member);
         }
-        listGroup.get(groupIndex).groupInfo.put("name",  room.groupInfo.get("name"));
-        listGroup.get(groupIndex).groupInfo.put("admin",  room.groupInfo.get("admin"));
+        listGroup.get(groupIndex).groupInfo.put("name", room.groupInfo.get("name"));
+        listGroup.get(groupIndex).groupInfo.put("admin", room.groupInfo.get("admin"));
         GroupDB.getInstance(getContext()).addGroup(listGroup.get(groupIndex));
-        Timber.d("GroupFragment", listGroup.get(groupIndex).id +": " + room.toString());
-        getGroupInfo(groupIndex +1);
+        Timber.d("GroupFragment", listGroup.get(groupIndex).id + ": " + room.toString());
+        getGroupInfo(groupIndex + 1);
     }
-
 
 
     @Override
@@ -201,13 +187,13 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         switch (item.getItemId()) {
             case CONTEXT_MENU_DELETE:
                 int posGroup = item.getIntent().getIntExtra(CONTEXT_MENU_KEY_INTENT_DATA_POS, -1);
-                if(((String)listGroup.get(posGroup).groupInfo.get("admin")).equals(mGroupPresenter.getId())) {
+                if (((String) listGroup.get(posGroup).groupInfo.get("admin")).equals(mGroupPresenter.getId())) {
                     Group group = listGroup.get(posGroup);
                     listGroup.remove(posGroup);
-                    if(group != null){
+                    if (group != null) {
                         deleteGroup(group, 0);
                     }
-                }else{
+                } else {
                     Toast.makeText(getActivity(), "You are not admin", Toast.LENGTH_LONG).show();
                 }
                 break;
@@ -225,9 +211,9 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
             case CONTEXT_MENU_LEAVE:
                 int position = item.getIntent().getIntExtra(CONTEXT_MENU_KEY_INTENT_DATA_POS, -1);
-                if(((String)listGroup.get(position).groupInfo.get("admin")).equals(mGroupPresenter.getId())) {
+                if (((String) listGroup.get(position).groupInfo.get("admin")).equals(mGroupPresenter.getId())) {
                     Toast.makeText(getActivity(), "Admin cannot leave group", Toast.LENGTH_LONG).show();
-                }else{
+                } else {
                     waitingLeavingGroup.show();
                     Group groupLeaving = listGroup.get(position);
                     leaveGroup(groupLeaving);
@@ -238,10 +224,10 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         return super.onContextItemSelected(item);
     }
 
-    public void deleteGroup(final Group group, final int index){
-        if(index == group.member.size()){
+    public void deleteGroup(final Group group, final int index) {
+        if (index == group.member.size()) {
             mGroupPresenter.deleteGroup(group);
-        }else{
+        } else {
             mGroupPresenter.deleteGroupReference(index, group);
         }
     }
@@ -287,8 +273,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
 
-
-    public void leaveGroup(final Group group){
+    public void leaveGroup(final Group group) {
         mGroupPresenter.leaveGroup(group);
     }
 
@@ -327,29 +312,29 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
 
-
-    public class FragGroupClickFloatButton implements View.OnClickListener{
+    public class FragGroupClickFloatButton implements View.OnClickListener {
 
         Context context;
-        public FragGroupClickFloatButton getInstance(Context context){
+
+        public FragGroupClickFloatButton getInstance(Context context) {
             this.context = context;
             return this;
         }
 
         @Override
         public void onClick(View view) {
-            startActivityForResult( new Intent(getContext(), AddGroupActivity.class),REQUEST_EDIT_GROUP);
+            startActivityForResult(new Intent(getContext(), AddGroupActivity.class), REQUEST_EDIT_GROUP);
         }
     }
 }
 
 class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private ArrayList<Group> listGroup;
     public static ListFriend listFriend = null;
+    private ArrayList<Group> listGroup;
     private Context context;
 
-    public ListGroupsAdapter(Context context, ArrayList<Group> listGroup){
+    public ListGroupsAdapter(Context context, ArrayList<Group> listGroup) {
         this.context = context;
         this.listGroup = listGroup;
     }
@@ -363,7 +348,7 @@ class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         final String groupName = listGroup.get(position).groupInfo.get("name");
-        if(groupName != null && groupName.length() > 0) {
+        if (groupName != null && groupName.length() > 0) {
             ((ItemGroupViewHolder) holder).txtGroupName.setText(groupName);
             ((ItemGroupViewHolder) holder).iconGroup.setText((groupName.charAt(0) + "").toUpperCase());
         }
@@ -374,26 +359,26 @@ class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 view.getParent().showContextMenuForChild(view);
             }
         });
-        ((RelativeLayout)((ItemGroupViewHolder) holder).txtGroupName.getParent()).setOnClickListener(new View.OnClickListener() {
+        ((RelativeLayout) ((ItemGroupViewHolder) holder).txtGroupName.getParent()).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(listFriend == null){
-                   listFriend = FriendDB.getInstance(context).getListFriend();
+                if (listFriend == null) {
+                    listFriend = FriendDB.getInstance(context).getListFriend();
                 }
                 Intent intent = new Intent(context, ChatViewActivity.class);
                 intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, groupName);
                 ArrayList<CharSequence> idFriend = new ArrayList<>();
                 ChatViewActivity.bitmapAvataFriend = new HashMap<>();
-                for(String id : listGroup.get(position).member) {
+                for (String id : listGroup.get(position).member) {
                     idFriend.add(id);
                     String avatar = listFriend.getAvataById(id);
-                    if(!avatar.equals(Const.STR_DEFAULT_BASE64)) {
+                    if (!avatar.equals(Const.STR_DEFAULT_BASE64)) {
 /*                        byte[] decodedString = Base64.decode(avatar, Base64.DEFAULT);
                         ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length));*/
                         ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
-                    }else if(avatar.equals(Const.STR_DEFAULT_BASE64)) {
+                    } else if (avatar.equals(Const.STR_DEFAULT_BASE64)) {
                         ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
-                    }else {
+                    } else {
                         ChatViewActivity.bitmapAvataFriend.put(id, null);
                     }
                 }
@@ -414,6 +399,7 @@ class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 class ItemGroupViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
     public TextView iconGroup, txtGroupName;
     public ImageButton btnMore;
+
     public ItemGroupViewHolder(View itemView) {
         super(itemView);
         itemView.setOnCreateContextMenuListener(this);
@@ -424,9 +410,9 @@ class ItemGroupViewHolder extends RecyclerView.ViewHolder implements View.OnCrea
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-        menu.setHeaderTitle((String) ((Object[])btnMore.getTag())[0]);
+        menu.setHeaderTitle((String) ((Object[]) btnMore.getTag())[0]);
         Intent data = new Intent();
-        data.putExtra(GroupFragment.CONTEXT_MENU_KEY_INTENT_DATA_POS, (Integer) ((Object[])btnMore.getTag())[1]);
+        data.putExtra(GroupFragment.CONTEXT_MENU_KEY_INTENT_DATA_POS, (Integer) ((Object[]) btnMore.getTag())[1]);
         //menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_EDIT, Menu.NONE, "Edit group").setIntent(data);
         menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_DELETE, Menu.NONE, "Delete group").setIntent(data);
         menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_LEAVE, Menu.NONE, "Leave group").setIntent(data);

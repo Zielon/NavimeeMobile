@@ -21,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.yarolegovich.lovelydialog.LovelyInfoDialog;
@@ -44,8 +43,10 @@ import javax.inject.Inject;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
+public class AddGroupActivity extends BaseActivity implements AddGroupMvpView {
 
+    @Inject
+    AddGroupPresenter mAddGroupPresenter;
     private RecyclerView recyclerListFriend;
     private ListPeopleAdapter adapter;
     private ListFriend listFriend;
@@ -57,9 +58,6 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
     private LovelyProgressDialog dialogWait;
     private boolean isEditGroup;
     private Group groupEdit;
-
-    @Inject
-    AddGroupPresenter mAddGroupPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -106,7 +104,7 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
                     Toast.makeText(AddGroupActivity.this, getResources().getString(R.string.at_least_two), Toast.LENGTH_SHORT).show();
                 } else {
                     if (editTextGroupName.getText().length() == 0) {
-                        Toast.makeText(AddGroupActivity.this,getResources().getString(R.string.enter_group_name), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddGroupActivity.this, getResources().getString(R.string.enter_group_name), Toast.LENGTH_SHORT).show();
                     } else {
                         if (isEditGroup) {
                             editGroup();
@@ -122,7 +120,7 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
             isEditGroup = true;
             String idGroup = intentData.getStringExtra("groupId");
             txtActionName.setText("Save");
-            btnAddGroup.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            btnAddGroup.setBackgroundColor(getResources().getColor(R.color.primary));
             groupEdit = GroupDB.getInstance(this).getGroup(idGroup);
             editTextGroupName.setText(groupEdit.groupInfo.get("name"));
         } else {
@@ -131,7 +129,7 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
 
         recyclerListFriend = (RecyclerView) findViewById(R.id.recycleListFriend);
         recyclerListFriend.setLayoutManager(linearLayoutManager);
-        adapter = new ListPeopleAdapter(this, listFriend, btnAddGroup, listIDChoose, listIDRemove, isEditGroup, groupEdit,this);
+        adapter = new ListPeopleAdapter(this, listFriend, btnAddGroup, listIDChoose, listIDRemove, isEditGroup, groupEdit, this);
         recyclerListFriend.setAdapter(adapter);
 
 
@@ -141,7 +139,7 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
         //Show dialog wait
         dialogWait.setIcon(R.drawable.ic_add_group_dialog)
                 .setTitle("Editing....")
-                .setTopColorRes(R.color.colorPrimary)
+                .setTopColorRes(R.color.primary)
                 .show();
         //Delete group
         final String idGroup = groupEdit.id;
@@ -152,7 +150,7 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
         room.groupInfo.put("name", editTextGroupName.getText().toString());
         room.groupInfo.put("admin", mAddGroupPresenter.getId());
 
-        mAddGroupPresenter.editGroup(idGroup,room);
+        mAddGroupPresenter.editGroup(idGroup, room);
 
     }
 
@@ -160,7 +158,7 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
         //Show dialog wait
         dialogWait.setIcon(R.drawable.ic_add_group_dialog)
                 .setTitle(getResources().getString(R.string.registering))
-                .setTopColorRes(R.color.colorPrimary)
+                .setTopColorRes(R.color.primary)
                 .show();
 
         final String idGroup = (mAddGroupPresenter.getId() + System.currentTimeMillis()).hashCode() + "";
@@ -180,9 +178,10 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
             setResult(RESULT_OK, null);
             AddGroupActivity.this.finish();
         } else {
-            mAddGroupPresenter.deleteUserReference((String) listIDRemove.toArray()[userIndex], roomId,userIndex);
+            mAddGroupPresenter.deleteUserReference((String) listIDRemove.toArray()[userIndex], roomId, userIndex);
         }
     }
+
     @Override
     public void addRoomForUser(final String roomId, final int userIndex) {
         if (userIndex == listIDChoose.size()) {
@@ -198,22 +197,23 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
             mAddGroupPresenter.addRoomForUser(roomId, userIndex, (String) listIDChoose.toArray()[userIndex]);
         }
     }
+
     @Override
     public void addRoomForUserFailure() {
-                dialogWait.dismiss();
-                new LovelyInfoDialog(AddGroupActivity.this) {
+        dialogWait.dismiss();
+        new LovelyInfoDialog(AddGroupActivity.this) {
+            @Override
+            public LovelyInfoDialog setConfirmButtonText(String text) {
+                findView(com.yarolegovich.lovelydialog.R.id.ld_btn_confirm).setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public LovelyInfoDialog setConfirmButtonText(String text) {
-                        findView(com.yarolegovich.lovelydialog.R.id.ld_btn_confirm).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                dismiss();
-                            }
-                        });
-                        return super.setConfirmButtonText(text);
+                    public void onClick(View view) {
+                        dismiss();
                     }
-                }
-                .setTopColorRes(R.color.colorAccent)
+                });
+                return super.setConfirmButtonText(text);
+            }
+        }
+                .setTopColorRes(R.color.primary)
                 .setIcon(R.drawable.ic_add_group_dialog)
                 .setTitle(getResources().getString(R.string.failure))
                 .setMessage(getResources().getString(R.string.create_group_failure))
@@ -243,7 +243,7 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
                 return super.setConfirmButtonText(text);
             }
         }
-                .setTopColorRes(R.color.colorAccent)
+                .setTopColorRes(R.color.primary)
                 .setIcon(R.drawable.ic_add_group_dialog)
                 .setTitle(getResources().getString(R.string.failure))
                 .setMessage("Cannot connect database")
@@ -272,7 +272,7 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
                 return super.setConfirmButtonText(text);
             }
         }
-                .setTopColorRes(R.color.colorAccent)
+                .setTopColorRes(R.color.primary)
                 .setIcon(R.drawable.ic_add_group_dialog)
                 .setTitle(getResources().getString(R.string.failure))
                 .setMessage(getResources().getString(R.string.delete_group_failure))
@@ -280,8 +280,6 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView  {
                 .setConfirmButtonText("Ok")
                 .show();
     }
-
-
 }
 
 class ListPeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -330,12 +328,12 @@ class ListPeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             ((ItemFriendHolder) holder).avata.setImageBitmap(src);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            ((ItemFriendHolder) holder).avata.setImageResource(R.drawable.default_avatar);
-                        }
-                    });
-        }else{
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    ((ItemFriendHolder) holder).avata.setImageResource(R.drawable.default_avatar);
+                }
+            });
+        } else {
             ((ItemFriendHolder) holder).avata.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
         }
         ((ItemFriendHolder) holder).checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -349,7 +347,7 @@ class ListPeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     listIDChoose.remove(id);
                 }
                 if (listIDChoose.size() >= 3) {
-                    btnAddGroup.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+                    btnAddGroup.setBackgroundColor(context.getResources().getColor(R.color.primary));
                 } else {
                     btnAddGroup.setBackgroundColor(context.getResources().getColor(R.color.primary));
                 }
@@ -357,7 +355,7 @@ class ListPeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         });
         if (isEdit && editGroup.member.contains(id)) {
             ((ItemFriendHolder) holder).checkBox.setChecked(true);
-        }else if(editGroup != null && !editGroup.member.contains(id)){
+        } else if (editGroup != null && !editGroup.member.contains(id)) {
             ((ItemFriendHolder) holder).checkBox.setChecked(false);
         }
     }

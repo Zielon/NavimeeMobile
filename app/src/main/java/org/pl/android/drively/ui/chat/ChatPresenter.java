@@ -31,5 +31,4 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
 
-
 }

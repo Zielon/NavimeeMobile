@@ -32,14 +32,14 @@ public class FriendSearchDialogCompat extends BaseSearchDialogCompat<FriendModel
     private RecyclerView mRecyclerView;
 
     public FriendSearchDialogCompat(Context context, String title, String searchHint,
-                                     @Nullable Filter filter, ArrayList<FriendModel> items,
-                                     SearchResultListener<FriendModel> searchResultListener) {
-        super(context, items, filter, null,null);
+                                    @Nullable Filter filter, ArrayList<FriendModel> items,
+                                    SearchResultListener<FriendModel> searchResultListener) {
+        super(context, items, filter, null, null);
         init(title, searchHint, searchResultListener);
     }
 
     private void init(String title, String searchHint,
-                      SearchResultListener<FriendModel> searchResultListener){
+                      SearchResultListener<FriendModel> searchResultListener) {
         mTitle = title;
         mSearchHint = searchHint;
         mSearchResultListener = searchResultListener;
@@ -64,18 +64,18 @@ public class FriendSearchDialogCompat extends BaseSearchDialogCompat<FriendModel
         searchBox.setHint(mSearchHint);
         view.findViewById(ir.mirrajabi.searchdialog.R.id.dummy_background).setOnClickListener(view1 -> dismiss());
 
-        final FriendModelAdapter adapter = new FriendModelAdapter(getContext(), R.layout.friends_search_adapter_item,getItems());
+        final FriendModelAdapter adapter = new FriendModelAdapter(getContext(), R.layout.friends_search_adapter_item, getItems());
 
         adapter.setSearchResultListener(mSearchResultListener);
         adapter.setSearchDialog(this);
-        setFilterResultListener(items -> ((FriendModelAdapter)getAdapter()).setItems(items));
+        setFilterResultListener(items -> ((FriendModelAdapter) getAdapter()).setItems(items));
         setFilterAutomatically(true);
         setAdapter(adapter);
 
         mHandler = new Handler();
         mSearchBox.requestFocus();
 
-        ((BaseFilter<FriendModel>)getFilter()).setOnPerformFilterListener(new OnPerformFilterListener() {
+        ((BaseFilter<FriendModel>) getFilter()).setOnPerformFilterListener(new OnPerformFilterListener() {
             @Override
             public void doBeforeFiltering() {
                 setLoading(true);

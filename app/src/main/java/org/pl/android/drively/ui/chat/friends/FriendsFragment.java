@@ -65,29 +65,23 @@ import timber.log.Timber;
 
 public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, FriendsMvpView {
 
+    public static final String ACTION_DELETE_FRIEND = "com.android.rivchat.DELETE_FRIEND";
+    public static int ACTION_START_CHAT = 1;
+    public FragFriendClickFloatButton onClickFloatButton;
+    LovelyProgressDialog dialogWaitDeleting;
+    @Inject
+    FriendsPresenter mFriendsPresenter;
+    @BindView(R.id.fab_friends)
+    FloatingActionButton fabFriendsButton;
     private RecyclerView recyclerListFrends;
     private ListFriendsAdapter adapter;
-    public FragFriendClickFloatButton onClickFloatButton;
     private ListFriend dataListFriend = null;
     private ArrayList<String> listFriendID = null;
     private LovelyProgressDialog dialogFindAllFriend;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private CountDownTimer detectFriendOnline;
-    public static int ACTION_START_CHAT = 1;
     private LovelyProgressDialog dialogWait;
-    LovelyProgressDialog dialogWaitDeleting;
-
     private View layout;
-
-    @Inject
-    FriendsPresenter mFriendsPresenter;
-
-
-    @BindView(R.id.fab_friends)
-    FloatingActionButton fabFriendsButton;
-
-    public static final String ACTION_DELETE_FRIEND = "com.android.rivchat.DELETE_FRIEND";
-
     private BroadcastReceiver deleteFriendReceiver;
 
     public FriendsFragment() {
@@ -118,13 +112,13 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             }
         };
         if (dataListFriend == null) {
-           dataListFriend = FriendDB.getInstance(getContext()).getListFriend();
+            dataListFriend = FriendDB.getInstance(getContext()).getListFriend();
             if (dataListFriend.getListFriend().size() > 0) {
                 listFriendID = new ArrayList<>();
                 for (Friend friend : dataListFriend.getListFriend()) {
                     listFriendID.add(friend.id);
                 }
-               detectFriendOnline.start();
+                detectFriendOnline.start();
             }
         }
         layout = inflater.inflate(R.layout.fragment_people, container, false);
@@ -137,7 +131,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         dialogFindAllFriend = new LovelyProgressDialog(getContext());
         dialogWait = new LovelyProgressDialog((getContext()));
         dialogWaitDeleting = new LovelyProgressDialog((getContext()));
-        adapter = new ListFriendsAdapter(getContext(), dataListFriend, this,dialogWaitDeleting);
+        adapter = new ListFriendsAdapter(getContext(), dataListFriend, this, dialogWaitDeleting);
         recyclerListFrends.setAdapter(adapter);
 
         if (listFriendID == null) {
@@ -145,7 +139,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             dialogFindAllFriend.setCancelable(false)
                     .setIcon(R.drawable.ic_add_friend)
                     .setTitle(getResources().getString(R.string.get_all_friend))
-                    .setTopColorRes(R.color.colorPrimary)
+                    .setTopColorRes(R.color.primary)
                     .show();
             getListFriendUId();
         }
@@ -155,7 +149,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             public void onReceive(Context context, Intent intent) {
                 String idDeleted = intent.getExtras().getString("idFriend");
                 for (Friend friend : dataListFriend.getListFriend()) {
-                    if(idDeleted.equals(friend.id)){
+                    if (idDeleted.equals(friend.id)) {
                         ArrayList<Friend> friends = dataListFriend.getListFriend();
                         friends.remove(friend);
                         FriendDB.getInstance(getContext()).deleteFriend(friend);
@@ -174,7 +168,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
     @Override
-    public void onDestroyView (){
+    public void onDestroyView() {
         super.onDestroyView();
         mFriendsPresenter.detachView();
         detectFriendOnline.cancel();
@@ -216,7 +210,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         dialogWait.setCancelable(false)
                 .setIcon(R.drawable.ic_add_friend)
                 .setTitle("Add friend....")
-                .setTopColorRes(R.color.colorPrimary)
+                .setTopColorRes(R.color.primary)
                 .show();
 
         //Check xem da ton tai id trong danh sach id chua
@@ -241,7 +235,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         } else {
             dialogWait.dismiss();
             new LovelyInfoDialog(getContext())
-                    .setTopColorRes(R.color.colorPrimary)
+                    .setTopColorRes(R.color.primary)
                     .setIcon(R.drawable.ic_add_friend)
                     .setTitle(getResources().getString(R.string.success))
                     .setMessage(getResources().getString(R.string.add_friend_success))
@@ -303,75 +297,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         getContext().sendBroadcast(intentDeleted);
     }
 
-    public class FragFriendClickFloatButton implements View.OnClickListener {
-        Context context;
-
-        public FragFriendClickFloatButton() {
-        }
-
-        public FragFriendClickFloatButton getInstance(Context context) {
-            this.context = context;
-            return this;
-        }
-
-        public class SampleSearchModel implements Searchable {
-            private String mTitle;
-
-            public SampleSearchModel(String title) {
-                mTitle = title;
-            }
-
-            @Override
-            public String getTitle() {
-                return mTitle;
-            }
-
-            public SampleSearchModel setTitle(String title) {
-                mTitle = title;
-                return this;
-            }
-        }
-
-        @Override
-        public void onClick(final View view) {
-
-            FriendSearchDialogCompat searchDialogCompat =
-                    new FriendSearchDialogCompat(view.getContext(), getResources().getString(R.string.find_friends),
-                            getResources().getString(R.string.find_friends_who), null, new ArrayList<>(),
-                    (dialog, item, position) -> {
-                        if (item.getId().equals(mFriendsPresenter.getId())) {
-                            Toast.makeText(view.getContext(), "Email not valid",
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            Friend friend = new Friend();
-                            friend.name = item.getName();
-                            friend.email = item.getEmail();
-                            friend.id = item.getId();
-                            friend.avatar = item.getAvatar();
-                            friend.idRoom = item.getId().compareTo(mFriendsPresenter.getId()) > 0 ? (mFriendsPresenter.getId() + item.getId()).hashCode() + "" : "" + (item.getId() + mFriendsPresenter.getId()).hashCode();
-                            checkBeforAddFriend(item.getId(), friend);
-                        }
-                        dialog.dismiss();
-                    });
-
-            BaseFilter apiFilter = new BaseFilter() {
-                @Override
-                protected FilterResults performFiltering(CharSequence charSequence) {
-                    return null;
-                }
-
-                @Override
-                protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                    mFriendsPresenter.findFriend(this, searchDialogCompat, charSequence.toString().trim(),listFriendID);
-                }
-            };
-
-            searchDialogCompat.setFilter(apiFilter);
-            searchDialogCompat.show();
-            searchDialogCompat.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-        }
-    }
-
     private void getListFriendUId() {
         mFriendsPresenter.getListFriendUId();
     }
@@ -398,7 +323,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             mSwipeRefreshLayout.setRefreshing(false);
             detectFriendOnline.start();
         } else {
-            if(listFriendID.size() >= index) {
+            if (listFriendID.size() >= index) {
                 try {
                     final String id = listFriendID.get(index);
                     mFriendsPresenter.getAllFriendInfo(index, id);
@@ -414,10 +339,9 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         }
     }
 
-
     @Override
     public void friendInfoFound(int index, Friend friend) {
-        if(!dataListFriend.getListFriend().contains(friend)) {
+        if (!dataListFriend.getListFriend().contains(friend)) {
             dataListFriend.getListFriend().add(friend);
             FriendDB.getInstance(getContext()).addFriend(friend);
             getAllFriendInfo(index + 1);
@@ -426,22 +350,91 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             mSwipeRefreshLayout.setRefreshing(false);
         }
     }
+
+    public class FragFriendClickFloatButton implements View.OnClickListener {
+        Context context;
+
+        public FragFriendClickFloatButton() {
+        }
+
+        public FragFriendClickFloatButton getInstance(Context context) {
+            this.context = context;
+            return this;
+        }
+
+        @Override
+        public void onClick(final View view) {
+
+            FriendSearchDialogCompat searchDialogCompat =
+                    new FriendSearchDialogCompat(view.getContext(), getResources().getString(R.string.find_friends),
+                            getResources().getString(R.string.find_friends_who), null, new ArrayList<>(),
+                            (dialog, item, position) -> {
+                                if (item.getId().equals(mFriendsPresenter.getId())) {
+                                    Toast.makeText(view.getContext(), "Email not valid",
+                                            Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Friend friend = new Friend();
+                                    friend.name = item.getName();
+                                    friend.email = item.getEmail();
+                                    friend.id = item.getId();
+                                    friend.avatar = item.getAvatar();
+                                    friend.idRoom = item.getId().compareTo(mFriendsPresenter.getId()) > 0 ? (mFriendsPresenter.getId() + item.getId()).hashCode() + "" : "" + (item.getId() + mFriendsPresenter.getId()).hashCode();
+                                    checkBeforAddFriend(item.getId(), friend);
+                                }
+                                dialog.dismiss();
+                            });
+
+            BaseFilter apiFilter = new BaseFilter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence charSequence) {
+                    return null;
+                }
+
+                @Override
+                protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                    mFriendsPresenter.findFriend(this, searchDialogCompat, charSequence.toString().trim(), listFriendID);
+                }
+            };
+
+            searchDialogCompat.setFilter(apiFilter);
+            searchDialogCompat.show();
+            searchDialogCompat.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+
+        public class SampleSearchModel implements Searchable {
+            private String mTitle;
+
+            public SampleSearchModel(String title) {
+                mTitle = title;
+            }
+
+            @Override
+            public String getTitle() {
+                return mTitle;
+            }
+
+            public SampleSearchModel setTitle(String title) {
+                mTitle = title;
+                return this;
+            }
+        }
+    }
 }
 
 class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private ListFriend listFriend;
-    private Context context;
     public static Map<String, Query> mapQuery;
     public static Map<String, DocumentReference> mapQueryOnline;
     public static Map<String, EventListener<QuerySnapshot>> mapChildListener;
     public static Map<String, EventListener<DocumentSnapshot>> mapChildListenerOnline;
     public static Map<String, Boolean> mapMark;
-    private FriendsFragment fragment;
     LovelyProgressDialog dialogWaitDeleting;
+    private ListFriend listFriend;
+    private Context context;
+    private FriendsFragment fragment;
 
 
-    public ListFriendsAdapter(Context context, ListFriend listFriend, FriendsFragment fragment,LovelyProgressDialog dialogWaitDeleting) {
+    public ListFriendsAdapter(Context context, ListFriend listFriend, FriendsFragment fragment, LovelyProgressDialog dialogWaitDeleting) {
         this.listFriend = listFriend;
         this.context = context;
         mapQuery = new HashMap<>();
@@ -481,8 +474,8 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, idRoom);
                         ChatViewActivity.bitmapAvataFriend = new HashMap<>();
                         if (!avata.equals(Const.STR_DEFAULT_BASE64)) {
-                            BitmapDrawable bitmapDrawable =(BitmapDrawable)((ItemFriendViewHolder) holder).avata.getDrawable();
-                            ChatViewActivity.bitmapAvataFriend.put(id,  bitmapDrawable.getBitmap());
+                            BitmapDrawable bitmapDrawable = (BitmapDrawable) ((ItemFriendViewHolder) holder).avata.getDrawable();
+                            ChatViewActivity.bitmapAvataFriend.put(id, bitmapDrawable.getBitmap());
                         } else {
                             ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
                         }
@@ -496,11 +489,11 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 .setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View view) {
-                        String friendName = (String)((ItemFriendViewHolder) holder).txtName.getText();
+                        String friendName = (String) ((ItemFriendViewHolder) holder).txtName.getText();
 
                         new AlertDialog.Builder(context)
                                 .setTitle(context.getResources().getString(R.string.delete_friend))
-                                .setMessage(context.getResources().getString(R.string.delete_friend_sure)+" "+friendName+ " ?")
+                                .setMessage(context.getResources().getString(R.string.delete_friend_sure) + " " + friendName + " ?")
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -548,8 +541,8 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((ItemFriendViewHolder) holder).txtMessage.setVisibility(View.GONE);
             ((ItemFriendViewHolder) holder).txtTime.setVisibility(View.GONE);
             if (mapQuery.get(id) == null && mapChildListener.get(id) == null) {
-               mapQuery.put(id, this.fragment.mFriendsPresenter.getLastMessage(idRoom));
-               mapChildListener.put(id, new EventListener<QuerySnapshot>() {
+                mapQuery.put(id, this.fragment.mFriendsPresenter.getLastMessage(idRoom));
+                mapChildListener.put(id, new EventListener<QuerySnapshot>() {
                     @SuppressLint("TimberArgCount")
                     @Override
                     public void onEvent(@Nullable QuerySnapshot snapshots,
@@ -590,7 +583,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 mapQuery.get(id).addSnapshotListener(mapChildListener.get(id));
                 mapMark.put(id, true);
             } else {
-               // mapQuery.get(id).removeEventListener(mapChildListener.get(id));
+                // mapQuery.get(id).removeEventListener(mapChildListener.get(id));
                 mapQuery.get(id).addSnapshotListener(mapChildListener.get(id));
                 mapMark.put(id, true);
             }
@@ -599,24 +592,24 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((ItemFriendViewHolder) holder).avata.setImageResource(R.drawable.default_avatar);
         } else {
             this.fragment.mFriendsPresenter.getStorageReference(listFriend.getListFriend().get(position).avatar)
-                                            .getBytes(Const.ONE_MEGABYTE)
-                                            .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                                @Override
-                                                public void onSuccess(byte[] bytes) {
-                                                    Bitmap src = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                                    ((ItemFriendViewHolder) holder).avata.setImageBitmap(src);
-                                                }
-                                            }).addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception exception) {
-                                                    ((ItemFriendViewHolder) holder).avata.setImageResource(R.drawable.default_avatar);
-                                                }
-                                            });
+                    .getBytes(Const.ONE_MEGABYTE)
+                    .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            Bitmap src = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            ((ItemFriendViewHolder) holder).avata.setImageBitmap(src);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    ((ItemFriendViewHolder) holder).avata.setImageResource(R.drawable.default_avatar);
+                }
+            });
         }
 
 
         if (mapQueryOnline.get(id) == null && mapChildListenerOnline.get(id) == null) {
-            mapQueryOnline.put(id,this.fragment.mFriendsPresenter.getStatus(id));
+            mapQueryOnline.put(id, this.fragment.mFriendsPresenter.getStatus(id));
             mapChildListenerOnline.put(id, new EventListener<DocumentSnapshot>() {
                 @SuppressLint("TimberArgCount")
                 @Override
@@ -665,7 +658,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else {
             dialogWaitDeleting.dismiss();
             new LovelyInfoDialog(context)
-                    .setTopColorRes(R.color.colorPrimary)
+                    .setTopColorRes(R.color.primary)
                     .setTitle(context.getResources().getString(R.string.failure))
                     .setMessage(context.getResources().getString(R.string.delete_friend_failure))
                     .show();
@@ -674,8 +667,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 }
 
 
-
-class ItemFriendViewHolder extends RecyclerView.ViewHolder{
+class ItemFriendViewHolder extends RecyclerView.ViewHolder {
     public CircleImageView avata;
     public TextView txtName, txtTime, txtMessage;
     private Context context;

@@ -38,10 +38,15 @@ import javax.inject.Inject;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ChatViewActivity extends BaseActivity implements View.OnClickListener,ChatViewMvpView {
-    private RecyclerView recyclerChat;
+public class ChatViewActivity extends BaseActivity implements View.OnClickListener, ChatViewMvpView {
     public static final int VIEW_TYPE_USER_MESSAGE = 0;
     public static final int VIEW_TYPE_FRIEND_MESSAGE = 1;
+    public static HashMap<String, Bitmap> bitmapAvataFriend;
+    public Bitmap bitmapAvataUser;
+    public String UID;
+    @Inject
+    ChatViewPresenter mChatViewPresenter;
+    private RecyclerView recyclerChat;
     private ListMessageAdapter adapter;
     private String roomId;
     private ArrayList<CharSequence> idFriend;
@@ -49,12 +54,6 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
     private ImageButton btnSend;
     private EditText editWriteMessage;
     private LinearLayoutManager linearLayoutManager;
-    public static HashMap<String, Bitmap> bitmapAvataFriend;
-    public Bitmap bitmapAvataUser;
-    public String UID;
-
-    @Inject
-    ChatViewPresenter mChatViewPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +70,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         btnSend = (ImageButton) findViewById(R.id.btnSend);
         btnSend.setOnClickListener(this);
 
-        String base64AvataUser =  "default";// SharedPreferenceHelper.getInstance(this).getUserInfo().avatar;
+        String base64AvataUser = "default";// SharedPreferenceHelper.getInstance(this).getUserInfo().avatar;
         if (!base64AvataUser.equals(Const.STR_DEFAULT_BASE64)) {
             byte[] decodedString = Base64.decode(base64AvataUser, Base64.DEFAULT);
             bitmapAvataUser = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
@@ -102,7 +101,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             Intent result = new Intent();
             result.putExtra("idFriend", idFriend.get(0));
             setResult(RESULT_OK, result);
@@ -133,7 +132,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
                 editWriteMessage.setText("");
                 Message newMessage = new Message();
                 newMessage.text = content;
-                newMessage.idSender =  mChatViewPresenter.getId();
+                newMessage.idSender = mChatViewPresenter.getId();
                 newMessage.idReceiver = roomId;
                 newMessage.nameSender = mChatViewPresenter.getUserInfo().getName();
                 newMessage.emailSender = mChatViewPresenter.getUserInfo().getEmail();
@@ -188,26 +187,26 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             View view = messageFriendHolder.messageDialog.getView();
             String time = new SimpleDateFormat("EEE, MMM d, 'at' HH:mm").format(message.timestamp).toUpperCase();
 
-            ((TextView)view.findViewById(R.id.message_time)).setText(time);
-            ((TextView)view.findViewById(R.id.name)).setText(message.nameSender);
-            ((TextView)view.findViewById(R.id.email)).setText(message.emailSender);
-            ((CircleImageView)view.findViewById(R.id.avatar)).setImageDrawable(context.getResources().getDrawable(R.drawable.default_avatar));
+            ((TextView) view.findViewById(R.id.message_time)).setText(time);
+            ((TextView) view.findViewById(R.id.name)).setText(message.nameSender);
+            ((TextView) view.findViewById(R.id.email)).setText(message.emailSender);
+            ((CircleImageView) view.findViewById(R.id.avatar)).setImageDrawable(context.getResources().getDrawable(R.drawable.default_avatar));
 
             if (currentAvatar != null) {
                 messageFriendHolder.avatar.setImageBitmap(currentAvatar);
             } else {
                 final String id = message.idSender;
-                if(bitmapAvataDB.get(id) == null){
+                if (bitmapAvataDB.get(id) == null) {
                     bitmapAvataDB.put(id, FirebaseDatabase.getInstance().getReference().child("user/" + id + "/avatar"));
                     bitmapAvataDB.get(id).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.getValue() != null) {
                                 String avataStr = (String) dataSnapshot.getValue();
-                                if(!avataStr.equals(Const.STR_DEFAULT_BASE64)) {
+                                if (!avataStr.equals(Const.STR_DEFAULT_BASE64)) {
                                     byte[] decodedString = Base64.decode(avataStr, Base64.DEFAULT);
                                     ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length));
-                                }else{
+                                } else {
                                     ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
                                 }
                                 notifyDataSetChanged();
@@ -272,7 +271,7 @@ class ItemMessageFriendHolder extends RecyclerView.ViewHolder {
         avatar = (CircleImageView) itemView.findViewById(R.id.avatar_img_friend);
 
         avatar.setOnClickListener(click -> {
-            if(messageDialog != null)
+            if (messageDialog != null)
                 messageDialog.show();
         });
     }

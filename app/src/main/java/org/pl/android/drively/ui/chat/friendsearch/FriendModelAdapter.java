@@ -41,7 +41,6 @@ public class FriendModelAdapter extends RecyclerView.Adapter<FriendModelAdapter.
     private BaseSearchDialogCompat mSearchDialog;
 
 
-
     public FriendModelAdapter(Context context, @LayoutRes int layout, List<FriendModel> items) {
         this(context, layout, null, items);
     }
@@ -113,7 +112,7 @@ public class FriendModelAdapter extends RecyclerView.Adapter<FriendModelAdapter.
 
         // TODO
         // set avatar
-        if(object.getAvatar().equals(Const.STR_DEFAULT_BASE64)) {
+        if (object.getAvatar().equals(Const.STR_DEFAULT_BASE64)) {
             avatar.setImageResource(R.drawable.default_avatar);
         } else {
             FirebaseStorage.getInstance().getReference("AVATARS/" + object.getAvatar())

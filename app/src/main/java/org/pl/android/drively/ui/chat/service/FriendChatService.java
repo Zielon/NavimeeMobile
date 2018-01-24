@@ -62,9 +62,6 @@ public class FriendChatService extends Service {
     Context mContext;
 
 
-
-
-
     public FriendChatService() {
     }
 
@@ -83,7 +80,7 @@ public class FriendChatService extends Service {
         updateOnline = new CountDownTimer(System.currentTimeMillis(), Const.TIME_TO_REFRESH) {
             @Override
             public void onTick(long l) {
-           //     ServiceUtils.updateUserStatus(montext);
+                //     ServiceUtils.updateUserStatus(montext);
             }
 
             @Override
@@ -153,7 +150,7 @@ public class FriendChatService extends Service {
                                 if (mapBitmap.get(group.id) == null) {
                                     mapBitmap.put(group.id, BitmapFactory.decodeResource(getResources(), R.drawable.ic_notify_group));
                                 }
-                                createNotify(group.groupInfo.get("name"), (String) ((HashMap) dataSnapshot.getValue()).get("text"), group.id.hashCode(), mapBitmap.get(group.id) , true);
+                                createNotify(group.groupInfo.get("name"), (String) ((HashMap) dataSnapshot.getValue()).get("text"), group.id.hashCode(), mapBitmap.get(group.id), true);
                             } else {
                                 mapMark.put(group.id, true);
                             }
@@ -202,7 +199,7 @@ public class FriendChatService extends Service {
                 .setContentTitle(name)
                 .setContentText(content)
                 .setContentIntent(pendingIntent)
-                .setVibrate(new long[] { 1000, 1000})
+                .setVibrate(new long[]{1000, 1000})
                 .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
                 .setAutoCancel(true);
         if (isGroup) {

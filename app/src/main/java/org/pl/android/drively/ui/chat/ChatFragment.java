@@ -30,16 +30,15 @@ import butterknife.ButterKnife;
 public class ChatFragment extends Fragment implements ChatMvpView {
 
 
+    public static String STR_FRIEND_FRAGMENT = "FRIEND";
+    public static String STR_GROUP_FRAGMENT = "GROUP";
     @Inject
     ChatPresenter mChatPresenter;
     @BindView(R.id.tab_layout)
     TabLayout tabLayout;
     @BindView(R.id.viewpager)
     ViewPager viewPager;
-
     ViewPagerAdapter adapter;
-    public static String STR_FRIEND_FRAGMENT = "FRIEND";
-    public static String STR_GROUP_FRAGMENT = "GROUP";
 
     public static ChatFragment newInstance() {
         ChatFragment fragment = new ChatFragment();
@@ -66,6 +65,7 @@ public class ChatFragment extends Fragment implements ChatMvpView {
         initTab();
         return fragmentView;
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -85,14 +85,12 @@ public class ChatFragment extends Fragment implements ChatMvpView {
     }
 
 
-
-
     private void setupViewPager(ViewPager viewPager) {
         adapter = new ViewPagerAdapter(this.getFragmentManager());
         adapter.addFrag(new FriendsFragment(), STR_FRIEND_FRAGMENT);
         adapter.addFrag(new GroupFragment(), STR_GROUP_FRAGMENT);
         viewPager.setAdapter(adapter);
-      //  viewPager.setOffscreenPageLimit(2);
+        //  viewPager.setOffscreenPageLimit(2);
     }
 
     private void setupTabIcons() {
