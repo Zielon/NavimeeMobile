@@ -64,7 +64,6 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         super.detachView();
     }
 
-
     public void updateUserStatus() {
         if (NetworkUtil.isNetworkConnected(mContext)) {
             if(mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() != null) {

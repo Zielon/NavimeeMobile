@@ -388,7 +388,7 @@ class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     idFriend.add(id);
                     String avatar = listFriend.getAvataById(id);
                     if(!avatar.equals(Const.STR_DEFAULT_BASE64)) {
-/*                        byte[] decodedString = Base64.decode(avata, Base64.DEFAULT);
+/*                        byte[] decodedString = Base64.decode(avatar, Base64.DEFAULT);
                         ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length));*/
                         ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
                     }else if(avatar.equals(Const.STR_DEFAULT_BASE64)) {
