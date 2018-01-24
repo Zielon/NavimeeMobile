@@ -14,6 +14,7 @@
         android:layout_alignParentRight="true"
         android:background="#00000000"
         android:padding="10dp"
+        android:layout_marginRight="10dp"
         android:tint="@color/button_background"
         android:scaleType="centerInside"
         android:src="@drawable/ic_send" />
@@ -49,7 +50,7 @@
         android:drawablePadding="20dp"
         android:inputType="textLongMessage|textMultiLine"
         android:maxLines ="5"
-        android:maxLength ="1000"
+        android:maxLength ="500"
         android:paddingLeft="7dp"
         android:paddingRight="7dp"
         android:textColor="@color/white"
