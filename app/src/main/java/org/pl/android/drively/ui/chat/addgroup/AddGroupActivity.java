@@ -97,20 +97,17 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView {
             }
         });
 
-        btnAddGroup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (listIDChoose.size() < 3) {
-                    Toast.makeText(AddGroupActivity.this, getResources().getString(R.string.at_least_two), Toast.LENGTH_SHORT).show();
+        btnAddGroup.setOnClickListener(view -> {
+            if (listIDChoose.size() < 3) {
+                Toast.makeText(AddGroupActivity.this, getResources().getString(R.string.at_least_two), Toast.LENGTH_SHORT).show();
+            } else {
+                if (editTextGroupName.getText().length() == 0) {
+                    Toast.makeText(AddGroupActivity.this, getResources().getString(R.string.enter_group_name), Toast.LENGTH_SHORT).show();
                 } else {
-                    if (editTextGroupName.getText().length() == 0) {
-                        Toast.makeText(AddGroupActivity.this, getResources().getString(R.string.enter_group_name), Toast.LENGTH_SHORT).show();
+                    if (isEditGroup) {
+                        editGroup();
                     } else {
-                        if (isEditGroup) {
-                            editGroup();
-                        } else {
-                            createGroup();
-                        }
+                        createGroup();
                     }
                 }
             }
@@ -321,36 +318,25 @@ class ListPeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (!avata.equals(Const.STR_DEFAULT_BASE64)) {
             this.addGroupActivity.mAddGroupPresenter.getStorageReference(avata)
                     .getBytes(Const.ONE_MEGABYTE)
-                    .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                        @Override
-                        public void onSuccess(byte[] bytes) {
-                            Bitmap src = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                            ((ItemFriendHolder) holder).avata.setImageBitmap(src);
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    ((ItemFriendHolder) holder).avata.setImageResource(R.drawable.default_avatar);
-                }
-            });
+                    .addOnSuccessListener(bytes -> {
+                        Bitmap src = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        ((ItemFriendHolder) holder).avatar.setImageBitmap(src);
+                    }).addOnFailureListener(exception -> ((ItemFriendHolder) holder).avatar.setImageResource(R.drawable.default_avatar));
         } else {
-            ((ItemFriendHolder) holder).avata.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
+            ((ItemFriendHolder) holder).avatar.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
         }
-        ((ItemFriendHolder) holder).checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    listIDChoose.add(id);
-                    listIDRemove.remove(id);
-                } else {
-                    listIDRemove.add(id);
-                    listIDChoose.remove(id);
-                }
-                if (listIDChoose.size() >= 3) {
-                    btnAddGroup.setBackgroundColor(context.getResources().getColor(R.color.primary));
-                } else {
-                    btnAddGroup.setBackgroundColor(context.getResources().getColor(R.color.primary));
-                }
+        ((ItemFriendHolder) holder).checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b) {
+                listIDChoose.add(id);
+                listIDRemove.remove(id);
+            } else {
+                listIDRemove.add(id);
+                listIDChoose.remove(id);
+            }
+            if (listIDChoose.size() >= 3) {
+                btnAddGroup.setBackgroundColor(context.getResources().getColor(R.color.primary));
+            } else {
+                btnAddGroup.setBackgroundColor(context.getResources().getColor(R.color.primary));
             }
         });
         if (isEdit && editGroup.member.contains(id)) {
@@ -368,14 +354,14 @@ class ListPeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 class ItemFriendHolder extends RecyclerView.ViewHolder {
     public TextView txtName, txtEmail;
-    public CircleImageView avata;
+    public CircleImageView avatar;
     public CheckBox checkBox;
 
     public ItemFriendHolder(View itemView) {
         super(itemView);
         txtName = (TextView) itemView.findViewById(R.id.txtName);
         txtEmail = (TextView) itemView.findViewById(R.id.txtEmail);
-        avata = (CircleImageView) itemView.findViewById(R.id.icon_avata);
+        avatar = (CircleImageView) itemView.findViewById(R.id.icon_avata);
         checkBox = (CheckBox) itemView.findViewById(R.id.checkAddPeople);
     }
 }

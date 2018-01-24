@@ -129,9 +129,9 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         String finalUpperCase = upperCase;
         String finalEncodeUpperCase = encodeUpperCase;
         String finalEndcode = endcode;
+
         usersReference
-                .whereGreaterThanOrEqualTo("name", stringQuery).whereLessThan("name", finalEndcode)
-                .get()
+                .whereGreaterThanOrEqualTo("name", stringQuery).whereLessThan("name", finalEndcode).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (DocumentSnapshot document : task.getResult()) {
@@ -144,36 +144,34 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                         Timber.w("Error getting documents: ", task.getException());
                     }
 
-                    usersReference.whereGreaterThanOrEqualTo("name", finalUpperCase).whereLessThan("name", finalEncodeUpperCase)
-                            .get()
+                    usersReference.whereGreaterThanOrEqualTo("name", finalUpperCase).whereLessThan("name", finalEncodeUpperCase).get()
                             .addOnCompleteListener(upperTask -> {
                                 if (upperTask.isSuccessful()) {
-                                    for (DocumentSnapshot document : task.getResult()) {
+                                    for (DocumentSnapshot document : upperTask.getResult()) {
                                         FriendModel friend = new FriendModel(document.toObject(ChatUser.class));
                                         if (!result.contains(friend) && !friendList.contains(friend.getId())) {
                                             result.add(friend);
                                         }
                                     }
                                 } else {
-                                    Timber.w("Error getting documents: ", task.getException());
+                                    Timber.w("Error getting documents: ", upperTask.getException());
                                 }
 
-                                usersReference.whereGreaterThanOrEqualTo("email", stringQuery).whereLessThan("email", finalEndcode)
-                                        .get()
+                                usersReference.whereGreaterThanOrEqualTo("email", stringQuery).whereLessThan("email", finalEndcode).get()
                                         .addOnCompleteListener(stringTask -> {
                                             if (stringTask.isSuccessful()) {
-                                                for (DocumentSnapshot document : task.getResult()) {
+                                                for (DocumentSnapshot document : stringTask.getResult()) {
                                                     FriendModel friend = new FriendModel(document.toObject(ChatUser.class));
                                                     if (!result.contains(friend) && !friendList.contains(friend.getId())) {
                                                         result.add(friend);
                                                     }
                                                 }
-                                                searchDialogCompat.getFilterResultListener().onFilter(result);
-                                                baseFilter.doAfterFiltering();
-
                                             } else {
-                                                Timber.w("Error getting documents: ", task.getException());
+                                                Timber.w("Error getting documents: ", stringTask.getException());
                                             }
+
+                                            searchDialogCompat.getFilterResultListener().onFilter(result);
+                                            baseFilter.doAfterFiltering();
                                         });
                             });
 

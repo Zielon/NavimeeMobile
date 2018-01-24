@@ -243,7 +243,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         }
     }
 
-
     @Override
     public void addFriendSuccess(String idFriend) {
         addFriend(idFriend, false);
@@ -253,7 +252,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     public void addFriendFailure() {
         dialogWait.dismiss();
         new LovelyInfoDialog(getContext())
-                .setTopColorRes(R.color.colorAccent)
+                .setTopColorRes(R.color.primary)
                 .setIcon(R.drawable.ic_add_friend)
                 .setTitle(getResources().getString(R.string.failure))
                 .setMessage(getResources().getString(R.string.add_friend_failure))
@@ -276,8 +275,10 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     public void onFailureDeleteFriend() {
         dialogWaitDeleting.dismiss();
         new LovelyInfoDialog(getContext())
-                .setTopColorRes(R.color.colorAccent)
+                .setTopColorRes(R.color.primary)
                 .setTitle(getResources().getString(R.string.failure))
+                .setIcon(getResources().getDrawable(R.drawable.ic_delete_black_24dp))
+                .setIconTintColor(getResources().getColor(R.color.white))
                 .setMessage(getResources().getString(R.string.delete_friend_failure))
                 .show();
     }
@@ -287,8 +288,10 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         dialogWaitDeleting.dismiss();
 
         new LovelyInfoDialog(getContext())
-                .setTopColorRes(R.color.colorAccent)
+                .setTopColorRes(R.color.primary)
                 .setTitle(getResources().getString(R.string.success))
+                .setIcon(getResources().getDrawable(R.drawable.ic_delete_black_24dp))
+                .setIconTintColor(getResources().getColor(R.color.white))
                 .setMessage(getResources().getString(R.string.delete_friend_success))
                 .show();
 
@@ -461,60 +464,48 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         ((ItemFriendViewHolder) holder).txtName.setText(name);
 
         ((View) ((ItemFriendViewHolder) holder).txtName.getParent().getParent().getParent())
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        ((ItemFriendViewHolder) holder).txtMessage.setTypeface(Typeface.DEFAULT);
-                        ((ItemFriendViewHolder) holder).txtName.setTypeface(Typeface.DEFAULT);
-                        Intent intent = new Intent(context, ChatViewActivity.class);
-                        intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, name);
-                        ArrayList<CharSequence> idFriend = new ArrayList<CharSequence>();
-                        idFriend.add(id);
-                        intent.putCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID, idFriend);
-                        intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, idRoom);
-                        ChatViewActivity.bitmapAvataFriend = new HashMap<>();
-                        if (!avata.equals(Const.STR_DEFAULT_BASE64)) {
-                            BitmapDrawable bitmapDrawable = (BitmapDrawable) ((ItemFriendViewHolder) holder).avata.getDrawable();
-                            ChatViewActivity.bitmapAvataFriend.put(id, bitmapDrawable.getBitmap());
-                        } else {
-                            ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
-                        }
-
-                        mapMark.put(id, null);
-                        fragment.startActivityForResult(intent, FriendsFragment.ACTION_START_CHAT);
+                .setOnClickListener(view -> {
+                    ((ItemFriendViewHolder) holder).txtMessage.setTypeface(Typeface.DEFAULT);
+                    ((ItemFriendViewHolder) holder).txtName.setTypeface(Typeface.DEFAULT);
+                    Intent intent = new Intent(context, ChatViewActivity.class);
+                    intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, name);
+                    ArrayList<CharSequence> idFriend = new ArrayList<CharSequence>();
+                    idFriend.add(id);
+                    intent.putCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID, idFriend);
+                    intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, idRoom);
+                    ChatViewActivity.bitmapAvataFriend = new HashMap<>();
+                    if (!avata.equals(Const.STR_DEFAULT_BASE64)) {
+                        BitmapDrawable bitmapDrawable = (BitmapDrawable) ((ItemFriendViewHolder) holder).avata.getDrawable();
+                        ChatViewActivity.bitmapAvataFriend.put(id, bitmapDrawable.getBitmap());
+                    } else {
+                        ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
                     }
+
+                    mapMark.put(id, null);
+                    fragment.startActivityForResult(intent, FriendsFragment.ACTION_START_CHAT);
                 });
 
         ((View) ((ItemFriendViewHolder) holder).txtName.getParent().getParent().getParent())
-                .setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View view) {
-                        String friendName = (String) ((ItemFriendViewHolder) holder).txtName.getText();
+                .setOnLongClickListener(view -> {
+                    String friendName = (String) ((ItemFriendViewHolder) holder).txtName.getText();
 
-                        new AlertDialog.Builder(context)
-                                .setTitle(context.getResources().getString(R.string.delete_friend))
-                                .setMessage(context.getResources().getString(R.string.delete_friend_sure) + " " + friendName + " ?")
-                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        dialogInterface.dismiss();
-                                        final String idFriendRemoval = listFriend.getListFriend().get(position).id;
-                                        dialogWaitDeleting.setTitle(context.getResources().getString(R.string.deleting))
-                                                .setCancelable(false)
-                                                .setTopColorRes(R.color.colorAccent)
-                                                .show();
-                                        deleteFriend(idFriendRemoval);
-                                    }
-                                })
-                                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        dialogInterface.dismiss();
-                                    }
-                                }).show();
+                    new AlertDialog.Builder(context)
+                            .setTitle(context.getResources().getString(R.string.delete_friend))
+                            .setMessage(context.getResources().getString(R.string.delete_friend_sure) + " " + friendName + " ?")
+                            .setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
+                                dialogInterface.dismiss();
+                                final String idFriendRemoval = listFriend.getListFriend().get(position).id;
+                                dialogWaitDeleting.setTitle(context.getResources().getString(R.string.deleting))
+                                        .setCancelable(false)
+                                        .setIcon(context.getResources().getDrawable(R.drawable.ic_delete_black_24dp))
+                                        .setIconTintColor(context.getResources().getColor(R.color.white))
+                                        .setTopColorRes(R.color.primary)
+                                        .show();
+                                deleteFriend(idFriendRemoval);
+                            })
+                            .setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss()).show();
 
-                        return true;
-                    }
+                    return true;
                 });
 
 
@@ -593,43 +584,29 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else {
             this.fragment.mFriendsPresenter.getStorageReference(listFriend.getListFriend().get(position).avatar)
                     .getBytes(Const.ONE_MEGABYTE)
-                    .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                        @Override
-                        public void onSuccess(byte[] bytes) {
-                            Bitmap src = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                            ((ItemFriendViewHolder) holder).avata.setImageBitmap(src);
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    ((ItemFriendViewHolder) holder).avata.setImageResource(R.drawable.default_avatar);
-                }
-            });
+                    .addOnSuccessListener(bytes -> {
+                        Bitmap src = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        ((ItemFriendViewHolder) holder).avata.setImageBitmap(src);
+                    }).addOnFailureListener(exception -> ((ItemFriendViewHolder) holder).avata.setImageResource(R.drawable.default_avatar));
         }
-
 
         if (mapQueryOnline.get(id) == null && mapChildListenerOnline.get(id) == null) {
             mapQueryOnline.put(id, this.fragment.mFriendsPresenter.getStatus(id));
-            mapChildListenerOnline.put(id, new EventListener<DocumentSnapshot>() {
-                @SuppressLint("TimberArgCount")
-                @Override
-                public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                    if (e != null) {
-                        Timber.w("Listen failed.", e);
-                        return;
-                    }
-                    if (documentSnapshot != null && documentSnapshot.get("isOnline") != null && listFriend.getListFriend().size() >= position) {
-                        try {
-                            listFriend.getListFriend().get(position).status.isOnline = (boolean) documentSnapshot.get("isOnline");
-                            notifyDataSetChanged();
-                        } catch (IndexOutOfBoundsException ex) {
-                            Timber.w("Exception occured.", ex);
-                        } catch (Exception ex) {
-                            Timber.w("Exception occured.", ex);
-                        }
+            mapChildListenerOnline.put(id, (documentSnapshot, e) -> {
+                if (e != null) {
+                    Timber.w("Listen failed.", e);
+                    return;
+                }
+                if (documentSnapshot != null && documentSnapshot.get("isOnline") != null && listFriend.getListFriend().size() >= position) {
+                    try {
+                        listFriend.getListFriend().get(position).status.isOnline = (boolean) documentSnapshot.get("isOnline");
+                        notifyDataSetChanged();
+                    } catch (IndexOutOfBoundsException ex) {
+                        Timber.w("Exception occured.", ex);
+                    } catch (Exception ex) {
+                        Timber.w("Exception occured.", ex);
                     }
                 }
-
             });
             mapQueryOnline.get(id).addSnapshotListener(mapChildListenerOnline.get(id));
         }
@@ -659,6 +636,8 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             dialogWaitDeleting.dismiss();
             new LovelyInfoDialog(context)
                     .setTopColorRes(R.color.primary)
+                    .setIcon(context.getResources().getDrawable(R.drawable.ic_delete_black_24dp))
+                    .setIconTintColor(context.getResources().getColor(R.color.white))
                     .setTitle(context.getResources().getString(R.string.failure))
                     .setMessage(context.getResources().getString(R.string.delete_friend_failure))
                     .show();
