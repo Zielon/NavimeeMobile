@@ -21,9 +21,9 @@ public class BoilerplateApplication extends Application  {
     public void onCreate() {
         super.onCreate();
         JodaTimeAndroid.init(this);
+        Fabric.with(this, new Crashlytics());
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
-            Fabric.with(this, new Crashlytics());
         }
     }
 
