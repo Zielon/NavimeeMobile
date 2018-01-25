@@ -21,26 +21,23 @@ import org.pl.android.drively.ui.hotspot.HotSpotFragment;
 import org.pl.android.drively.ui.intro.IntroActivity;
 import org.pl.android.drively.ui.welcome.WelcomeActivity;
 
-
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivityFragment implements MainMvpView {
 
+    static final int SETTINGS_REQUEST = 1;  // The request code
     private static final String EXTRA_TRIGGER_SYNC_FLAG =
             "uk.co.ribot.androidboilerplate.ui.main.MainActivity.EXTRA_TRIGGER_SYNC_FLAG";
-
-
-
-    @Inject MainPresenter mMainPresenter;
-    static final int SETTINGS_REQUEST = 1;  // The request code
+    @Inject
+    MainPresenter mMainPresenter;
     boolean isFromNotification = false;
-    double lat,lng;
-    String name,count;
+    double lat, lng;
+    String name, count;
     BottomBar bottomBar;
 
-   // @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
+    // @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
 
     /**
      * Return an Intent to start this Activity.
@@ -71,7 +68,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
             }
         }*/
 
-        if(getIntent() != null &&  getIntent().getExtras() != null && getIntent().getExtras().get("lat") != null && getIntent().getExtras().get("lng") != null) {
+        if (getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().get("lat") != null && getIntent().getExtras().get("lng") != null) {
       /*      Uri gmmIntentUri = Uri.parse("google.navigation:q=" + getIntent().getExtras().get("lat") + "," +
                     getIntent().getExtras().get("lng"));
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
@@ -80,8 +77,8 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
                 startActivity(mapIntent);
             }*/
             isFromNotification = true;
-            lat =  Double.valueOf(getIntent().getExtras().getString("lat"));
-            lng =  Double.valueOf(getIntent().getExtras().getString("lng"));
+            lat = Double.valueOf(getIntent().getExtras().getString("lat"));
+            lng = Double.valueOf(getIntent().getExtras().getString("lng"));
             name = getIntent().getExtras().getString("name");
             count = getIntent().getExtras().getString("count");
         }
@@ -107,14 +104,14 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
                         break;
                     case R.id.tab_hotspot:
                         selectedFragment = HotSpotFragment.newInstance();
-                        if(isFromNotification) {
+                        if (isFromNotification) {
                             isFromNotification = false;
                             Bundle bundle = new Bundle();
-                            bundle.putBoolean("isFromNotification",true);
+                            bundle.putBoolean("isFromNotification", true);
                             bundle.putDouble("lat", lat);
                             bundle.putDouble("lng", lng);
-                            bundle.putString("name",name);
-                            bundle.putString("count",count);
+                            bundle.putString("name", name);
+                            bundle.putString("count", count);
                             selectedFragment.setArguments(bundle);
                         }
                         break;
@@ -152,7 +149,8 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
                     final Intent i = new Intent(MainActivity.this, IntroActivity.class);
 
                     runOnUiThread(new Runnable() {
-                        @Override public void run() {
+                        @Override
+                        public void run() {
                             startActivity(i);
                         }
                     });

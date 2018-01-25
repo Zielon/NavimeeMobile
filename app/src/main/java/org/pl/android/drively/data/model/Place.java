@@ -1,25 +1,25 @@
 package org.pl.android.drively.data.model;
 
 
-
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.IgnoreExtraProperties;
 
 import java.io.Serializable;
+
 /**
  * Created by Wojtek on 2017-10-22.
  */
 
 @IgnoreExtraProperties
 public class Place implements Serializable {
+    GeoPoint geoPoint;
     private String id;
     private String address;
     private String name;
     private String category;
-    GeoPoint geoPoint;
     private String city;
 
-    public Place(String id, String address, String name, GeoPoint geoPoint, String city,String category) {
+    public Place(String id, String address, String name, GeoPoint geoPoint, String city, String category) {
         this.id = id;
         this.address = address;
         this.name = name;

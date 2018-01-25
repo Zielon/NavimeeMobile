@@ -9,14 +9,15 @@ import android.support.v4.util.LongSparseArray;
 import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 
-import java.util.concurrent.atomic.AtomicLong;
-
-import timber.log.Timber;
 import org.pl.android.drively.BoilerplateApplication;
 import org.pl.android.drively.injection.component.ActivityComponent;
 import org.pl.android.drively.injection.component.ConfigPersistentComponent;
 import org.pl.android.drively.injection.component.DaggerConfigPersistentComponent;
 import org.pl.android.drively.injection.module.ActivityModule;
+
+import java.util.concurrent.atomic.AtomicLong;
+
+import timber.log.Timber;
 
 /**
  * Abstract activity that every other Activity in this application must implement. It handles
@@ -25,8 +26,8 @@ import org.pl.android.drively.injection.module.ActivityModule;
  */
 public class BaseActivity extends AppCompatActivity {
 
-    private static final String KEY_ACTIVITY_ID = "KEY_ACTIVITY_ID";
     static final int SETTINGS_REQUEST = 1;  // The request code
+    private static final String KEY_ACTIVITY_ID = "KEY_ACTIVITY_ID";
     private static final AtomicLong NEXT_ID = new AtomicLong(0);
     private static final LongSparseArray<ConfigPersistentComponent>
             sComponentsMap = new LongSparseArray<>();
@@ -37,7 +38,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -79,7 +80,7 @@ public class BaseActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public boolean hasPermission(String perm) {
-        return(PackageManager.PERMISSION_GRANTED==checkSelfPermission(perm));
+        return (PackageManager.PERMISSION_GRANTED == checkSelfPermission(perm));
     }
 
 

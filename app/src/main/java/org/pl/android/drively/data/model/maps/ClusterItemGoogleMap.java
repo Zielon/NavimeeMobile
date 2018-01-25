@@ -10,14 +10,14 @@ import org.pl.android.drively.util.Const;
  */
 
 public class ClusterItemGoogleMap implements ClusterItem {
-    public  LatLng mPosition;
-    public  int profilePhoto;
-    public  String name;
+    public LatLng mPosition;
+    public int profilePhoto;
+    public String name;
     public String count;
     public Const.HotSpotType type;
     String id;
 
-    public ClusterItemGoogleMap(String id, LatLng position, String name,String count,Const.HotSpotType type, int pictureResource) {
+    public ClusterItemGoogleMap(String id, LatLng position, String name, String count, Const.HotSpotType type, int pictureResource) {
         this.id = id;
         mPosition = position;
         this.name = name;
@@ -35,7 +35,6 @@ public class ClusterItemGoogleMap implements ClusterItem {
     public void setPosition(LatLng location) {
         this.mPosition = location;
     }
-
 
 
     public LatLng getmPosition() {

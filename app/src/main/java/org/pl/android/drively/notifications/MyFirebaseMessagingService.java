@@ -1,12 +1,12 @@
 /**
  * Copyright 2016 Google Inc. All Rights Reserved.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -57,8 +57,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
      */
     // [START receive_message]
-
-
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         // [START_EXCLUDE]
@@ -79,8 +77,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
-                // Handle message within 10 seconds
-                handleNow();
+            // Handle message within 10 seconds
+            handleNow();
         }
 
         // Check if message contains a notification payload.
@@ -90,17 +88,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         switch (type) {
             case FEEDBACK:
-                dataManager.getPreferencesHelper().setValue(Const.IS_FEEDBACK,true);
-                dataManager.getPreferencesHelper().setValue(Const.LOCATION_NAME,remoteMessage.getData().get("locationName"));
-                dataManager.getPreferencesHelper().setValue(Const.NAME,remoteMessage.getData().get("name"));
-                dataManager.getPreferencesHelper().setValue(Const.LOCATION_ADDRESS,remoteMessage.getData().get("locationAddress"));
-                dataManager.getPreferencesHelper().setValue(Const.FEEDBACK_ID,remoteMessage.getData().get("id"));
+                dataManager.getPreferencesHelper().setValue(Const.IS_FEEDBACK, true);
+                dataManager.getPreferencesHelper().setValue(Const.LOCATION_NAME, remoteMessage.getData().get("locationName"));
+                dataManager.getPreferencesHelper().setValue(Const.NAME, remoteMessage.getData().get("name"));
+                dataManager.getPreferencesHelper().setValue(Const.LOCATION_ADDRESS, remoteMessage.getData().get("locationAddress"));
+                dataManager.getPreferencesHelper().setValue(Const.FEEDBACK_ID, remoteMessage.getData().get("id"));
                 break;
             case SCHEDULED_EVENT:
-                sendNotification(remoteMessage.getData().get("title"),remoteMessage.getData().get("endTime"),remoteMessage.getData().get("lat"),remoteMessage.getData().get("lng"));
+                sendNotification(remoteMessage.getData().get("title"), remoteMessage.getData().get("endTime"), remoteMessage.getData().get("lat"), remoteMessage.getData().get("lng"));
                 break;
             case BIG_EVENT:
-                sendNotification(remoteMessage.getData().get("title"),remoteMessage.getData().get("endTime"),remoteMessage.getData().get("lat"),remoteMessage.getData().get("lng"));
+                sendNotification(remoteMessage.getData().get("title"), remoteMessage.getData().get("endTime"), remoteMessage.getData().get("lat"), remoteMessage.getData().get("lng"));
                 break;
         }
     }
@@ -122,20 +120,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      *
      * @param messageBody FCM message body received.
      */
-    private void sendNotification(String title,String dateTime,String lat, String lng) {
+    private void sendNotification(String title, String dateTime, String lat, String lng) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("lat",lat);
-        intent.putExtra("lng",lng);
-        intent.putExtra("name",title);
-        intent.putExtra("count",100);
+        intent.putExtra("lat", lat);
+        intent.putExtra("lng", lng);
+        intent.putExtra("name", title);
+        intent.putExtra("count", 100);
 
         PendingIntent navigationIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         DateTime date = new DateTime(Long.valueOf(dateTime));
-        String time = String.format(getString(R.string.notification_time),date.getHourOfDay(),String.format("%02d",date.getMinuteOfHour()));
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        String time = String.format(getString(R.string.notification_time), date.getHourOfDay(), String.format("%02d", date.getMinuteOfHour()));
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(title)
@@ -143,7 +141,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setAutoCancel(true)
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setSound(defaultSoundUri)
-                .addAction(R.drawable.ic_action_whatshot,getResources().getString(R.string.check_in_app), navigationIntent)
+                .addAction(R.drawable.ic_action_whatshot, getResources().getString(R.string.check_in_app), navigationIntent)
                 .setContentIntent(navigationIntent);
 
 

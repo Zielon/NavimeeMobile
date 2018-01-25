@@ -1,12 +1,12 @@
 /**
  * Copyright 2016 Google Inc. All Rights Reserved.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -59,7 +59,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     public void onTokenRefresh() {
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        dataManager.getPreferencesHelper().setValue(Const.MESSAGING_TOKEN,refreshedToken);
+        dataManager.getPreferencesHelper().setValue(Const.MESSAGING_TOKEN, refreshedToken);
         Log.d(TAG, "Refreshed token: " + refreshedToken);
 
         // If you want to send messages to this application instance or
@@ -80,26 +80,26 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     private void sendRegistrationToServer(String token) {
         // TODO: Implement this method to send token to your app server.
         // Get a reference to the restaurants collection
-        if(dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() != null) {
+        if (dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() != null) {
             String userId = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
             String name = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getDisplayName();
             Map<String, Object> user = new HashMap<>();
             user.put("token", token);
             user.put("email", dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getEmail());
-            user.put("id",userId);
-            user.put("name",name);
+            user.put("id", userId);
+            user.put("name", name);
             dataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Log.d(TAG, "DocumentSnapshot successfully written!");
                 }
             })
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.w(TAG, "Error writing document", e);
-                }
-            });
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error writing document", e);
+                        }
+                    });
         }
     }
 }

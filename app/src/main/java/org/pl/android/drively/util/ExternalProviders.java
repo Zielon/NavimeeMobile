@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ExternalProviders {
 
-    public static List<String> getExternalProviders(){
+    public static List<String> getExternalProviders() {
         List<String> providers = new ArrayList<>();
 
         providers.add("facebook.com");

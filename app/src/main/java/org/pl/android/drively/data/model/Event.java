@@ -1,4 +1,5 @@
 package org.pl.android.drively.data.model;
+
 import android.support.annotation.NonNull;
 
 import com.google.firebase.firestore.GeoPoint;
@@ -13,7 +14,7 @@ import java.util.Date;
  * Created by Wojtek on 2017-10-21.
  */
 @IgnoreExtraProperties
-public  class Event implements Comparable<Event>, Serializable {
+public class Event implements Comparable<Event>, Serializable {
 
     private String id;
     private String title;
@@ -31,7 +32,7 @@ public  class Event implements Comparable<Event>, Serializable {
     public Event() {
     }
 
-    public Event(String id, String title, String description, String category, String timezone, int rank, GeoPoint geoPoint, Date startTime, Date endTime, Const.HotSpotType hotspotType, Const.EventType source,Place place) {
+    public Event(String id, String title, String description, String category, String timezone, int rank, GeoPoint geoPoint, Date startTime, Date endTime, Const.HotSpotType hotspotType, Const.EventType source, Place place) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -143,14 +144,14 @@ public  class Event implements Comparable<Event>, Serializable {
 
     @Override
     public int compareTo(@NonNull Event event) {
-        if(event.getEndTime().after(endTime)) {
+        if (event.getEndTime().after(endTime)) {
             return -1;
-        } else if(event.getEndTime().before(endTime)) {
+        } else if (event.getEndTime().before(endTime)) {
             return 1;
         } else {
-            if(event.getRank() > rank) {
+            if (event.getRank() > rank) {
                 return 1;
-            } else if(event.getRank() < rank) {
+            } else if (event.getRank() < rank) {
                 return -1;
             } else {
                 return 0;

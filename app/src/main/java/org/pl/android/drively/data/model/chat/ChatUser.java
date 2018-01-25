@@ -1,6 +1,6 @@
 package org.pl.android.drively.data.model.chat;
 
-public class ChatUser  {
+public class ChatUser {
 
     public String name;
     public String email;
@@ -9,7 +9,7 @@ public class ChatUser  {
     public Status status;
     public Message message;
 
-    public ChatUser(){
+    public ChatUser() {
         status = new Status();
         message = new Message();
         status.isOnline = false;

@@ -8,12 +8,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 
+import org.pl.android.drively.injection.ApplicationContext;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-
-import org.pl.android.drively.injection.ApplicationContext;
 
 @Module
 public class ApplicationModule {

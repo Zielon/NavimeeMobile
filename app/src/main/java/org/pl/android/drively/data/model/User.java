@@ -2,6 +2,7 @@ package org.pl.android.drively.data.model;
 
 public class User {
 
+    public static final String DEFAULT_AVATAR = "DEFAULT";
     private boolean dayScheduleNotification;
     private boolean bigEventsNotification;
     private String email;
@@ -12,9 +13,7 @@ public class User {
     private String avatar;
     private String token;
 
-    public static final String DEFAULT_AVATAR = "DEFAULT";
-
-    public User(){
+    public User() {
         this.avatar = DEFAULT_AVATAR;
         this.dayScheduleNotification = true;
         this.bigEventsNotification = true;
@@ -92,7 +91,7 @@ public class User {
         this.bigEventsNotification = bigEventsNotification;
     }
 
-    public boolean isDefaultAvatar(){
+    public boolean isDefaultAvatar() {
         return this.avatar.equals(DEFAULT_AVATAR);
     }
 }

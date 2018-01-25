@@ -34,7 +34,7 @@ public final class ViewUtil {
 
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ");
         DateTime dt = formatter.parseDateTime(dateString);
-        return  dt;
+        return dt;
     }
 
     public static String deAccent(String str) {

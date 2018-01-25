@@ -5,7 +5,8 @@ import java.util.ArrayList;
 
 public class Conversation {
     private ArrayList<Message> listMessageData;
-    public Conversation(){
+
+    public Conversation() {
         listMessageData = new ArrayList<>();
     }
 
@@ -13,10 +14,11 @@ public class Conversation {
         return listMessageData;
     }
 
-    public Message tryGetMessage(int position){
-        try{
+    public Message tryGetMessage(int position) {
+        try {
             return this.listMessageData.get(position);
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
         return null;
     }
 }

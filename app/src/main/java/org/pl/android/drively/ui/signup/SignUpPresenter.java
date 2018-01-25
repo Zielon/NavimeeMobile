@@ -11,9 +11,6 @@ import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.inject.Inject;
 
 import timber.log.Timber;

@@ -38,6 +38,7 @@ public class Const {
         UBER_MULTIPLIER,
         FOURSQUARE_PLACE
     }
+
     public enum EventType {
         PREDICT_HQ,
         FACEBOOK

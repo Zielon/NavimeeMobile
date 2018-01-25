@@ -99,10 +99,10 @@ public class SignInPresenter extends BasePresenter<SignInMvpView> {
                                 if (document.get("bigEventsNotification") == null)
                                     userData.put("bigEventsNotification", true);
 
-                                if(document.get("dayScheduleNotification") == null)
+                                if (document.get("dayScheduleNotification") == null)
                                     userData.put("dayScheduleNotification", true);
 
-                                if(document.get("avatar") == null)
+                                if (document.get("avatar") == null)
                                     userData.put("avatar", User.DEFAULT_AVATAR);
 
                                 mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).update(userData);
@@ -121,12 +121,12 @@ public class SignInPresenter extends BasePresenter<SignInMvpView> {
                 .collection(FirebasePaths.USERS).document(userId)
                 .addSnapshotListener((documentSnapshot, e) -> {
                     if (e != null) {
-                        Timber.e( "Listen failed.", e);
+                        Timber.e("Listen failed.", e);
                         return;
                     }
                     if (documentSnapshot != null && documentSnapshot.exists()) {
-                       User user =  documentSnapshot.toObject(User.class);
-                       mDataManager.getPreferencesHelper().saveUserInfo(user);
+                        User user = documentSnapshot.toObject(User.class);
+                        mDataManager.getPreferencesHelper().saveUserInfo(user);
                     }
                 });
     }

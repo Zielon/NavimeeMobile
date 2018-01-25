@@ -1,11 +1,11 @@
 package org.pl.android.drively.data;
 
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import org.pl.android.drively.data.local.PreferencesHelper;
 import org.pl.android.drively.data.remote.FirebaseService;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 @Singleton
 public class DataManager {
@@ -23,7 +23,7 @@ public class DataManager {
         return mPreferencesHelper;
     }
 
-    public  FirebaseService getFirebaseService() {
+    public FirebaseService getFirebaseService() {
         return mFirebaseService;
     }
 

@@ -7,15 +7,20 @@ import com.crashlytics.android.Crashlytics;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
-import io.fabric.sdk.android.Fabric;
-import timber.log.Timber;
 import org.pl.android.drively.injection.component.ApplicationComponent;
 import org.pl.android.drively.injection.component.DaggerApplicationComponent;
 import org.pl.android.drively.injection.module.ApplicationModule;
 
-public class BoilerplateApplication extends Application  {
+import io.fabric.sdk.android.Fabric;
+import timber.log.Timber;
+
+public class BoilerplateApplication extends Application {
 
     ApplicationComponent mApplicationComponent;
+
+    public static BoilerplateApplication get(Context context) {
+        return (BoilerplateApplication) context.getApplicationContext();
+    }
 
     @Override
     public void onCreate() {
@@ -25,10 +30,6 @@ public class BoilerplateApplication extends Application  {
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }
-    }
-
-    public static BoilerplateApplication get(Context context) {
-        return (BoilerplateApplication) context.getApplicationContext();
     }
 
     public ApplicationComponent getComponent() {
