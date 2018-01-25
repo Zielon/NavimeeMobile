@@ -58,7 +58,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     GroupPresenter mGroupPresenter;
     @BindView(R.id.fab_group)
     FloatingActionButton fabGroupButton;
-    LovelyProgressDialog progressDialog, waitingLeavingGroup;
+    LovelyProgressDialog progressDialog, waitingLeavingGroup,deleteGroupDialog;
     private RecyclerView recyclerListGroups;
     private ArrayList<Group> listGroup;
     private ListGroupsAdapter adapter;
@@ -93,14 +93,15 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         progressDialog = new LovelyProgressDialog(getContext())
                 .setCancelable(false)
                 .setIcon(R.drawable.ic_dialog_delete_group)
-                .setTitle("Deleting....")
+                .setTitle(getResources().getString(R.string.deleting))
                 .setTopColorRes(R.color.colorAccent);
 
         waitingLeavingGroup = new LovelyProgressDialog(getContext())
                 .setCancelable(false)
                 .setIcon(R.drawable.ic_dialog_delete_group)
-                .setTitle("Group leaving....")
+                .setTitle(getResources().getString(R.string.group_leaving))
                 .setTopColorRes(R.color.colorAccent);
+
 
         if (listGroup.size() == 0) {
             //Ket noi server hien thi group
@@ -191,6 +192,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                     Group group = listGroup.get(posGroup);
                     listGroup.remove(posGroup);
                     if (group != null) {
+                        progressDialog.show();
                         deleteGroup(group, 0);
                     }
                 } else {
