@@ -62,7 +62,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         if (event.getEndTime() != null) {
             holder.timeTextView.setText(event.getEndTime().getHours() + ":" + String.format("%02d", event.getEndTime().getMinutes()));
         }
-        holder.maybeTextView.setText(String.valueOf(event.getRank()));
         holder.addButton.setTag(0);
         if (event.getRank() == 1) {
             holder.imageCount.setImageResource(R.drawable.ranking_1_24dp);
@@ -138,8 +137,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         TextView addressTextView;
         @BindView(R.id.viewTextTime)
         TextView timeTextView;
-        @BindView(R.id.viewTextMaybe)
-        TextView maybeTextView;
         @BindView(R.id.addButton)
         FloatingActionButton addButton;
 
