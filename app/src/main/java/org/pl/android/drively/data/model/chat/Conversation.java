@@ -12,4 +12,11 @@ public class Conversation {
     public ArrayList<Message> getListMessageData() {
         return listMessageData;
     }
+
+    public Message tryGetMessage(int position){
+        try{
+            return this.listMessageData.get(position);
+        }catch (Exception e){}
+        return null;
+    }
 }

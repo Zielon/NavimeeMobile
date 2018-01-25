@@ -476,6 +476,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     ChatViewActivity.bitmapAvataFriend = new HashMap<>();
                     if (!avata.equals(Const.STR_DEFAULT_BASE64)) {
                         BitmapDrawable bitmapDrawable = (BitmapDrawable) ((ItemFriendViewHolder) holder).avata.getDrawable();
+                        if(bitmapDrawable != null)
                         ChatViewActivity.bitmapAvataFriend.put(id, bitmapDrawable.getBitmap());
                     } else {
                         ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));

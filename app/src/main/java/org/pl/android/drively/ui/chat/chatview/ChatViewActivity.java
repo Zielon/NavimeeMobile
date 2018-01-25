@@ -8,12 +8,14 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -33,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 
 import javax.inject.Inject;
 
@@ -87,6 +90,8 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
             adapter = new ListMessageAdapter(this, conversation, bitmapAvataFriend, bitmapAvataUser, mChatViewPresenter.getId());
             mChatViewPresenter.setMessageListener(roomId);
             recyclerChat.setAdapter(adapter);
+            recyclerChat.setHasFixedSize(true);
+            recyclerChat.setItemViewCacheSize(20);
         }
     }
 
@@ -149,6 +154,7 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Conversation conversation;
     private HashMap<String, Bitmap> bitmapAvata;
     private HashMap<String, DatabaseReference> bitmapAvataDB;
+    private HashMap<Integer, Pair<Message, MessageHolder>> messages;
     private Bitmap bitmapAvataUser;
     private String mUID;
 
@@ -157,8 +163,63 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.conversation = conversation;
         this.bitmapAvata = bitmapAvata;
         this.bitmapAvataUser = bitmapAvataUser;
-        bitmapAvataDB = new HashMap<>();
-        mUID = UID;
+        this.bitmapAvataDB = new HashMap<>();
+        this.messages = new HashMap<>();
+        this.mUID = UID;
+    }
+
+    public void copyMessages(){
+        for (int i = 0; i < conversation.getListMessageData().size(); i++) {
+            if(!messages.containsKey(i))
+                messages.put(i, new Pair<>(conversation.getListMessageData().get(i), null));
+        }
+    }
+
+    public void groupMessages(){
+        List<List<Pair<Message, MessageHolder>>> messagesGroups = new ArrayList<>();
+
+        if(messages.size() < 2) return;
+
+        for (int i = 0; i < messages.size(); i++) {
+            Pair<Message, MessageHolder> message = messages.get(i);
+            Pair<Message, MessageHolder> nextMessage = messages.get(i + 1);
+
+            List<Pair<Message, MessageHolder>> group = new ArrayList<>();
+            group.add(message);
+
+            while(message.first.idSender.equals(nextMessage.first.idSender)){
+                group.add(nextMessage);
+                if(i > messages.size()) break;
+                message = messages.get(i++);
+                if(i + 1 > messages.size() - 1) break;
+                nextMessage = messages.get(i + 1);
+            }
+
+            if(group.size() > 1)
+                messagesGroups.add(group);
+        }
+
+        ListIterator<List<Pair<Message, MessageHolder>>> iterator = messagesGroups.listIterator(messagesGroups.size());
+        while(iterator.hasPrevious()) {
+            List<Pair<Message, MessageHolder>> group = iterator.previous();
+            Pair<Message, MessageHolder> first = group.get(0);
+            Pair<Message, MessageHolder> last = group.get(group.size() - 1);
+
+            for (Pair<Message, MessageHolder> pair : group){
+                if(pair.second == null) break;
+                pair.second.getAvatar().setVisibility(View.INVISIBLE);
+                pair.second.getTimestamp().setVisibility(View.INVISIBLE);
+                setMargins(pair.second.getLayout(), 0,0,0,0);
+            }
+
+            if(first.second != null){
+                first.second.getTimestamp().setVisibility(View.VISIBLE);
+            }
+
+            if(last.second != null){
+                last.second.getAvatar().setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     @Override
@@ -176,15 +237,14 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ItemMessageFriendHolder) {
-
             Message message = conversation.getListMessageData().get(position);
-            ItemMessageFriendHolder messageFriendHolder = ((ItemMessageFriendHolder) holder);
+            ItemMessageFriendHolder messageHolder = ((ItemMessageFriendHolder) holder);
 
-            messageFriendHolder.txtContent.setText(message.text);
+            messageHolder.txtContent.setText(message.text);
             Bitmap currentAvatar = bitmapAvata.get(message.idSender);
 
-            messageFriendHolder.messageDialog = new MaterialDialog.Builder(context).customView(R.layout.friend_message_details, true).build();
-            View view = messageFriendHolder.messageDialog.getView();
+            messageHolder.messageDialog = new MaterialDialog.Builder(context).customView(R.layout.friend_message_details, true).build();
+            View view = messageHolder.messageDialog.getView();
             String time = new SimpleDateFormat("EEE, MMM d, 'at' HH:mm").format(message.timestamp).toUpperCase();
 
             ((TextView) view.findViewById(R.id.message_time)).setText(time);
@@ -193,7 +253,7 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((CircleImageView) view.findViewById(R.id.avatar)).setImageDrawable(context.getResources().getDrawable(R.drawable.default_avatar));
 
             if (currentAvatar != null) {
-                messageFriendHolder.avatar.setImageBitmap(currentAvatar);
+                messageHolder.avatar.setImageBitmap(currentAvatar);
             } else {
                 final String id = message.idSender;
                 if (bitmapAvataDB.get(id) == null) {
@@ -220,17 +280,21 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     });
                 }
             }
+
+            messages.put(position, new Pair<>(message, messageHolder));
+            copyMessages();
+            groupMessages();
+
         } else if (holder instanceof ItemMessageUserHolder) {
-            ItemMessageUserHolder messageUserHolder = ((ItemMessageUserHolder) holder);
+            ItemMessageUserHolder messageHolder = ((ItemMessageUserHolder) holder);
             Message message = conversation.getListMessageData().get(position);
             String time = new SimpleDateFormat("EEE 'AT' HH:mm").format(message.timestamp).toUpperCase();
+            messageHolder.txtContent.setText(message.text);
+            messageHolder.timeStamp.setText(time);
 
-            messageUserHolder.txtContent.setText(message.text);
-            messageUserHolder.timeStamp.setText(time);
-
-            if (bitmapAvataUser != null) {
-                ((ItemMessageUserHolder) holder).avatar.setImageBitmap(bitmapAvataUser);
-            }
+            messages.put(position, new Pair<>(message, messageHolder));
+            copyMessages();
+            groupMessages();
         }
     }
 
@@ -243,36 +307,94 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public int getItemCount() {
         return conversation.getListMessageData().size();
     }
+
+    public static void setMargins (RelativeLayout layout, int l, int t, int r, int b) {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)(layout.getLayoutParams());
+        params.setMargins(0, 0, 0, 0);
+        layout.setLayoutParams(params);
+    }
 }
 
-class ItemMessageUserHolder extends RecyclerView.ViewHolder {
+interface MessageHolder{
+     TextView getTextContent();
+     TextView getTimestamp();
+     CircleImageView getAvatar();
+     RelativeLayout getLayout();
+}
+
+class ItemMessageUserHolder extends RecyclerView.ViewHolder implements MessageHolder {
     public TextView txtContent;
     public TextView timeStamp;
     public CircleImageView avatar;
+    public RelativeLayout layout;
 
     public ItemMessageUserHolder(View itemView) {
         super(itemView);
         txtContent = (TextView) itemView.findViewById(R.id.textContentUser);
         timeStamp = (TextView) itemView.findViewById(R.id.message_info_user);
         avatar = (CircleImageView) itemView.findViewById(R.id.avatar_img_user);
+        layout = (RelativeLayout) itemView.findViewById(R.id.user_message_layout);
     }
+
+    @Override
+    public TextView getTextContent() {
+        return txtContent;
+    }
+
+    @Override
+    public TextView getTimestamp() {
+        return timeStamp;
+    }
+
+    @Override
+    public CircleImageView getAvatar() {
+        return avatar;
+    }
+
+    @Override
+    public RelativeLayout getLayout() {
+        return layout;
+    }
+
 }
 
-class ItemMessageFriendHolder extends RecyclerView.ViewHolder {
+class ItemMessageFriendHolder extends RecyclerView.ViewHolder implements MessageHolder {
     public TextView txtContent;
     public TextView timeStamp;
     public CircleImageView avatar;
     public MaterialDialog messageDialog;
+    public RelativeLayout layout;
 
     public ItemMessageFriendHolder(View itemView) {
         super(itemView);
         txtContent = (TextView) itemView.findViewById(R.id.textContentFriend);
-        timeStamp = (TextView) itemView.findViewById(R.id.message_info_user);
+        timeStamp = (TextView) itemView.findViewById(R.id.message_info_friend);
         avatar = (CircleImageView) itemView.findViewById(R.id.avatar_img_friend);
+        layout = (RelativeLayout) itemView.findViewById(R.id.friend_message_layout);
 
         avatar.setOnClickListener(click -> {
             if (messageDialog != null)
                 messageDialog.show();
         });
+    }
+
+    @Override
+    public TextView getTextContent() {
+        return txtContent;
+    }
+
+    @Override
+    public TextView getTimestamp() {
+        return timeStamp;
+    }
+
+    @Override
+    public CircleImageView getAvatar() {
+        return avatar;
+    }
+
+    @Override
+    public RelativeLayout getLayout() {
+        return layout;
     }
 }
