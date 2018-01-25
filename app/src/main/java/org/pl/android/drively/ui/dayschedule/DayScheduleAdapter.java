@@ -133,8 +133,6 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
         TextView addressTextView;
         @BindView(R.id.viewTextTime)
         TextView timeTextView;
-        @BindView(R.id.viewTextMaybe)
-        TextView maybeTextView;
         @BindView(R.id.driveButton)
         FloatingActionButton driveButton;
         @BindView(R.id.deleteButton)

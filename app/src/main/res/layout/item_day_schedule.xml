@@ -31,11 +31,13 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
+                android:layout_toStartOf="@+id/deleteButton"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_body"
-                tools:text="Antony Ribot" />
+                tools:text="Antony Ribot"
+                android:layout_toLeftOf="@+id/deleteButton" />
 
             <ImageView
                 android:id="@+id/image_address_name"
@@ -92,6 +94,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="false"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentLeft="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:background="@android:color/transparent"
@@ -132,26 +135,6 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/imageTime"
-                android:paddingLeft="10dp"
-                android:text="18:30"
-                android:textColor="@color/white" />
-
-            <ImageView
-                android:id="@+id/imageMaybe"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/viewTextTime"
-                android:paddingLeft="10dp"
-                android:src="@drawable/visibility_on_24dp" />
-
-            <TextView
-                android:id="@+id/viewTextMaybe"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_margin="1dp"
-                android:layout_toRightOf="@+id/imageMaybe"
                 android:paddingLeft="10dp"
                 android:text="18:30"
                 android:textColor="@color/white" />
