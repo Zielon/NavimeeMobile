@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -87,11 +88,16 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
             linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
             recyclerChat = (RecyclerView) findViewById(R.id.recyclerChat);
             recyclerChat.setLayoutManager(linearLayoutManager);
-            adapter = new ListMessageAdapter(this, conversation, bitmapAvataFriend, bitmapAvataUser, mChatViewPresenter.getId());
+
+            adapter = new ListMessageAdapter(this,
+                            conversation,
+                            new RecyclerViewPositionHelper(recyclerChat),
+                            bitmapAvataFriend,
+                            bitmapAvataUser,
+                            mChatViewPresenter.getId());
+
             mChatViewPresenter.setMessageListener(roomId);
             recyclerChat.setAdapter(adapter);
-            recyclerChat.setHasFixedSize(true);
-            recyclerChat.setItemViewCacheSize(20);
         }
     }
 
@@ -154,42 +160,40 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Conversation conversation;
     private HashMap<String, Bitmap> bitmapAvata;
     private HashMap<String, DatabaseReference> bitmapAvataDB;
-    private HashMap<Integer, Pair<Message, MessageHolder>> messages;
+    private Map<Integer, MessageHolder> messagesHolders;
     private Bitmap bitmapAvataUser;
     private String mUID;
+    private RecyclerViewPositionHelper positionHelper;
 
-    public ListMessageAdapter(Context context, Conversation conversation, HashMap<String, Bitmap> bitmapAvata, Bitmap bitmapAvataUser, String UID) {
+    public ListMessageAdapter(Context context, Conversation conversation, RecyclerViewPositionHelper positionHelper, HashMap<String, Bitmap> bitmapAvata, Bitmap bitmapAvataUser, String UID) {
         this.context = context;
         this.conversation = conversation;
         this.bitmapAvata = bitmapAvata;
         this.bitmapAvataUser = bitmapAvataUser;
         this.bitmapAvataDB = new HashMap<>();
-        this.messages = new HashMap<>();
         this.mUID = UID;
-    }
-
-    public void copyMessages(){
-        for (int i = 0; i < conversation.getListMessageData().size(); i++) {
-            if(!messages.containsKey(i))
-                messages.put(i, new Pair<>(conversation.getListMessageData().get(i), null));
-        }
+        this.messagesHolders = new HashMap<>();
+        this.positionHelper = positionHelper;
     }
 
     public void groupMessages(){
-        List<List<Pair<Message, MessageHolder>>> messagesGroups = new ArrayList<>();
+        List<List<Integer>> messagesGroups = new ArrayList<>();
+        List<Message> messages = conversation.getListMessageData();
+        int first = positionHelper.findFirstVisibleItemPosition();
+        int last = positionHelper.findLastVisibleItemPosition();
 
-        if(messages.size() < 2) return;
+        if(messages.size() < 2 || first < 0 || last < 0) return;
 
         for (int i = 0; i < messages.size(); i++) {
-            Pair<Message, MessageHolder> message = messages.get(i);
-            Pair<Message, MessageHolder> nextMessage = messages.get(i + 1);
+            resetHolder(messagesHolders.get(i));
+            Message message = messages.get(i);
+            Message nextMessage = messages.get(i + 1);
 
-            List<Pair<Message, MessageHolder>> group = new ArrayList<>();
-            group.add(message);
+            List<Integer> group = new ArrayList<>();
+            group.add(i);
 
-            while(message.first.idSender.equals(nextMessage.first.idSender)){
-                group.add(nextMessage);
-                if(i > messages.size()) break;
+            while(message.idSender.equals(nextMessage.idSender)){
+                group.add(i + 1);
                 message = messages.get(i++);
                 if(i + 1 > messages.size() - 1) break;
                 nextMessage = messages.get(i + 1);
@@ -199,27 +203,40 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 messagesGroups.add(group);
         }
 
-        ListIterator<List<Pair<Message, MessageHolder>>> iterator = messagesGroups.listIterator(messagesGroups.size());
-        while(iterator.hasPrevious()) {
-            List<Pair<Message, MessageHolder>> group = iterator.previous();
-            Pair<Message, MessageHolder> first = group.get(0);
-            Pair<Message, MessageHolder> last = group.get(group.size() - 1);
+        for(List<Integer> group : messagesGroups) {
 
-            for (Pair<Message, MessageHolder> pair : group){
-                if(pair.second == null) break;
-                pair.second.getAvatar().setVisibility(View.INVISIBLE);
-                pair.second.getTimestamp().setVisibility(View.INVISIBLE);
-                setMargins(pair.second.getLayout(), 0,0,0,0);
+            MessageHolder firstHolder = messagesHolders.get(group.get(0));
+            MessageHolder lastHolder = messagesHolders.get(group.get(group.size() - 1));
+
+            for(Integer position : group) {
+                MessageHolder holder = messagesHolders.get(position);
+                if(holder == null) break;
+                holder.getAvatar().setVisibility(View.INVISIBLE);
+                holder.getTimestamp().setVisibility(View.INVISIBLE);
+                setMargins(holder.getLayout(), 0,0,0,0);
             }
 
-            if(first.second != null){
-                first.second.getTimestamp().setVisibility(View.VISIBLE);
+            if(firstHolder != null){
+                firstHolder.getTimestamp().setVisibility(View.VISIBLE);
             }
 
-            if(last.second != null){
-                last.second.getAvatar().setVisibility(View.VISIBLE);
+            if(lastHolder != null){
+                lastHolder.getAvatar().setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    public static void setMargins (RelativeLayout layout, int l, int t, int r, int b) {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)(layout.getLayoutParams());
+        params.setMargins(0, 0, 0, 0);
+        layout.setLayoutParams(params);
+    }
+
+    public static void resetHolder(MessageHolder holder){
+        if(holder == null) return;
+        holder.getTimestamp().setVisibility(View.VISIBLE);
+        holder.getAvatar().setVisibility(View.VISIBLE);
+        setMargins(holder.getLayout(), 0,10,0,10);
     }
 
     @Override
@@ -236,10 +253,11 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof ItemMessageFriendHolder) {
-            Message message = conversation.getListMessageData().get(position);
-            ItemMessageFriendHolder messageHolder = ((ItemMessageFriendHolder) holder);
 
+        Message message = conversation.getListMessageData().get(position);
+
+        if (holder instanceof ItemMessageFriendHolder) {
+            ItemMessageFriendHolder messageHolder = ((ItemMessageFriendHolder) holder);
             messageHolder.txtContent.setText(message.text);
             Bitmap currentAvatar = bitmapAvata.get(message.idSender);
 
@@ -280,22 +298,16 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     });
                 }
             }
-
-            messages.put(position, new Pair<>(message, messageHolder));
-            copyMessages();
-            groupMessages();
-
         } else if (holder instanceof ItemMessageUserHolder) {
             ItemMessageUserHolder messageHolder = ((ItemMessageUserHolder) holder);
-            Message message = conversation.getListMessageData().get(position);
             String time = new SimpleDateFormat("EEE 'AT' HH:mm").format(message.timestamp).toUpperCase();
             messageHolder.txtContent.setText(message.text);
             messageHolder.timeStamp.setText(time);
-
-            messages.put(position, new Pair<>(message, messageHolder));
-            copyMessages();
-            groupMessages();
         }
+
+        if(!messagesHolders.containsKey(position))
+            messagesHolders.put(position, (MessageHolder)holder);
+        groupMessages();
     }
 
     @Override
@@ -307,12 +319,6 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public int getItemCount() {
         return conversation.getListMessageData().size();
     }
-
-    public static void setMargins (RelativeLayout layout, int l, int t, int r, int b) {
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)(layout.getLayoutParams());
-        params.setMargins(0, 0, 0, 0);
-        layout.setLayoutParams(params);
-    }
 }
 
 interface MessageHolder{
@@ -320,6 +326,7 @@ interface MessageHolder{
      TextView getTimestamp();
      CircleImageView getAvatar();
      RelativeLayout getLayout();
+     RecyclerView.ViewHolder getViewHolder();
 }
 
 class ItemMessageUserHolder extends RecyclerView.ViewHolder implements MessageHolder {
@@ -354,6 +361,11 @@ class ItemMessageUserHolder extends RecyclerView.ViewHolder implements MessageHo
     @Override
     public RelativeLayout getLayout() {
         return layout;
+    }
+
+    @Override
+    public RecyclerView.ViewHolder getViewHolder() {
+        return this;
     }
 
 }
@@ -396,5 +408,10 @@ class ItemMessageFriendHolder extends RecyclerView.ViewHolder implements Message
     @Override
     public RelativeLayout getLayout() {
         return layout;
+    }
+
+    @Override
+    public RecyclerView.ViewHolder getViewHolder() {
+        return this;
     }
 }
