@@ -609,7 +609,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         if (listFriend.getListFriend().get(position).status.isOnline) {
-            ((ItemFriendViewHolder) holder).avata.setBorderWidth(10);
+            ((ItemFriendViewHolder) holder).avata.setBorderWidth(7);
             ((ItemFriendViewHolder) holder).avata.setBorderColor(context.getResources().getColor(R.color.button_background));
         } else {
             ((ItemFriendViewHolder) holder).avata.setBorderWidth(0);
