@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,12 +34,22 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 
 import javax.inject.Inject;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+interface MessageHolder {
+    TextView getTextContent();
+
+    TextView getTimestamp();
+
+    CircleImageView getAvatar();
+
+    RelativeLayout getLayout();
+
+    RecyclerView.ViewHolder getViewHolder();
+}
 
 public class ChatViewActivity extends BaseActivity implements View.OnClickListener, ChatViewMvpView {
     public static final int VIEW_TYPE_USER_MESSAGE = 0;
@@ -75,7 +84,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         btnSend.setOnClickListener(this);
 
         String base64AvataUser = "default";// SharedPreferenceHelper.getInstance(this).getUserInfo().avatar;
-        if (!base64AvataUser.equals(Const.STR_DEFAULT_BASE64)) {
+        if (!base64AvataUser.equals(Const.STR_DEFAULT_AVATAR)) {
             byte[] decodedString = Base64.decode(base64AvataUser, Base64.DEFAULT);
             bitmapAvataUser = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         } else {
@@ -90,11 +99,11 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
             recyclerChat.setLayoutManager(linearLayoutManager);
 
             adapter = new ListMessageAdapter(this,
-                            conversation,
-                            new RecyclerViewPositionHelper(recyclerChat),
-                            bitmapAvataFriend,
-                            bitmapAvataUser,
-                            mChatViewPresenter.getId());
+                    conversation,
+                    new RecyclerViewPositionHelper(recyclerChat),
+                    bitmapAvataFriend,
+                    bitmapAvataUser,
+                    mChatViewPresenter.getId());
 
             mChatViewPresenter.setMessageListener(roomId);
             recyclerChat.setAdapter(adapter);
@@ -160,7 +169,6 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Conversation conversation;
     private HashMap<String, Bitmap> bitmapAvata;
     private HashMap<String, DatabaseReference> bitmapAvataDB;
-    private Map<Integer, MessageHolder> messagesHolders;
     private Bitmap bitmapAvataUser;
     private String mUID;
     private RecyclerViewPositionHelper positionHelper;
@@ -172,71 +180,49 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.bitmapAvataUser = bitmapAvataUser;
         this.bitmapAvataDB = new HashMap<>();
         this.mUID = UID;
-        this.messagesHolders = new HashMap<>();
         this.positionHelper = positionHelper;
     }
 
-    public void groupMessages(){
-        List<List<Integer>> messagesGroups = new ArrayList<>();
-        List<Message> messages = conversation.getListMessageData();
-        int first = positionHelper.findFirstVisibleItemPosition();
-        int last = positionHelper.findLastVisibleItemPosition();
-
-        if(messages.size() < 2 || first < 0 || last < 0) return;
-
-        for (int i = 0; i < messages.size(); i++) {
-            resetHolder(messagesHolders.get(i));
-            Message message = messages.get(i);
-            Message nextMessage = messages.get(i + 1);
-
-            List<Integer> group = new ArrayList<>();
-            group.add(i);
-
-            while(message.idSender.equals(nextMessage.idSender)){
-                group.add(i + 1);
-                message = messages.get(i++);
-                if(i + 1 > messages.size() - 1) break;
-                nextMessage = messages.get(i + 1);
-            }
-
-            if(group.size() > 1)
-                messagesGroups.add(group);
-        }
-
-        for(List<Integer> group : messagesGroups) {
-
-            MessageHolder firstHolder = messagesHolders.get(group.get(0));
-            MessageHolder lastHolder = messagesHolders.get(group.get(group.size() - 1));
-
-            for(Integer position : group) {
-                MessageHolder holder = messagesHolders.get(position);
-                if(holder == null) break;
-                holder.getAvatar().setVisibility(View.INVISIBLE);
-                holder.getTimestamp().setVisibility(View.INVISIBLE);
-                setMargins(holder.getLayout(), 0,0,0,0);
-            }
-
-            if(firstHolder != null){
-                firstHolder.getTimestamp().setVisibility(View.VISIBLE);
-            }
-
-            if(lastHolder != null){
-                lastHolder.getAvatar().setVisibility(View.VISIBLE);
-            }
-        }
-    }
-
-    public static void setMargins (RelativeLayout layout, int l, int t, int r, int b) {
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)(layout.getLayoutParams());
+    public static void setMargins(RelativeLayout layout, int l, int t, int r, int b) {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) (layout.getLayoutParams());
         params.setMargins(0, 0, 0, 0);
         layout.setLayoutParams(params);
     }
 
-    public static void resetHolder(MessageHolder holder){
-        if(holder == null) return;
+    public static void resetHolder(MessageHolder holder) {
+        if (holder == null) return;
         holder.getTimestamp().setVisibility(View.VISIBLE);
         holder.getAvatar().setVisibility(View.VISIBLE);
-        setMargins(holder.getLayout(), 0,10,0,10);
+        setMargins(holder.getLayout(), 0, 10, 0, 10);
+    }
+
+    public void groupMessages(int position, MessageHolder holder) {
+        List<Message> messages = conversation.getListMessageData();
+        resetHolder(holder);
+
+        if (messages.size() <= 0) return;
+
+        // Starts from the bottom.
+        Message current = messages.get(position);
+        Message next = messages.size() > 1 && position > 0 ? messages.get(position - 1) : null;
+        Message previous = position + 1 < messages.size() ? messages.get(position + 1) : null;
+
+        // On the app screen
+        boolean between = previous != null && next != null && previous.idSender.equals(current.idSender) && next.idSender.equals(current.idSender);
+        boolean top = previous != null && next != null && !next.idSender.equals(current.idSender) && previous.idSender.equals(current.idSender);
+        boolean bottom = next != null && previous != null && !previous.idSender.equals(current.idSender) && next.idSender.equals(current.idSender);
+
+        boolean last = position == messages.size() - 1 && next.idSender.equals(current.idSender);
+        boolean first = position == 0 && previous.idSender.equals(current.idSender);
+
+        if (between) {
+            holder.getAvatar().setVisibility(View.INVISIBLE);
+            holder.getTimestamp().setVisibility(View.INVISIBLE);
+        }
+
+        if (top || first) holder.getAvatar().setVisibility(View.INVISIBLE);
+        if (bottom || last) holder.getTimestamp().setVisibility(View.INVISIBLE);
+        if (between || top || bottom || last || first) setMargins(holder.getLayout(), 0, 0, 0, 0);
     }
 
     @Override
@@ -281,7 +267,7 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.getValue() != null) {
                                 String avataStr = (String) dataSnapshot.getValue();
-                                if (!avataStr.equals(Const.STR_DEFAULT_BASE64)) {
+                                if (!avataStr.equals(Const.STR_DEFAULT_AVATAR)) {
                                     byte[] decodedString = Base64.decode(avataStr, Base64.DEFAULT);
                                     ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length));
                                 } else {
@@ -305,9 +291,7 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             messageHolder.timeStamp.setText(time);
         }
 
-        if(!messagesHolders.containsKey(position))
-            messagesHolders.put(position, (MessageHolder)holder);
-        groupMessages();
+        groupMessages(position, (MessageHolder) holder);
     }
 
     @Override
@@ -319,14 +303,6 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public int getItemCount() {
         return conversation.getListMessageData().size();
     }
-}
-
-interface MessageHolder{
-     TextView getTextContent();
-     TextView getTimestamp();
-     CircleImageView getAvatar();
-     RelativeLayout getLayout();
-     RecyclerView.ViewHolder getViewHolder();
 }
 
 class ItemMessageUserHolder extends RecyclerView.ViewHolder implements MessageHolder {

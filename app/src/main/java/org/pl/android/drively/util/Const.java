@@ -21,7 +21,7 @@ public class Const {
     public static String STR_EXTRA_ACTION = "action";
     public static String STR_EXTRA_USERNAME = "username";
     public static String STR_EXTRA_PASSWORD = "password";
-    public static String STR_DEFAULT_BASE64 = "DEFAULT";
+    public static String STR_DEFAULT_AVATAR = "DEFAULT";
     public static String UID = "";
     //TODO only use this UID for debug mode
 //    public static String UID = "6kU0SbJPF5QJKZTfvW1BqKolrx22";
