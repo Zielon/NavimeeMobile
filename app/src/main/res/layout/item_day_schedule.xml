@@ -24,20 +24,19 @@
             android:layout_height="wrap_content"
             android:padding="10dp">
 
-
             <TextView
                 android:id="@+id/text_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@+id/deleteButton"
                 android:layout_toStartOf="@+id/deleteButton"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_body"
-                tools:text="Antony Ribot"
-                android:layout_toLeftOf="@+id/deleteButton" />
+                tools:text="Antony Ribot" />
 
             <ImageView
                 android:id="@+id/image_address_name"
@@ -98,7 +97,10 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:background="@android:color/transparent"
-                android:padding="0dp"
+                android:paddingBottom="7dp"
+                android:paddingLeft="7dp"
+                android:paddingRight="7dp"
+                android:paddingTop="4dp"
                 android:src="@drawable/close_x_24dp" />
 
 

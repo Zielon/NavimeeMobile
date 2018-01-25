@@ -14,11 +14,11 @@
             android:id="@+id/message_info_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
             android:layout_centerHorizontal="true"
-            android:textSize="9dp"
+            android:text="MON AT 00:00"
+            android:textAlignment="center"
             android:textColor="@color/white"
-            android:text="MON AT 00:00" />
+            android:textSize="9dp" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/avatar_img_user"
