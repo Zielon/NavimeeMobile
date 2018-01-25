@@ -167,8 +167,8 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
     private Conversation conversation;
-    private HashMap<String, Bitmap> bitmapAvata;
-    private HashMap<String, DatabaseReference> bitmapAvataDB;
+    private HashMap<String, Bitmap> bitmapAvatars;
+    private HashMap<String, DatabaseReference> bitmapAvatarDB;
     private Bitmap bitmapAvataUser;
     private String mUID;
     private RecyclerViewPositionHelper positionHelper;
@@ -176,9 +176,9 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public ListMessageAdapter(Context context, Conversation conversation, RecyclerViewPositionHelper positionHelper, HashMap<String, Bitmap> bitmapAvata, Bitmap bitmapAvataUser, String UID) {
         this.context = context;
         this.conversation = conversation;
-        this.bitmapAvata = bitmapAvata;
+        this.bitmapAvatars = bitmapAvata;
         this.bitmapAvataUser = bitmapAvataUser;
-        this.bitmapAvataDB = new HashMap<>();
+        this.bitmapAvatarDB = new HashMap<>();
         this.mUID = UID;
         this.positionHelper = positionHelper;
     }
@@ -245,7 +245,7 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (holder instanceof ItemMessageFriendHolder) {
             ItemMessageFriendHolder messageHolder = ((ItemMessageFriendHolder) holder);
             messageHolder.txtContent.setText(message.text);
-            Bitmap currentAvatar = bitmapAvata.get(message.idSender);
+            Bitmap currentAvatar = bitmapAvatars.get(message.idSender);
 
             messageHolder.messageDialog = new MaterialDialog.Builder(context).customView(R.layout.friend_message_details, true).build();
             View view = messageHolder.messageDialog.getView();
@@ -260,9 +260,9 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 messageHolder.avatar.setImageBitmap(currentAvatar);
             } else {
                 final String id = message.idSender;
-                if (bitmapAvataDB.get(id) == null) {
-                    bitmapAvataDB.put(id, FirebaseDatabase.getInstance().getReference().child("user/" + id + "/avatar"));
-                    bitmapAvataDB.get(id).addListenerForSingleValueEvent(new ValueEventListener() {
+                if (bitmapAvatarDB.get(id) == null) {
+                    bitmapAvatarDB.put(id, FirebaseDatabase.getInstance().getReference().child("user/" + id + "/avatar"));
+                    bitmapAvatarDB.get(id).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.getValue() != null) {
@@ -289,6 +289,9 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             String time = new SimpleDateFormat("EEE 'AT' HH:mm").format(message.timestamp).toUpperCase();
             messageHolder.txtContent.setText(message.text);
             messageHolder.timeStamp.setText(time);
+            Bitmap currentAvatar = bitmapAvatars.get(message.idSender);
+            if (currentAvatar != null)
+                messageHolder.avatar.setImageBitmap(currentAvatar);
         }
 
         groupMessages(position, (MessageHolder) holder);
