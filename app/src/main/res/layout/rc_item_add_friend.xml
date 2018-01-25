@@ -9,16 +9,15 @@
         android:id="@+id/icon_avata"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:layout_weight="2"
-        />
+        android:layout_weight="2" />
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
         android:layout_weight="7"
-        android:orientation="vertical"
-        android:layout_marginLeft="10dp">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/txtName"
@@ -27,7 +26,7 @@
             android:layout_weight="1"
             android:gravity="bottom"
             android:text="Nguyen Binh"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/txtEmail"
@@ -36,7 +35,7 @@
             android:layout_weight="1"
             android:gravity="top"
             android:text="Nguyen Binh"
-            android:textAppearance="?android:attr/textAppearanceSmall"/>
+            android:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>
 
     <CheckBox

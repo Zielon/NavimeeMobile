@@ -3,7 +3,6 @@ package org.pl.android.drively.ui.chat.friends;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -12,7 +11,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -27,8 +25,6 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -474,9 +470,10 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     intent.putCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID, idFriend);
                     intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, idRoom);
                     ChatViewActivity.bitmapAvataFriend = new HashMap<>();
-                    if (!avata.equals(Const.STR_DEFAULT_BASE64)) {
+                    if (!avata.equals(Const.STR_DEFAULT_AVATAR)) {
                         BitmapDrawable bitmapDrawable = (BitmapDrawable) ((ItemFriendViewHolder) holder).avata.getDrawable();
-                        ChatViewActivity.bitmapAvataFriend.put(id, bitmapDrawable.getBitmap());
+                        if (bitmapDrawable != null)
+                            ChatViewActivity.bitmapAvataFriend.put(id, bitmapDrawable.getBitmap());
                     } else {
                         ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
                     }
@@ -579,7 +576,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 mapMark.put(id, true);
             }
         }
-        if (listFriend.getListFriend().get(position).avatar.equals(Const.STR_DEFAULT_BASE64)) {
+        if (listFriend.getListFriend().get(position).avatar.equals(Const.STR_DEFAULT_AVATAR)) {
             ((ItemFriendViewHolder) holder).avata.setImageResource(R.drawable.default_avatar);
         } else {
             this.fragment.mFriendsPresenter.getStorageReference(listFriend.getListFriend().get(position).avatar)
@@ -612,7 +609,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         if (listFriend.getListFriend().get(position).status.isOnline) {
-            ((ItemFriendViewHolder) holder).avata.setBorderWidth(10);
+            ((ItemFriendViewHolder) holder).avata.setBorderWidth(7);
             ((ItemFriendViewHolder) holder).avata.setBorderColor(context.getResources().getColor(R.color.button_background));
         } else {
             ((ItemFriendViewHolder) holder).avata.setBorderWidth(0);

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -37,6 +38,18 @@ import java.util.List;
 import javax.inject.Inject;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+interface MessageHolder {
+    TextView getTextContent();
+
+    TextView getTimestamp();
+
+    CircleImageView getAvatar();
+
+    RelativeLayout getLayout();
+
+    RecyclerView.ViewHolder getViewHolder();
+}
 
 public class ChatViewActivity extends BaseActivity implements View.OnClickListener, ChatViewMvpView {
     public static final int VIEW_TYPE_USER_MESSAGE = 0;
@@ -71,7 +84,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         btnSend.setOnClickListener(this);
 
         String base64AvataUser = "default";// SharedPreferenceHelper.getInstance(this).getUserInfo().avatar;
-        if (!base64AvataUser.equals(Const.STR_DEFAULT_BASE64)) {
+        if (!base64AvataUser.equals(Const.STR_DEFAULT_AVATAR)) {
             byte[] decodedString = Base64.decode(base64AvataUser, Base64.DEFAULT);
             bitmapAvataUser = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         } else {
@@ -84,7 +97,14 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
             linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
             recyclerChat = (RecyclerView) findViewById(R.id.recyclerChat);
             recyclerChat.setLayoutManager(linearLayoutManager);
-            adapter = new ListMessageAdapter(this, conversation, bitmapAvataFriend, bitmapAvataUser, mChatViewPresenter.getId());
+
+            adapter = new ListMessageAdapter(this,
+                    conversation,
+                    new RecyclerViewPositionHelper(recyclerChat),
+                    bitmapAvataFriend,
+                    bitmapAvataUser,
+                    mChatViewPresenter.getId());
+
             mChatViewPresenter.setMessageListener(roomId);
             recyclerChat.setAdapter(adapter);
         }
@@ -147,18 +167,62 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
     private Conversation conversation;
-    private HashMap<String, Bitmap> bitmapAvata;
-    private HashMap<String, DatabaseReference> bitmapAvataDB;
+    private HashMap<String, Bitmap> bitmapAvatars;
+    private HashMap<String, DatabaseReference> bitmapAvatarDB;
     private Bitmap bitmapAvataUser;
     private String mUID;
+    private RecyclerViewPositionHelper positionHelper;
 
-    public ListMessageAdapter(Context context, Conversation conversation, HashMap<String, Bitmap> bitmapAvata, Bitmap bitmapAvataUser, String UID) {
+    public ListMessageAdapter(Context context, Conversation conversation, RecyclerViewPositionHelper positionHelper, HashMap<String, Bitmap> bitmapAvata, Bitmap bitmapAvataUser, String UID) {
         this.context = context;
         this.conversation = conversation;
-        this.bitmapAvata = bitmapAvata;
+        this.bitmapAvatars = bitmapAvata;
         this.bitmapAvataUser = bitmapAvataUser;
-        bitmapAvataDB = new HashMap<>();
-        mUID = UID;
+        this.bitmapAvatarDB = new HashMap<>();
+        this.mUID = UID;
+        this.positionHelper = positionHelper;
+    }
+
+    public static void setMargins(RelativeLayout layout, int l, int t, int r, int b) {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) (layout.getLayoutParams());
+        params.setMargins(0, 0, 0, 0);
+        layout.setLayoutParams(params);
+    }
+
+    public static void resetHolder(MessageHolder holder) {
+        if (holder == null) return;
+        holder.getTimestamp().setVisibility(View.VISIBLE);
+        holder.getAvatar().setVisibility(View.VISIBLE);
+        setMargins(holder.getLayout(), 0, 10, 0, 10);
+    }
+
+    public void groupMessages(int position, MessageHolder holder) {
+        List<Message> messages = conversation.getListMessageData();
+        resetHolder(holder);
+
+        if (messages.size() <= 0) return;
+
+        // Starts from the bottom.
+        Message current = messages.get(position);
+        Message next = messages.size() > 1 && position > 0 ? messages.get(position - 1) : null;
+        Message previous = position + 1 < messages.size() ? messages.get(position + 1) : null;
+
+        // On the app screen
+        boolean between = previous != null && next != null && previous.idSender.equals(current.idSender) && next.idSender.equals(current.idSender);
+        boolean top = previous != null && next != null && !next.idSender.equals(current.idSender) && previous.idSender.equals(current.idSender);
+        boolean bottom = next != null && previous != null && !previous.idSender.equals(current.idSender) && next.idSender.equals(current.idSender);
+
+        boolean last = next != null && position == messages.size() - 1 && next.idSender.equals(current.idSender);
+        boolean first = previous != null && position == 0 && previous.idSender.equals(current.idSender);
+
+        if (between) {
+            holder.getAvatar().setVisibility(View.INVISIBLE);
+            holder.getTimestamp().setVisibility(View.INVISIBLE);
+        }
+
+        if (top || first) holder.getAvatar().setVisibility(View.INVISIBLE);
+        if (bottom || last) holder.getTimestamp().setVisibility(View.INVISIBLE);
+        if (between || top || bottom || last || first) setMargins(holder.getLayout(), 0, 0, 0, 0);
     }
 
     @Override
@@ -175,16 +239,16 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
+        Message message = conversation.getListMessageData().get(position);
+
         if (holder instanceof ItemMessageFriendHolder) {
+            ItemMessageFriendHolder messageHolder = ((ItemMessageFriendHolder) holder);
+            messageHolder.txtContent.setText(message.text);
+            Bitmap currentAvatar = bitmapAvatars.get(message.idSender);
 
-            Message message = conversation.getListMessageData().get(position);
-            ItemMessageFriendHolder messageFriendHolder = ((ItemMessageFriendHolder) holder);
-
-            messageFriendHolder.txtContent.setText(message.text);
-            Bitmap currentAvatar = bitmapAvata.get(message.idSender);
-
-            messageFriendHolder.messageDialog = new MaterialDialog.Builder(context).customView(R.layout.friend_message_details, true).build();
-            View view = messageFriendHolder.messageDialog.getView();
+            messageHolder.messageDialog = new MaterialDialog.Builder(context).customView(R.layout.friend_message_details, true).build();
+            View view = messageHolder.messageDialog.getView();
             String time = new SimpleDateFormat("EEE, MMM d, 'at' HH:mm").format(message.timestamp).toUpperCase();
 
             ((TextView) view.findViewById(R.id.message_time)).setText(time);
@@ -193,17 +257,17 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((CircleImageView) view.findViewById(R.id.avatar)).setImageDrawable(context.getResources().getDrawable(R.drawable.default_avatar));
 
             if (currentAvatar != null) {
-                messageFriendHolder.avatar.setImageBitmap(currentAvatar);
+                messageHolder.avatar.setImageBitmap(currentAvatar);
             } else {
                 final String id = message.idSender;
-                if (bitmapAvataDB.get(id) == null) {
-                    bitmapAvataDB.put(id, FirebaseDatabase.getInstance().getReference().child("user/" + id + "/avatar"));
-                    bitmapAvataDB.get(id).addListenerForSingleValueEvent(new ValueEventListener() {
+                if (bitmapAvatarDB.get(id) == null) {
+                    bitmapAvatarDB.put(id, FirebaseDatabase.getInstance().getReference().child("user/" + id + "/avatar"));
+                    bitmapAvatarDB.get(id).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.getValue() != null) {
                                 String avataStr = (String) dataSnapshot.getValue();
-                                if (!avataStr.equals(Const.STR_DEFAULT_BASE64)) {
+                                if (!avataStr.equals(Const.STR_DEFAULT_AVATAR)) {
                                     byte[] decodedString = Base64.decode(avataStr, Base64.DEFAULT);
                                     ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length));
                                 } else {
@@ -221,17 +285,16 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             }
         } else if (holder instanceof ItemMessageUserHolder) {
-            ItemMessageUserHolder messageUserHolder = ((ItemMessageUserHolder) holder);
-            Message message = conversation.getListMessageData().get(position);
+            ItemMessageUserHolder messageHolder = ((ItemMessageUserHolder) holder);
             String time = new SimpleDateFormat("EEE 'AT' HH:mm").format(message.timestamp).toUpperCase();
-
-            messageUserHolder.txtContent.setText(message.text);
-            messageUserHolder.timeStamp.setText(time);
-
-            if (bitmapAvataUser != null) {
-                ((ItemMessageUserHolder) holder).avatar.setImageBitmap(bitmapAvataUser);
-            }
+            messageHolder.txtContent.setText(message.text);
+            messageHolder.timeStamp.setText(time);
+            Bitmap currentAvatar = bitmapAvatars.get(message.idSender);
+            if (currentAvatar != null)
+                messageHolder.avatar.setImageBitmap(currentAvatar);
         }
+
+        groupMessages(position, (MessageHolder) holder);
     }
 
     @Override
@@ -245,34 +308,89 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 }
 
-class ItemMessageUserHolder extends RecyclerView.ViewHolder {
+class ItemMessageUserHolder extends RecyclerView.ViewHolder implements MessageHolder {
     public TextView txtContent;
     public TextView timeStamp;
     public CircleImageView avatar;
+    public RelativeLayout layout;
 
     public ItemMessageUserHolder(View itemView) {
         super(itemView);
         txtContent = (TextView) itemView.findViewById(R.id.textContentUser);
         timeStamp = (TextView) itemView.findViewById(R.id.message_info_user);
         avatar = (CircleImageView) itemView.findViewById(R.id.avatar_img_user);
+        layout = (RelativeLayout) itemView.findViewById(R.id.user_message_layout);
     }
+
+    @Override
+    public TextView getTextContent() {
+        return txtContent;
+    }
+
+    @Override
+    public TextView getTimestamp() {
+        return timeStamp;
+    }
+
+    @Override
+    public CircleImageView getAvatar() {
+        return avatar;
+    }
+
+    @Override
+    public RelativeLayout getLayout() {
+        return layout;
+    }
+
+    @Override
+    public RecyclerView.ViewHolder getViewHolder() {
+        return this;
+    }
+
 }
 
-class ItemMessageFriendHolder extends RecyclerView.ViewHolder {
+class ItemMessageFriendHolder extends RecyclerView.ViewHolder implements MessageHolder {
     public TextView txtContent;
     public TextView timeStamp;
     public CircleImageView avatar;
     public MaterialDialog messageDialog;
+    public RelativeLayout layout;
 
     public ItemMessageFriendHolder(View itemView) {
         super(itemView);
         txtContent = (TextView) itemView.findViewById(R.id.textContentFriend);
-        timeStamp = (TextView) itemView.findViewById(R.id.message_info_user);
+        timeStamp = (TextView) itemView.findViewById(R.id.message_info_friend);
         avatar = (CircleImageView) itemView.findViewById(R.id.avatar_img_friend);
+        layout = (RelativeLayout) itemView.findViewById(R.id.friend_message_layout);
 
         avatar.setOnClickListener(click -> {
             if (messageDialog != null)
                 messageDialog.show();
         });
+    }
+
+    @Override
+    public TextView getTextContent() {
+        return txtContent;
+    }
+
+    @Override
+    public TextView getTimestamp() {
+        return timeStamp;
+    }
+
+    @Override
+    public CircleImageView getAvatar() {
+        return avatar;
+    }
+
+    @Override
+    public RelativeLayout getLayout() {
+        return layout;
+    }
+
+    @Override
+    public RecyclerView.ViewHolder getViewHolder() {
+        return this;
     }
 }

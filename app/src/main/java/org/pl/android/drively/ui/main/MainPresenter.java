@@ -2,12 +2,13 @@ package org.pl.android.drively.ui.main;
 
 import com.google.firebase.auth.FirebaseUser;
 
-import javax.inject.Inject;
-
-import io.reactivex.disposables.Disposable;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.injection.ConfigPersistent;
 import org.pl.android.drively.ui.base.BasePresenter;
+
+import javax.inject.Inject;
+
+import io.reactivex.disposables.Disposable;
 
 @ConfigPersistent
 public class MainPresenter extends BasePresenter<MainMvpView> {
@@ -42,7 +43,7 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
 
 
     public void setAppIntroShowed() {
-         mDataManager.getPreferencesHelper().setValue("firstStart",false);
+        mDataManager.getPreferencesHelper().setValue("firstStart", false);
     }
 
 

@@ -62,6 +62,7 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
+import org.pl.android.drively.BuildConfig;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.FourSquarePlace;
@@ -453,7 +454,11 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     public void onStart() {
         super.onStart();
         mMapView.onResume();
-        this.geoQuery.addGeoQueryEventListener(this);
+        try {
+            this.geoQuery.addGeoQueryEventListener(this);
+        } catch (Exception e) {
+            
+        }
     }
 
     @Override
@@ -688,7 +693,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         if (!eventsOnMap.containsKey(event.getId()) && event.getPlace() != null && event.getPlace().getGeoPoint() != null) {
             ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(), new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()), event.getTitle(), String.valueOf(event.getRank()), event.getHotspotType(), R.drawable.hotspot_24dp);
             eventsOnMap.put(event.getId(), clusterItemGoogleMap);
-            if(mClusterManager != null)
+            if (mClusterManager != null)
                 mClusterManager.addItem(clusterItemGoogleMap);
         }
     }
@@ -829,12 +834,24 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         sEventName = eventName;
         sEventCount = eventCount;
         latLngEnd = end;
-        Routing routing = new Routing.Builder()
-                .travelMode(Routing.TravelMode.DRIVING)
-                .withListener(this)
-                .waypoints(start, end)
-                .build();
-        routing.execute();
+        if (BuildConfig.DEBUG) {
+            Routing routing = new Routing.Builder()
+                    .travelMode(Routing.TravelMode.DRIVING)
+                    .withListener(this)
+                    .waypoints(start, end)
+                    .build();
+            routing.execute();
+        } else {
+            Routing routing = new Routing.Builder()
+                    .travelMode(Routing.TravelMode.DRIVING)
+                    .withListener(this)
+                    .waypoints(start, end)
+                    .key(BuildConfig.GOOGLE_DIRECTIONS_KEY)
+                    .build();
+            routing.execute();
+        }
+
+
     }
 
     private class ErrorHandler implements Consumer<Throwable> {

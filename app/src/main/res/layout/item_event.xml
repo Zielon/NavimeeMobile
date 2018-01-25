@@ -123,25 +123,6 @@
                 android:text="18:30"
                 android:textColor="@color/white" />
 
-            <ImageView
-                android:id="@+id/imageMaybe"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/viewTextTime"
-                android:paddingLeft="10dp"
-                android:src="@drawable/visibility_on_24dp" />
-
-            <TextView
-                android:id="@+id/viewTextMaybe"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_margin="1dp"
-                android:layout_toRightOf="@+id/imageMaybe"
-                android:paddingLeft="10dp"
-                android:text="18:30"
-                android:textColor="@color/white" />
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/addButton"

@@ -5,7 +5,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -16,6 +15,14 @@ public class FirebaseService {
     private FirebaseDatabase firebaseDatabase;
     private FirebaseAuth firebaseAuth;
     private FirebaseStorage firebaseStorage;
+
+    @Inject
+    public FirebaseService(FirebaseAuth firebaseAuth, FirebaseDatabase firebaseDatabase, FirebaseFirestore firebaseFirestore, FirebaseStorage firebaseStorage) {
+        this.firebaseDatabase = firebaseDatabase;
+        this.firebaseAuth = firebaseAuth;
+        this.firebaseFirestore = firebaseFirestore;
+        this.firebaseStorage = firebaseStorage;
+    }
 
     public FirebaseDatabase getFirebaseDatabase() {
         return firebaseDatabase;
@@ -31,13 +38,5 @@ public class FirebaseService {
 
     public FirebaseStorage getFirebaseStorage() {
         return firebaseStorage;
-    }
-
-    @Inject
-    public FirebaseService(FirebaseAuth firebaseAuth, FirebaseDatabase firebaseDatabase, FirebaseFirestore firebaseFirestore, FirebaseStorage firebaseStorage) {
-        this.firebaseDatabase = firebaseDatabase;
-        this.firebaseAuth = firebaseAuth;
-        this.firebaseFirestore = firebaseFirestore;
-        this.firebaseStorage = firebaseStorage;
     }
 }

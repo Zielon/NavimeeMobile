@@ -101,7 +101,7 @@ public class FriendChatService extends Service {
                             if (mapMark.get(friend.idRoom) != null && mapMark.get(friend.idRoom)) {
 //                                Toast.makeText(FriendChatService.this, friend.name + ": " + ((HashMap)dataSnapshot.getValue()).get("text"), Toast.LENGTH_SHORT).show();
                                 if (mapBitmap.get(friend.idRoom) == null) {
-                                    if (!friend.avatar.equals(Const.STR_DEFAULT_BASE64)) {
+                                    if (!friend.avatar.equals(Const.STR_DEFAULT_AVATAR)) {
                                         byte[] decodedString = Base64.decode(friend.avatar, Base64.DEFAULT);
                                         mapBitmap.put(friend.idRoom, BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length));
                                     } else {

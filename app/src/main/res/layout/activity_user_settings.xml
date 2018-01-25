@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <FrameLayout
         android:id="@+id/frame_container"
@@ -23,10 +23,10 @@
 
     <RelativeLayout
         android:id="@+id/avatar_layout"
-        android:layout_below="@+id/frame_container"
-        android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/frame_container"
+        android:layout_centerHorizontal="true">
 
         <agency.tango.android.avatarview.views.AvatarView
             android:id="@+id/avatar"
@@ -41,24 +41,24 @@
             android:id="@+id/avatar_change"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
             android:layout_below="@+id/avatar"
-            android:textSize="12sp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
+            android:text="@string/avatar_change"
+            android:textAlignment="center"
             android:textColor="@color/white"
-            android:text="@string/avatar_change" />
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/avatar_max_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
             android:layout_below="@+id/avatar_change"
-            android:textSize="9sp"
             android:layout_centerHorizontal="true"
+            android:text="@string/avatar_max_size"
+            android:textAlignment="center"
             android:textColor="@color/white"
-            android:text="@string/avatar_max_size" />
+            android:textSize="9sp" />
     </RelativeLayout>
 
 </RelativeLayout>

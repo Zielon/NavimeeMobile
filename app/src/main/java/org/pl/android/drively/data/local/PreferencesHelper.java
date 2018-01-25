@@ -3,26 +3,25 @@ package org.pl.android.drively.data.local;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.injection.ApplicationContext;
 import org.pl.android.drively.util.Const;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 @Singleton
 public class PreferencesHelper {
 
     public static final String PREF_FILE_NAME = "android_boilerplate_pref_file";
-
-    private final SharedPreferences mPref;
     private static String SHARE_USER_INFO = "userinfo";
     private static String SHARE_KEY_NAME = "name";
     private static String SHARE_KEY_EMAIL = "email";
     private static String SHARE_KEY_AVATA = "avatar";
     private static String SHARE_KEY_USER_ID = "id";
     private static String SHARE_KEY_UID = "uid";
-    
+    private final SharedPreferences mPref;
+
     @Inject
     public PreferencesHelper(@ApplicationContext Context context) {
         mPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
@@ -33,19 +32,19 @@ public class PreferencesHelper {
     }
 
     public boolean getValue(String name) {
-       return  mPref.getBoolean(name, true);
+        return mPref.getBoolean(name, true);
     }
 
     public boolean getValueWithDefaultFalse(String name) {
-        return  mPref.getBoolean(name, false);
+        return mPref.getBoolean(name, false);
     }
 
     public float getValueFloat(String name) {
-        return  mPref.getFloat(name, (float) 0.0);
+        return mPref.getFloat(name, (float) 0.0);
     }
 
     public String getValueString(String name) {
-        return  mPref.getString(name,"");
+        return mPref.getString(name, "");
     }
 
 
@@ -58,7 +57,6 @@ public class PreferencesHelper {
         //  Apply changes
         e.apply();
     }
-
 
 
     public void setValue(String name, String value) {
@@ -93,7 +91,7 @@ public class PreferencesHelper {
         e.apply();
     }
 
-    public User getUserInfo(){
+    public User getUserInfo() {
 
         String userName = mPref.getString(SHARE_KEY_NAME, "");
         String email = mPref.getString(SHARE_KEY_EMAIL, "");
@@ -110,7 +108,7 @@ public class PreferencesHelper {
         return user;
     }
 
-    public String getUID(){
+    public String getUID() {
         return mPref.getString(SHARE_KEY_UID, "");
     }
 }

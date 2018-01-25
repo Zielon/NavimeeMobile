@@ -112,7 +112,7 @@ public class FriendModelAdapter extends RecyclerView.Adapter<FriendModelAdapter.
 
         // TODO
         // set avatar
-        if (object.getAvatar().equals(Const.STR_DEFAULT_BASE64)) {
+        if (object.getAvatar().equals(Const.STR_DEFAULT_AVATAR)) {
             avatar.setImageResource(R.drawable.default_avatar);
         } else {
             FirebaseStorage.getInstance().getReference("AVATARS/" + object.getAvatar())

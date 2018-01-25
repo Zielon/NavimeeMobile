@@ -1,9 +1,10 @@
 package org.pl.android.drively.injection.component;
 
-import dagger.Component;
 import org.pl.android.drively.injection.ConfigPersistent;
 import org.pl.android.drively.injection.module.ActivityModule;
 import org.pl.android.drively.ui.base.BaseActivity;
+
+import dagger.Component;
 
 /**
  * A dagger component that will live during the lifecycle of an Activity but it won't

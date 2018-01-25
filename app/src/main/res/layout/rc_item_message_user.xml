@@ -1,48 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout1"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="5dp"
-    android:layout_marginTop="5dp">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/message_info_user"
+    <RelativeLayout
+        android:id="@+id/user_message_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:layout_centerHorizontal="true"
-        android:textSize="9dp"
-        android:textColor="@color/white"
-        android:text="MON AT 00:00" />
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/avatar_img_user"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginEnd="5dp"
-        android:layout_marginRight="5dp"
-        android:src="@drawable/default_avatar" />
+        <TextView
+            android:id="@+id/message_info_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="MON AT 00:00"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="9dp" />
 
-    <TextView
-        android:id="@+id/textContentUser"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginEnd="5dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="13dp"
-        android:layout_toLeftOf="@id/avatar_img_user"
-        android:layout_toStartOf="@id/avatar_img_user"
-        android:background="@drawable/rounded_corner1"
-        android:padding="10dp"
-        android:text="a"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#ffffff" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/avatar_img_user"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/default_avatar" />
+
+        <TextView
+            android:id="@+id/textContentUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="5dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_toLeftOf="@id/avatar_img_user"
+            android:layout_toStartOf="@id/avatar_img_user"
+            android:background="@drawable/rounded_corner1"
+            android:padding="10dp"
+            android:text="a"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#ffffff" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

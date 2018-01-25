@@ -14,6 +14,6 @@ public class DisplayTextOnViewAction implements Consumer<String> {
 
     @Override
     public void accept(String s) throws Exception {
-        Timber.d("location "+s);
+        Timber.d("location " + s);
     }
 }

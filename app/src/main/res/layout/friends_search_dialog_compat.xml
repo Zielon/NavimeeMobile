@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="top"
@@ -9,8 +8,8 @@
     <View
         android:id="@+id/dummy_background"
         android:layout_width="match_parent"
-        android:background="@android:color/transparent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,9 +28,9 @@
             android:maxLines="1"
             android:paddingRight="12dp"
             android:paddingTop="16dp"
-            android:textSize="16sp"
             android:textColor="@color/white"
-            android:textStyle="bold"/>
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -48,9 +47,9 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="12dp"
                 android:layout_weight="1"
-                android:textColor="@color/white"
                 android:background="@color/primary_dark"
-                android:textSize="14sp"/>
+                android:textColor="@color/white"
+                android:textSize="14sp" />
 
             <android.support.v7.widget.AppCompatImageView
                 android:layout_width="24dp"
@@ -58,15 +57,15 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="16dp"
-                android:tint="@color/white"
-                android:src="@drawable/search_dialog_ic_search"/>
+                android:src="@drawable/search_dialog_ic_search"
+                android:tint="@color/white" />
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.2dp"
             android:layout_marginBottom="5dp"
-            android:background="@color/white"/>
+            android:background="@color/white" />
 
         <ProgressBar
             android:id="@+id/progress"
@@ -76,7 +75,7 @@
             android:layout_marginBottom="12dp"
             android:layout_marginTop="12dp"
             android:backgroundTint="@color/white"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_items"
@@ -84,8 +83,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_marginBottom="4dp"
-            android:fadingEdgeLength="4dp"
             android:background="@color/primary_dark"
-            android:requiresFadingEdge="vertical"/>
+            android:fadingEdgeLength="4dp"
+            android:requiresFadingEdge="vertical" />
     </LinearLayout>
 </FrameLayout>

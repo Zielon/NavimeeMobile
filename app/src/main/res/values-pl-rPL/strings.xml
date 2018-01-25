@@ -97,4 +97,5 @@
     <string name="create_group_failure">Błąd podczas tworzenia grupy</string>
     <string name="delete_group_failure">Błąd podczas usuwania grupy</string>
     <string name="get_all_friend">Pobieram użytkowników...</string>
+    <string name="group_leaving">Opuszczam grupę....</string>
 </resources>

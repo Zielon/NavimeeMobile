@@ -3,9 +3,10 @@ package org.pl.android.drively.injection.module;
 import android.app.Activity;
 import android.content.Context;
 
+import org.pl.android.drively.injection.ActivityContext;
+
 import dagger.Module;
 import dagger.Provides;
-import org.pl.android.drively.injection.ActivityContext;
 
 @Module
 public class ActivityModule {

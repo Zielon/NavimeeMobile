@@ -38,7 +38,7 @@ public class FourSquarePlace implements Serializable {
     public FourSquarePlace() {
     }
 
-    public FourSquarePlace(String id, String name, double rating, int likesCount, String likesSummary, int statsCheckinsCount, int statsUsersCount, int statsTipCount, int statsVisitsCount, String locationAddress, String locationCrossStreet, String locationPostalCode, String locationCity, String locationCountry, double locationLat, double locationLng, String popularStatus, boolean popularIsOpen, boolean popularIsLocalHoliday,Const.HotSpotType hotspotType, String mainCategory) {
+    public FourSquarePlace(String id, String name, double rating, int likesCount, String likesSummary, int statsCheckinsCount, int statsUsersCount, int statsTipCount, int statsVisitsCount, String locationAddress, String locationCrossStreet, String locationPostalCode, String locationCity, String locationCountry, double locationLat, double locationLng, String popularStatus, boolean popularIsOpen, boolean popularIsLocalHoliday, Const.HotSpotType hotspotType, String mainCategory) {
         this.id = id;
         this.name = name;
         this.rating = rating;

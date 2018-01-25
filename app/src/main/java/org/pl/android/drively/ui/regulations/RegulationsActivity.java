@@ -1,14 +1,12 @@
 package org.pl.android.drively.ui.regulations;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.github.barteksc.pdfviewer.PDFView;
 
 import org.pl.android.drively.R;
-
-import java.io.IOException;
 
 public class RegulationsActivity extends Activity {
 
