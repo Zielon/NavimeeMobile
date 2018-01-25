@@ -212,8 +212,8 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         boolean top = previous != null && next != null && !next.idSender.equals(current.idSender) && previous.idSender.equals(current.idSender);
         boolean bottom = next != null && previous != null && !previous.idSender.equals(current.idSender) && next.idSender.equals(current.idSender);
 
-        boolean last = position == messages.size() - 1 && next.idSender.equals(current.idSender);
-        boolean first = position == 0 && previous.idSender.equals(current.idSender);
+        boolean last = next != null && position == messages.size() - 1 && next.idSender.equals(current.idSender);
+        boolean first = previous != null && position == 0 && previous.idSender.equals(current.idSender);
 
         if (between) {
             holder.getAvatar().setVisibility(View.INVISIBLE);
