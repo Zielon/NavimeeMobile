@@ -454,7 +454,11 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     public void onStart() {
         super.onStart();
         mMapView.onResume();
-        this.geoQuery.addGeoQueryEventListener(this);
+        try {
+            this.geoQuery.addGeoQueryEventListener(this);
+        } catch (Exception e) {
+            
+        }
     }
 
     @Override
