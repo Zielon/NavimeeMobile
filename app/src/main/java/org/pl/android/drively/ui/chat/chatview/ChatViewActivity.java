@@ -183,17 +183,20 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.positionHelper = positionHelper;
     }
 
-    public static void setMargins(RelativeLayout layout, int l, int t, int r, int b) {
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) (layout.getLayoutParams());
-        params.setMargins(0, 0, 0, 0);
-        layout.setLayoutParams(params);
+    public static void setMargins(RelativeLayout layout, Integer  l, Integer  t, Integer  r, Integer  b) {
+        ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) layout.getLayoutParams();
+        marginLayoutParams.setMargins(
+                l != null ? l : marginLayoutParams.leftMargin,
+                t != null ? t : marginLayoutParams.topMargin,
+                r != null ? r : marginLayoutParams.rightMargin,
+                b != null ? b : marginLayoutParams.bottomMargin);
+        layout.setLayoutParams(marginLayoutParams);
     }
 
     public static void resetHolder(MessageHolder holder) {
         if (holder == null) return;
         holder.getTimestamp().setVisibility(View.VISIBLE);
         holder.getAvatar().setVisibility(View.VISIBLE);
-        setMargins(holder.getLayout(), 0, 10, 0, 10);
     }
 
     public void groupMessages(int position, MessageHolder holder) {
@@ -207,22 +210,27 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         Message next = messages.size() > 1 && position > 0 ? messages.get(position - 1) : null;
         Message previous = position + 1 < messages.size() ? messages.get(position + 1) : null;
 
-        // On the app screen
-        boolean between = previous != null && next != null && previous.idSender.equals(current.idSender) && next.idSender.equals(current.idSender);
-        boolean top = previous != null && next != null && !next.idSender.equals(current.idSender) && previous.idSender.equals(current.idSender);
-        boolean bottom = next != null && previous != null && !previous.idSender.equals(current.idSender) && next.idSender.equals(current.idSender);
+        // The screen oriented position
+        boolean BETWEEN = previous != null && next != null && previous.idSender.equals(current.idSender) && next.idSender.equals(current.idSender);
+        boolean TOP = previous != null && next != null && !next.idSender.equals(current.idSender) && previous.idSender.equals(current.idSender);
+        boolean BOTTOM = next != null && previous != null && !previous.idSender.equals(current.idSender) && next.idSender.equals(current.idSender);
+        boolean LAST = next != null && position == messages.size() - 1 && next.idSender.equals(current.idSender);
+        boolean FIRST = previous != null && position == 0 && previous.idSender.equals(current.idSender);
 
-        boolean last = next != null && position == messages.size() - 1 && next.idSender.equals(current.idSender);
-        boolean first = previous != null && position == 0 && previous.idSender.equals(current.idSender);
-
-        if (between) {
+        if (BETWEEN) {
             holder.getAvatar().setVisibility(View.INVISIBLE);
-            holder.getTimestamp().setVisibility(View.INVISIBLE);
+            holder.getTimestamp().setVisibility(View.GONE);
+            setMargins(holder.getLayout(), null, 0, null, 0);
         }
 
-        if (top || first) holder.getAvatar().setVisibility(View.INVISIBLE);
-        if (bottom || last) holder.getTimestamp().setVisibility(View.INVISIBLE);
-        if (between || top || bottom || last || first) setMargins(holder.getLayout(), 0, 0, 0, 0);
+        if (TOP || FIRST) {
+            holder.getAvatar().setVisibility(View.INVISIBLE);
+            setMargins(holder.getLayout(), null, 0, null, 0);
+        }
+        if (BOTTOM || LAST){
+            holder.getTimestamp().setVisibility(View.GONE);
+            setMargins(holder.getLayout(), null, 0, null, 10);
+        }
     }
 
     @Override
