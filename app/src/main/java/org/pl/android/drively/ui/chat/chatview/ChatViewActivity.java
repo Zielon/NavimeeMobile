@@ -255,17 +255,21 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             messageHolder.txtContent.setText(message.text);
             Bitmap currentAvatar = bitmapAvatars.get(message.idSender);
 
-            messageHolder.messageDialog = new MaterialDialog.Builder(context).customView(R.layout.friend_message_details, true).build();
+            messageHolder.messageDialog = new MaterialDialog.Builder(context)
+                    .backgroundColorRes(R.color.primary)
+                    .customView(R.layout.friend_message_details, true)
+                    .build();
+
             View view = messageHolder.messageDialog.getView();
             String time = new SimpleDateFormat("EEE, MMM d, 'at' HH:mm").format(message.timestamp).toUpperCase();
 
             ((TextView) view.findViewById(R.id.message_time)).setText(time);
             ((TextView) view.findViewById(R.id.name)).setText(message.nameSender);
             ((TextView) view.findViewById(R.id.email)).setText(message.emailSender);
-            ((CircleImageView) view.findViewById(R.id.avatar)).setImageDrawable(context.getResources().getDrawable(R.drawable.default_avatar));
 
             if (currentAvatar != null) {
                 messageHolder.avatar.setImageBitmap(currentAvatar);
+                ((CircleImageView) view.findViewById(R.id.avatar)).setImageBitmap(currentAvatar);
             } else {
                 final String id = message.idSender;
                 if (bitmapAvatarDB.get(id) == null) {
@@ -372,6 +376,11 @@ class ItemMessageFriendHolder extends RecyclerView.ViewHolder implements Message
         layout = (RelativeLayout) itemView.findViewById(R.id.friend_message_layout);
 
         avatar.setOnClickListener(click -> {
+            if (messageDialog != null)
+                messageDialog.show();
+        });
+
+        txtContent.setOnClickListener(click -> {
             if (messageDialog != null)
                 messageDialog.show();
         });
