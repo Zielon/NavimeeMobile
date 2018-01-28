@@ -3,11 +3,9 @@ package org.pl.android.drively.ui.chat.chatview;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,11 +16,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.chat.Conversation;
@@ -174,7 +167,7 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.positionHelper = positionHelper;
     }
 
-    public static void setMargins(RelativeLayout layout, Integer  l, Integer  t, Integer  r, Integer  b) {
+    public static void setMargins(RelativeLayout layout, Integer l, Integer t, Integer r, Integer b) {
         ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) layout.getLayoutParams();
         marginLayoutParams.setMargins(
                 l != null ? l : marginLayoutParams.leftMargin,
@@ -218,7 +211,7 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             holder.getAvatar().setVisibility(View.INVISIBLE);
             setMargins(holder.getLayout(), null, 0, null, 0);
         }
-        if (BOTTOM || LAST){
+        if (BOTTOM || LAST) {
             holder.getTimestamp().setVisibility(View.GONE);
             setMargins(holder.getLayout(), null, 0, null, 10);
         }
@@ -265,7 +258,7 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 ((CircleImageView) view.findViewById(R.id.avatar)).setImageBitmap(currentAvatar);
             } else {
                 ((CircleImageView) view.findViewById(R.id.avatar)).setImageResource(R.drawable.default_avatar);
-        }
+            }
         } else if (holder instanceof ItemMessageUserHolder) {
             ItemMessageUserHolder messageHolder = ((ItemMessageUserHolder) holder);
             String time = new SimpleDateFormat("EEE 'AT' HH:mm").format(message.timestamp).toUpperCase();

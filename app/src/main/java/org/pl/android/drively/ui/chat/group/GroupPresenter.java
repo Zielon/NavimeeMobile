@@ -25,7 +25,6 @@ import org.pl.android.drively.injection.ActivityContext;
 import org.pl.android.drively.ui.base.BasePresenter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
@@ -35,16 +34,12 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-/**
- * Created by Wojtek on 2018-01-11.
- */
 public class GroupPresenter extends BasePresenter<GroupMvpView> {
 
     private final DataManager mDataManager;
 
     private ListenerRegistration mListener;
     private Context mContext;
-
 
     @Inject
     public GroupPresenter(DataManager dataManager, @ActivityContext Context context) {
@@ -89,36 +84,36 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
     public void getGroupInfo(int groupIndex, String id) {
         mDataManager.getFirebaseService().getFirebaseFirestore().collection("GROUP").document(id)
                 .get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document != null && document.exists()) {
-                            Room room = new Room();
-                            room.groupInfo.put("admin", task.getResult().getString("admin"));
-                            room.groupInfo.put("name", task.getResult().getString("name"));
-                            mDataManager.getFirebaseService().getFirebaseFirestore().collection("GROUP")
-                                    .document(id).collection("MEMBERS")
-                                    .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        for (DocumentSnapshot document : task.getResult()) {
-                                            room.member.add(document.getId());
-                                        }
-                                        if (getMvpView() != null) {
-                                            getMvpView().setGroupInfo(groupIndex, room);
-                                        }
-                                    } else {
-                                        Timber.w("Error geting document");
-                                    }
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document != null && document.exists()) {
+                    Room room = new Room();
+                    room.groupInfo.put("admin", task.getResult().getString("admin"));
+                    room.groupInfo.put("name", task.getResult().getString("name"));
+                    mDataManager.getFirebaseService().getFirebaseFirestore().collection("GROUP")
+                            .document(id).collection("MEMBERS")
+                            .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (DocumentSnapshot document : task.getResult()) {
+                                    room.member.add(document.getId());
                                 }
-                            });
-                        } else {
-                            Timber.w("Error geting document");
+                                if (getMvpView() != null) {
+                                    getMvpView().setGroupInfo(groupIndex, room);
+                                }
+                            } else {
+                                Timber.w("Error geting document");
+                            }
                         }
-                    } else {
-                        Timber.w("Error geting document");
-                    }
-                });
+                    });
+                } else {
+                    Timber.w("Error geting document");
+                }
+            } else {
+                Timber.w("Error geting document");
+            }
+        });
     }
 
 

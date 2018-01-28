@@ -74,6 +74,8 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     FriendsPresenter mFriendsPresenter;
     @BindView(R.id.fab_friends)
     FloatingActionButton fabFriendsButton;
+    Friend mUserInfo;
+    String mIdFriend;
     private RecyclerView recyclerListFrends;
     private ListFriendsAdapter adapter;
     private ListFriend dataListFriend = null;
@@ -84,8 +86,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private LovelyProgressDialog dialogWait;
     private View layout;
     private BroadcastReceiver deleteFriendReceiver;
-    Friend mUserInfo;
-    String mIdFriend;
 
     public FriendsFragment() {
         onClickFloatButton = new FragFriendClickFloatButton();
@@ -405,8 +405,8 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                                                     dialog.dismiss();
                                                 }
                                             });
-                                    }
-                                });
+                                }
+                            });
 
             BaseFilter apiFilter = new BaseFilter() {
                 @Override

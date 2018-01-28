@@ -275,7 +275,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                     getMvpView().addFriendIsNotIdFriend();
                 }
             }
-            })
+        })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
@@ -303,7 +303,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            if(task.getResult().size() == 0) {
+                            if (task.getResult().size() == 0) {
                                 if (getMvpView() != null) {
                                     getMvpView().onFailureDeleteFriend();
                                 }
@@ -349,7 +349,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            if(task.getResult().size() == 0) {
+                            if (task.getResult().size() == 0) {
                                 if (getMvpView() != null) {
                                     getMvpView().onFailureDeleteFriend();
                                 }
@@ -398,7 +398,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
 
     public void getUserAvatar() {
         String avatarPath = mDataManager.getPreferencesHelper().getUserInfo().getAvatar();
-        if(avatarPath.equals(Const.STR_DEFAULT_AVATAR)) {
+        if (avatarPath.equals(Const.STR_DEFAULT_AVATAR)) {
             ChatViewActivity.bitmapAvatarUser = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.default_avatar);
         } else {
             mDataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + avatarPath)
@@ -407,8 +407,8 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                         Bitmap src = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                         ChatViewActivity.bitmapAvatarUser = src;
                     }).addOnFailureListener(exception -> {
-                        ChatViewActivity.bitmapAvatarUser = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.default_avatar);
-                    });
+                ChatViewActivity.bitmapAvatarUser = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.default_avatar);
+            });
         }
     }
 }
