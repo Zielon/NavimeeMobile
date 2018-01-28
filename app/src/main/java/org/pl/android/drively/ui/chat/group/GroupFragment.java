@@ -378,12 +378,8 @@ class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 for (String id : listGroup.get(position).member) {
                     idFriend.add(id);
                     String avatar = listFriend.getAvataById(id);
-                    if (!avatar.equals(Const.STR_DEFAULT_AVATAR)) {
-                        fragment.mGroupPresenter.getStorageReference(avatar)
-                                .getBytes(Const.ONE_MEGABYTE)
-                                .addOnSuccessListener(bytes -> {
-                                    ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-                                }).addOnFailureListener(exception -> ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar)));
+                    if (!avatar.equals(Const.STR_DEFAULT_AVATAR) && listFriend.getById(id) != null && listFriend.getById(id).avatarBytes != null) {
+                        ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(listFriend.getById(id).avatarBytes, 0, listFriend.getById(id).avatarBytes.length));
                     } else if (avatar.equals(Const.STR_DEFAULT_AVATAR)) {
                         ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
                     } else {

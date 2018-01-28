@@ -29,7 +29,4 @@ public interface FriendsMvpView extends MvpView {
 
     void onSuccessDeleteFriendReference(String idFriend);
 
-    void onSetUserAvatarSuccess(Bitmap src);
-
-    void onSetUserAvatarFailure();
 }

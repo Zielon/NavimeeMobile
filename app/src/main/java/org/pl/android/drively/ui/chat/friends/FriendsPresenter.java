@@ -25,6 +25,7 @@ import org.pl.android.drively.data.model.chat.Friend;
 import org.pl.android.drively.data.model.chat.ListFriend;
 import org.pl.android.drively.injection.ActivityContext;
 import org.pl.android.drively.ui.base.BasePresenter;
+import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.ui.chat.friendsearch.FriendModel;
 import org.pl.android.drively.ui.chat.friendsearch.FriendSearchDialogCompat;
 import org.pl.android.drively.util.Const;
@@ -391,13 +392,9 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                 .getBytes(Const.ONE_MEGABYTE)
                 .addOnSuccessListener(bytes -> {
                     Bitmap src = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    if (getMvpView() != null) {
-                        getMvpView().onSetUserAvatarSuccess(src);
-                    }
+                    ChatViewActivity.bitmapAvatarUser = src;
                 }).addOnFailureListener(exception -> {
-                    if (getMvpView() != null) {
-                        getMvpView().onSetUserAvatarFailure();
-                    }
+                     ChatViewActivity.bitmapAvatarUser  = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.default_avatar);
         });
     }
 }

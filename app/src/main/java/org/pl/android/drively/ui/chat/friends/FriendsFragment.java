@@ -301,16 +301,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         getContext().sendBroadcast(intentDeleted);
     }
 
-    @Override
-    public void onSetUserAvatarSuccess(Bitmap src) {
-        ChatViewActivity.bitmapAvatarUser = src;
-    }
-
-    @Override
-    public void onSetUserAvatarFailure() {
-        ChatViewActivity.bitmapAvatarUser  = BitmapFactory.decodeResource(getResources(), R.drawable.default_avatar);
-    }
-
     private void getListFriendUId() {
         mFriendsPresenter.getListFriendUId();
     }
