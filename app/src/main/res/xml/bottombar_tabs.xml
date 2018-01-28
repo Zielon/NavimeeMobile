@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tabs>
     <tab
-        id="@+id/tab_hotspot"
-        icon="@drawable/ic_action_whatshot"
         activeColor="@color/settings_switch_color"
+        icon="@drawable/ic_action_whatshot"
+        id="@+id/tab_hotspot"
         inActiveColor="@color/colorLine"
         title="@string/hotspot" />
     <tab
-        id="@+id/tab_events"
-        icon="@drawable/ic_action_place"
         activeColor="@color/settings_switch_color"
+        icon="@drawable/ic_action_place"
+        id="@+id/tab_events"
         inActiveColor="@color/colorLine"
         title="@string/events" />
     <tab
-        id="@+id/tab_day_schedule"
-        icon="@drawable/ic_action_today"
         activeColor="@color/settings_switch_color"
+        icon="@drawable/ic_action_today"
+        id="@+id/tab_day_schedule"
         inActiveColor="@color/colorLine"
         title="@string/day_schedule" />
 
     <tab
-        id="@+id/tab_chat"
-        icon="@drawable/ic_action_people"
         activeColor="@color/settings_switch_color"
+        icon="@drawable/ic_action_people"
+        id="@+id/tab_chat"
         inActiveColor="@color/colorLine"
         title="@string/chat" />
-
 
 
 </tabs>

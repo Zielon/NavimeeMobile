@@ -9,8 +9,8 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar_layout"
         android:layout_width="match_parent"
-        app:elevation="0dp"
-        android:layout_height="?attr/actionBarSize">
+        android:layout_height="?attr/actionBarSize"
+        app:elevation="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -21,12 +21,12 @@
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:tabGravity="fill"
-                app:tabMode="fixed"
                 android:background="@color/primary_dark"
                 android:minHeight="?attr/actionBarSize"
+                app:tabGravity="fill"
                 app:tabIndicatorColor="@color/white"
-                app:tabIndicatorHeight="3dp"/>
+                app:tabIndicatorHeight="3dp"
+                app:tabMode="fixed" />
 
         </LinearLayout>
     </android.support.design.widget.AppBarLayout>

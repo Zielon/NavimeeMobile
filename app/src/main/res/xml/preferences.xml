@@ -16,11 +16,11 @@
         android:title="Second level">
         <PreferenceCategory android:title="Switch preference">
             <CheckBoxPreference
-                android:widgetLayout="@layout/mp_preference_switch"
                 android:defaultValue="true"
                 android:key="second_example"
                 android:summary="This switch needs some work on pre-Lollipop."
-                android:title="Destroy the galaxy" />
+                android:title="Destroy the galaxy"
+                android:widgetLayout="@layout/mp_preference_switch" />
         </PreferenceCategory>
 
         <PreferenceScreen
@@ -49,20 +49,20 @@
                 <CheckBoxPreference
                     android:defaultValue="true"
                     android:key="third_example_2"
-                    android:title="Are you lost?"
-                    android:summary="Go back!"/>
+                    android:summary="Go back!"
+                    android:title="Are you lost?" />
             </PreferenceCategory>
         </PreferenceScreen>
     </PreferenceScreen>
 
     <PreferenceScreen
+        android:key="another_activity"
         android:summary="Click to open the about activity"
-        android:title="About"
-        android:key="another_activity">
-        <intent android:action="android.intent.action.ABOUT_ACTIVITY"/>
+        android:title="About">
+        <intent android:action="android.intent.action.ABOUT_ACTIVITY" />
     </PreferenceScreen>
 
-    <Preference android:title="@string/logout"
+    <Preference
         android:key="logout"
-       />
+        android:title="@string/logout" />
 </PreferenceScreen>

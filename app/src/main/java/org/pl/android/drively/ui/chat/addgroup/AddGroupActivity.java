@@ -197,12 +197,7 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView {
         new LovelyInfoDialog(AddGroupActivity.this) {
             @Override
             public LovelyInfoDialog setConfirmButtonText(String text) {
-                findView(com.yarolegovich.lovelydialog.R.id.ld_btn_confirm).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dismiss();
-                    }
-                });
+                findView(com.yarolegovich.lovelydialog.R.id.ld_btn_confirm).setOnClickListener(view -> dismiss());
                 return super.setConfirmButtonText(text);
             }
         }
@@ -227,12 +222,7 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView {
         new LovelyInfoDialog(AddGroupActivity.this) {
             @Override
             public LovelyInfoDialog setConfirmButtonText(String text) {
-                findView(com.yarolegovich.lovelydialog.R.id.ld_btn_confirm).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dismiss();
-                    }
-                });
+                findView(com.yarolegovich.lovelydialog.R.id.ld_btn_confirm).setOnClickListener(view -> dismiss());
                 return super.setConfirmButtonText(text);
             }
         }
@@ -256,12 +246,7 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView {
         new LovelyInfoDialog(AddGroupActivity.this) {
             @Override
             public LovelyInfoDialog setConfirmButtonText(String text) {
-                findView(com.yarolegovich.lovelydialog.R.id.ld_btn_confirm).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dismiss();
-                    }
-                });
+                findView(com.yarolegovich.lovelydialog.R.id.ld_btn_confirm).setOnClickListener(view -> dismiss());
                 return super.setConfirmButtonText(text);
             }
         }

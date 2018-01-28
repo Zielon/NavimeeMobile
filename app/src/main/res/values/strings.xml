@@ -112,7 +112,7 @@
     <string name="email_not_valid">Email not valid</string>
     <string name="not_admin">Ви не адміністратор</string>
     <string name="admin_cannot_leave">Admin cannot leave group</string>
-    <string name="deleted_group">Deleted group</string>
+    <string name="deleted_group">The group has been deleted</string>
     <string name="delete_group_cannot_right_now">Cannot delete group right now, please try again.</string>
     <string name="cannot_connect_with_server">Cannot connect server</string>
     <string name="error_during_leaveing_group">Error occurred during leaving group</string>
