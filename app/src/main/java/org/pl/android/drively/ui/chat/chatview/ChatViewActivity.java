@@ -56,7 +56,6 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
     public static final int VIEW_TYPE_FRIEND_MESSAGE = 1;
     public static HashMap<String, Bitmap> bitmapAvataFriend;
     public static Bitmap bitmapAvatarUser;
-    public Bitmap bitmapAvataUser;
     public String UID;
     @Inject
     ChatViewPresenter mChatViewPresenter;
