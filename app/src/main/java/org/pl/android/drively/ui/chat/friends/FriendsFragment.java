@@ -48,6 +48,7 @@ import org.pl.android.drively.util.Const;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -236,6 +237,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         } else {
             listFriendID.add(mIdFriend);
             dataListFriend.getListFriend().add(mUserInfo);
+            Collections.sort(dataListFriend.getListFriend());
             FriendDB.getInstance(getContext()).addFriend(mUserInfo);
             adapter.notifyDataSetChanged();
             dialogWait.dismiss();
@@ -326,6 +328,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private void getAllFriendInfo(final int index) {
         if (index == listFriendID.size()) {
             //save list friend
+            Collections.sort(dataListFriend.getListFriend());
             adapter.notifyDataSetChanged();
             dialogFindAllFriend.dismiss();
             mSwipeRefreshLayout.setRefreshing(false);
