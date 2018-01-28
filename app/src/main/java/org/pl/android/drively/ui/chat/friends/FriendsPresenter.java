@@ -2,6 +2,8 @@ package org.pl.android.drively.ui.chat.friends;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -16,6 +18,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
+import org.pl.android.drively.R;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.chat.ChatUser;
 import org.pl.android.drively.data.model.chat.Friend;
@@ -187,9 +190,24 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
             if (snapshot != null && snapshot.exists()) {
                 Friend friend = snapshot.toObject(Friend.class);
                 friend.idRoom = friend.id.compareTo(getId()) > 0 ? (getId() + friend.id).hashCode() + "" : "" + (friend.id + getId()).hashCode();
-                if (getMvpView() != null) {
-                    getMvpView().friendInfoFound(index, friend);
-                }
+                getStorageReference(friend.avatar)
+                        .getBytes(Const.ONE_MEGABYTE)
+                        .addOnSuccessListener(bytes -> {
+                            friend.avatarBytes = bytes;
+                            if (getMvpView() != null) {
+                                getMvpView().friendInfoFound(index, friend);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                if (getMvpView() != null) {
+                                    getMvpView().friendInfoFound(index, friend);
+                                }
+                            }
+                        });
+
+
             }
         });
     }
@@ -256,7 +274,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                     getMvpView().addFriendIsNotIdFriend();
                 }
             }
-        })
+            })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
@@ -365,5 +383,21 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
 
     public StorageReference getStorageReference(String avatar) {
         return mDataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + avatar);
+    }
+
+    public void getUserAvatar() {
+        String avatarPath = mDataManager.getPreferencesHelper().getUserInfo().getAvatar();
+        mDataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/"+avatarPath)
+                .getBytes(Const.ONE_MEGABYTE)
+                .addOnSuccessListener(bytes -> {
+                    Bitmap src = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    if (getMvpView() != null) {
+                        getMvpView().onSetUserAvatarSuccess(src);
+                    }
+                }).addOnFailureListener(exception -> {
+                    if (getMvpView() != null) {
+                        getMvpView().onSetUserAvatarFailure();
+                    }
+        });
     }
 }

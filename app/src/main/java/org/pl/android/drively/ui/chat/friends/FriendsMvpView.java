@@ -1,5 +1,7 @@
 package org.pl.android.drively.ui.chat.friends;
 
+import android.graphics.Bitmap;
+
 import org.pl.android.drively.data.model.chat.Friend;
 import org.pl.android.drively.ui.base.MvpView;
 
@@ -26,4 +28,8 @@ public interface FriendsMvpView extends MvpView {
     void onFailureDeleteFriend();
 
     void onSuccessDeleteFriendReference(String idFriend);
+
+    void onSetUserAvatarSuccess(Bitmap src);
+
+    void onSetUserAvatarFailure();
 }

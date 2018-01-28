@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -87,7 +89,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mSwipeRefreshLayout.setOnRefreshListener(this);
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
         recyclerListGroups.setLayoutManager(layoutManager);
-        adapter = new ListGroupsAdapter(getContext(), listGroup);
+        adapter = new ListGroupsAdapter(getContext(), listGroup,this);
         recyclerListGroups.setAdapter(adapter);
         onClickFloatButton = new FragGroupClickFloatButton();
         progressDialog = new LovelyProgressDialog(getContext())
@@ -335,10 +337,12 @@ class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static ListFriend listFriend = null;
     private ArrayList<Group> listGroup;
     private Context context;
+    private GroupFragment fragment;
 
-    public ListGroupsAdapter(Context context, ArrayList<Group> listGroup) {
+    public ListGroupsAdapter(Context context, ArrayList<Group> listGroup, GroupFragment fragment) {
         this.context = context;
         this.listGroup = listGroup;
+        this.fragment = fragment;
     }
 
     @Override
@@ -375,9 +379,11 @@ class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     idFriend.add(id);
                     String avatar = listFriend.getAvataById(id);
                     if (!avatar.equals(Const.STR_DEFAULT_AVATAR)) {
-/*                        byte[] decodedString = Base64.decode(avatar, Base64.DEFAULT);
-                        ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length));*/
-                        ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
+                        fragment.mGroupPresenter.getStorageReference(avatar)
+                                .getBytes(Const.ONE_MEGABYTE)
+                                .addOnSuccessListener(bytes -> {
+                                    ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                                }).addOnFailureListener(exception -> ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar)));
                     } else if (avatar.equals(Const.STR_DEFAULT_AVATAR)) {
                         ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
                     } else {

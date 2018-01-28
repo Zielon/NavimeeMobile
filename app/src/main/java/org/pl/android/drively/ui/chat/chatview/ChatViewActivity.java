@@ -55,6 +55,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
     public static final int VIEW_TYPE_USER_MESSAGE = 0;
     public static final int VIEW_TYPE_FRIEND_MESSAGE = 1;
     public static HashMap<String, Bitmap> bitmapAvataFriend;
+    public static Bitmap bitmapAvatarUser;
     public Bitmap bitmapAvataUser;
     public String UID;
     @Inject
@@ -83,13 +84,6 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         btnSend = (ImageButton) findViewById(R.id.btnSend);
         btnSend.setOnClickListener(this);
 
-        String base64AvataUser = "default";// SharedPreferenceHelper.getInstance(this).getUserInfo().avatar;
-        if (!base64AvataUser.equals(Const.STR_DEFAULT_AVATAR)) {
-            byte[] decodedString = Base64.decode(base64AvataUser, Base64.DEFAULT);
-            bitmapAvataUser = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        } else {
-            bitmapAvataUser = null;
-        }
 
         editWriteMessage = (EditText) findViewById(R.id.editWriteMessage);
         if (idFriend != null && nameFriend != null) {
@@ -102,7 +96,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
                     conversation,
                     new RecyclerViewPositionHelper(recyclerChat),
                     bitmapAvataFriend,
-                    bitmapAvataUser,
+                    bitmapAvatarUser,
                     mChatViewPresenter.getId());
 
             mChatViewPresenter.setMessageListener(roomId);
@@ -301,9 +295,8 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             String time = new SimpleDateFormat("EEE 'AT' HH:mm").format(message.timestamp).toUpperCase();
             messageHolder.txtContent.setText(message.text);
             messageHolder.timeStamp.setText(time);
-            Bitmap currentAvatar = bitmapAvatars.get(message.idSender);
-            if (currentAvatar != null)
-                messageHolder.avatar.setImageBitmap(currentAvatar);
+            if (bitmapAvataUser != null)
+                messageHolder.avatar.setImageBitmap(bitmapAvataUser);
         }
 
         groupMessages(position, (MessageHolder) holder);

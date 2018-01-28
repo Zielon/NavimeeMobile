@@ -4,6 +4,7 @@ public class Friend extends ChatUser {
 
     public String id;
     public String idRoom;
+    public byte[] avatarBytes;
 
     @Override
     public boolean equals(Object o) {
