@@ -258,6 +258,8 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((TextView) view.findViewById(R.id.name)).setText(message.nameSender);
             ((TextView) view.findViewById(R.id.email)).setText(message.emailSender);
 
+            messageHolder.timeStamp.setText(new SimpleDateFormat("EEE 'AT' HH:mm").format(message.timestamp).toUpperCase());
+
             if (currentAvatar != null) {
                 messageHolder.avatar.setImageBitmap(currentAvatar);
                 ((CircleImageView) view.findViewById(R.id.avatar)).setImageBitmap(currentAvatar);
