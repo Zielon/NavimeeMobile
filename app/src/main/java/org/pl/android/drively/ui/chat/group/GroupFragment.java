@@ -4,15 +4,15 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.content.res.Resources;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -340,6 +340,9 @@ class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
     private GroupFragment fragment;
 
+    private static final String DRIVELY_GROUP_ID = "0";
+    private static final String GENERAL_GROUP_ID = "1";
+
     public ListGroupsAdapter(Context context, ArrayList<Group> listGroup, GroupFragment fragment) {
         this.context = context;
         this.listGroup = listGroup;
@@ -353,45 +356,52 @@ class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        final String groupName = listGroup.get(position).groupInfo.get("name");
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
+        final Group group = listGroup.get(position);
+        final String groupName = group.groupInfo.get("name");
+        ItemGroupViewHolder holder = ((ItemGroupViewHolder) viewHolder);
+
         if (groupName != null && groupName.length() > 0) {
-            ((ItemGroupViewHolder) holder).txtGroupName.setText(groupName);
-            ((ItemGroupViewHolder) holder).iconGroup.setText((groupName.charAt(0) + "").toUpperCase());
+            holder.txtGroupName.setText(groupName);
+            holder.iconGroup.setText((groupName.charAt(0) + "").toUpperCase());
         }
-        ((ItemGroupViewHolder) holder).btnMore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+
+        if(group.id.equals(DRIVELY_GROUP_ID) || group.id.equals(GENERAL_GROUP_ID)){
+            holder.btnMore.setVisibility(View.INVISIBLE);
+            Resources resource = context.getResources();
+            Drawable shape = resource.getDrawable(R.drawable.circle_background);
+            holder.iconGroup.setBackground(shape);
+            holder.iconGroup.setTextColor(context.getResources().getColor(R.color.button_background));
+        }else{
+            holder.btnMore.setOnClickListener(view -> {
                 view.setTag(new Object[]{groupName, position});
                 view.getParent().showContextMenuForChild(view);
-            }
-        });
-        ((RelativeLayout) ((ItemGroupViewHolder) holder).txtGroupName.getParent()).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (listFriend == null) {
-                    listFriend = FriendDB.getInstance(context).getListFriend();
-                }
-                Intent intent = new Intent(context, ChatViewActivity.class);
-                intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, groupName);
-                ArrayList<CharSequence> idFriend = new ArrayList<>();
-                ChatViewActivity.bitmapAvataFriend = new HashMap<>();
-                for (String id : listGroup.get(position).member) {
-                    idFriend.add(id);
-                    String avatar = listFriend.getAvataById(id);
-                    if (!avatar.equals(Const.STR_DEFAULT_AVATAR) && listFriend.getById(id) != null && listFriend.getById(id).avatarBytes != null) {
-                        ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(listFriend.getById(id).avatarBytes, 0, listFriend.getById(id).avatarBytes.length));
-                    } else if (avatar.equals(Const.STR_DEFAULT_AVATAR)) {
-                        ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
-                    } else {
-                        ChatViewActivity.bitmapAvataFriend.put(id, null);
-                    }
-                }
+            });
+        }
 
-                intent.putCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID, idFriend);
-                intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, listGroup.get(position).id);
-                context.startActivity(intent);
+        ((RelativeLayout) holder.txtGroupName.getParent()).setOnClickListener(view -> {
+            if (listFriend == null) {
+                listFriend = FriendDB.getInstance(context).getListFriend();
             }
+            Intent intent = new Intent(context, ChatViewActivity.class);
+            intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, groupName);
+            ArrayList<CharSequence> idFriend = new ArrayList<>();
+            ChatViewActivity.bitmapAvataFriend = new HashMap<>();
+            for (String id : listGroup.get(position).member) {
+                idFriend.add(id);
+                String avatar = listFriend.getAvataById(id);
+                if (!avatar.equals(Const.STR_DEFAULT_AVATAR) && listFriend.getById(id) != null && listFriend.getById(id).avatarBytes != null) {
+                    ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(listFriend.getById(id).avatarBytes, 0, listFriend.getById(id).avatarBytes.length));
+                } else if (avatar.equals(Const.STR_DEFAULT_AVATAR)) {
+                    ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
+                } else {
+                    ChatViewActivity.bitmapAvataFriend.put(id, null);
+                }
+            }
+
+            intent.putCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID, idFriend);
+            intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, listGroup.get(position).id);
+            context.startActivity(intent);
         });
     }
 
