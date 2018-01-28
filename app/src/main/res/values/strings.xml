@@ -61,7 +61,7 @@
     <string name="delete_account">Delete account</string>
     <string name="no_account_yet">No account yet? Sign up</string>
     <string name="avatar_change">Click to change the avatar</string>
-    <string name="avatar_max_size">(1 MB max size)</string>
+    <string name="avatar_max_size">(5 MB max size)</string>
     <string name="yes_work">Yes, it worked</string>
     <string name="no_work">No, it not worked</string>
     <string name="no_drive">I did not drive there</string>

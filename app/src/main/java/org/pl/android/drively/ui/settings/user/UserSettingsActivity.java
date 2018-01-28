@@ -69,7 +69,7 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
     private Bundle _savedInstanceState;
     private int PICK_IMAGE_REQUEST = 1;
     private int CHANGE_SETTINGS = 2;
-    private long FILE_MAX_SIZE_1_MB = 1000000;
+    private long FILE_MAX_SIZE_5_MB = 5000000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,7 +144,7 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
 
         int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
         returnCursor.moveToFirst();
-        if (returnCursor.getLong(sizeIndex) > FILE_MAX_SIZE_1_MB) {
+        if (returnCursor.getLong(sizeIndex) > FILE_MAX_SIZE_5_MB) {
             Toast.makeText(getBaseContext(), "The file is too big!", Toast.LENGTH_LONG).show();
             return false;
         }
