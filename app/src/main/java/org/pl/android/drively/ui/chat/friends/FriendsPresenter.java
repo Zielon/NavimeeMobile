@@ -192,7 +192,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                 Friend friend = snapshot.toObject(Friend.class);
                 friend.idRoom = friend.id.compareTo(getId()) > 0 ? (getId() + friend.id).hashCode() + "" : "" + (friend.id + getId()).hashCode();
                 getStorageReference(friend.avatar)
-                        .getBytes(Const.ONE_MEGABYTE)
+                        .getBytes(Const.FIVE_MEGABYTE)
                         .addOnSuccessListener(bytes -> {
                             friend.avatarBytes = bytes;
                             if (getMvpView() != null) {
@@ -402,7 +402,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
             ChatViewActivity.bitmapAvatarUser = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.default_avatar);
         } else {
             mDataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + avatarPath)
-                    .getBytes(Const.ONE_MEGABYTE)
+                    .getBytes(Const.FIVE_MEGABYTE)
                     .addOnSuccessListener(bytes -> {
                         Bitmap src = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                         ChatViewActivity.bitmapAvatarUser = src;
