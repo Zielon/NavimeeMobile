@@ -162,7 +162,6 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
     private Conversation conversation;
     private HashMap<String, Bitmap> bitmapAvatars;
-    private HashMap<String, DatabaseReference> bitmapAvatarDB;
     private Bitmap bitmapAvataUser;
     private String mUID;
     private RecyclerViewPositionHelper positionHelper;
@@ -172,7 +171,6 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.conversation = conversation;
         this.bitmapAvatars = bitmapAvata;
         this.bitmapAvataUser = bitmapAvataUser;
-        this.bitmapAvatarDB = new HashMap<>();
         this.mUID = UID;
         this.positionHelper = positionHelper;
     }
@@ -266,30 +264,8 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 ((CircleImageView) view.findViewById(R.id.avatar)).setImageBitmap(currentAvatar);
             } else {
                 final String id = message.idSender;
-                if (bitmapAvatarDB.get(id) == null) {
-                    bitmapAvatarDB.put(id, FirebaseDatabase.getInstance().getReference().child("user/" + id + "/avatar"));
-                    bitmapAvatarDB.get(id).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.getValue() != null) {
-                                String avataStr = (String) dataSnapshot.getValue();
-                                if (!avataStr.equals(Const.STR_DEFAULT_AVATAR)) {
-                                    byte[] decodedString = Base64.decode(avataStr, Base64.DEFAULT);
-                                    ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length));
-                                } else {
-                                    ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
-                                }
-                                notifyDataSetChanged();
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-            }
+                ((CircleImageView) view.findViewById(R.id.avatar)).setImageResource(R.drawable.default_avatar);
+        }
         } else if (holder instanceof ItemMessageUserHolder) {
             ItemMessageUserHolder messageHolder = ((ItemMessageUserHolder) holder);
             String time = new SimpleDateFormat("EEE 'AT' HH:mm").format(message.timestamp).toUpperCase();
