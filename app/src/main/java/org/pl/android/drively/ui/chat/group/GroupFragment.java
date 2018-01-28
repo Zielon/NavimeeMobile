@@ -96,6 +96,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         recyclerListGroups.setAdapter(adapter);
         onClickFloatButton = new FragGroupClickFloatButton();
+
         progressDialog = new LovelyProgressDialog(getContext())
                 .setCancelable(false)
                 .setIcon(R.drawable.ic_delete_white_24dp)
@@ -304,15 +305,10 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onSuccessLeaveGroupReference(Group group) {
         waitingLeavingGroup.dismiss();
-
         listGroup.remove(group);
         adapter.notifyDataSetChanged();
         GroupDB.getInstance(getContext()).deleteGroup(group.id);
-        new LovelyInfoDialog(getContext())
-                .setTopColorRes(R.color.primary)
-                .setTitle(getResources().getString(R.string.success))
-                .setMessage(getResources().getString(R.string.success_leaveing_group))
-                .show();
+        Toast.makeText(getActivity(), getResources().getString(R.string.success_leaveing_group), Toast.LENGTH_SHORT).show();
     }
 
     @Override

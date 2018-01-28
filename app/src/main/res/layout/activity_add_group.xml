@@ -56,10 +56,10 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_weight="3"
-            android:textColor="@color/white"
             android:hint="@string/enter_group_name"
             android:paddingBottom="20dp"
             android:paddingLeft="20dp"
+            android:textColor="@color/white"
             android:textColorHint="@color/colorLine" />
     </LinearLayout>
 
