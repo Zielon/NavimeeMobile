@@ -25,6 +25,7 @@ import org.pl.android.drively.injection.ActivityContext;
 import org.pl.android.drively.ui.base.BasePresenter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
@@ -65,23 +66,20 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
     public void getListGroup() {
         mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS")
                 .document(getId()).collection("GROUP").get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            List<String> rooms = new ArrayList<>();
-                            for (DocumentSnapshot document : task.getResult()) {
-                                if (document.get("roomId") != null && !rooms.contains(document.get("roomId"))) {
-                                    rooms.add(document.getString("roomId"));
-                                }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<String> rooms = new ArrayList<>();
+                        for (DocumentSnapshot document : task.getResult()) {
+                            if (document.get("roomId") != null && !rooms.contains(document.get("roomId"))) {
+                                rooms.add(document.getString("roomId"));
                             }
-                            if (getMvpView() != null) {
-                                getMvpView().setGroupList(rooms);
-                            }
-                        } else {
-                            if (getMvpView() != null) {
-                                getMvpView().getGroupError();
-                            }
+                        }
+                        if (getMvpView() != null) {
+                            getMvpView().setGroupList(rooms);
+                        }
+                    } else {
+                        if (getMvpView() != null) {
+                            getMvpView().getGroupError();
                         }
                     }
                 });
@@ -90,40 +88,37 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
 
     public void getGroupInfo(int groupIndex, String id) {
         mDataManager.getFirebaseService().getFirebaseFirestore().collection("GROUP").document(id)
-                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document != null && document.exists()) {
-                        Room room = new Room();
-                        room.groupInfo.put("admin", task.getResult().getString("admin"));
-                        room.groupInfo.put("name", task.getResult().getString("name"));
-                        mDataManager.getFirebaseService().getFirebaseFirestore().collection("GROUP")
-                                .document(id).collection("MEMBERS")
-                                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    for (DocumentSnapshot document : task.getResult()) {
-                                        room.member.add(document.getId());
+                .get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document != null && document.exists()) {
+                            Room room = new Room();
+                            room.groupInfo.put("admin", task.getResult().getString("admin"));
+                            room.groupInfo.put("name", task.getResult().getString("name"));
+                            mDataManager.getFirebaseService().getFirebaseFirestore().collection("GROUP")
+                                    .document(id).collection("MEMBERS")
+                                    .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (DocumentSnapshot document : task.getResult()) {
+                                            room.member.add(document.getId());
+                                        }
+                                        if (getMvpView() != null) {
+                                            getMvpView().setGroupInfo(groupIndex, room);
+                                        }
+                                    } else {
+                                        Timber.w("Error geting document");
                                     }
-                                    if (getMvpView() != null) {
-                                        getMvpView().setGroupInfo(groupIndex, room);
-                                    }
-                                } else {
-                                    Timber.w("Error geting document");
                                 }
-                            }
-                        });
+                            });
+                        } else {
+                            Timber.w("Error geting document");
+                        }
                     } else {
                         Timber.w("Error geting document");
                     }
-                } else {
-                    Timber.w("Error geting document");
-                }
-            }
-        });
+                });
     }
 
 
@@ -132,20 +127,12 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
                 .document(group.id).collection("MEMBERS"), 1000, Executors.newSingleThreadExecutor());
         mDataManager.getFirebaseService().getFirebaseFirestore().collection("GROUP").document(group.id)
                 .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        if (getMvpView() != null) {
-                            getMvpView().deleteGroupSuccess(group);
-                        }
+                .addOnSuccessListener(aVoid -> {
+                    if (getMvpView() != null) {
+                        getMvpView().deleteGroupSuccess(group);
                     }
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        getMvpView().deleteGroupFailure();
-                    }
-                });
+                .addOnFailureListener(e -> getMvpView().deleteGroupFailure());
 
     }
 
@@ -201,45 +188,35 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
                 .document(group.member.get(index))
                 .collection("GROUP").whereEqualTo("roomId", group.id)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            if (task.getResult().size() == 0) {
-                                if (getMvpView() != null) {
-                                    getMvpView().onFailureGroupReference();
-                                    return;
-                                }
-                            }
-                            for (DocumentSnapshot document : task.getResult()) {
-                                Timber.d(document.getId() + " => " + document.getData());
-                                mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(group.member.get(index)).collection("GROUP")
-                                        .document(document.getId())
-                                        .delete()
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                if (getMvpView() != null) {
-                                                    getMvpView().onSuccessDeleteGroupReference(group, index);
-                                                }
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @SuppressLint("TimberArgCount")
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Timber.w("Error deleting document", e);
-                                                if (getMvpView() != null) {
-                                                    getMvpView().onFailureGroupReference();
-                                                }
-                                            }
-                                        });
-                            }
-                        } else {
-                            Timber.d("Listen failed");
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (task.getResult().size() == 0) {
                             if (getMvpView() != null) {
                                 getMvpView().onFailureGroupReference();
+                                return;
                             }
+                        }
+                        for (DocumentSnapshot document : task.getResult()) {
+                            Timber.d(document.getId() + " => " + document.getData());
+                            mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(group.member.get(index)).collection("GROUP")
+                                    .document(document.getId())
+                                    .delete()
+                                    .addOnSuccessListener(aVoid -> {
+                                        if (getMvpView() != null) {
+                                            getMvpView().onSuccessDeleteGroupReference(group, index);
+                                        }
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Timber.w("Error deleting document", e);
+                                        if (getMvpView() != null) {
+                                            getMvpView().onFailureGroupReference();
+                                        }
+                                    });
+                        }
+                    } else {
+                        Timber.d("Listen failed");
+                        if (getMvpView() != null) {
+                            getMvpView().onFailureGroupReference();
                         }
                     }
                 });

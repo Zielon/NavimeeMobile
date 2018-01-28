@@ -149,7 +149,8 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView {
 
     private void createGroup() {
         //Show dialog wait
-        dialogWait.setIcon(R.drawable.ic_add_group_dialog)
+        dialogWait.setIcon(R.drawable.add_event_24dp)
+                .setIconTintColor(R.color.white)
                 .setTitle(getResources().getString(R.string.registering))
                 .setTopColorRes(R.color.primary)
                 .show();
@@ -265,13 +266,13 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView {
                 return super.setConfirmButtonText(text);
             }
         }
-                .setTopColorRes(R.color.primary)
-                .setIcon(R.drawable.ic_add_group_dialog)
-                .setTitle(getResources().getString(R.string.failure))
-                .setMessage(getResources().getString(R.string.delete_group_failure))
-                .setCancelable(false)
-                .setConfirmButtonText("Ok")
-                .show();
+        .setTopColorRes(R.color.primary)
+        .setIcon(R.drawable.ic_add_group_dialog)
+        .setTitle(getResources().getString(R.string.failure))
+        .setMessage(getResources().getString(R.string.delete_group_failure))
+        .setCancelable(false)
+        .setConfirmButtonText("Ok")
+        .show();
     }
 }
 

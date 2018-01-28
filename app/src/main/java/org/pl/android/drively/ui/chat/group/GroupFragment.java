@@ -39,6 +39,7 @@ import org.pl.android.drively.ui.chat.data.GroupDB;
 import org.pl.android.drively.util.Const;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -89,21 +90,25 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mSwipeRefreshLayout.setOnRefreshListener(this);
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
         recyclerListGroups.setLayoutManager(layoutManager);
+
+        Collections.sort(listGroup, (a, b) -> ((Integer)a.id.length()).compareTo(b.id.length()));
         adapter = new ListGroupsAdapter(getContext(), listGroup,this);
+
         recyclerListGroups.setAdapter(adapter);
         onClickFloatButton = new FragGroupClickFloatButton();
         progressDialog = new LovelyProgressDialog(getContext())
                 .setCancelable(false)
-                .setIcon(R.drawable.ic_dialog_delete_group)
+                .setIcon(R.drawable.ic_delete_black_24dp)
+                .setIconTintColor(R.color.white)
                 .setTitle(getResources().getString(R.string.deleting))
-                .setTopColorRes(R.color.colorAccent);
+                .setTopColorRes(R.color.primary_dark);
 
         waitingLeavingGroup = new LovelyProgressDialog(getContext())
                 .setCancelable(false)
-                .setIcon(R.drawable.ic_dialog_delete_group)
+                .setIcon(R.drawable.ic_delete_black_24dp)
+                .setIconTintColor(R.color.white)
                 .setTitle(getResources().getString(R.string.group_leaving))
-                .setTopColorRes(R.color.colorAccent);
-
+                .setTopColorRes(R.color.primary_dark);
 
         if (listGroup.size() == 0) {
             //Ket noi server hien thi group
