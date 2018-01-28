@@ -12,8 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingLeft="24dp"
-        android:paddingRight="24dp"
-        android:paddingTop="40dp">
+        android:paddingRight="24dp">
 
         <TextView
             android:id="@+id/title"
@@ -98,7 +97,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="20dp"
         android:paddingTop="30dp"
         android:text="@string/accept_regulation"
         android:textAlignment="center"

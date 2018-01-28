@@ -104,7 +104,7 @@
     <string name="create_group_success">Create group success</string>
     <string name="create_group_failure">Create group failure</string>
     <string name="delete_group_failure">Delete group failure</string>
-    <string name="accept_regulation">Logging to the application you accept the <u>regulations</u></string>
+    <string name="accept_regulation">While logging to the application you accept the <u>regulations</u></string>
     <string name="title_activity_regulations">RegulationsActivity</string>
     <string name="get_all_friend">Get all users...</string>
     <string name="group_leaving">Group leaving....</string>
