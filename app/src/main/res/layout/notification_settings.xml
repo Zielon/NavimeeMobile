@@ -50,7 +50,8 @@
             android:paddingLeft="20dp"
             android:text="@string/notifications_day_schedule_description"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:textStyle="italic" />
 
         <Switch
             android:id="@+id/day_schedule_notifications_button"

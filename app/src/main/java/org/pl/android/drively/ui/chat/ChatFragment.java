@@ -78,7 +78,6 @@ public class ChatFragment extends Fragment implements ChatMvpView {
     }
 
     private void initTab() {
-        tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.accent));
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();

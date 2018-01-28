@@ -61,7 +61,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     GroupPresenter mGroupPresenter;
     @BindView(R.id.fab_group)
     FloatingActionButton fabGroupButton;
-    LovelyProgressDialog progressDialog, waitingLeavingGroup,deleteGroupDialog;
+    LovelyProgressDialog progressDialog, waitingLeavingGroup, deleteGroupDialog;
     private RecyclerView recyclerListGroups;
     private ArrayList<Group> listGroup;
     private ListGroupsAdapter adapter;
@@ -91,22 +91,21 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
         recyclerListGroups.setLayoutManager(layoutManager);
 
-        Collections.sort(listGroup, (a, b) -> ((Integer)a.id.length()).compareTo(b.id.length()));
-        adapter = new ListGroupsAdapter(getContext(), listGroup,this);
+        Collections.sort(listGroup, (a, b) -> ((Integer) a.id.length()).compareTo(b.id.length()));
+        adapter = new ListGroupsAdapter(getContext(), listGroup, this);
 
         recyclerListGroups.setAdapter(adapter);
         onClickFloatButton = new FragGroupClickFloatButton();
+
         progressDialog = new LovelyProgressDialog(getContext())
                 .setCancelable(false)
-                .setIcon(R.drawable.ic_delete_black_24dp)
-                .setIconTintColor(R.color.white)
+                .setIcon(R.drawable.ic_delete_white_24dp)
                 .setTitle(getResources().getString(R.string.deleting))
                 .setTopColorRes(R.color.primary_dark);
 
         waitingLeavingGroup = new LovelyProgressDialog(getContext())
                 .setCancelable(false)
-                .setIcon(R.drawable.ic_delete_black_24dp)
-                .setIconTintColor(R.color.white)
+                .setIcon(R.drawable.ic_delete_white_24dp)
                 .setTitle(getResources().getString(R.string.group_leaving))
                 .setTopColorRes(R.color.primary_dark);
 
@@ -159,6 +158,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void getGroupInfo(final int indexGroup) {
+        Collections.sort(listGroup, (a, b) -> ((Integer) a.id.length()).compareTo(b.id.length()));
         if (indexGroup == listGroup.size()) {
             adapter.notifyDataSetChanged();
             mSwipeRefreshLayout.setRefreshing(false);
@@ -248,7 +248,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         GroupDB.getInstance(getContext()).deleteGroup(group.id);
         listGroup.remove(group);
         adapter.notifyDataSetChanged();
-        Toast.makeText(getContext(),getResources().getString(R.string.deleted_group), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), getResources().getString(R.string.deleted_group), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -256,7 +256,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         progressDialog.dismiss();
         new LovelyInfoDialog(getContext())
                 .setTopColorRes(R.color.primary)
-                .setIcon(R.drawable.ic_dialog_delete_group)
+                .setIcon(R.drawable.ic_delete_white_24dp)
                 .setTitle(getResources().getString(R.string.failure))
                 .setMessage(getResources().getString(R.string.delete_group_cannot_right_now))
                 .setCancelable(false)
@@ -305,15 +305,10 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onSuccessLeaveGroupReference(Group group) {
         waitingLeavingGroup.dismiss();
-
         listGroup.remove(group);
         adapter.notifyDataSetChanged();
         GroupDB.getInstance(getContext()).deleteGroup(group.id);
-        new LovelyInfoDialog(getContext())
-                .setTopColorRes(R.color.primary)
-                .setTitle(getResources().getString(R.string.success))
-                .setMessage(getResources().getString(R.string.success_leaveing_group))
-                .show();
+        Toast.makeText(getActivity(), getResources().getString(R.string.success_leaveing_group), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -340,13 +335,12 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
 class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private static final String DRIVELY_GROUP_ID = "0";
+    private static final String GENERAL_GROUP_ID = "1";
     public static ListFriend listFriend = null;
     private ArrayList<Group> listGroup;
     private Context context;
     private GroupFragment fragment;
-
-    private static final String DRIVELY_GROUP_ID = "0";
-    private static final String GENERAL_GROUP_ID = "1";
 
     public ListGroupsAdapter(Context context, ArrayList<Group> listGroup, GroupFragment fragment) {
         this.context = context;
@@ -371,13 +365,13 @@ class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             holder.iconGroup.setText((groupName.charAt(0) + "").toUpperCase());
         }
 
-        if(group.id.equals(DRIVELY_GROUP_ID) || group.id.equals(GENERAL_GROUP_ID)){
+        if (group.id.equals(DRIVELY_GROUP_ID) || group.id.equals(GENERAL_GROUP_ID)) {
             holder.btnMore.setVisibility(View.INVISIBLE);
             Resources resource = context.getResources();
             Drawable shape = resource.getDrawable(R.drawable.circle_background);
             holder.iconGroup.setBackground(shape);
             holder.iconGroup.setTextColor(context.getResources().getColor(R.color.button_background));
-        }else{
+        } else {
             holder.btnMore.setOnClickListener(view -> {
                 view.setTag(new Object[]{groupName, position});
                 view.getParent().showContextMenuForChild(view);

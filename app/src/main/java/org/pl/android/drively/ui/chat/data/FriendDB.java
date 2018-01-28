@@ -22,7 +22,7 @@ public final class FriendDB {
                     FeedEntry.COLUMN_NAME_EMAIL + TEXT_TYPE + COMMA_SEP +
                     FeedEntry.COLUMN_NAME_ID_ROOM + TEXT_TYPE + COMMA_SEP +
                     FeedEntry.COLUMN_NAME_AVATA + TEXT_TYPE + COMMA_SEP +
-                    FeedEntry.COLUMN_NAME_AVATA_BYTES + BYTE_TYPE +" )";
+                    FeedEntry.COLUMN_NAME_AVATA_BYTES + BYTE_TYPE + " )";
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + FeedEntry.TABLE_NAME;
     private static FriendDBHelper mDbHelper = null;

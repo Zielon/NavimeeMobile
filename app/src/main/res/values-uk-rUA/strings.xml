@@ -53,7 +53,7 @@
     <string name="delete_account">Видалити аккаунт</string>
     <string name="no_account_yet">ще немає рахунку? створити обліковий запис</string>
     <string name="avatar_change">Натисніть, щоб змінити аватар</string>
-    <string name="avatar_max_size">(1 MB max розмір)</string>
+    <string name="avatar_max_size">(5 MB max розмір)</string>
     <string name="yes_work">Так, це спрацювало</string>
     <string name="no_work">Це не вдалося</string>
     <string name="no_drive">Я туди не ходив</string>

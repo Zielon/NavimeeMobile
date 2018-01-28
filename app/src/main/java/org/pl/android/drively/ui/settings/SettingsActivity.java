@@ -103,8 +103,7 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
                             intent = new Intent(SettingsActivity.this, UserSettingsActivity.class);
                         } else if (position == 3) {
                             settingsPresenter.logout();
-                        }
-                        else if (position == 4) {
+                        } else if (position == 4) {
                             Timber.d(String.valueOf(position));
                             intent = new Intent(SettingsActivity.this, RegulationsActivity.class);
                         }
