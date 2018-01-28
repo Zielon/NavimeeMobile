@@ -25,7 +25,7 @@
                 android:background="@color/primary_dark"
                 android:minHeight="?attr/actionBarSize"
                 app:tabIndicatorColor="@color/white"
-                app:tabIndicatorHeight="4dp"/>
+                app:tabIndicatorHeight="3dp"/>
 
         </LinearLayout>
     </android.support.design.widget.AppBarLayout>
