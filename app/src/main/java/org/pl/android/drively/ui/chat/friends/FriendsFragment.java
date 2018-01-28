@@ -83,6 +83,8 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private LovelyProgressDialog dialogWait;
     private View layout;
     private BroadcastReceiver deleteFriendReceiver;
+    Friend mUserInfo;
+    String mIdFriend;
 
     public FriendsFragment() {
         onClickFloatButton = new FragFriendClickFloatButton();
@@ -219,10 +221,8 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             dialogWait.dismiss();
         } else {
             addFriend(idFriend, true);
-            listFriendID.add(idFriend);
-            dataListFriend.getListFriend().add(userInfo);
-            FriendDB.getInstance(getContext()).addFriend(userInfo);
-            adapter.notifyDataSetChanged();
+            mUserInfo = userInfo;
+            mIdFriend = idFriend;
         }
     }
 
@@ -234,6 +234,10 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 mFriendsPresenter.addFriendForFriendId(idFriend);
             }
         } else {
+            listFriendID.add(mIdFriend);
+            dataListFriend.getListFriend().add(mUserInfo);
+            FriendDB.getInstance(getContext()).addFriend(mUserInfo);
+            adapter.notifyDataSetChanged();
             dialogWait.dismiss();
             new LovelyInfoDialog(getContext())
                     .setTopColorRes(R.color.primary)

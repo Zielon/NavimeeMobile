@@ -117,6 +117,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        GroupDB.getInstance(getContext()).dropDB();
         mGroupPresenter.detachView();
     }
 

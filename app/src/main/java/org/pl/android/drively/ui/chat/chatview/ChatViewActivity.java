@@ -263,7 +263,6 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 messageHolder.avatar.setImageBitmap(currentAvatar);
                 ((CircleImageView) view.findViewById(R.id.avatar)).setImageBitmap(currentAvatar);
             } else {
-                final String id = message.idSender;
                 ((CircleImageView) view.findViewById(R.id.avatar)).setImageResource(R.drawable.default_avatar);
         }
         } else if (holder instanceof ItemMessageUserHolder) {

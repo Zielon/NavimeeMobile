@@ -303,6 +303,11 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            if(task.getResult().size() == 0) {
+                                if (getMvpView() != null) {
+                                    getMvpView().onFailureDeleteFriend();
+                                }
+                            }
                             for (DocumentSnapshot document : task.getResult()) {
                                 Timber.d(document.getId() + " => " + document.getData());
                                 mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).collection("FRIENDS")
@@ -344,6 +349,11 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            if(task.getResult().size() == 0) {
+                                if (getMvpView() != null) {
+                                    getMvpView().onFailureDeleteFriend();
+                                }
+                            }
                             for (DocumentSnapshot document : task.getResult()) {
                                 Timber.d(document.getId() + " => " + document.getData());
                                 mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(idFriend).collection("FRIENDS")
