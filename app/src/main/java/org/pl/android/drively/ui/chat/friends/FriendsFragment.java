@@ -212,7 +212,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private void checkBeforAddFriend(final String idFriend, Friend userInfo) {
         dialogWait.setCancelable(false)
                 .setIcon(R.drawable.ic_add_friend)
-                .setTitle("Add friend....")
+                .setTitle(getResources().getString(R.string.add_friend))
                 .setTopColorRes(R.color.primary)
                 .show();
 
@@ -378,7 +378,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                             getResources().getString(R.string.find_friends_who), null, new ArrayList<>(),
                             (BaseSearchDialogCompat dialog, FriendModel item, int position) -> {
                                 if (item.getId().equals(mFriendsPresenter.getId())) {
-                                    Toast.makeText(view.getContext(), "Email not valid",
+                                    Toast.makeText(view.getContext(), getResources().getString(R.string.email_not_valid),
                                             Toast.LENGTH_SHORT).show();
                                     dialog.dismiss();
                                 } else {

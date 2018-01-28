@@ -98,4 +98,15 @@
     <string name="delete_group_failure">Błąd podczas usuwania grupy</string>
     <string name="get_all_friend">Pobieram użytkowników...</string>
     <string name="group_leaving">Opuszczam grupę....</string>
+    <string name="add_friend">Dodaje użytkownika....</string>
+    <string name="email_not_valid">Niepoprawny email</string>
+    <string name="not_admin">Nie jesteś adminem</string>
+    <string name="admin_cannot_leave">Admin nie może opuścić grupy</string>
+    <string name="deleted_group">Usunięto grupę</string>
+    <string name="delete_group_cannot_right_now">Nie można teraz usunąć grupy, spróbuj ponownie.</string>
+    <string name="cannot_connect_with_server">Nie można połączyć się z serwerem</string>
+    <string name="error_during_leaveing_group">Wystąpił błąd podczas opuszczania grupy</string>
+    <string name="success_leaveing_group">Opuszczanie grupy zostało pomyślnie zakończone</string>
+    <string name="delete_group">Usuń grupę</string>
+    <string name="leave_group">Opuść grupę</string>
 </resources>

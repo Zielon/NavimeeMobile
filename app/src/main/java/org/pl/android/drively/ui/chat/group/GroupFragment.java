@@ -199,7 +199,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                         deleteGroup(group, 0);
                     }
                 } else {
-                    Toast.makeText(getActivity(), "You are not admin", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.not_admin), Toast.LENGTH_LONG).show();
                 }
                 break;
           /*  case CONTEXT_MENU_EDIT:
@@ -217,7 +217,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             case CONTEXT_MENU_LEAVE:
                 int position = item.getIntent().getIntExtra(CONTEXT_MENU_KEY_INTENT_DATA_POS, -1);
                 if (((String) listGroup.get(position).groupInfo.get("admin")).equals(mGroupPresenter.getId())) {
-                    Toast.makeText(getActivity(), "Admin cannot leave group", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.admin_cannot_leave), Toast.LENGTH_LONG).show();
                 } else {
                     waitingLeavingGroup.show();
                     Group groupLeaving = listGroup.get(position);
@@ -243,17 +243,17 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         GroupDB.getInstance(getContext()).deleteGroup(group.id);
         listGroup.remove(group);
         adapter.notifyDataSetChanged();
-        Toast.makeText(getContext(), "Deleted group", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(),getResources().getString(R.string.deleted_group), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void deleteGroupFailure() {
         progressDialog.dismiss();
         new LovelyInfoDialog(getContext())
-                .setTopColorRes(R.color.colorAccent)
+                .setTopColorRes(R.color.primary)
                 .setIcon(R.drawable.ic_dialog_delete_group)
-                .setTitle("False")
-                .setMessage("Cannot delete group right now, please try again.")
+                .setTitle(getResources().getString(R.string.failure))
+                .setMessage(getResources().getString(R.string.delete_group_cannot_right_now))
                 .setCancelable(false)
                 .setConfirmButtonText("Ok")
                 .show();
@@ -268,10 +268,10 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public void onFailureGroupReference() {
         progressDialog.dismiss();
         new LovelyInfoDialog(getContext())
-                .setTopColorRes(R.color.colorAccent)
+                .setTopColorRes(R.color.primary)
                 .setIcon(R.drawable.ic_dialog_delete_group)
-                .setTitle("False")
-                .setMessage("Cannot connect server")
+                .setTitle(getResources().getString(R.string.failure))
+                .setMessage(getResources().getString(R.string.cannot_connect_with_server))
                 .setCancelable(false)
                 .setConfirmButtonText("Ok")
                 .show();
@@ -291,9 +291,9 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public void onFailureLeaveGroup() {
         waitingLeavingGroup.dismiss();
         new LovelyInfoDialog(getContext())
-                .setTopColorRes(R.color.colorAccent)
-                .setTitle("Error")
-                .setMessage("Error occurred during leaving group")
+                .setTopColorRes(R.color.primary)
+                .setTitle(getResources().getString(R.string.failure))
+                .setMessage(getResources().getString(R.string.error_during_leaveing_group))
                 .show();
     }
 
@@ -305,9 +305,9 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         adapter.notifyDataSetChanged();
         GroupDB.getInstance(getContext()).deleteGroup(group.id);
         new LovelyInfoDialog(getContext())
-                .setTopColorRes(R.color.colorAccent)
-                .setTitle("Success")
-                .setMessage("Group leaving successfully")
+                .setTopColorRes(R.color.primary)
+                .setTitle(getResources().getString(R.string.success))
+                .setMessage(getResources().getString(R.string.success_leaveing_group))
                 .show();
     }
 
@@ -429,7 +429,7 @@ class ItemGroupViewHolder extends RecyclerView.ViewHolder implements View.OnCrea
         Intent data = new Intent();
         data.putExtra(GroupFragment.CONTEXT_MENU_KEY_INTENT_DATA_POS, (Integer) ((Object[]) btnMore.getTag())[1]);
         //menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_EDIT, Menu.NONE, "Edit group").setIntent(data);
-        menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_DELETE, Menu.NONE, "Delete group").setIntent(data);
-        menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_LEAVE, Menu.NONE, "Leave group").setIntent(data);
+        menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_DELETE, Menu.NONE, view.getContext().getResources().getString(R.string.delete_group)).setIntent(data);
+        menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_LEAVE, Menu.NONE, view.getContext().getResources().getString(R.string.leave_group)).setIntent(data);
     }
 }

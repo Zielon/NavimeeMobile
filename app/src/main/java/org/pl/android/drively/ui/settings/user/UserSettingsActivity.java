@@ -31,6 +31,7 @@ import org.pl.android.drively.R;
 import org.pl.android.drively.data.local.PreferencesHelper;
 import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.ui.base.BaseActivity;
+import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.ui.settings.user.email.UserEmailChangeActivity;
 import org.pl.android.drively.ui.settings.user.name.UserNameChangeActivity;
 import org.pl.android.drively.ui.settings.user.password.UserPasswordChangeActivity;
@@ -127,6 +128,7 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
 
                     avatarLayout.setVisibility(View.INVISIBLE);
                     avatarProgressBar.setVisibility(View.VISIBLE);
+                    ChatViewActivity.bitmapAvatarUser = bitmap;
                     User user = _userSettingsPresenter.setNewAvatar(bitmap, _preferencesHelper.getUserInfo(), this);
                     _preferencesHelper.saveUserInfo(user);
                 }
