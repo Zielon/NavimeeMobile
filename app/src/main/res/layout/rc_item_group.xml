@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/btnMoreAction"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/rounded_textview"
+            android:background="@drawable/circle_background_default"
             android:gravity="center"
             android:text="R"
             android:textSize="30sp" />
@@ -48,6 +48,7 @@
             android:ellipsize="end"
             android:lines="1"
             android:text="Drively"
+            android:textColor="@color/white"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </RelativeLayout>

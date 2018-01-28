@@ -11,6 +11,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -25,6 +26,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -40,11 +42,13 @@ import org.pl.android.drively.data.model.chat.ListFriend;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.ui.chat.data.FriendDB;
+import org.pl.android.drively.ui.chat.friendsearch.FriendModel;
 import org.pl.android.drively.ui.chat.friendsearch.FriendSearchDialogCompat;
 import org.pl.android.drively.util.Const;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +60,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import ir.mirrajabi.searchdialog.core.BaseFilter;
+import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.Searchable;
 import timber.log.Timber;
 
@@ -69,6 +74,8 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     FriendsPresenter mFriendsPresenter;
     @BindView(R.id.fab_friends)
     FloatingActionButton fabFriendsButton;
+    Friend mUserInfo;
+    String mIdFriend;
     private RecyclerView recyclerListFrends;
     private ListFriendsAdapter adapter;
     private ListFriend dataListFriend = null;
@@ -157,6 +164,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         };
         fabFriendsButton.setOnClickListener(onClickFloatButton.getInstance(getContext()));
         mFriendsPresenter.attachView(this);
+        mFriendsPresenter.getUserAvatar();
         IntentFilter intentFilter = new IntentFilter(ACTION_DELETE_FRIEND);
         getContext().registerReceiver(deleteFriendReceiver, intentFilter);
 
@@ -205,7 +213,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private void checkBeforAddFriend(final String idFriend, Friend userInfo) {
         dialogWait.setCancelable(false)
                 .setIcon(R.drawable.ic_add_friend)
-                .setTitle("Add friend....")
+                .setTitle(getResources().getString(R.string.add_friend))
                 .setTopColorRes(R.color.primary)
                 .show();
 
@@ -214,10 +222,8 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             dialogWait.dismiss();
         } else {
             addFriend(idFriend, true);
-            listFriendID.add(idFriend);
-            dataListFriend.getListFriend().add(userInfo);
-            FriendDB.getInstance(getContext()).addFriend(userInfo);
-            adapter.notifyDataSetChanged();
+            mUserInfo = userInfo;
+            mIdFriend = idFriend;
         }
     }
 
@@ -229,6 +235,11 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 mFriendsPresenter.addFriendForFriendId(idFriend);
             }
         } else {
+            listFriendID.add(mIdFriend);
+            dataListFriend.getListFriend().add(mUserInfo);
+            Collections.sort(dataListFriend.getListFriend());
+            FriendDB.getInstance(getContext()).addFriend(mUserInfo);
+            adapter.notifyDataSetChanged();
             dialogWait.dismiss();
             new LovelyInfoDialog(getContext())
                     .setTopColorRes(R.color.primary)
@@ -317,6 +328,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private void getAllFriendInfo(final int index) {
         if (index == listFriendID.size()) {
             //save list friend
+            Collections.sort(dataListFriend.getListFriend());
             adapter.notifyDataSetChanged();
             dialogFindAllFriend.dismiss();
             mSwipeRefreshLayout.setRefreshing(false);
@@ -367,10 +379,11 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             FriendSearchDialogCompat searchDialogCompat =
                     new FriendSearchDialogCompat(view.getContext(), getResources().getString(R.string.find_friends),
                             getResources().getString(R.string.find_friends_who), null, new ArrayList<>(),
-                            (dialog, item, position) -> {
+                            (BaseSearchDialogCompat dialog, FriendModel item, int position) -> {
                                 if (item.getId().equals(mFriendsPresenter.getId())) {
-                                    Toast.makeText(view.getContext(), "Email not valid",
+                                    Toast.makeText(view.getContext(), getResources().getString(R.string.email_not_valid),
                                             Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
                                 } else {
                                     Friend friend = new Friend();
                                     friend.name = item.getName();
@@ -378,9 +391,21 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                                     friend.id = item.getId();
                                     friend.avatar = item.getAvatar();
                                     friend.idRoom = item.getId().compareTo(mFriendsPresenter.getId()) > 0 ? (mFriendsPresenter.getId() + item.getId()).hashCode() + "" : "" + (item.getId() + mFriendsPresenter.getId()).hashCode();
-                                    checkBeforAddFriend(item.getId(), friend);
+                                    mFriendsPresenter.getStorageReference(friend.avatar)
+                                            .getBytes(Const.ONE_MEGABYTE)
+                                            .addOnSuccessListener(bytes -> {
+                                                friend.avatarBytes = bytes;
+                                                checkBeforAddFriend(item.getId(), friend);
+                                                dialog.dismiss();
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    checkBeforAddFriend(item.getId(), friend);
+                                                    dialog.dismiss();
+                                                }
+                                            });
                                 }
-                                dialog.dismiss();
                             });
 
             BaseFilter apiFilter = new BaseFilter() {
@@ -576,15 +601,11 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 mapMark.put(id, true);
             }
         }
-        if (listFriend.getListFriend().get(position).avatar.equals(Const.STR_DEFAULT_AVATAR)) {
+        if (listFriend.getListFriend().get(position).avatar.equals(Const.STR_DEFAULT_AVATAR) || listFriend.getListFriend().get(position).avatarBytes == null) {
             ((ItemFriendViewHolder) holder).avata.setImageResource(R.drawable.default_avatar);
         } else {
-            this.fragment.mFriendsPresenter.getStorageReference(listFriend.getListFriend().get(position).avatar)
-                    .getBytes(Const.ONE_MEGABYTE)
-                    .addOnSuccessListener(bytes -> {
-                        Bitmap src = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        ((ItemFriendViewHolder) holder).avata.setImageBitmap(src);
-                    }).addOnFailureListener(exception -> ((ItemFriendViewHolder) holder).avata.setImageResource(R.drawable.default_avatar));
+            Bitmap src = BitmapFactory.decodeByteArray(listFriend.getListFriend().get(position).avatarBytes, 0, listFriend.getListFriend().get(position).avatarBytes.length);
+            ((ItemFriendViewHolder) holder).avata.setImageBitmap(src);
         }
 
         if (mapQueryOnline.get(id) == null && mapChildListenerOnline.get(id) == null) {

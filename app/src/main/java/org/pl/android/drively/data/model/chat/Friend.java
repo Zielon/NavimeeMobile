@@ -1,9 +1,12 @@
 package org.pl.android.drively.data.model.chat;
 
-public class Friend extends ChatUser {
+import android.support.annotation.NonNull;
+
+public class Friend extends ChatUser implements Comparable<Friend> {
 
     public String id;
     public String idRoom;
+    public byte[] avatarBytes;
 
     @Override
     public boolean equals(Object o) {
@@ -18,5 +21,10 @@ public class Friend extends ChatUser {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
+    }
+
+    @Override
+    public int compareTo(@NonNull Friend friend) {
+        return name.toUpperCase().compareTo(friend.name.toUpperCase());
     }
 }

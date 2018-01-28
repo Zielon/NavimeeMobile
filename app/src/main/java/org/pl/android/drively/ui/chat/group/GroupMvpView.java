@@ -6,10 +6,6 @@ import org.pl.android.drively.ui.base.MvpView;
 
 import java.util.List;
 
-/**
- * Created by Wojtek on 2018-01-11.
- */
-
 public interface GroupMvpView extends MvpView {
 
     void showError();

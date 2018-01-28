@@ -6,6 +6,7 @@ import com.google.firebase.firestore.FieldValue;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.injection.ConfigPersistent;
 import org.pl.android.drively.ui.base.BasePresenter;
+import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,6 +48,7 @@ public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
 
         dataManager.getFirebaseService().getFirebaseFirestore().collection(USERS).document(userId).update(updates);
         dataManager.getFirebaseService().getFirebaseAuth().signOut();
+        ChatViewActivity.bitmapAvatarUser = null;
 
         getMvpView().onLogout();
     }

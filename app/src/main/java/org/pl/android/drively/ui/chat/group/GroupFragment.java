@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -37,6 +39,7 @@ import org.pl.android.drively.ui.chat.data.GroupDB;
 import org.pl.android.drively.util.Const;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -58,7 +61,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     GroupPresenter mGroupPresenter;
     @BindView(R.id.fab_group)
     FloatingActionButton fabGroupButton;
-    LovelyProgressDialog progressDialog, waitingLeavingGroup,deleteGroupDialog;
+    LovelyProgressDialog progressDialog, waitingLeavingGroup, deleteGroupDialog;
     private RecyclerView recyclerListGroups;
     private ArrayList<Group> listGroup;
     private ListGroupsAdapter adapter;
@@ -87,21 +90,23 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mSwipeRefreshLayout.setOnRefreshListener(this);
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
         recyclerListGroups.setLayoutManager(layoutManager);
-        adapter = new ListGroupsAdapter(getContext(), listGroup);
+
+        Collections.sort(listGroup, (a, b) -> ((Integer) a.id.length()).compareTo(b.id.length()));
+        adapter = new ListGroupsAdapter(getContext(), listGroup, this);
+
         recyclerListGroups.setAdapter(adapter);
         onClickFloatButton = new FragGroupClickFloatButton();
         progressDialog = new LovelyProgressDialog(getContext())
                 .setCancelable(false)
-                .setIcon(R.drawable.ic_dialog_delete_group)
+                .setIcon(R.drawable.ic_delete_white_24dp)
                 .setTitle(getResources().getString(R.string.deleting))
-                .setTopColorRes(R.color.colorAccent);
+                .setTopColorRes(R.color.primary_dark);
 
         waitingLeavingGroup = new LovelyProgressDialog(getContext())
                 .setCancelable(false)
-                .setIcon(R.drawable.ic_dialog_delete_group)
+                .setIcon(R.drawable.ic_delete_white_24dp)
                 .setTitle(getResources().getString(R.string.group_leaving))
-                .setTopColorRes(R.color.colorAccent);
-
+                .setTopColorRes(R.color.primary_dark);
 
         if (listGroup.size() == 0) {
             //Ket noi server hien thi group
@@ -115,6 +120,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        GroupDB.getInstance(getContext()).dropDB();
         mGroupPresenter.detachView();
     }
 
@@ -151,6 +157,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void getGroupInfo(final int indexGroup) {
+        Collections.sort(listGroup, (a, b) -> ((Integer) a.id.length()).compareTo(b.id.length()));
         if (indexGroup == listGroup.size()) {
             adapter.notifyDataSetChanged();
             mSwipeRefreshLayout.setRefreshing(false);
@@ -196,7 +203,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                         deleteGroup(group, 0);
                     }
                 } else {
-                    Toast.makeText(getActivity(), "You are not admin", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.not_admin), Toast.LENGTH_LONG).show();
                 }
                 break;
           /*  case CONTEXT_MENU_EDIT:
@@ -214,7 +221,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             case CONTEXT_MENU_LEAVE:
                 int position = item.getIntent().getIntExtra(CONTEXT_MENU_KEY_INTENT_DATA_POS, -1);
                 if (((String) listGroup.get(position).groupInfo.get("admin")).equals(mGroupPresenter.getId())) {
-                    Toast.makeText(getActivity(), "Admin cannot leave group", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.admin_cannot_leave), Toast.LENGTH_LONG).show();
                 } else {
                     waitingLeavingGroup.show();
                     Group groupLeaving = listGroup.get(position);
@@ -240,17 +247,17 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         GroupDB.getInstance(getContext()).deleteGroup(group.id);
         listGroup.remove(group);
         adapter.notifyDataSetChanged();
-        Toast.makeText(getContext(), "Deleted group", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), getResources().getString(R.string.deleted_group), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void deleteGroupFailure() {
         progressDialog.dismiss();
         new LovelyInfoDialog(getContext())
-                .setTopColorRes(R.color.colorAccent)
-                .setIcon(R.drawable.ic_dialog_delete_group)
-                .setTitle("False")
-                .setMessage("Cannot delete group right now, please try again.")
+                .setTopColorRes(R.color.primary)
+                .setIcon(R.drawable.ic_delete_white_24dp)
+                .setTitle(getResources().getString(R.string.failure))
+                .setMessage(getResources().getString(R.string.delete_group_cannot_right_now))
                 .setCancelable(false)
                 .setConfirmButtonText("Ok")
                 .show();
@@ -265,10 +272,10 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public void onFailureGroupReference() {
         progressDialog.dismiss();
         new LovelyInfoDialog(getContext())
-                .setTopColorRes(R.color.colorAccent)
+                .setTopColorRes(R.color.primary)
                 .setIcon(R.drawable.ic_dialog_delete_group)
-                .setTitle("False")
-                .setMessage("Cannot connect server")
+                .setTitle(getResources().getString(R.string.failure))
+                .setMessage(getResources().getString(R.string.cannot_connect_with_server))
                 .setCancelable(false)
                 .setConfirmButtonText("Ok")
                 .show();
@@ -288,9 +295,9 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public void onFailureLeaveGroup() {
         waitingLeavingGroup.dismiss();
         new LovelyInfoDialog(getContext())
-                .setTopColorRes(R.color.colorAccent)
-                .setTitle("Error")
-                .setMessage("Error occurred during leaving group")
+                .setTopColorRes(R.color.primary)
+                .setTitle(getResources().getString(R.string.failure))
+                .setMessage(getResources().getString(R.string.error_during_leaveing_group))
                 .show();
     }
 
@@ -302,9 +309,9 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         adapter.notifyDataSetChanged();
         GroupDB.getInstance(getContext()).deleteGroup(group.id);
         new LovelyInfoDialog(getContext())
-                .setTopColorRes(R.color.colorAccent)
-                .setTitle("Success")
-                .setMessage("Group leaving successfully")
+                .setTopColorRes(R.color.primary)
+                .setTitle(getResources().getString(R.string.success))
+                .setMessage(getResources().getString(R.string.success_leaveing_group))
                 .show();
     }
 
@@ -332,13 +339,17 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
 class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private static final String DRIVELY_GROUP_ID = "0";
+    private static final String GENERAL_GROUP_ID = "1";
     public static ListFriend listFriend = null;
     private ArrayList<Group> listGroup;
     private Context context;
+    private GroupFragment fragment;
 
-    public ListGroupsAdapter(Context context, ArrayList<Group> listGroup) {
+    public ListGroupsAdapter(Context context, ArrayList<Group> listGroup, GroupFragment fragment) {
         this.context = context;
         this.listGroup = listGroup;
+        this.fragment = fragment;
     }
 
     @Override
@@ -348,47 +359,55 @@ class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        final String groupName = listGroup.get(position).groupInfo.get("name");
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
+        final Group group = listGroup.get(position);
+        final String groupName = group.groupInfo.get("name");
+        ItemGroupViewHolder holder = ((ItemGroupViewHolder) viewHolder);
+
         if (groupName != null && groupName.length() > 0) {
-            ((ItemGroupViewHolder) holder).txtGroupName.setText(groupName);
-            ((ItemGroupViewHolder) holder).iconGroup.setText((groupName.charAt(0) + "").toUpperCase());
+            holder.txtGroupName.setText(groupName);
+            holder.iconGroup.setText((groupName.charAt(0) + "").toUpperCase());
         }
-        ((ItemGroupViewHolder) holder).btnMore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+
+        if (group.id.equals(DRIVELY_GROUP_ID) || group.id.equals(GENERAL_GROUP_ID)) {
+            holder.btnMore.setVisibility(View.INVISIBLE);
+            Resources resource = context.getResources();
+            Drawable shape = resource.getDrawable(R.drawable.circle_background);
+            holder.iconGroup.setBackground(shape);
+            holder.iconGroup.setTextColor(context.getResources().getColor(R.color.button_background));
+        } else {
+            holder.btnMore.setOnClickListener(view -> {
                 view.setTag(new Object[]{groupName, position});
                 view.getParent().showContextMenuForChild(view);
-            }
-        });
-        ((RelativeLayout) ((ItemGroupViewHolder) holder).txtGroupName.getParent()).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (listFriend == null) {
-                    listFriend = FriendDB.getInstance(context).getListFriend();
-                }
-                Intent intent = new Intent(context, ChatViewActivity.class);
-                intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, groupName);
-                ArrayList<CharSequence> idFriend = new ArrayList<>();
-                ChatViewActivity.bitmapAvataFriend = new HashMap<>();
-                for (String id : listGroup.get(position).member) {
-                    idFriend.add(id);
-                    String avatar = listFriend.getAvataById(id);
-                    if (!avatar.equals(Const.STR_DEFAULT_AVATAR)) {
-/*                        byte[] decodedString = Base64.decode(avatar, Base64.DEFAULT);
-                        ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length));*/
-                        ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
-                    } else if (avatar.equals(Const.STR_DEFAULT_AVATAR)) {
-                        ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
-                    } else {
-                        ChatViewActivity.bitmapAvataFriend.put(id, null);
-                    }
-                }
+            });
+            holder.iconGroup.setBackground(context.getResources().getDrawable(R.drawable.circle_background_default));
+            holder.iconGroup.setTextColor(context.getResources().getColor(R.color.white));
+            holder.btnMore.setVisibility(View.VISIBLE);
+        }
 
-                intent.putCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID, idFriend);
-                intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, listGroup.get(position).id);
-                context.startActivity(intent);
+        ((RelativeLayout) holder.txtGroupName.getParent()).setOnClickListener(view -> {
+            if (listFriend == null) {
+                listFriend = FriendDB.getInstance(context).getListFriend();
             }
+            Intent intent = new Intent(context, ChatViewActivity.class);
+            intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, groupName);
+            ArrayList<CharSequence> idFriend = new ArrayList<>();
+            ChatViewActivity.bitmapAvataFriend = new HashMap<>();
+            for (String id : listGroup.get(position).member) {
+                idFriend.add(id);
+                String avatar = listFriend.getAvataById(id);
+                if (!avatar.equals(Const.STR_DEFAULT_AVATAR) && listFriend.getById(id) != null && listFriend.getById(id).avatarBytes != null) {
+                    ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(listFriend.getById(id).avatarBytes, 0, listFriend.getById(id).avatarBytes.length));
+                } else if (avatar.equals(Const.STR_DEFAULT_AVATAR)) {
+                    ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
+                } else {
+                    ChatViewActivity.bitmapAvataFriend.put(id, null);
+                }
+            }
+
+            intent.putCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID, idFriend);
+            intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, listGroup.get(position).id);
+            context.startActivity(intent);
         });
     }
 
@@ -416,7 +435,7 @@ class ItemGroupViewHolder extends RecyclerView.ViewHolder implements View.OnCrea
         Intent data = new Intent();
         data.putExtra(GroupFragment.CONTEXT_MENU_KEY_INTENT_DATA_POS, (Integer) ((Object[]) btnMore.getTag())[1]);
         //menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_EDIT, Menu.NONE, "Edit group").setIntent(data);
-        menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_DELETE, Menu.NONE, "Delete group").setIntent(data);
-        menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_LEAVE, Menu.NONE, "Leave group").setIntent(data);
+        menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_DELETE, Menu.NONE, view.getContext().getResources().getString(R.string.delete_group)).setIntent(data);
+        menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_LEAVE, Menu.NONE, view.getContext().getResources().getString(R.string.leave_group)).setIntent(data);
     }
 }

@@ -31,6 +31,7 @@ import org.pl.android.drively.R;
 import org.pl.android.drively.data.local.PreferencesHelper;
 import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.ui.base.BaseActivity;
+import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.ui.settings.user.email.UserEmailChangeActivity;
 import org.pl.android.drively.ui.settings.user.name.UserNameChangeActivity;
 import org.pl.android.drively.ui.settings.user.password.UserPasswordChangeActivity;
@@ -68,7 +69,7 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
     private Bundle _savedInstanceState;
     private int PICK_IMAGE_REQUEST = 1;
     private int CHANGE_SETTINGS = 2;
-    private long FILE_MAX_SIZE_1_MB = 1000000;
+    private long FILE_MAX_SIZE_5_MB = 5000000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +128,7 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
 
                     avatarLayout.setVisibility(View.INVISIBLE);
                     avatarProgressBar.setVisibility(View.VISIBLE);
+                    ChatViewActivity.bitmapAvatarUser = bitmap;
                     User user = _userSettingsPresenter.setNewAvatar(bitmap, _preferencesHelper.getUserInfo(), this);
                     _preferencesHelper.saveUserInfo(user);
                 }
@@ -142,7 +144,7 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
 
         int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
         returnCursor.moveToFirst();
-        if (returnCursor.getLong(sizeIndex) > FILE_MAX_SIZE_1_MB) {
+        if (returnCursor.getLong(sizeIndex) > FILE_MAX_SIZE_5_MB) {
             Toast.makeText(getBaseContext(), "The file is too big!", Toast.LENGTH_LONG).show();
             return false;
         }

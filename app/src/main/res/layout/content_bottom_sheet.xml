@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/bottomSheetLayout"
     android:layout_width="match_parent"
-    android:layout_height="130dp"
+    android:layout_height="160dp"
     android:background="@color/primary_dark"
     android:padding="@dimen/vertical_margin"
     app:behavior_hideable="true"
@@ -72,6 +72,12 @@
         android:background="@null"
         android:src="@drawable/close_x_24dp" />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_place_time"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/foursquare"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/place_driveButton"

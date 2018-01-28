@@ -61,7 +61,7 @@
     <string name="delete_account">Delete account</string>
     <string name="no_account_yet">No account yet? Sign up</string>
     <string name="avatar_change">Click to change the avatar</string>
-    <string name="avatar_max_size">(1 MB max size)</string>
+    <string name="avatar_max_size">(5 MB max size)</string>
     <string name="yes_work">Yes, it worked</string>
     <string name="no_work">No, it not worked</string>
     <string name="no_drive">I did not drive there</string>
@@ -104,8 +104,19 @@
     <string name="create_group_success">Create group success</string>
     <string name="create_group_failure">Create group failure</string>
     <string name="delete_group_failure">Delete group failure</string>
-    <string name="accept_regulation">Logging to the application you accept the <u>regulations</u></string>
+    <string name="accept_regulation">While logging to the application you accept the <u>regulations</u></string>
     <string name="title_activity_regulations">RegulationsActivity</string>
     <string name="get_all_friend">Get all users...</string>
     <string name="group_leaving">Group leaving....</string>
+    <string name="add_friend">Add friend....</string>
+    <string name="email_not_valid">Email not valid</string>
+    <string name="not_admin">Ви не адміністратор</string>
+    <string name="admin_cannot_leave">Admin cannot leave group</string>
+    <string name="deleted_group">Deleted group</string>
+    <string name="delete_group_cannot_right_now">Cannot delete group right now, please try again.</string>
+    <string name="cannot_connect_with_server">Cannot connect server</string>
+    <string name="error_during_leaveing_group">Error occurred during leaving group</string>
+    <string name="success_leaveing_group">Group leaving successfully</string>
+    <string name="delete_group">Delete group</string>
+    <string name="leave_group">Leave group</string>
 </resources>

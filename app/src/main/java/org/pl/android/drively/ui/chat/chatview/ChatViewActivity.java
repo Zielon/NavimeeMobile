@@ -3,11 +3,9 @@ package org.pl.android.drively.ui.chat.chatview;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,11 +16,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.chat.Conversation;
@@ -55,7 +48,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
     public static final int VIEW_TYPE_USER_MESSAGE = 0;
     public static final int VIEW_TYPE_FRIEND_MESSAGE = 1;
     public static HashMap<String, Bitmap> bitmapAvataFriend;
-    public Bitmap bitmapAvataUser;
+    public static Bitmap bitmapAvatarUser;
     public String UID;
     @Inject
     ChatViewPresenter mChatViewPresenter;
@@ -83,13 +76,6 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         btnSend = (ImageButton) findViewById(R.id.btnSend);
         btnSend.setOnClickListener(this);
 
-        String base64AvataUser = "default";// SharedPreferenceHelper.getInstance(this).getUserInfo().avatar;
-        if (!base64AvataUser.equals(Const.STR_DEFAULT_AVATAR)) {
-            byte[] decodedString = Base64.decode(base64AvataUser, Base64.DEFAULT);
-            bitmapAvataUser = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        } else {
-            bitmapAvataUser = null;
-        }
 
         editWriteMessage = (EditText) findViewById(R.id.editWriteMessage);
         if (idFriend != null && nameFriend != null) {
@@ -102,7 +88,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
                     conversation,
                     new RecyclerViewPositionHelper(recyclerChat),
                     bitmapAvataFriend,
-                    bitmapAvataUser,
+                    bitmapAvatarUser,
                     mChatViewPresenter.getId());
 
             mChatViewPresenter.setMessageListener(roomId);
@@ -168,7 +154,6 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
     private Conversation conversation;
     private HashMap<String, Bitmap> bitmapAvatars;
-    private HashMap<String, DatabaseReference> bitmapAvatarDB;
     private Bitmap bitmapAvataUser;
     private String mUID;
     private RecyclerViewPositionHelper positionHelper;
@@ -178,22 +163,24 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.conversation = conversation;
         this.bitmapAvatars = bitmapAvata;
         this.bitmapAvataUser = bitmapAvataUser;
-        this.bitmapAvatarDB = new HashMap<>();
         this.mUID = UID;
         this.positionHelper = positionHelper;
     }
 
-    public static void setMargins(RelativeLayout layout, int l, int t, int r, int b) {
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) (layout.getLayoutParams());
-        params.setMargins(0, 0, 0, 0);
-        layout.setLayoutParams(params);
+    public static void setMargins(RelativeLayout layout, Integer l, Integer t, Integer r, Integer b) {
+        ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) layout.getLayoutParams();
+        marginLayoutParams.setMargins(
+                l != null ? l : marginLayoutParams.leftMargin,
+                t != null ? t : marginLayoutParams.topMargin,
+                r != null ? r : marginLayoutParams.rightMargin,
+                b != null ? b : marginLayoutParams.bottomMargin);
+        layout.setLayoutParams(marginLayoutParams);
     }
 
     public static void resetHolder(MessageHolder holder) {
         if (holder == null) return;
         holder.getTimestamp().setVisibility(View.VISIBLE);
         holder.getAvatar().setVisibility(View.VISIBLE);
-        setMargins(holder.getLayout(), 0, 10, 0, 10);
     }
 
     public void groupMessages(int position, MessageHolder holder) {
@@ -207,22 +194,27 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         Message next = messages.size() > 1 && position > 0 ? messages.get(position - 1) : null;
         Message previous = position + 1 < messages.size() ? messages.get(position + 1) : null;
 
-        // On the app screen
-        boolean between = previous != null && next != null && previous.idSender.equals(current.idSender) && next.idSender.equals(current.idSender);
-        boolean top = previous != null && next != null && !next.idSender.equals(current.idSender) && previous.idSender.equals(current.idSender);
-        boolean bottom = next != null && previous != null && !previous.idSender.equals(current.idSender) && next.idSender.equals(current.idSender);
+        // The screen oriented position
+        boolean BETWEEN = previous != null && next != null && previous.idSender.equals(current.idSender) && next.idSender.equals(current.idSender);
+        boolean TOP = previous != null && next != null && !next.idSender.equals(current.idSender) && previous.idSender.equals(current.idSender);
+        boolean BOTTOM = next != null && previous != null && !previous.idSender.equals(current.idSender) && next.idSender.equals(current.idSender);
+        boolean LAST = next != null && position == messages.size() - 1 && next.idSender.equals(current.idSender);
+        boolean FIRST = previous != null && position == 0 && previous.idSender.equals(current.idSender);
 
-        boolean last = next != null && position == messages.size() - 1 && next.idSender.equals(current.idSender);
-        boolean first = previous != null && position == 0 && previous.idSender.equals(current.idSender);
-
-        if (between) {
+        if (BETWEEN) {
             holder.getAvatar().setVisibility(View.INVISIBLE);
-            holder.getTimestamp().setVisibility(View.INVISIBLE);
+            holder.getTimestamp().setVisibility(View.GONE);
+            setMargins(holder.getLayout(), null, 0, null, 0);
         }
 
-        if (top || first) holder.getAvatar().setVisibility(View.INVISIBLE);
-        if (bottom || last) holder.getTimestamp().setVisibility(View.INVISIBLE);
-        if (between || top || bottom || last || first) setMargins(holder.getLayout(), 0, 0, 0, 0);
+        if (TOP || FIRST) {
+            holder.getAvatar().setVisibility(View.INVISIBLE);
+            setMargins(holder.getLayout(), null, 0, null, 0);
+        }
+        if (BOTTOM || LAST) {
+            holder.getTimestamp().setVisibility(View.GONE);
+            setMargins(holder.getLayout(), null, 0, null, 10);
+        }
     }
 
     @Override
@@ -247,51 +239,33 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             messageHolder.txtContent.setText(message.text);
             Bitmap currentAvatar = bitmapAvatars.get(message.idSender);
 
-            messageHolder.messageDialog = new MaterialDialog.Builder(context).customView(R.layout.friend_message_details, true).build();
+            messageHolder.messageDialog = new MaterialDialog.Builder(context)
+                    .backgroundColorRes(R.color.primary)
+                    .customView(R.layout.friend_message_details, true)
+                    .build();
+
             View view = messageHolder.messageDialog.getView();
             String time = new SimpleDateFormat("EEE, MMM d, 'at' HH:mm").format(message.timestamp).toUpperCase();
 
             ((TextView) view.findViewById(R.id.message_time)).setText(time);
             ((TextView) view.findViewById(R.id.name)).setText(message.nameSender);
             ((TextView) view.findViewById(R.id.email)).setText(message.emailSender);
-            ((CircleImageView) view.findViewById(R.id.avatar)).setImageDrawable(context.getResources().getDrawable(R.drawable.default_avatar));
+
+            messageHolder.timeStamp.setText(new SimpleDateFormat("EEE 'AT' HH:mm").format(message.timestamp).toUpperCase());
 
             if (currentAvatar != null) {
                 messageHolder.avatar.setImageBitmap(currentAvatar);
+                ((CircleImageView) view.findViewById(R.id.avatar)).setImageBitmap(currentAvatar);
             } else {
-                final String id = message.idSender;
-                if (bitmapAvatarDB.get(id) == null) {
-                    bitmapAvatarDB.put(id, FirebaseDatabase.getInstance().getReference().child("user/" + id + "/avatar"));
-                    bitmapAvatarDB.get(id).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.getValue() != null) {
-                                String avataStr = (String) dataSnapshot.getValue();
-                                if (!avataStr.equals(Const.STR_DEFAULT_AVATAR)) {
-                                    byte[] decodedString = Base64.decode(avataStr, Base64.DEFAULT);
-                                    ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length));
-                                } else {
-                                    ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
-                                }
-                                notifyDataSetChanged();
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-                }
+                ((CircleImageView) view.findViewById(R.id.avatar)).setImageResource(R.drawable.default_avatar);
             }
         } else if (holder instanceof ItemMessageUserHolder) {
             ItemMessageUserHolder messageHolder = ((ItemMessageUserHolder) holder);
             String time = new SimpleDateFormat("EEE 'AT' HH:mm").format(message.timestamp).toUpperCase();
             messageHolder.txtContent.setText(message.text);
             messageHolder.timeStamp.setText(time);
-            Bitmap currentAvatar = bitmapAvatars.get(message.idSender);
-            if (currentAvatar != null)
-                messageHolder.avatar.setImageBitmap(currentAvatar);
+            if (bitmapAvataUser != null)
+                messageHolder.avatar.setImageBitmap(bitmapAvataUser);
         }
 
         groupMessages(position, (MessageHolder) holder);
@@ -364,6 +338,11 @@ class ItemMessageFriendHolder extends RecyclerView.ViewHolder implements Message
         layout = (RelativeLayout) itemView.findViewById(R.id.friend_message_layout);
 
         avatar.setOnClickListener(click -> {
+            if (messageDialog != null)
+                messageDialog.show();
+        });
+
+        txtContent.setOnClickListener(click -> {
             if (messageDialog != null)
                 messageDialog.show();
         });

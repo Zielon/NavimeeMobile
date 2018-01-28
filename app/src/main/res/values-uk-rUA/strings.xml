@@ -53,7 +53,7 @@
     <string name="delete_account">Видалити аккаунт</string>
     <string name="no_account_yet">ще немає рахунку? створити обліковий запис</string>
     <string name="avatar_change">Натисніть, щоб змінити аватар</string>
-    <string name="avatar_max_size">(1 MB max розмір)</string>
+    <string name="avatar_max_size">(5 MB max розмір)</string>
     <string name="yes_work">Так, це спрацювало</string>
     <string name="no_work">Це не вдалося</string>
     <string name="no_drive">Я туди не ходив</string>
@@ -97,4 +97,15 @@
     <string name="delete_group_failure">Помилка видалення групи</string>
     <string name="get_all_friend">Завантаження користувачів ...</string>
     <string name="group_leaving">Я йду з групи ....</string>
+    <string name="add_friend">Додає користувача....</string>
+    <string name="email_not_valid">Електронна пошта недійсна</string>
+    <string name="not_admin">Nie jesteś adminem</string>
+    <string name="admin_cannot_leave">Адміністратор не може залишити групу</string>
+    <string name="deleted_group">Група видалена</string>
+    <string name="delete_group_cannot_right_now">Неможливо видалити групу зараз, будь ласка, повторіть спробу.</string>
+    <string name="cannot_connect_with_server">Неможливо єднатися сервером</string>
+    <string name="error_during_leaveing_group">Помилка під час відїзду групи</string>
+    <string name="success_leaveing_group">Група успішно вийшла</string>
+    <string name="delete_group">Видалити групу</string>
+    <string name="leave_group">покинути групу</string>
 </resources>

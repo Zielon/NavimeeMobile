@@ -16,6 +16,7 @@ import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.ui.base.BaseActivity;
+import org.pl.android.drively.ui.regulations.RegulationsActivity;
 import org.pl.android.drively.ui.settings.personalsettings.PersonalSettingsActivity;
 import org.pl.android.drively.ui.settings.user.UserSettingsActivity;
 
@@ -68,11 +69,11 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
 
         drawerItems.add(new DividerDrawerItem().withEnabled(true));
 
-/*        drawerItems.add(new PrimaryDrawerItem().withName(R.string.privacy_conditions)
+        drawerItems.add(new PrimaryDrawerItem().withName(R.string.privacy_conditions)
                 .withIcon(R.drawable.legal_privacy_24dp)
                 .withIdentifier(4)
                 .withTextColor(getResources().getColor(R.color.white)));
-
+/*
         drawerItems.add(new PrimaryDrawerItem().withName(R.string.help)
                 .withIcon(R.drawable.help_circle_24dp)
                 .withIdentifier(5)
@@ -102,8 +103,10 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
                             intent = new Intent(SettingsActivity.this, UserSettingsActivity.class);
                         } else if (position == 3) {
                             settingsPresenter.logout();
+                        } else if (position == 4) {
+                            Timber.d(String.valueOf(position));
+                            intent = new Intent(SettingsActivity.this, RegulationsActivity.class);
                         }
-
                         if (intent != null) {
                             SettingsActivity.this.startActivityForResult(intent, REQUEST_SETTINGS);
                         }

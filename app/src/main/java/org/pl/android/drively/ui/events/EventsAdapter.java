@@ -81,6 +81,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         } else if (mEventsPresenter.getDayScheduleList().contains(event)) {
             holder.addButton.setImageResource(R.drawable.ringing_bell_24dp);
             holder.addButton.setEnabled(false);
+        } else {
+            holder.addButton.setImageResource(R.drawable.bell_24dp);
+            holder.addButton.setEnabled(true);
         }
 
         holder.addButton.setOnClickListener(new View.OnClickListener() {

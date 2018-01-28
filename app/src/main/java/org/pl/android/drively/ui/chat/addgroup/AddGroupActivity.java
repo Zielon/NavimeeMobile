@@ -149,7 +149,7 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView {
 
     private void createGroup() {
         //Show dialog wait
-        dialogWait.setIcon(R.drawable.ic_add_group_dialog)
+        dialogWait.setIcon(R.drawable.add_event_white_24dp)
                 .setTitle(getResources().getString(R.string.registering))
                 .setTopColorRes(R.color.primary)
                 .show();
@@ -311,13 +311,10 @@ class ListPeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         ((ItemFriendHolder) holder).txtEmail.setText(listFriend.getListFriend().get(position).email);
         String avata = listFriend.getListFriend().get(position).avatar;
         final String id = listFriend.getListFriend().get(position).id;
-        if (!avata.equals(Const.STR_DEFAULT_AVATAR)) {
-            this.addGroupActivity.mAddGroupPresenter.getStorageReference(avata)
-                    .getBytes(Const.ONE_MEGABYTE)
-                    .addOnSuccessListener(bytes -> {
-                        Bitmap src = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        ((ItemFriendHolder) holder).avatar.setImageBitmap(src);
-                    }).addOnFailureListener(exception -> ((ItemFriendHolder) holder).avatar.setImageResource(R.drawable.default_avatar));
+        if (!avata.equals(Const.STR_DEFAULT_AVATAR) && listFriend.getListFriend().get(position).avatarBytes != null) {
+
+            Bitmap src = BitmapFactory.decodeByteArray(listFriend.getListFriend().get(position).avatarBytes, 0, listFriend.getListFriend().get(position).avatarBytes.length);
+            ((ItemFriendHolder) holder).avatar.setImageBitmap(src);
         } else {
             ((ItemFriendHolder) holder).avatar.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
         }

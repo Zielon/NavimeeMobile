@@ -9,6 +9,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar_layout"
         android:layout_width="match_parent"
+        app:elevation="0dp"
         android:layout_height="?attr/actionBarSize">
 
         <LinearLayout
@@ -16,15 +17,16 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-
             <android.support.design.widget.TabLayout
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:tabGravity="fill"
                 app:tabMode="fixed"
-                app:tabSelectedTextColor="@android:color/background_light"
-                app:tabTextColor="@android:color/secondary_text_light_nodisable" />
+                android:background="@color/primary_dark"
+                android:minHeight="?attr/actionBarSize"
+                app:tabIndicatorColor="@color/white"
+                app:tabIndicatorHeight="3dp"/>
 
         </LinearLayout>
     </android.support.design.widget.AppBarLayout>

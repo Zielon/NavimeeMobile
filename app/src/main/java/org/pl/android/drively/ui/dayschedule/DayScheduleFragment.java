@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +43,9 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
 
     @BindView(R.id.recycler_view_day_schedule)
     RecyclerView mDayScheduleRecycler;
+
+    @BindView(R.id.icon_day_schedule)
+    ImageView iconDaySchedule;
 
     @BindView(R.id.day_schedule_empty)
     RelativeLayout mDayScheduleEmptyLayout;
@@ -153,7 +157,13 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
     }
 
     @OnClick(R.id.day_schedule_another_date)
-    public void goToEvents(View view) {
+    public void goToEventsFromLink(View view) {
+        ((MainActivity) getActivity()).getBottomBar().selectTabWithId(R.id.tab_events);
+    }
+
+
+    @OnClick(R.id.icon_day_schedule)
+    public void goToEventsFromIcon(View view) {
         ((MainActivity) getActivity()).getBottomBar().selectTabWithId(R.id.tab_events);
     }
 
