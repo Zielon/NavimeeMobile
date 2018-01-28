@@ -312,6 +312,7 @@ class ListPeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         String avata = listFriend.getListFriend().get(position).avatar;
         final String id = listFriend.getListFriend().get(position).id;
         if (!avata.equals(Const.STR_DEFAULT_AVATAR) && listFriend.getListFriend().get(position).avatarBytes != null) {
+
             Bitmap src = BitmapFactory.decodeByteArray(listFriend.getListFriend().get(position).avatarBytes, 0, listFriend.getListFriend().get(position).avatarBytes.length);
             ((ItemFriendHolder) holder).avatar.setImageBitmap(src);
         } else {

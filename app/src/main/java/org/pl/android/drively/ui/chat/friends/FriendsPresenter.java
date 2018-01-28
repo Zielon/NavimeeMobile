@@ -398,13 +398,17 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
 
     public void getUserAvatar() {
         String avatarPath = mDataManager.getPreferencesHelper().getUserInfo().getAvatar();
-        mDataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/"+avatarPath)
-                .getBytes(Const.ONE_MEGABYTE)
-                .addOnSuccessListener(bytes -> {
-                    Bitmap src = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    ChatViewActivity.bitmapAvatarUser = src;
-                }).addOnFailureListener(exception -> {
-                     ChatViewActivity.bitmapAvatarUser  = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.default_avatar);
-        });
+        if(avatarPath.equals(Const.STR_DEFAULT_AVATAR)) {
+            ChatViewActivity.bitmapAvatarUser = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.default_avatar);
+        } else {
+            mDataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + avatarPath)
+                    .getBytes(Const.ONE_MEGABYTE)
+                    .addOnSuccessListener(bytes -> {
+                        Bitmap src = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        ChatViewActivity.bitmapAvatarUser = src;
+                    }).addOnFailureListener(exception -> {
+                        ChatViewActivity.bitmapAvatarUser = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.default_avatar);
+                    });
+        }
     }
 }
