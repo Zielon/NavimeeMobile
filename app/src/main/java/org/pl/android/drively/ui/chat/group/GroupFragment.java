@@ -382,6 +382,9 @@ class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 view.setTag(new Object[]{groupName, position});
                 view.getParent().showContextMenuForChild(view);
             });
+            holder.iconGroup.setBackground(context.getResources().getDrawable(R.drawable.circle_background_default));
+            holder.iconGroup.setTextColor(context.getResources().getColor(R.color.white));
+            holder.btnMore.setVisibility(View.VISIBLE);
         }
 
         ((RelativeLayout) holder.txtGroupName.getParent()).setOnClickListener(view -> {
