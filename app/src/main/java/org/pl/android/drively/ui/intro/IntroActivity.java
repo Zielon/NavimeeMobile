@@ -18,6 +18,8 @@ public class IntroActivity extends AppIntro2 {
 
         // Note here that we DO NOT use setContentView();
 
+        getSupportActionBar().setElevation(0);
+
         SliderPage firstFragment = new SliderPage();
         firstFragment.setTitle(getResources().getString(R.string.onboarding_1_title));
         firstFragment.setDescription(getResources().getString(R.string.onboarding_1_body));
