@@ -392,7 +392,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                                     friend.avatar = item.getAvatar();
                                     friend.idRoom = item.getId().compareTo(mFriendsPresenter.getId()) > 0 ? (mFriendsPresenter.getId() + item.getId()).hashCode() + "" : "" + (item.getId() + mFriendsPresenter.getId()).hashCode();
                                     mFriendsPresenter.getStorageReference(friend.avatar)
-                                            .getBytes(Const.ONE_MEGABYTE)
+                                            .getBytes(Const.FIVE_MEGABYTE)
                                             .addOnSuccessListener(bytes -> {
                                                 friend.avatarBytes = bytes;
                                                 checkBeforAddFriend(item.getId(), friend);

@@ -18,30 +18,32 @@ public class IntroActivity extends AppIntro2 {
 
         // Note here that we DO NOT use setContentView();
 
+        getSupportActionBar().setElevation(0);
+
         SliderPage firstFragment = new SliderPage();
         firstFragment.setTitle(getResources().getString(R.string.onboarding_1_title));
         firstFragment.setDescription(getResources().getString(R.string.onboarding_1_body));
         firstFragment.setImageDrawable(R.drawable.onboarding_1_welcome);
-        firstFragment.setBgColor(Color.TRANSPARENT);
+        firstFragment.setBgColor(getBaseContext().getResources().getColor(R.color.primary));
 
 
         SliderPage secondFragment = new SliderPage();
         secondFragment.setTitle(getResources().getString(R.string.onboarding_2_title));
         secondFragment.setDescription(getResources().getString(R.string.onboarding_2_body));
         secondFragment.setImageDrawable(R.drawable.onboarding_events_24dp);
-        secondFragment.setBgColor(Color.TRANSPARENT);
+        secondFragment.setBgColor(getBaseContext().getResources().getColor(R.color.primary));
 
         SliderPage thirdFragment = new SliderPage();
         thirdFragment.setTitle(getResources().getString(R.string.onboarding_3_title));
         thirdFragment.setDescription(getResources().getString(R.string.onboarding_3_body));
         thirdFragment.setImageDrawable(R.drawable.onboarding_schedule_24dp);
-        thirdFragment.setBgColor(Color.TRANSPARENT);
+        thirdFragment.setBgColor(getBaseContext().getResources().getColor(R.color.primary));
 
         SliderPage fourthFragment = new SliderPage();
         fourthFragment.setTitle(getResources().getString(R.string.onboarding_4_title));
         fourthFragment.setDescription(getResources().getString(R.string.onboarding_4_body));
         fourthFragment.setImageDrawable(R.drawable.onboarding_hotspot_24dp);
-        fourthFragment.setBgColor(Color.TRANSPARENT);
+        fourthFragment.setBgColor(getBaseContext().getResources().getColor(R.color.primary));
         // Add your slide fragments here.
         // AppIntro will automatically generate the dots indicator and buttons.
         addSlide(AppIntroFragment.newInstance(firstFragment));

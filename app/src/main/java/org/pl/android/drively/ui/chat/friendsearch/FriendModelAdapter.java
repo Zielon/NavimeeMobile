@@ -116,7 +116,7 @@ public class FriendModelAdapter extends RecyclerView.Adapter<FriendModelAdapter.
             avatar.setImageResource(R.drawable.default_avatar);
         } else {
             FirebaseStorage.getInstance().getReference("AVATARS/" + object.getAvatar())
-                    .getBytes(Const.ONE_MEGABYTE)
+                    .getBytes(Const.FIVE_MEGABYTE)
                     .addOnSuccessListener(new OnSuccessListener<byte[]>() {
                         @Override
                         public void onSuccess(byte[] bytes) {

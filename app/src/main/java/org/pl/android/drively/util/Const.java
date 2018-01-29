@@ -1,9 +1,5 @@
 package org.pl.android.drively.util;
 
-/**
- * Created by Wojtek on 2017-11-19.
- */
-
 public class Const {
     public final static String MESSAGING_TOKEN = "MESSAGING_TOKEN";
     public final static String LAST_LOCATION = "LAST_LOCATION";
@@ -31,7 +27,7 @@ public class Const {
     public static String INTENT_KEY_CHAT_ROOM_ID = "roomid";
     public static long TIME_TO_REFRESH = 10 * 1000;
     public static long TIME_TO_OFFLINE = 2 * 60 * 1000;
-    public static long ONE_MEGABYTE = 1024 * 1024;
+    public static long FIVE_MEGABYTE = 5 * 1024 * 1024;
 
     public enum HotSpotType {
         EVENT,
