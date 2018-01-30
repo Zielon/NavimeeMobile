@@ -23,6 +23,11 @@ public class UserEmailChangePresenter extends BasePresenter<UserEmailChangeMvpVi
         _mvpView = mvpView;
     }
 
+    public String getEmail() {
+        FirebaseUser user = _dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
+        return user.getEmail();
+    }
+
     public void changeEmail(String newEmail) {
         FirebaseUser user = _dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
         if (user == null) return;

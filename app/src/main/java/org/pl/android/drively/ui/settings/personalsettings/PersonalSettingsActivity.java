@@ -36,7 +36,7 @@ public class PersonalSettingsActivity extends BaseActivity implements PersonalSe
     }
 
     @Override
-    public void setSwitches(boolean dayScheduleNotification, boolean bigEventsNotification) {
+    public void setSwitches(boolean dayScheduleNotification) {
         mDayScheduleNotiSwitch.setChecked(dayScheduleNotification);
     }
 

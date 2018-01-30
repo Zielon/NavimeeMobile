@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FieldValue;
 
 import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.data.local.PreferencesHelper;
 import org.pl.android.drively.injection.ConfigPersistent;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
@@ -21,11 +22,13 @@ import static org.pl.android.drively.util.FirebasePaths.USERS;
 public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
 
     private final DataManager dataManager;
+    private final PreferencesHelper preferencesHelper;
     private Disposable disposable;
     private FirebaseUser firebaseUser;
 
     @Inject
-    public SettingsPresenter(DataManager dataManager) {
+    public SettingsPresenter(DataManager dataManager, PreferencesHelper preferencesHelper) {
+        this.preferencesHelper = preferencesHelper;
         this.dataManager = dataManager;
         this.firebaseUser = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
     }
@@ -48,7 +51,10 @@ public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
 
         dataManager.getFirebaseService().getFirebaseFirestore().collection(USERS).document(userId).update(updates);
         dataManager.getFirebaseService().getFirebaseAuth().signOut();
+
         ChatViewActivity.bitmapAvatarUser = null;
+
+        preferencesHelper.clear();
 
         getMvpView().onLogout();
     }

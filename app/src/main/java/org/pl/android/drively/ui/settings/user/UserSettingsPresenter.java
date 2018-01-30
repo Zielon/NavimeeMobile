@@ -79,23 +79,30 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
         if (!user.getAvatar().equals(User.DEFAULT_AVATAR))
             RxFirebaseStorage.delete(firebaseStorage.getReference().child(path)).subscribe(success -> {
             }, throwable -> _mvpView.onError(throwable));
+
         Date currentTime = Calendar.getInstance().getTime();
         String avatar = this.firebaseUser.getEmail().replace('.', '_') + "_" + currentTime.getTime();
-        user.setAvatar(avatar);
         path = String.format("%s/%s", AVATARS, avatar);
 
         bitmap = scaleDown(bitmap, 200, true);
 
-        Uri uri = saveBitmap(user.getId(), bitmap, context);
+        Uri uri;
+
+        try {
+            uri = saveBitmap(user.getId(), bitmap, context);
+        } catch (Exception e) {
+            _mvpView.onError(e);
+            return user;
+        }
+
+        user.setAvatar(avatar);
 
         RxFirebaseStorage.putFile(firebaseStorage.getReference().child(path), uri)
                 .subscribe(
-                        sub -> {
-                            firebaseFirestore.collection(FirebasePaths.USERS)
-                                    .document(user.getId()).update("avatar", user.getAvatar())
-                                    .addOnSuccessListener(task -> _mvpView.reloadAvatar())
-                                    .addOnFailureListener(throwable -> _mvpView.onError(throwable));
-                        },
+                        sub -> firebaseFirestore.collection(FirebasePaths.USERS)
+                                .document(user.getId()).update("avatar", user.getAvatar())
+                                .addOnSuccessListener(task -> _mvpView.reloadAvatar())
+                                .addOnFailureListener(throwable -> _mvpView.onError(throwable)),
                         throwable -> _mvpView.onError(throwable));
 
         return user;

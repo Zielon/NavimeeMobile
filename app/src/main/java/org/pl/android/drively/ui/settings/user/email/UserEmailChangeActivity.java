@@ -40,6 +40,8 @@ public class UserEmailChangeActivity extends BaseActivity implements UserEmailCh
 
         _userEmailChangePresenter.attachView(this);
 
+        _emailText.setText(_userEmailChangePresenter.getEmail());
+
         _saveButton.setOnClickListener(v -> {
             if (!isEmailValid(_emailText.getText().toString())) {
                 _emailText.setError(getResources().getString(R.string.valid_email_address));

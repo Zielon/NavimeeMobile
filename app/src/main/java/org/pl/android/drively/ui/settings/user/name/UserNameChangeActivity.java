@@ -36,6 +36,8 @@ public class UserNameChangeActivity extends BaseActivity implements UserNameChan
 
         _userNameChangePresenter.attachView(this);
 
+        _nameText.setText(_userNameChangePresenter.getName());
+
         _saveButton.setOnClickListener(v -> {
             String name = _nameText.getText().toString();
 

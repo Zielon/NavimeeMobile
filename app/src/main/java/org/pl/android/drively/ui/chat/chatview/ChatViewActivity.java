@@ -249,7 +249,6 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             ((TextView) view.findViewById(R.id.message_time)).setText(time);
             ((TextView) view.findViewById(R.id.name)).setText(message.nameSender);
-            ((TextView) view.findViewById(R.id.email)).setText(message.emailSender);
 
             messageHolder.timeStamp.setText(new SimpleDateFormat("EEE 'AT' HH:mm").format(message.timestamp).toUpperCase());
 

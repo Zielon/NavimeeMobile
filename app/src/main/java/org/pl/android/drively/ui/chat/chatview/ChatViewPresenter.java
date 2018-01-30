@@ -1,15 +1,5 @@
 package org.pl.android.drively.ui.chat.chatview;
 
-import android.annotation.SuppressLint;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import org.pl.android.drively.data.DataManager;
@@ -51,19 +41,14 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
     public void setMessageListener(String roomId) {
         mDataManager.getFirebaseService().getFirebaseFirestore().collection("MESSAGES").document(roomId).collection("MESSAGES")
                 .orderBy("timestamp")
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @SuppressLint("TimberArgCount")
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot value,
-                                        @Nullable FirebaseFirestoreException e) {
-                        if (e != null) {
-                            Timber.w("Listen failed.", e);
-                            return;
-                        }
-                        List messageList = value.toObjects(Message.class);
-                        if (getMvpView() != null) {
-                            getMvpView().roomChangesListerSet(messageList);
-                        }
+                .addSnapshotListener((value, e) -> {
+                    if (e != null) {
+                        Timber.w("Listen failed.", e);
+                        return;
+                    }
+                    List messageList = value.toObjects(Message.class);
+                    if (getMvpView() != null) {
+                        getMvpView().roomChangesListerSet(messageList);
                     }
                 });
 
@@ -72,19 +57,8 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
     public void addMessage(String roomId, Message newMessage) {
         mDataManager.getFirebaseService().getFirebaseFirestore().collection("MESSAGES")
                 .document(roomId).collection("MESSAGES").add(newMessage)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Timber.w("DocumentSnapshot successfully written!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @SuppressLint("TimberArgCount")
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Timber.w("Error writing document", e);
-                    }
-                });
+                .addOnSuccessListener(documentReference -> Timber.w("DocumentSnapshot successfully written!"))
+                .addOnFailureListener(e -> Timber.w("Error writing document", e));
 
     }
 

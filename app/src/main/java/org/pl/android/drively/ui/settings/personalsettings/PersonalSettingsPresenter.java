@@ -49,9 +49,9 @@ public class PersonalSettingsPresenter extends BasePresenter<PersonalSettingsMvp
                     Timber.d(document.getId() + " => " + document.getData());
 
                     boolean dayScheduleNotification = (Boolean) document.getData().get("dayScheduleNotification");
-                    boolean bigEventsNotification = (Boolean) document.getData().get("bigEventsNotification");
+//                    boolean bigEventsNotification = (Boolean) document.getData().get("bigEventsNotification");
 
-                    getMvpView().setSwitches(dayScheduleNotification, bigEventsNotification);
+                    getMvpView().setSwitches(dayScheduleNotification);
                 }
             }
         });
