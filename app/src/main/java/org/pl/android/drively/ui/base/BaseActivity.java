@@ -47,16 +47,22 @@ public class BaseActivity extends AppCompatActivity {
         mActivityId = savedInstanceState != null ?
                 savedInstanceState.getLong(KEY_ACTIVITY_ID) : NEXT_ID.getAndIncrement();
 
+        mActivityComponent = getConfigPersistentComponent().activityComponent(new ActivityModule(this));
+    }
+
+    private ConfigPersistentComponent getConfigPersistentComponent(){
         ConfigPersistentComponent configPersistentComponent = sComponentsMap.get(mActivityId, null);
 
         if (configPersistentComponent == null) {
             Timber.i("Creating new ConfigPersistentComponent id=%d", mActivityId);
+
             configPersistentComponent = DaggerConfigPersistentComponent.builder()
-                    .applicationComponent(BoilerplateApplication.get(this).getComponent())
-                    .build();
+                    .applicationComponent(BoilerplateApplication.get(this).getComponent()).build();
+
             sComponentsMap.put(mActivityId, configPersistentComponent);
         }
-        mActivityComponent = configPersistentComponent.activityComponent(new ActivityModule(this));
+
+        return configPersistentComponent;
     }
 
     @Override
@@ -75,6 +81,9 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public ActivityComponent activityComponent() {
+        if(mActivityComponent == null)
+            mActivityComponent = getConfigPersistentComponent().activityComponent(new ActivityModule(this));
+
         return mActivityComponent;
     }
 
