@@ -29,6 +29,7 @@ public class PreferencesHelper {
 
     public void clear() {
         mPref.edit().clear().apply();
+        mPref.edit().putBoolean(Const.FIRST_START, false).apply();
     }
 
     public boolean getValue(String name) {

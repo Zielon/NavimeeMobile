@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseUser;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.injection.ConfigPersistent;
 import org.pl.android.drively.ui.base.BasePresenter;
+import org.pl.android.drively.util.Const;
 
 import javax.inject.Inject;
 
@@ -34,7 +35,7 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
 
 
     public boolean checkAppIntro() {
-        return mDataManager.getPreferencesHelper().getValue("firstStart");
+        return mDataManager.getPreferencesHelper().getValue(Const.FIRST_START);
     }
 
     public FirebaseUser checkLogin() {
@@ -43,7 +44,7 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
 
 
     public void setAppIntroShowed() {
-        mDataManager.getPreferencesHelper().setValue("firstStart", false);
+        mDataManager.getPreferencesHelper().setValue(Const.FIRST_START, false);
     }
 
 
