@@ -15,32 +15,31 @@
         android:id="@+id/message_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="center"
+        android:layout_toEndOf="@id/avatar"
+        android:layout_toRightOf="@id/avatar"
         android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="10sp" />
 
     <TextView
         android:id="@+id/name"
+        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/message_time"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="center"
+        android:layout_toEndOf="@id/avatar"
+        android:layout_toRightOf="@id/avatar"
         android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:textAlignment="center"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:singleLine="true"
         android:textColor="@color/white"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/name"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="16dp"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        android:textSize="12sp" />
+        android:textSize="16sp" />
 
 </RelativeLayout>

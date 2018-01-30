@@ -39,9 +39,6 @@ public class SignInPresenter extends BasePresenter<SignInMvpView> {
         mMvpView = null;
     }
 
-    public void setLogin() {
-        mDataManager.getPreferencesHelper().setValue("notlogged", false);
-    }
 
     public void loginIn(String email, String password) {
         RxFirebaseAuth.signInWithEmailAndPassword(mDataManager.getFirebaseService().getFirebaseAuth(), email, password)

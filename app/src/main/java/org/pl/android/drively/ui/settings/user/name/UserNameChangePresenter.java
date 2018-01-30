@@ -19,6 +19,11 @@ public class UserNameChangePresenter extends BasePresenter<UserNameChangeMvpView
         _dataManager = dataManager;
     }
 
+    public String getName() {
+        FirebaseUser user = _dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
+        return user.getDisplayName();
+    }
+
     @Override
     public void attachView(UserNameChangeMvpView mvpView) {
         _mvpView = mvpView;

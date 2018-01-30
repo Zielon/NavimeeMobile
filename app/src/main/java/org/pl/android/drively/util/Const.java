@@ -10,6 +10,7 @@ public class Const {
     public final static String LOCATION_ADDRESS = "LOCATION_ADDRESS";
     public final static String FEEDBACK_ID = "FEEDBACK_ID";
     public final static String NAME = "NAME";
+    public final static String FIRST_START = "firstStart";
 
     public static int REQUEST_CODE_REGISTER = 2000;
     public static String STR_EXTRA_ACTION_LOGIN = "login";

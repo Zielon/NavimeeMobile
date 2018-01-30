@@ -126,6 +126,7 @@ public class SignUpActivity extends BaseActivity implements SignUpMvpView {
     public void onSuccess() {
         _signupButton.setEnabled(true);
         _signUpPresenter.registerMessagingToken();
+        _signUpPresenter.saveUserInfo();
         _progressDialog.dismiss();
         setResult(RESULT_OK, null);
         finish();
