@@ -76,7 +76,6 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         btnSend = (ImageButton) findViewById(R.id.btnSend);
         btnSend.setOnClickListener(this);
 
-
         editWriteMessage = (EditText) findViewById(R.id.editWriteMessage);
         if (idFriend != null && nameFriend != null) {
             getSupportActionBar().setTitle(nameFriend);
@@ -256,7 +255,12 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 messageHolder.avatar.setImageBitmap(currentAvatar);
                 ((CircleImageView) view.findViewById(R.id.avatar)).setImageBitmap(currentAvatar);
             } else {
-                ((CircleImageView) view.findViewById(R.id.avatar)).setImageResource(R.drawable.default_avatar);
+                // TODO A temporary solution !
+                if(message.idSender.equals("ADMIN_DRIVELY")){
+                    ((CircleImageView) view.findViewById(R.id.avatar)).setImageResource(R.drawable.drively);
+                    messageHolder.avatar.setImageResource(R.drawable.drively);
+                }
+                else ((CircleImageView) view.findViewById(R.id.avatar)).setImageResource(R.drawable.default_avatar);
             }
         } else if (holder instanceof ItemMessageUserHolder) {
             ItemMessageUserHolder messageHolder = ((ItemMessageUserHolder) holder);
