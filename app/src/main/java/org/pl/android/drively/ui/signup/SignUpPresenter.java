@@ -72,4 +72,22 @@ public class SignUpPresenter extends BasePresenter<SignUpMvpView> {
                     .addOnFailureListener(e -> Timber.w("Error writing document", e));
         }
     }
+
+    public void saveUserInfo() {
+        String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+        Const.UID = userId;
+        mDataManager.getFirebaseService()
+                .getFirebaseFirestore()
+                .collection(FirebasePaths.USERS).document(userId)
+                .addSnapshotListener((documentSnapshot, e) -> {
+                    if (e != null) {
+                        Timber.e("Listen failed.", e);
+                        return;
+                    }
+                    if (documentSnapshot != null && documentSnapshot.exists()) {
+                        User user = documentSnapshot.toObject(User.class);
+                        mDataManager.getPreferencesHelper().saveUserInfo(user);
+                    }
+                });
+    }
 }
