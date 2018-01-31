@@ -28,8 +28,10 @@ public class PreferencesHelper {
     }
 
     public void clear() {
+        String messagingToken = mPref.getString(Const.MESSAGING_TOKEN, "");
         mPref.edit().clear().apply();
         mPref.edit().putBoolean(Const.FIRST_START, false).apply();
+        mPref.edit().putString(Const.MESSAGING_TOKEN,messagingToken).apply();
     }
 
     public boolean getValue(String name) {
