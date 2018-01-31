@@ -31,9 +31,9 @@ android {
         minSdkVersion 16
         targetSdkVersion 25
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        versionCode 1004
+        versionCode 1005
         // Major -> Millions, Minor -> Thousands, Bugfix -> Hundreds. E.g 1.3.72 == 1,003,072
-        versionName '1.0.4'
+        versionName '1.0.5'
         multiDexEnabled true //important
     }
 
