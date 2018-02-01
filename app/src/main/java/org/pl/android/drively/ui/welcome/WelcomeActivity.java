@@ -9,8 +9,8 @@ import android.widget.TextView;
 import org.pl.android.drively.R;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.main.MainActivity;
-import org.pl.android.drively.ui.signin.SignInActivity;
-import org.pl.android.drively.ui.signup.SignUpActivity;
+import org.pl.android.drively.ui.signinup.in.SignInActivity;
+import org.pl.android.drively.ui.signinup.up.SignUpActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

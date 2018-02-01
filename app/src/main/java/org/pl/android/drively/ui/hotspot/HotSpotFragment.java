@@ -15,6 +15,7 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.ArrayMap;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -165,9 +166,13 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((BaseActivity) getActivity()).activityComponent().inject(this);
-        TextView text = (TextView) ((MainActivity) getActivity()).getSupportActionBar().getCustomView().findViewById(R.id.app_bar_text);
-        text.setText(getResources().getString(R.string.hotspot));
+        ((BaseActivity) getActivity( )).activityComponent().inject(this);
+        ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
+        if(actionBar != null && actionBar.getCustomView() != null) {
+            TextView text = (TextView) actionBar.getCustomView().findViewById(R.id.app_bar_text);
+            text.setText(getResources().getString(R.string.hotspot));
+        }
+
         initGeolocation();
         context = this.getContext();
     }
@@ -595,9 +600,9 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     @Override
     public void onRoutingFailure(RouteException e) {
         if (e != null) {
-            Toast.makeText(getActivity(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(getActivity(), "Something went wrong, Try again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Something went wrong, Try again", Toast.LENGTH_SHORT).show();
         }
     }
 

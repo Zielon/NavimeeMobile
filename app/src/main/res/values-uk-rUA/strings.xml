@@ -108,4 +108,5 @@
     <string name="success_leaveing_group">Група успішно вийшла</string>
     <string name="delete_group">Видалити групу</string>
     <string name="leave_group">покинути групу</string>
+    <string name="accept_regulation">Під час входу до програми ви приймаєте <u>правила</u></string>
 </resources>
