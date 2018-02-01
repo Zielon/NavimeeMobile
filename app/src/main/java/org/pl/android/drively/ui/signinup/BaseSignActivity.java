@@ -52,21 +52,20 @@ public abstract class BaseSignActivity extends BaseActivity {
     private GoogleSignInClient mGoogleSignInClient;
     protected ProgressDialog progressDialog;
 
+    protected abstract  void onErrorFacebook();
+    protected abstract void loginInWithFacebookOrGoogle(AuthCredential credential);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         progressDialog = new ProgressDialog(this, R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
-
         FacebookSdk.sdkInitialize(getApplicationContext());
         LoginManager.getInstance().logOut();
-
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
@@ -76,7 +75,6 @@ public abstract class BaseSignActivity extends BaseActivity {
             Intent signInIntent = mGoogleSignInClient.getSignInIntent();
             startActivityForResult(signInIntent, RC_SIGN_IN);
         });
-
         // FACEBOOK BUTTON
         mCallbackManager = CallbackManager.Factory.create();
         facebookButton.setReadPermissions("email", "public_profile");
@@ -106,9 +104,6 @@ public abstract class BaseSignActivity extends BaseActivity {
         setGooglePlusButtonText(googleButton, "Google");
     }
 
-    protected abstract  void onErrorFacebook();
-    protected abstract void loginInWithFacebookOrGoogle(AuthCredential credential);
-
     //AUTH WITH FACEBOOK
     @SuppressLint("TimberArgCount")
     private void handleFacebookAccessToken(AccessToken token) {
@@ -117,8 +112,6 @@ public abstract class BaseSignActivity extends BaseActivity {
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         loginInWithFacebookOrGoogle(credential);
     }
-
-
 
     // [START auth_with_google]
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
