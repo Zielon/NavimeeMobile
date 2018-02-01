@@ -78,11 +78,6 @@ public class SignUpActivity extends BaseSignActivity implements BaseSignMvpView 
     }
 
     @Override
-    protected void showDialog() {
-        progressDialog.show();
-    }
-
-    @Override
     protected void loginInWithFacebookOrGoogle(AuthCredential credential) {
         signUpPresenter.loginInWithFacebookOrGoogle(credential);
     }

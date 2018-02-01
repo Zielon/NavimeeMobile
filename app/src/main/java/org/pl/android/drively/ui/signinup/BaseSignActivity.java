@@ -107,14 +107,13 @@ public abstract class BaseSignActivity extends BaseActivity {
     }
 
     protected abstract  void onErrorFacebook();
-    protected abstract void showDialog();
     protected abstract void loginInWithFacebookOrGoogle(AuthCredential credential);
 
     //AUTH WITH FACEBOOK
     @SuppressLint("TimberArgCount")
     private void handleFacebookAccessToken(AccessToken token) {
         Timber.d(TAG, "handleFacebookAccessToken:" + token);
-        showDialog();
+        progressDialog.show();
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         loginInWithFacebookOrGoogle(credential);
     }
@@ -124,7 +123,7 @@ public abstract class BaseSignActivity extends BaseActivity {
     // [START auth_with_google]
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-        showDialog();
+        progressDialog.show();
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         loginInWithFacebookOrGoogle(credential);
     }

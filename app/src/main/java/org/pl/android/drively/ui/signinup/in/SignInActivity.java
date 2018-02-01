@@ -140,10 +140,6 @@ public class SignInActivity extends BaseSignActivity implements BaseSignMvpView 
         progressDialog.dismiss();
     }
 
-    @Override
-    protected void showDialog() {
-        progressDialog.show();
-    }
 
     @Override
     protected void loginInWithFacebookOrGoogle(AuthCredential credential) {
