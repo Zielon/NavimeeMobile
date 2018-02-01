@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,8 +51,11 @@ public class ChatFragment extends Fragment implements ChatMvpView {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((BaseActivity) getActivity()).activityComponent().inject(this);
-        TextView text = (TextView) ((MainActivity) getActivity()).getSupportActionBar().getCustomView().findViewById(R.id.app_bar_text);
-        text.setText(getResources().getString(R.string.chat));
+        ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
+        if(actionBar != null && actionBar.getCustomView() != null) {
+            TextView text = (TextView) actionBar.getCustomView().findViewById(R.id.app_bar_text);
+            text.setText(getResources().getString(R.string.chat));
+        }
     }
 
     @SuppressLint("WrongConstant")
