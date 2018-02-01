@@ -68,14 +68,14 @@
             android:theme="@style/AppTheme.Dark" />
 
         <activity
-            android:name="org.pl.android.drively.ui.signin.SignInActivity"
+            android:name="org.pl.android.drively.ui.signinup.in.SignInActivity"
             android:launchMode="singleTop"
             android:parentActivityName="org.pl.android.drively.ui.welcome.WelcomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name="org.pl.android.drively.ui.signup.SignUpActivity"
+            android:name="org.pl.android.drively.ui.signinup.up.SignUpActivity"
             android:launchMode="singleTop"
             android:parentActivityName="org.pl.android.drively.ui.welcome.WelcomeActivity"
             android:screenOrientation="portrait"

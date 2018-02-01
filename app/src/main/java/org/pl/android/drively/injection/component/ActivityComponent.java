@@ -21,8 +21,8 @@ import org.pl.android.drively.ui.settings.user.email.UserEmailChangeActivity;
 import org.pl.android.drively.ui.settings.user.name.UserNameChangeActivity;
 import org.pl.android.drively.ui.settings.user.password.UserPasswordChangeActivity;
 import org.pl.android.drively.ui.settings.user.reauthenticate.ReauthenticateActivity;
-import org.pl.android.drively.ui.signin.SignInActivity;
-import org.pl.android.drively.ui.signup.SignUpActivity;
+import org.pl.android.drively.ui.signinup.in.SignInActivity;
+import org.pl.android.drively.ui.signinup.up.SignUpActivity;
 import org.pl.android.drively.ui.welcome.WelcomeActivity;
 
 import dagger.Subcomponent;

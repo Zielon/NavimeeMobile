@@ -109,4 +109,5 @@
     <string name="success_leaveing_group">Opuszczanie grupy zostało pomyślnie zakończone</string>
     <string name="delete_group">Usuń grupę</string>
     <string name="leave_group">Opuść grupę</string>
+    <string name="accept_regulation">Logując się do aplikacji akceptujesz <u>regulamin</u></string>
 </resources>

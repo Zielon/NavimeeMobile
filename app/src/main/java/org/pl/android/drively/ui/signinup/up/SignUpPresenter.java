@@ -1,4 +1,4 @@
-package org.pl.android.drively.ui.signup;
+package org.pl.android.drively.ui.signinup.up;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -7,7 +7,7 @@ import com.kelvinapps.rxfirebase.RxFirebaseUser;
 
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.User;
-import org.pl.android.drively.ui.base.BasePresenter;
+import org.pl.android.drively.ui.signinup.BaseSignPresenter;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
 
@@ -15,24 +15,12 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-public class SignUpPresenter extends BasePresenter<SignUpMvpView> {
+public class SignUpPresenter extends BaseSignPresenter {
 
-    private final DataManager mDataManager;
-    private SignUpMvpView mMvpView;
 
     @Inject
     public SignUpPresenter(DataManager dataManager) {
         mDataManager = dataManager;
-    }
-
-    @Override
-    public void attachView(SignUpMvpView mvpView) {
-        this.mMvpView = mvpView;
-    }
-
-    @Override
-    public void detachView() {
-        mMvpView = null;
     }
 
     public void register(String email, String password, String name) {
@@ -73,21 +61,5 @@ public class SignUpPresenter extends BasePresenter<SignUpMvpView> {
         }
     }
 
-    public void saveUserInfo() {
-        String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        Const.UID = userId;
-        mDataManager.getFirebaseService()
-                .getFirebaseFirestore()
-                .collection(FirebasePaths.USERS).document(userId)
-                .addSnapshotListener((documentSnapshot, e) -> {
-                    if (e != null) {
-                        Timber.e("Listen failed.", e);
-                        return;
-                    }
-                    if (documentSnapshot != null && documentSnapshot.exists()) {
-                        User user = documentSnapshot.toObject(User.class);
-                        mDataManager.getPreferencesHelper().saveUserInfo(user);
-                    }
-                });
-    }
+
 }
