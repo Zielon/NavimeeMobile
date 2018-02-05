@@ -155,6 +155,7 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
 
     @Override
     public void showEventsEmpty() {
+        mDayScheduleRecycler.animate().alpha(1.0f).setDuration(200);
         mDayScheduleRecycler.setVisibility(View.GONE);
         mDayScheduleEmptyLayout.setVisibility(View.VISIBLE);
         skeletonScreen.hide();

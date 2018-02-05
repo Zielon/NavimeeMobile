@@ -75,11 +75,6 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
                 .whereEqualTo("userId", userId)
                 .whereGreaterThan("endTime", dateFinal)
                 .whereLessThan("endTime", dt.getTime()).orderBy("endTime").orderBy("rank").get()
-                .addOnFailureListener(task -> {
-                    if (getMvpView() != null) {
-                        getMvpView().showEventsEmpty();
-                    }
-                })
                 .addOnCompleteListener(task -> {
                     List<Event> eventList = new ArrayList<>();
                     if (task.isSuccessful()) {

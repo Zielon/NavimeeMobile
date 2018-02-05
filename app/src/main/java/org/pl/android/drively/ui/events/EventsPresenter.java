@@ -118,7 +118,6 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
                             }
                         }
                     });
-
         }
     }
 
