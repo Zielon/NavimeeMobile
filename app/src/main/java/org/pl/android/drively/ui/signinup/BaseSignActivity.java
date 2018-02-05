@@ -35,24 +35,21 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-/**
- * Created by Wojtek on 2018-02-01.
- */
-
 public abstract class BaseSignActivity extends BaseActivity {
 
     private static final int RC_SIGN_IN = 9001;
     private static final String TAG = "BaseSignActivity";
     private static final int REQUEST_SIGNUP = 0;
+    protected ProgressDialog progressDialog;
     @BindView(R.id.facebook_login_button)
     LoginButton facebookButton;
     @BindView(R.id.sign_in_google_button)
     SignInButton googleButton;
     private CallbackManager mCallbackManager;
     private GoogleSignInClient mGoogleSignInClient;
-    protected ProgressDialog progressDialog;
 
-    protected abstract  void onErrorFacebook();
+    protected abstract void onErrorFacebook();
+
     protected abstract void loginInWithFacebookOrGoogle(AuthCredential credential);
 
     @Override

@@ -49,7 +49,7 @@ public class SignUpActivity extends BaseSignActivity implements BaseSignMvpView 
     @BindView(R.id.btn_signup)
     Button signupButton;
 
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,7 +91,7 @@ public class SignUpActivity extends BaseSignActivity implements BaseSignMvpView 
         String password = passwordText.getText().toString();
         signUpPresenter.register(email, password, name);
     }
-    
+
     public boolean validate() {
         boolean valid = true;
         String name = nameText.getText().toString();
