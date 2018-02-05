@@ -106,7 +106,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             public void onTick(long l) {
                 mFriendsPresenter.updateUserStatus();
                 mFriendsPresenter.updateFriendStatus(dataListFriend);
-
             }
 
             @Override
@@ -275,23 +274,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     @Override
     public void onSuccessDeleteFriend(String idFriend) {
         listFriendID.remove(idFriend);
-        mFriendsPresenter.deleteFriendReference(idFriend);
-    }
-
-    @Override
-    public void onFailureDeleteFriend() {
-        dialogWaitDeleting.dismiss();
-        new LovelyInfoDialog(getContext())
-                .setTopColorRes(R.color.primary)
-                .setTitle(getResources().getString(R.string.failure))
-                .setIcon(getResources().getDrawable(R.drawable.ic_delete_black_24dp))
-                .setIconTintColor(getResources().getColor(R.color.white))
-                .setMessage(getResources().getString(R.string.delete_friend_failure))
-                .show();
-    }
-
-    @Override
-    public void onSuccessDeleteFriendReference(String idFriend) {
         dialogWaitDeleting.dismiss();
 
         new LovelyInfoDialog(getContext())
@@ -307,6 +289,18 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         getContext().sendBroadcast(intentDeleted);
     }
 
+    @Override
+    public void onFailureDeleteFriend() {
+        dialogWaitDeleting.dismiss();
+        new LovelyInfoDialog(getContext())
+                .setTopColorRes(R.color.primary)
+                .setTitle(getResources().getString(R.string.failure))
+                .setIcon(getResources().getDrawable(R.drawable.ic_delete_black_24dp))
+                .setIconTintColor(getResources().getColor(R.color.white))
+                .setMessage(getResources().getString(R.string.delete_friend_failure))
+                .show();
+    }
+
     private void getListFriendUId() {
         mFriendsPresenter.getListFriendUId();
     }
@@ -315,7 +309,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     public void listFriendFound(List<String> friendList) {
         listFriendID.clear();
         listFriendID.addAll(friendList);
-        getAllFriendInfo(0);
+        mFriendsPresenter.getAllFriendInfo(listFriendID);
     }
 
     @Override
@@ -324,38 +318,19 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
-    @SuppressLint("TimberArgCount")
-    private void getAllFriendInfo(final int index) {
-        if (index == listFriendID.size()) {
-            //save list friend
-            Collections.sort(dataListFriend.getListFriend());
-            adapter.notifyDataSetChanged();
-            dialogFindAllFriend.dismiss();
-            mSwipeRefreshLayout.setRefreshing(false);
-            detectFriendOnline.start();
-        } else {
-            if (listFriendID.size() >= index) {
-                try {
-                    final String id = listFriendID.get(index);
-                    mFriendsPresenter.getAllFriendInfo(index, id);
-                } catch (IndexOutOfBoundsException ex) {
-                    Timber.w("Exception occured.", ex);
-                } catch (Exception ex) {
-                    Timber.w("Exception occured.", ex);
-                }
-            } else {
-                dialogFindAllFriend.dismiss();
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-        }
+    @Override
+    public void allFriendsFound(){
+        Collections.sort(dataListFriend.getListFriend());
+        adapter.notifyDataSetChanged();
+        dialogFindAllFriend.dismiss();
+        mSwipeRefreshLayout.setRefreshing(false);
+        detectFriendOnline.start();
     }
 
     @Override
-    public void friendInfoFound(int index, Friend friend) {
+    public void addFriendInfo(Friend friend) {
         if (!dataListFriend.getListFriend().contains(friend)) {
             dataListFriend.getListFriend().add(friend);
-            FriendDB.getInstance(getContext()).addFriend(friend);
-            getAllFriendInfo(index + 1);
         } else {
             dialogFindAllFriend.dismiss();
             mSwipeRefreshLayout.setRefreshing(false);
@@ -642,11 +617,6 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return listFriend.getListFriend() != null ? listFriend.getListFriend().size() : 0;
     }
 
-    /**
-     * Delete friend
-     *
-     * @param idFriend
-     */
     private void deleteFriend(final String idFriend) {
         if (idFriend != null) {
             this.fragment.mFriendsPresenter.deleteFriend(idFriend);
