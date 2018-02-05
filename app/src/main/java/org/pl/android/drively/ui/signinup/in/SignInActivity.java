@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.firebase.auth.AuthCredential;
 
 import org.pl.android.drively.R;
@@ -56,7 +57,7 @@ public class SignInActivity extends BaseSignActivity implements BaseSignMvpView 
         loginButton.setOnClickListener(v -> login());
         initializeSocialButtons();
     }
-    
+
     public void login() {
         Timber.d("Login");
         if (!validate()) {
