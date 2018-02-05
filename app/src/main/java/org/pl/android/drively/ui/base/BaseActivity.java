@@ -50,7 +50,7 @@ public class BaseActivity extends AppCompatActivity {
         mActivityComponent = getConfigPersistentComponent().activityComponent(new ActivityModule(this));
     }
 
-    private ConfigPersistentComponent getConfigPersistentComponent(){
+    private ConfigPersistentComponent getConfigPersistentComponent() {
         ConfigPersistentComponent configPersistentComponent = sComponentsMap.get(mActivityId, null);
 
         if (configPersistentComponent == null) {
@@ -81,7 +81,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public ActivityComponent activityComponent() {
-        if(mActivityComponent == null)
+        if (mActivityComponent == null)
             mActivityComponent = getConfigPersistentComponent().activityComponent(new ActivityModule(this));
 
         return mActivityComponent;

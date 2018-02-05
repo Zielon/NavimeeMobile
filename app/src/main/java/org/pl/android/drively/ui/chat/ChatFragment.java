@@ -52,7 +52,7 @@ public class ChatFragment extends Fragment implements ChatMvpView {
         super.onCreate(savedInstanceState);
         ((BaseActivity) getActivity()).activityComponent().inject(this);
         ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
-        if(actionBar != null && actionBar.getCustomView() != null) {
+        if (actionBar != null && actionBar.getCustomView() != null) {
             TextView text = (TextView) actionBar.getCustomView().findViewById(R.id.app_bar_text);
             text.setText(getResources().getString(R.string.chat));
         }

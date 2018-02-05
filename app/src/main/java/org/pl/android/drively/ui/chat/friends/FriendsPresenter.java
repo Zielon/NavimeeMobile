@@ -1,14 +1,9 @@
 package org.pl.android.drively.ui.chat.friends;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
@@ -16,7 +11,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import org.pl.android.drively.R;
@@ -181,7 +175,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
 
     public void getAllFriendInfo(List<String> friendList) {
         List<Task<Task<Friend>>> tasks = new ArrayList<>();
-        for (String id: friendList) {
+        for (String id : friendList) {
             tasks.add(mDataManager.getFirebaseService().getFirebaseFirestore()
                     .collection("USERS").document(id).get().continueWith(task -> {
                         DocumentSnapshot snapshot = task.getResult();
@@ -189,14 +183,14 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                             Friend friend = snapshot.toObject(Friend.class);
                             friend.idRoom = friend.id.compareTo(getId()) > 0 ? (getId() + friend.id).hashCode() + "" : "" + (friend.id + getId()).hashCode();
                             return getStorageReference(friend.avatar).getBytes(Const.FIVE_MEGABYTE).continueWith(avatar -> {
-                                if(avatar.isSuccessful())
+                                if (avatar.isSuccessful())
                                     friend.avatarBytes = avatar.getResult();
 
                                 return friend;
                             });
                         }
                         return null;
-            }));
+                    }));
         }
 
         Tasks.whenAll(tasks).addOnSuccessListener(empty -> {
@@ -219,25 +213,25 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
         mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId)
                 .collection("FRIENDS").get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        List friends = new ArrayList<String>();
-                        if (task.getResult().size() == 0) {
-                            getMvpView().listFriendNotFound();
-                            return;
-                        }
-                        for (DocumentSnapshot document : task.getResult()) {
-                            friends.add(document.get("id"));
-                        }
-                        if (getMvpView() != null) {
-                            getMvpView().listFriendFound(friends);
-                            friends.clear();
-                        }
-                    } else {
-                        if (getMvpView() != null) {
-                            getMvpView().listFriendNotFound();
-                        }
-                    }
-                });
+            if (task.isSuccessful()) {
+                List friends = new ArrayList<String>();
+                if (task.getResult().size() == 0) {
+                    getMvpView().listFriendNotFound();
+                    return;
+                }
+                for (DocumentSnapshot document : task.getResult()) {
+                    friends.add(document.get("id"));
+                }
+                if (getMvpView() != null) {
+                    getMvpView().listFriendFound(friends);
+                    friends.clear();
+                }
+            } else {
+                if (getMvpView() != null) {
+                    getMvpView().listFriendNotFound();
+                }
+            }
+        });
     }
 
     public void addFriend(String idFriend) {
@@ -246,10 +240,10 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         friendMap.put("id", idFriend);
         mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId)
                 .collection("FRIENDS").add(friendMap).addOnSuccessListener(documentReference -> {
-                    if (getMvpView() != null) {
-                        getMvpView().addFriendSuccess(idFriend);
-                    }
-                })
+            if (getMvpView() != null) {
+                getMvpView().addFriendSuccess(idFriend);
+            }
+        })
                 .addOnFailureListener(e -> getMvpView().addFriendFailure());
     }
 
@@ -259,10 +253,10 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         friendMap.put("id", userId);
         mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(idFriend).collection("FRIENDS")
                 .add(friendMap).addOnSuccessListener(documentReference -> {
-                    if (getMvpView() != null) {
-                        getMvpView().addFriendIsNotIdFriend();
-                    }
-                })
+            if (getMvpView() != null) {
+                getMvpView().addFriendIsNotIdFriend();
+            }
+        })
                 .addOnFailureListener(e -> getMvpView().addFriendFailure());
     }
 

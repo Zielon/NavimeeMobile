@@ -319,7 +319,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
     @Override
-    public void allFriendsFound(){
+    public void allFriendsFound() {
         Collections.sort(dataListFriend.getListFriend());
         adapter.notifyDataSetChanged();
         dialogFindAllFriend.dismiss();

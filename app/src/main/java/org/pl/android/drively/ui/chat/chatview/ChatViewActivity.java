@@ -256,11 +256,11 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 ((CircleImageView) view.findViewById(R.id.avatar)).setImageBitmap(currentAvatar);
             } else {
                 // TODO A temporary solution !
-                if(message.idSender.equals("ADMIN_DRIVELY")){
+                if (message.idSender.equals("ADMIN_DRIVELY")) {
                     ((CircleImageView) view.findViewById(R.id.avatar)).setImageResource(R.drawable.drively);
                     messageHolder.avatar.setImageResource(R.drawable.drively);
-                }
-                else ((CircleImageView) view.findViewById(R.id.avatar)).setImageResource(R.drawable.default_avatar);
+                } else
+                    ((CircleImageView) view.findViewById(R.id.avatar)).setImageResource(R.drawable.default_avatar);
             }
         } else if (holder instanceof ItemMessageUserHolder) {
             ItemMessageUserHolder messageHolder = ((ItemMessageUserHolder) holder);

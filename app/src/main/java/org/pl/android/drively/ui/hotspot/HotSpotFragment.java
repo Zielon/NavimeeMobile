@@ -166,9 +166,9 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((BaseActivity) getActivity( )).activityComponent().inject(this);
+        ((BaseActivity) getActivity()).activityComponent().inject(this);
         ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
-        if(actionBar != null && actionBar.getCustomView() != null) {
+        if (actionBar != null && actionBar.getCustomView() != null) {
             TextView text = (TextView) actionBar.getCustomView().findViewById(R.id.app_bar_text);
             text.setText(getResources().getString(R.string.hotspot));
         }

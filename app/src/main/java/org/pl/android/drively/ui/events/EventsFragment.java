@@ -72,7 +72,7 @@ public class EventsFragment extends Fragment implements EventsMvpView {
         super.onCreate(savedInstanceState);
         ((BaseActivity) getActivity()).activityComponent().inject(this);
         ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
-        if(actionBar != null && actionBar.getCustomView() != null) {
+        if (actionBar != null && actionBar.getCustomView() != null) {
             TextView text = (TextView) actionBar.getCustomView().findViewById(R.id.app_bar_text);
             text.setText(getResources().getString(R.string.events));
         }
@@ -224,7 +224,7 @@ public class EventsFragment extends Fragment implements EventsMvpView {
 
     @Override
     public void showEvents(List<Event> eventsList) {
-        if(eventsList.size() == 0) {
+        if (eventsList.size() == 0) {
             mEventsRecycler.setVisibility(View.GONE);
             mEventsEmptyLayout.setVisibility(View.VISIBLE);
         } else {
