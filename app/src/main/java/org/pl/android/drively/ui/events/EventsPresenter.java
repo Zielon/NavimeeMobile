@@ -47,6 +47,7 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
 
     private List<Event> dayScheduleList = new ArrayList<>();
 
+
     @Inject
     public EventsPresenter(DataManager dataManager) {
         mDataManager = dataManager;
@@ -63,11 +64,7 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
     }
 
 
-    public void loadEvents(Date date, String key) {
-
-        eventsKeyList.add(key);
-
-        // today
+    public void loadEvents(Date date, List<String> keys) {
         Calendar dt = new GregorianCalendar();
         // reset hour, minutes, seconds and millis
         dt.setTime(date);
@@ -91,48 +88,38 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
             dt1.set(Calendar.MILLISECOND, 0);
             dateFinal = dt1.getTime();
         }
-        String city = mDataManager.getPreferencesHelper().getValueString(Const.LAST_LOCATION);
-
+        eventsKeyList.addAll(keys);
         Date finalDateFinal = dateFinal;
-        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("HOTSPOT").document(key)
-                .addSnapshotListener((snapshot, e) -> {
-                    if (e != null) {
-                        Timber.e("Listen failed.", e);
-                        return;
-                    }
-                    eventsKeyList.remove(snapshot.getId());
-                    if (snapshot != null && snapshot.exists() && snapshot.get("hotspotType").equals(Const.HotSpotType.EVENT.name())) {
-                        Event event = snapshot.toObject(Event.class);
-                        if (event.getEndTime() != null && event.getEndTime().after(finalDateFinal) && event.getEndTime().before(dt.getTime())) {
+        for (String key : keys) {
+            mDataManager.getFirebaseService().getFirebaseFirestore().collection("HOTSPOT").document(key)
+                    .addSnapshotListener((snapshot, e) -> {
+                        if (e != null) {
+                            Timber.e("Listen failed.", e);
+                            return;
+                        }
+                        eventsKeyList.remove(snapshot.getId());
+                        if (snapshot != null && snapshot.exists() && snapshot.get("hotspotType").equals(Const.HotSpotType.EVENT.name())) {
+                            Event event = snapshot.toObject(Event.class);
+                            if (event.getEndTime() != null && event.getEndTime().after(finalDateFinal) && event.getEndTime().before(dt.getTime())) {
                                /* if(getMvpView() != null) {
                                     getMvpView().showEvent(snapshot.toObject(Event.class));
                                 }*/
-                            eventList.add(event);
-                        }
-                    }
-                    if (eventsKeyList.isEmpty()) {
-                        if (getMvpView() != null) {
-                            if (eventList.isEmpty()) {
-                                getMvpView().showEventsEmpty();
-                            } else {
-                                Collections.sort(eventList);
-                                getMvpView().showEvents(eventList);
+                                eventList.add(event);
                             }
                         }
-                    }
-                });
+                        if (eventsKeyList.isEmpty()) {
+                            if (getMvpView() != null) {
+                                if (eventList.isEmpty()) {
+                                    getMvpView().showEventsEmpty();
+                                } else {
+                                    Collections.sort(eventList);
+                                    getMvpView().showEvents(eventList);
+                                }
+                            }
+                        }
+                    });
 
-       /* RxFirebaseDatabase.observeValueEvent(mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child("events"),DataSnapshotMapper.listOf(Event.class))
-              .subscribe(event -> {
-                  if (!event.isEmpty()) {
-                      Collections.sort(event);
-                      getMvpView().showEvents(event);
-                  } else {
-                      getMvpView().showEventsEmpty();
-                  }
-              }, throwable -> {
-                  Timber.e("RxFirebaseDatabase", throwable.toString());
-              });*/
+        }
     }
 
 
@@ -226,4 +213,6 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
     public void clearEvents() {
         eventList.clear();
     }
+
+
 }

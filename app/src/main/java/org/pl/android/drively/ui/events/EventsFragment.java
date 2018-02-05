@@ -25,6 +25,7 @@ import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.main.MainActivity;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -58,6 +59,8 @@ public class EventsFragment extends Fragment implements EventsMvpView {
     HorizontalCalendar horizontalCalendar;
 
     GeoFire geoFire;
+
+    List<String> keys = new ArrayList<>();
 
     public static EventsFragment newInstance() {
         EventsFragment fragment = new EventsFragment();
@@ -111,12 +114,12 @@ public class EventsFragment extends Fragment implements EventsMvpView {
                 mEventsPresenter.clearEvents();
                 double latitude = mEventsPresenter.getLastLat();
                 double longitude = mEventsPresenter.getLastLng();
+                keys.clear();
                 geoFire.queryAtLocation(new GeoLocation(latitude, longitude), 16).addGeoQueryEventListener(new GeoQueryEventListener() {
                     @Override
                     public void onKeyEntered(String key, GeoLocation location) {
                         Timber.i(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
-                        // mHotspotPresenter.loadHotSpotPlace(key);
-                        mEventsPresenter.loadEvents(date, key);
+                        keys.add(key);
                     }
 
                     @Override
@@ -131,13 +134,14 @@ public class EventsFragment extends Fragment implements EventsMvpView {
 
                     @Override
                     public void onGeoQueryReady() {
-                        //  skeletonScreen.hide();
+                        mEventsPresenter.loadEvents(date, keys);
                         Timber.i("All initial data has been loaded and events have been fired!");
                     }
 
                     @Override
                     public void onGeoQueryError(DatabaseError error) {
                         Timber.e("There was an error with this query: " + error);
+
                     }
                 });
                 //   mEventsPresenter.loadEvents(date);
@@ -220,8 +224,15 @@ public class EventsFragment extends Fragment implements EventsMvpView {
 
     @Override
     public void showEvents(List<Event> eventsList) {
-        mEventsAdapter.addEvents(eventsList);
-        mEventsAdapter.notifyDataSetChanged();
+        if(eventsList.size() == 0) {
+            mEventsRecycler.setVisibility(View.GONE);
+            mEventsEmptyLayout.setVisibility(View.VISIBLE);
+        } else {
+            mEventsRecycler.setVisibility(View.VISIBLE);
+            mEventsEmptyLayout.setVisibility(View.GONE);
+            mEventsAdapter.addEvents(eventsList);
+            mEventsAdapter.notifyDataSetChanged();
+        }
         skeletonScreen.hide();
     }
 
