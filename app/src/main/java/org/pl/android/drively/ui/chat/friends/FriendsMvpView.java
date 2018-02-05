@@ -9,7 +9,9 @@ public interface FriendsMvpView extends MvpView {
 
     void showError();
 
-    void friendInfoFound(int index, Friend friend);
+    void allFriendsFound();
+
+    void addFriendInfo(Friend friend);
 
     void listFriendFound(List<String> friendList);
 
@@ -21,10 +23,8 @@ public interface FriendsMvpView extends MvpView {
 
     void addFriendIsNotIdFriend();
 
-    void onSuccessDeleteFriend(String idFriend);
-
     void onFailureDeleteFriend();
 
-    void onSuccessDeleteFriendReference(String idFriend);
+    void onSuccessDeleteFriend(String idFriend);
 
 }
