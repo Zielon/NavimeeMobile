@@ -180,7 +180,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
     }
 
     public void getAllFriendInfo(List<String> friendList) {
-        List<Task<Friend>> tasks = new ArrayList<>();
+        List<Task<Task<Friend>>> tasks = new ArrayList<>();
         for (String id: friendList) {
             tasks.add(mDataManager.getFirebaseService().getFirebaseFirestore()
                     .collection("USERS").document(id).get().continueWith(task -> {
@@ -188,21 +188,30 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                         if (snapshot != null && snapshot.exists()) {
                             Friend friend = snapshot.toObject(Friend.class);
                             friend.idRoom = friend.id.compareTo(getId()) > 0 ? (getId() + friend.id).hashCode() + "" : "" + (friend.id + getId()).hashCode();
-                            Task<byte[]> bytes = getStorageReference(friend.avatar).getBytes(Const.FIVE_MEGABYTE);
-                            if(bytes.isSuccessful())
-                                friend.avatarBytes = bytes.getResult();
-                            return friend;
+                            return getStorageReference(friend.avatar).getBytes(Const.FIVE_MEGABYTE).continueWith(avatar -> {
+                                if(avatar.isSuccessful())
+                                    friend.avatarBytes = avatar.getResult();
+
+                                return friend;
+                            });
                         }
                         return null;
             }));
         }
 
-        Tasks.whenAll(tasks).addOnSuccessListener(friends ->{
-            for (Task<Friend> task: tasks)
-                if(task.isSuccessful())
-                    getMvpView().addFriendInfo(task.getResult());
+        Tasks.whenAll(tasks).addOnSuccessListener(empty -> {
+            List<Task<Friend>> friendsTasks = new ArrayList<>();
+            for (Task<Task<Friend>> task : tasks)
+                if (task.isSuccessful())
+                    friendsTasks.add(task.getResult());
 
-            getMvpView().allFriendsFound();
+            Tasks.whenAll(friendsTasks).addOnSuccessListener(friends -> {
+                for (Task<Friend> task : friendsTasks)
+                    if (task.isSuccessful())
+                        getMvpView().addFriendInfo(task.getResult());
+
+                getMvpView().allFriendsFound();
+            });
         });
     }
 
