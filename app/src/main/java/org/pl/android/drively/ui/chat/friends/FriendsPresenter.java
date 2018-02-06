@@ -193,15 +193,20 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                     }));
         }
 
-        Tasks.whenAll(tasks).addOnSuccessListener(empty -> {
+        Tasks.whenAll(tasks).addOnSuccessListener(friends -> {
             List<Task<Friend>> friendsTasks = new ArrayList<>();
             for (Task<Task<Friend>> task : tasks)
-                if (task.isSuccessful())
+                if (task.isSuccessful() && task.isComplete())
                     friendsTasks.add(task.getResult());
 
-            Tasks.whenAll(friendsTasks).addOnSuccessListener(friends -> {
+            if(friendsTasks.isEmpty()){
+                getMvpView().allFriendsFound();
+                return;
+            }
+
+            Tasks.whenAll(friendsTasks).addOnSuccessListener(avatars -> {
                 for (Task<Friend> task : friendsTasks)
-                    if (task.isSuccessful())
+                    if (task.isSuccessful() && task.isComplete())
                         getMvpView().addFriendInfo(task.getResult());
 
                 getMvpView().allFriendsFound();
