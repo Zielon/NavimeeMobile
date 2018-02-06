@@ -77,6 +77,8 @@
     <string name="onboarding_3_body">To keep your things organized add events to the Schedule.</string>
     <string name="onboarding_4_title">Hotspot</string>
     <string name="onboarding_4_body"> All popular and crowded place are now available on the map.</string>
+    <string name="onboarding_5_title">Chat</string>
+    <string name="onboarding_5_body">Stay in touch with other drivers and don\'t let yourself miss anything. Add friends, follow groups and create your own. In case of any question drop us a message on Drively Team, see you there!</string>
     <string name="or">or</string>
     <string name="name">Name</string>
     <string name="continueWith">or continue with</string>

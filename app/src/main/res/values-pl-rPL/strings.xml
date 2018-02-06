@@ -69,6 +69,8 @@
     <string name="onboarding_3_body">Dobra organizacja to podstawa. Tutaj szybko sprawdzisz co masz w grafiku na dziś i kolejne dni.</string>
     <string name="onboarding_4_title">Hotspot</string>
     <string name="onboarding_4_body">Na mapie zobaczysz wszystkie popularne miejsca. Dzięki temu w skuteczny sposób sprawdzisz gdzie warto podjechać.</string>
+    <string name="onboarding_5_title">Chat</string>
+    <string name="onboarding_5_body">Bądź w kontakcie z innymi i nie pozwól by coś Cię ominęło. Dodawaj znajomych, śledź grupy i twórz własne. W razie pytań napisz do Zespołu Drively, a my na pewno odpowiemy!</string>
     <string name="or">lub</string>
     <string name="name">Imię</string>
     <string name="continueWith">lub kontynuuj z</string>

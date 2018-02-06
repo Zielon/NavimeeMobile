@@ -68,6 +68,8 @@
     <string name="onboarding_3_body">Щоб зберегти своє речі, додайте події до розкладу.</string>
     <string name="onboarding_4_title">Точка доступу.</string>
     <string name="onboarding_4_body">Усі популярні та багатолюдні місця тепер доступні на карті.</string>
+    <string name="onboarding_5_title">Чат</string>
+    <string name="onboarding_5_body">Будьте на зв\'язку з іншими драйверами і не дозволяйте собі пропустити що-небудь. Додайте друзів, стежте за групами та створіть власний. У разі будь-якого запитання, будь ласка, опустіть його. Дролд Команда, побачимось там!</string>
     <string name="or">або</string>
     <string name="name">ім\'я</string>
     <string name="continueWith">або продовжувати</string>
