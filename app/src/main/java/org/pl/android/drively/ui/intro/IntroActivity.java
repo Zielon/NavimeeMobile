@@ -48,7 +48,7 @@ public class IntroActivity extends AppIntro2 {
         SliderPage fifthFragment = new SliderPage();
         fifthFragment.setTitle(getResources().getString(R.string.onboarding_5_title));
         fifthFragment.setDescription(getResources().getString(R.string.onboarding_5_body));
-        fifthFragment.setImageDrawable(R.drawable.onboarding_chat_24dp);
+        fifthFragment.setImageDrawable(R.drawable.onboarding_chat1_24dp);
         fifthFragment.setBgColor(getBaseContext().getResources().getColor(R.color.primary));
         // Add your slide fragments here.
         // AppIntro will automatically generate the dots indicator and buttons.
