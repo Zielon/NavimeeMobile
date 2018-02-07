@@ -586,11 +586,11 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (mapQueryOnline.get(id) == null && mapChildListenerOnline.get(id) == null) {
             mapQueryOnline.put(id, this.fragment.mFriendsPresenter.getStatus(id));
             mapChildListenerOnline.put(id, (documentSnapshot, e) -> {
-                if (!documentSnapshot.exists() || e != null) {
+                if (e != null) {
                     Timber.w("Listen failed.", e);
                     return;
                 }
-                if (documentSnapshot.get("isOnline") != null && listFriend.getListFriend().size() >= position) {
+                if (documentSnapshot != null && documentSnapshot.exists() && documentSnapshot.get("isOnline") != null && listFriend.getListFriend().size() >= position) {
                     try {
                         listFriend.getListFriend().get(position).status.isOnline = (boolean) documentSnapshot.get("isOnline");
                         notifyDataSetChanged();
