@@ -12,7 +12,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
+import org.greenrobot.eventbus.EventBus;
 import org.pl.android.drively.R;
+import org.pl.android.drively.data.model.eventbus.NotificationEvent;
 import org.pl.android.drively.ui.base.BaseActivityFragment;
 import org.pl.android.drively.ui.chat.ChatFragment;
 import org.pl.android.drively.ui.dayschedule.DayScheduleFragment;
@@ -48,6 +50,18 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra(EXTRA_TRIGGER_SYNC_FLAG, triggerDataSyncOnCreate);
         return intent;
+    }
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        if (intent != null && intent.getExtras() != null && intent.getExtras().get("lat") != null && intent.getExtras().get("lng") != null) {
+            double lat = Double.valueOf(intent.getExtras().getString("lat"));
+            double lng = Double.valueOf(intent.getExtras().getString("lng"));
+            String name = intent.getExtras().getString("name");
+            String count = intent.getExtras().getString("count");
+            EventBus.getDefault().post(new NotificationEvent(lat,lng,name,count));
+        }
     }
 
     @Override

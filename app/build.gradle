@@ -127,6 +127,7 @@ dependencies {
     final APP_INTRO_VERSION = 'v4.2.2'
     final BOTTOM_BAR_VERSION = '2.3.1'
     final FIREBASE_VERSION = '11.6.0'
+    final EVENT_BUS_VERSION = '3.1.1'
 
     def daggerCompiler = "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
     def jUnit = "junit:junit:4.12"
@@ -169,6 +170,9 @@ dependencies {
     //rx permissions
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.9.4@aar'
     compile 'pl.charmas.android:android-reactive-location2:2.0@aar'
+
+    //event bus
+    compile "org.greenrobot:eventbus:$EVENT_BUS_VERSION"
 
     //firebase
     compile "com.google.firebase:firebase-auth:$FIREBASE_VERSION"
