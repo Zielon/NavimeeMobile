@@ -55,11 +55,11 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
-        if (getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().get("lat") != null && getIntent().getExtras().get("lng") != null) {
-            double lat = Double.valueOf(getIntent().getExtras().getString("lat"));
-            double lng = Double.valueOf(getIntent().getExtras().getString("lng"));
-            String name = getIntent().getExtras().getString("name");
-            String count = getIntent().getExtras().getString("count");
+        if (intent != null && intent.getExtras() != null && intent.getExtras().get("lat") != null && intent.getExtras().get("lng") != null) {
+            double lat = Double.valueOf(intent.getExtras().getString("lat"));
+            double lng = Double.valueOf(intent.getExtras().getString("lng"));
+            String name = intent.getExtras().getString("name");
+            String count = intent.getExtras().getString("count");
             EventBus.getDefault().post(new NotificationEvent(lat,lng,name,count));
         }
     }

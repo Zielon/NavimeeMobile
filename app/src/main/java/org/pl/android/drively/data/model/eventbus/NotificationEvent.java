@@ -1,8 +1,5 @@
 package org.pl.android.drively.data.model.eventbus;
 
-/**
- * Created by Wojtek on 2018-02-08.
- */
 
 public class NotificationEvent {
     private double lat;
