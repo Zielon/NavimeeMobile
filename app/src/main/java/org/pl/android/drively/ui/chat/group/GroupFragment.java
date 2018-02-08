@@ -403,6 +403,7 @@ class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             intent.putCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID, idFriend);
             intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, listGroup.get(position).id);
+            intent.putExtra(Const.INTENT_KEY_IS_GROUP_CHAT, true);
             context.startActivity(intent);
         });
     }

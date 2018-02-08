@@ -5,12 +5,15 @@ import com.google.firebase.storage.StorageReference;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.data.model.chat.Message;
+import org.pl.android.drively.data.model.chat.PrivateMessage;
 import org.pl.android.drively.injection.ConfigPersistent;
 import org.pl.android.drively.ui.base.BasePresenter;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static org.pl.android.drively.util.FirebasePaths.*;
 
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
@@ -38,15 +41,18 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
     }
 
 
-    public void setMessageListener(String roomId) {
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("MESSAGES").document(roomId).collection("MESSAGES")
-                .orderBy("timestamp")
+    public void setMessageListener(String roomId, boolean isGroupChat) {
+        String messagePath = isGroupChat ? MESSAGES_GROUPS : MESSAGES;
+        mDataManager.getFirebaseService().getFirebaseFirestore()
+                .collection(messagePath)
+                .document(roomId)
+                .collection(MESSAGES).orderBy("timestamp")
                 .addSnapshotListener((value, e) -> {
                     if (e != null) {
                         Timber.w("Listen failed.", e);
                         return;
                     }
-                    List messageList = value.toObjects(Message.class);
+                    List messageList = value.toObjects(PrivateMessage.class);
                     if (getMvpView() != null) {
                         getMvpView().roomChangesListerSet(messageList);
                     }
@@ -55,11 +61,11 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
     }
 
     public void addMessage(String roomId, Message newMessage) {
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("MESSAGES")
-                .document(roomId).collection("MESSAGES").add(newMessage)
+        String messagePath = newMessage instanceof PrivateMessage ? MESSAGES : MESSAGES_GROUPS;
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection(messagePath)
+                .document(roomId).collection(MESSAGES).add(newMessage)
                 .addOnSuccessListener(documentReference -> Timber.w("DocumentSnapshot successfully written!"))
                 .addOnFailureListener(e -> Timber.w("Error writing document", e));
-
     }
 
     public String getId() {
@@ -71,6 +77,6 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
     }
 
     public StorageReference getStorageReference(String avatar) {
-        return mDataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + avatar);
+        return mDataManager.getFirebaseService().getFirebaseStorage().getReference( String.format("%s/%s", AVATARS, avatar));
     }
 }

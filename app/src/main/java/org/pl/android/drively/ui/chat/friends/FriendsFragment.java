@@ -506,7 +506,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 });
 
 
-        if (listFriend.getListFriend().get(position).message.text.length() > 0) {
+        if (listFriend.getListFriend().get(position).message != null) {
             ((ItemFriendViewHolder) holder).txtMessage.setVisibility(View.VISIBLE);
             ((ItemFriendViewHolder) holder).txtTime.setVisibility(View.VISIBLE);
             if (!listFriend.getListFriend().get(position).message.text.startsWith(id)) {
@@ -545,7 +545,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                     if (!mapMark.get(id)) {
                                         if (listFriend.getListFriend().get(position).message.timestamp != documentSnapshot.getLong("timestamp")
                                                 && listFriend.getListFriend().get(position).message.text != documentSnapshot.get("text")
-                                                && listFriend.getListFriend().get(position).message.idReceiver != documentSnapshot.get("idReceiver")
+                                                && listFriend.getListFriend().get(position).message.idRoom != documentSnapshot.get("idRoom")
                                                 && listFriend.getListFriend().get(position).message.idSender != documentSnapshot.get("idSender")) {
 
                                             listFriend.getListFriend().get(position).message.text = id + documentSnapshot.get("text");
