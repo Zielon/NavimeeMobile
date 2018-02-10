@@ -19,6 +19,7 @@ package org.pl.android.drively.notifications;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -139,7 +140,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private void sendNotificationFromChatWithIcon(String name, String text, String userId, Bitmap bitmap, String roomId) {
         Intent intent = new Intent(this, ChatViewActivity.class);
-      //  intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, name);
         ArrayList<CharSequence> idFriend = new ArrayList<CharSequence>();
         idFriend.add(userId);
@@ -149,8 +150,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         ChatViewActivity.bitmapAvataFriend.put(userId, bitmap);
 
 
-        PendingIntent navigationIntent = PendingIntent.getActivity(this, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent navigationIntent = TaskStackBuilder.create(this)
+                .addParentStack(ChatViewActivity.class)
+                .addNextIntent(intent)
+                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.notification_d)
