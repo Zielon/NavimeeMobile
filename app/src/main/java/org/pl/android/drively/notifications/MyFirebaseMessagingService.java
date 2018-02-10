@@ -107,7 +107,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 sendNotification(remoteMessage.getData().get("title"), remoteMessage.getData().get("endTime"), remoteMessage.getData().get("lat"), remoteMessage.getData().get("lng"));
                 break;
             case MESSAGE_PRIVATE:
-                sendNotificationFromChat(remoteMessage.getData().get("nameSender"), remoteMessage.getData().get("idSender"), remoteMessage.getData().get("text"), remoteMessage.getData().get("avatar"),remoteMessage.getData().get("roomId"));
+                sendNotificationFromChat(remoteMessage.getData().get("nameSender"), remoteMessage.getData().get("idSender"), remoteMessage.getData().get("text"), remoteMessage.getData().get("avatar"),remoteMessage.getData().get("idRoom"));
                 break;
         }
     }
@@ -139,7 +139,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private void sendNotificationFromChatWithIcon(String name, String text, String userId, Bitmap bitmap, String roomId) {
         Intent intent = new Intent(this, ChatViewActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+      //  intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, name);
         ArrayList<CharSequence> idFriend = new ArrayList<CharSequence>();
         idFriend.add(userId);
