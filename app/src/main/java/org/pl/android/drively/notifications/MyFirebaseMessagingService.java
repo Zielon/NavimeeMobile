@@ -21,6 +21,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -34,8 +35,12 @@ import org.joda.time.DateTime;
 import org.pl.android.drively.BoilerplateApplication;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.ui.main.MainActivity;
 import org.pl.android.drively.util.Const;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -101,9 +106,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             case BIG_EVENT:
                 sendNotification(remoteMessage.getData().get("title"), remoteMessage.getData().get("endTime"), remoteMessage.getData().get("lat"), remoteMessage.getData().get("lng"));
                 break;
+            case MESSAGE_PRIVATE:
+                sendNotificationFromChat(remoteMessage.getData().get("nameSender"), remoteMessage.getData().get("idSender"), remoteMessage.getData().get("text"), remoteMessage.getData().get("avatar"),remoteMessage.getData().get("roomId"));
+                break;
         }
     }
-    // [END receive_message]
+
 
     /**
      * Schedule a job using FirebaseJobDispatcher.
@@ -115,6 +123,55 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void handleNow() {
         Log.d(TAG, "Short lived task is done.");
     }
+
+   private void sendNotificationFromChat(String name, String uderId, String text, String avatarPath, String roomId) {
+                dataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + avatarPath)
+                        .getBytes(Const.FIVE_MEGABYTE)
+                        .addOnSuccessListener(bytes -> {
+                           Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            sendNotificationFromChatWithIcon(name,text,uderId,bitmap,roomId);
+
+                        }).addOnFailureListener(exception -> {
+                            Bitmap bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.default_avatar);
+                           sendNotificationFromChatWithIcon(name,text,uderId,bitmap,roomId);
+                });
+        }
+
+    private void sendNotificationFromChatWithIcon(String name, String text, String userId, Bitmap bitmap, String roomId) {
+        Intent intent = new Intent(this, ChatViewActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, name);
+        ArrayList<CharSequence> idFriend = new ArrayList<CharSequence>();
+        idFriend.add(userId);
+        intent.putCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID, idFriend);
+        intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, roomId);
+        ChatViewActivity.bitmapAvataFriend = new HashMap<>();
+        ChatViewActivity.bitmapAvataFriend.put(userId, bitmap);
+
+
+        PendingIntent navigationIntent = PendingIntent.getActivity(this, 0, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.notification_d)
+                .setColor(getResources().getColor(R.color.colorAccent))
+                .setLargeIcon(bitmap)
+                .setContentTitle(name)
+                .setContentText(text)
+                .setAutoCancel(true)
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setSound(defaultSoundUri)
+                .addAction(R.drawable.ic_action_whatshot, getResources().getString(R.string.check_in_app), navigationIntent)
+                .setContentIntent(navigationIntent);
+
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(0 , notificationBuilder.build());
+    }
+
+
+    // [END rec
 
     /**
      * Create and show a simple notification containing the received FCM message.
@@ -151,4 +208,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
+
+
 }
