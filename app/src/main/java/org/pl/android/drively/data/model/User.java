@@ -3,8 +3,6 @@ package org.pl.android.drively.data.model;
 public class User {
 
     public static final String DEFAULT_AVATAR = "DEFAULT";
-    private boolean dayScheduleNotification;
-    private boolean bigEventsNotification;
     private String email;
     private String id;
     private boolean isOnline;
@@ -13,10 +11,18 @@ public class User {
     private String avatar;
     private String token;
 
+    //Settings
+    private boolean dayScheduleNotification;
+    private boolean bigEventsNotification;
+    private boolean chatPrivateNotification;
+    private boolean chatGroupNotification;
+
     public User() {
         this.avatar = DEFAULT_AVATAR;
         this.dayScheduleNotification = true;
         this.bigEventsNotification = true;
+        this.chatGroupNotification = true;
+        this.chatPrivateNotification = true;
     }
 
     public boolean isDayScheduleNotification() {
@@ -93,5 +99,21 @@ public class User {
 
     public boolean isDefaultAvatar() {
         return this.avatar.equals(DEFAULT_AVATAR);
+    }
+
+    public boolean isChatPrivateNotification() {
+        return chatPrivateNotification;
+    }
+
+    public void setChatPrivateNotification(boolean chatPrivateNotification) {
+        this.chatPrivateNotification = chatPrivateNotification;
+    }
+
+    public boolean isChatGroupNotification() {
+        return chatGroupNotification;
+    }
+
+    public void setChatGroupNotification(boolean chatGroupNotification) {
+        this.chatGroupNotification = chatGroupNotification;
     }
 }
