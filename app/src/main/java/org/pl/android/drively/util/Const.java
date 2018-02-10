@@ -45,7 +45,8 @@ public class Const {
     public enum NotificationsType {
         FEEDBACK,
         SCHEDULED_EVENT,
-        BIG_EVENT
+        BIG_EVENT,
+        MESSAGE_PRIVATE
     }
 
 }
