@@ -77,6 +77,8 @@
     <string name="onboarding_3_body">To keep your things organized add events to the Schedule.</string>
     <string name="onboarding_4_title">Hotspot</string>
     <string name="onboarding_4_body"> All popular and crowded place are now available on the map.</string>
+    <string name="onboarding_5_title">Chat</string>
+    <string name="onboarding_5_body">Join groups, ask questions, get valuable insights from other drivers.</string>
     <string name="or">or</string>
     <string name="name">Name</string>
     <string name="continueWith">or continue with</string>

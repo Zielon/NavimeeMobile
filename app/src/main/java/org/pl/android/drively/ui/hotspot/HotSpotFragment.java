@@ -63,10 +63,14 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.pl.android.drively.BuildConfig;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.FourSquarePlace;
+import org.pl.android.drively.data.model.eventbus.NotificationEvent;
 import org.pl.android.drively.data.model.maps.ClusterItemGoogleMap;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.main.MainActivity;
@@ -458,6 +462,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     @Override
     public void onStart() {
         super.onStart();
+        EventBus.getDefault().register(this);
         mMapView.onResume();
         try {
             this.geoQuery.addGeoQueryEventListener(this);
@@ -465,6 +470,8 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
 
         }
     }
+
+
 
     @Override
     public void onResume() {
@@ -565,6 +572,11 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         googleMap.animateCamera(CameraUpdateFactory.zoomIn());
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(NotificationEvent notificationEvent) {
+        route(latLngCurrent, new LatLng(notificationEvent.getLat(), notificationEvent.getLng()), notificationEvent.getName(), notificationEvent.getCount());
+    };
+
 
     @Override
     public void onPause() {
@@ -584,6 +596,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     @Override
     public void onStop() {
         super.onStop();
+        EventBus.getDefault().unregister(this);
         dispose(updatableLocationDisposable);
         dispose(lastKnownLocationDisposable);
         dispose(activityDisposable);

@@ -19,7 +19,9 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.chat.Conversation;
+import org.pl.android.drively.data.model.chat.GroupMessage;
 import org.pl.android.drively.data.model.chat.Message;
+import org.pl.android.drively.data.model.chat.PrivateMessage;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.util.Const;
 
@@ -60,6 +62,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
     private ImageButton btnSend;
     private EditText editWriteMessage;
     private LinearLayoutManager linearLayoutManager;
+    private Boolean isGroupChat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +73,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         Intent intentData = getIntent();
         idFriend = intentData.getCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID);
         roomId = intentData.getStringExtra(Const.INTENT_KEY_CHAT_ROOM_ID);
+        isGroupChat = intentData.getBooleanExtra(Const.INTENT_KEY_IS_GROUP_CHAT, false);
         String nameFriend = intentData.getStringExtra(Const.INTENT_KEY_CHAT_FRIEND);
 
         conversation = new Conversation();
@@ -90,7 +94,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
                     bitmapAvatarUser,
                     mChatViewPresenter.getId());
 
-            mChatViewPresenter.setMessageListener(roomId);
+            mChatViewPresenter.setMessageListener(roomId, isGroupChat);
             recyclerChat.setAdapter(adapter);
         }
     }
@@ -135,10 +139,11 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
             String content = editWriteMessage.getText().toString().trim();
             if (content.length() > 0) {
                 editWriteMessage.setText("");
-                Message newMessage = new Message();
+                Message newMessage = isGroupChat ? new GroupMessage() : new PrivateMessage();
                 newMessage.text = content;
                 newMessage.idSender = mChatViewPresenter.getId();
-                newMessage.idReceiver = roomId;
+                newMessage.idReceiver = idFriend.get(0).toString();
+                newMessage.idRoom = roomId;
                 newMessage.nameSender = mChatViewPresenter.getUserInfo().getName();
                 newMessage.emailSender = mChatViewPresenter.getUserInfo().getEmail();
                 newMessage.timestamp = System.currentTimeMillis();

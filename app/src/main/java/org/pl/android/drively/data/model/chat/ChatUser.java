@@ -11,15 +11,8 @@ public class ChatUser {
 
     public ChatUser() {
         status = new Status();
-        message = new Message();
         status.isOnline = false;
         status.timestamp = 0;
-        message.idReceiver = "0";
-        message.idSender = "0";
-        message.text = "";
-        message.timestamp = 0;
-        message.emailSender = "";
-        message.nameSender = "";
         avatar = "DEFAULT";
     }
 }

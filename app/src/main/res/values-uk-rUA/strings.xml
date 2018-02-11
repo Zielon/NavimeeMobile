@@ -68,6 +68,8 @@
     <string name="onboarding_3_body">Щоб зберегти своє речі, додайте події до розкладу.</string>
     <string name="onboarding_4_title">Точка доступу.</string>
     <string name="onboarding_4_body">Усі популярні та багатолюдні місця тепер доступні на карті.</string>
+    <string name="onboarding_5_title">Чат</string>
+    <string name="onboarding_5_body">Приєднуйтесь до груп, задавайте питання та отримуйте корисні поради від інших водіїв.</string>
     <string name="or">або</string>
     <string name="name">ім\'я</string>
     <string name="continueWith">або продовжувати</string>
