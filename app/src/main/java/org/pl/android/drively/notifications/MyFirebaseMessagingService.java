@@ -110,6 +110,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             case MESSAGE_PRIVATE:
                 sendNotificationFromChat(remoteMessage.getData().get("nameSender"), remoteMessage.getData().get("idSender"), remoteMessage.getData().get("text"), remoteMessage.getData().get("avatar"),remoteMessage.getData().get("idRoom"));
                 break;
+            case MESSAGE_GROUP:
+                sendNotificationFromChat(remoteMessage.getData().get("nameSender"), remoteMessage.getData().get("idSender"), remoteMessage.getData().get("text"), remoteMessage.getData().get("avatar"),remoteMessage.getData().get("idRoom"));
+                break;
         }
     }
 

@@ -321,6 +321,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     @Override
     public void allFriendsFound() {
         Collections.sort(dataListFriend.getListFriend());
+        FriendDB.getInstance(getContext()).addListFriend(dataListFriend);
         adapter.notifyDataSetChanged();
         dialogFindAllFriend.dismiss();
         mSwipeRefreshLayout.setRefreshing(false);

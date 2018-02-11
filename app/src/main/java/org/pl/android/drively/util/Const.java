@@ -46,7 +46,8 @@ public class Const {
         FEEDBACK,
         SCHEDULED_EVENT,
         BIG_EVENT,
-        MESSAGE_PRIVATE
+        MESSAGE_PRIVATE,
+        MESSAGE_GROUP
     }
 
 }
