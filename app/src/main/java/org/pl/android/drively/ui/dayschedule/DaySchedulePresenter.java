@@ -8,8 +8,10 @@ import net.danlew.android.joda.DateUtils;
 import org.joda.time.DateTime;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.Event;
+import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.injection.ConfigPersistent;
 import org.pl.android.drively.ui.base.BasePresenter;
+import org.pl.android.drively.util.ReflectionUtil;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -20,6 +22,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import timber.log.Timber;
+
+import static org.pl.android.drively.util.ReflectionUtil.nameof;
 
 @ConfigPersistent
 public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
@@ -69,31 +73,42 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
             dt1.set(Calendar.MILLISECOND, 0);
             dateFinal = dt1.getTime();
         }
-        String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        mDataManager.getFirebaseService().getFirebaseFirestore()
-                .collection("NOTIFICATIONS")
-                .whereEqualTo("userId", userId)
-                .whereGreaterThan("endTime", dateFinal)
-                .whereLessThan("endTime", dt.getTime()).orderBy("endTime").orderBy("rank").get()
-                .addOnCompleteListener(task -> {
-                    List<Event> eventList = new ArrayList<>();
-                    if (task.isSuccessful()) {
-                        for (DocumentSnapshot documentSnapshot : task.getResult().getDocuments()) {
-                            Event event = documentSnapshot.toObject(Event.class);
-                            event.setFirestoreId(documentSnapshot.getId());
-                            eventList.add(event);
-                        }
-                        if (getMvpView() != null) {
-                            if (eventList.isEmpty()) {
-                                getMvpView().showEventsEmpty();
-                            } else {
-                                getMvpView().showEvents(eventList);
+
+        try {
+            //TODO create the notification data model and replace `userId` with the correct type!
+            String endTimeFilter = nameof(Event.class,"endTime");
+            String rankFilter = nameof(Event.class,"rank");
+
+            String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+            mDataManager.getFirebaseService().getFirebaseFirestore()
+                    .collection("NOTIFICATIONS")
+                    .whereEqualTo("userId", userId)
+                    .whereGreaterThan(endTimeFilter, dateFinal)
+                    .whereLessThan(endTimeFilter, dt.getTime())
+                    .orderBy(endTimeFilter).orderBy(rankFilter).get()
+                    .addOnCompleteListener(task -> {
+                        List<Event> eventList = new ArrayList<>();
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot documentSnapshot : task.getResult().getDocuments()) {
+                                Event event = documentSnapshot.toObject(Event.class);
+                                event.setFirestoreId(documentSnapshot.getId());
+                                eventList.add(event);
                             }
+                            if (getMvpView() != null) {
+                                if (eventList.isEmpty()) {
+                                    getMvpView().showEventsEmpty();
+                                } else {
+                                    getMvpView().showEvents(eventList);
+                                }
+                            }
+                        } else {
+                            Timber.e("Error getting documents: ", task.getException());
                         }
-                    } else {
-                        Timber.e("Error getting documents: ", task.getException());
-                    }
-                });
+                    });
+
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 
     public void deleteEvent(Event event) {
