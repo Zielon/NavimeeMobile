@@ -161,7 +161,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.notification_d)
-                .setColor(getResources().getColor(R.color.colorAccent))
+                .setColor(getResources().getColor(R.color.primary_dark))
                 .setLargeIcon(bitmap)
                 .setContentTitle(name)
                 .setContentText(text)
@@ -200,7 +200,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.notification_d)
-                .setColor(getResources().getColor(R.color.colorAccent))
+                .setColor(getResources().getColor(R.color.primary_dark))
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                 .setContentTitle(title)
                 .setContentText(time)
