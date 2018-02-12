@@ -13,6 +13,7 @@ import net.danlew.android.joda.DateUtils;
 import org.joda.time.DateTime;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.Event;
+import org.pl.android.drively.data.model.EventNotification;
 import org.pl.android.drively.injection.ConfigPersistent;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.Const;
@@ -102,9 +103,6 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
                         if (snapshot != null && snapshot.exists() && snapshot.get("hotspotType").equals(Const.HotSpotType.EVENT.name())) {
                             Event event = snapshot.toObject(Event.class);
                             if (event.getEndTime() != null && event.getEndTime().after(finalDateFinal) && event.getEndTime().before(dt.getTime())) {
-                               /* if(getMvpView() != null) {
-                                    getMvpView().showEvent(snapshot.toObject(Event.class));
-                                }*/
                                 eventList.add(event);
                             }
                         }
@@ -144,25 +142,17 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
 
     public void saveEvent(Event event) {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-
-        Map<String, Object> eventMap = new HashMap<>();
-        eventMap.put("startTime", event.getStartTime());
-        eventMap.put("endTime", event.getEndTime());
-        eventMap.put("hotspotType", event.getHotspotType().name());
-        eventMap.put("userId", userId);
-        eventMap.put("id", event.getId());
-        eventMap.put("title", event.getTitle());
-        eventMap.put("rank", event.getRank());
-        eventMap.put("isSent", false);
-        Map<String, Object> place = new HashMap<>();
-        place.put("address", event.getPlace().getAddress());
-        place.put("category", event.getPlace().getCategory());
-        place.put("city", event.getPlace().getCity());
-        place.put("geoPoint", event.getPlace().getGeoPoint());
-        place.put("id", event.getPlace().getId());
-        place.put("name", event.getPlace().getName());
-        eventMap.put("place", place);
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.NOTIFICATIONS).document(event.getId()).set(eventMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+        EventNotification eventNotification = new EventNotification();
+        eventNotification.setStartTime(event.getStartTime());
+        eventNotification.setEndTime(event.getEndTime());
+        eventNotification.setHotspotType(event.getHotspotType());
+        eventNotification.setUserId(userId);
+        eventNotification.setId(event.getId());
+        eventNotification.setTitle(event.getTitle());
+        eventNotification.setRank(event.getRank());
+        eventNotification.setSent(false);
+        eventNotification.setPlace(event.getPlace());
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.NOTIFICATIONS).document(event.getId()).set(eventNotification).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Timber.i("Event saved");
@@ -171,13 +161,13 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
                 }
             }
         })
-                .addOnFailureListener(new OnFailureListener() {
-                    @SuppressLint("TimberArgCount")
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Timber.e("Error saving event", e);
-                    }
-                });
+        .addOnFailureListener(new OnFailureListener() {
+            @SuppressLint("TimberArgCount")
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Timber.e("Error saving event", e);
+            }
+        });
 
     }
 
@@ -200,14 +190,6 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
 
     public void setDayScheduleList(List<Event> dayScheduleList) {
         this.dayScheduleList = dayScheduleList;
-    }
-
-    public Set<String> getEventsKeyList() {
-        return eventsKeyList;
-    }
-
-    public void setEventsKeyList(Set<String> eventsKeyList) {
-        this.eventsKeyList = eventsKeyList;
     }
 
     public void clearEvents() {

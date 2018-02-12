@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 @IgnoreExtraProperties
 public class Place implements Serializable {
-    GeoPoint geoPoint;
+    private GeoPoint geoPoint;
     private String id;
     private String address;
     private String name;

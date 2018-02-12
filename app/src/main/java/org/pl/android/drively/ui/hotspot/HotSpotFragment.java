@@ -906,7 +906,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         protected void onBeforeClusterItemRendered(ClusterItemGoogleMap clusterItemGoogleMap, MarkerOptions markerOptions) {
             // Draw a single person.
             // Set the info window to show their name.
-            mImageView.setImageResource(clusterItemGoogleMap.profilePhoto);
+            mImageView.setImageResource(clusterItemGoogleMap.getProfilePhoto());
             Bitmap icon = mIconGenerator.makeIcon();
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
         }
@@ -924,7 +924,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                 for (ClusterItemGoogleMap p : cluster.getItems()) {
                     // Draw 4 at most.
                     if (profilePhotos.size() == 4) break;
-                    Drawable drawable = getResources().getDrawable(p.profilePhoto);
+                    Drawable drawable = getResources().getDrawable(p.getProfilePhoto());
                     drawable.setBounds(0, 0, width, height);
                     profilePhotos.add(drawable);
                 }

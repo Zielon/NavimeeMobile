@@ -7,6 +7,7 @@ import com.google.firebase.firestore.ListenerRegistration;
 
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.Event;
+import org.pl.android.drively.data.model.Feedback;
 import org.pl.android.drively.data.model.FourSquarePlace;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.Const;
@@ -100,15 +101,15 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
     }
 
     public void setRouteFromDriver(String locationAddress, String locationName, int durationInSec, int distanceValue, LatLng latLng) {
-        HashMap<String, Object> feedBackObject = new HashMap<>();
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        feedBackObject.put("userId", userId);
-        feedBackObject.put("locationAddress", locationAddress);
-        feedBackObject.put("locationName", locationName);
-        feedBackObject.put("durationInSec", durationInSec);
-        feedBackObject.put("distance", distanceValue);
-        feedBackObject.put("geoPoint", latLng);
-        mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child(FirebasePaths.FEEDBACK).push().setValue(feedBackObject);
+        Feedback feedback = new Feedback();
+        feedback.setUserId(userId);
+        feedback.setLocationAddress(locationAddress);
+        feedback.setLocationName(locationName);
+        feedback.setDurationInSec(durationInSec);
+        feedback.setDistanceValue(distanceValue);
+        feedback.setGeoPoint(latLng);
+        mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child(FirebasePaths.FEEDBACK).push().setValue(feedback);
     }
 
     public double getLastLat() {
