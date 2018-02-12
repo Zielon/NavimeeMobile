@@ -63,6 +63,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
     private EditText editWriteMessage;
     private LinearLayoutManager linearLayoutManager;
     private Boolean isGroupChat;
+    public static boolean active = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +132,18 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         result.putExtra("idFriend", idFriend.get(0));
         setResult(RESULT_OK, result);
         this.finish();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        active = true;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        active = false;
     }
 
     @Override
