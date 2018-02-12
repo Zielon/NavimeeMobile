@@ -9,7 +9,6 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.StorageReference;
 
@@ -24,6 +23,7 @@ import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.ui.chat.friendsearch.FriendModel;
 import org.pl.android.drively.ui.chat.friendsearch.FriendSearchDialogCompat;
 import org.pl.android.drively.util.Const;
+import org.pl.android.drively.util.FirebasePaths;
 import org.pl.android.drively.util.NetworkUtil;
 
 import java.util.ArrayList;
@@ -36,12 +36,11 @@ import javax.inject.Inject;
 import ir.mirrajabi.searchdialog.core.BaseFilter;
 import timber.log.Timber;
 
+import static org.pl.android.drively.util.FirebasePaths.AVATARS;
+
 public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
 
     private final DataManager mDataManager;
-
-    private ListenerRegistration mListener;
-
     private Context mContext;
 
     @Inject
@@ -68,7 +67,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                     Map<String, Object> data = new HashMap<>();
                     data.put("isOnline", true);
                     data.put("timestamp", System.currentTimeMillis());
-                    mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).update(data);
+                    mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).update(data);
                 }
             }
         }
@@ -78,13 +77,13 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         if (NetworkUtil.isNetworkConnected(mContext)) {
             for (Friend friend : listFriend.getListFriend()) {
                 final String fid = friend.id;
-                mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(fid).get().addOnCompleteListener(task -> {
+                mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(fid).get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document != null) {
                             if (task.getResult().getData().get("isOnline") != null && task.getResult().getData().get("timestamp") != null && (boolean) task.getResult().getData().get("isOnline")
                                     && (System.currentTimeMillis() - (long) task.getResult().getData().get("timestamp")) > Const.TIME_TO_OFFLINE) {
-                                mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(fid).update("isOnline", false);
+                                mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(fid).update("isOnline", false);
                             }
                         } else {
                             Timber.d("No such document");
@@ -98,7 +97,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
     }
 
     public void findFriend(BaseFilter baseFilter, FriendSearchDialogCompat searchDialogCompat, String stringQuery, List friendList) {
-        CollectionReference usersReference = mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS");
+        CollectionReference usersReference = mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS);
         friendList.add(getId());
         baseFilter.doBeforeFiltering();
         int strlength = stringQuery.length();
@@ -177,7 +176,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         List<Task<Task<Friend>>> tasks = new ArrayList<>();
         for (String id : friendList) {
             tasks.add(mDataManager.getFirebaseService().getFirebaseFirestore()
-                    .collection("USERS").document(id).get().continueWith(task -> {
+                    .collection(FirebasePaths.USERS).document(id).get().continueWith(task -> {
                         DocumentSnapshot snapshot = task.getResult();
                         if (snapshot != null && snapshot.exists()) {
                             Friend friend = snapshot.toObject(Friend.class);
@@ -211,8 +210,8 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
 
     public void getListFriendUId() {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId)
-                .collection("FRIENDS").get().addOnCompleteListener(task -> {
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId)
+                .collection(FirebasePaths.FRIENDS).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 List friends = new ArrayList<String>();
                 if (task.getResult().size() == 0) {
@@ -238,8 +237,8 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
         Map<String, Object> friendMap = new HashMap<>();
         friendMap.put("id", idFriend);
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId)
-                .collection("FRIENDS").add(friendMap).addOnSuccessListener(documentReference -> {
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId)
+                .collection(FirebasePaths.FRIENDS).add(friendMap).addOnSuccessListener(documentReference -> {
             if (getMvpView() != null) {
                 getMvpView().addFriendSuccess(idFriend);
             }
@@ -251,7 +250,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
         Map<String, Object> friendMap = new HashMap<>();
         friendMap.put("id", userId);
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(idFriend).collection("FRIENDS")
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(idFriend).collection(FirebasePaths.FRIENDS)
                 .add(friendMap).addOnSuccessListener(documentReference -> {
             if (getMvpView() != null) {
                 getMvpView().addFriendIsNotIdFriend();
@@ -262,18 +261,18 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
 
 
     public Query getLastMessage(String idRoom) {
-        return mDataManager.getFirebaseService().getFirebaseFirestore().collection("MESSAGES").document(idRoom)
-                .collection("MESSAGES")
+        return mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.MESSAGES).document(idRoom)
+                .collection(FirebasePaths.MESSAGES)
                 .orderBy("timestamp", Query.Direction.DESCENDING).limit(1);
     }
 
     public DocumentReference getStatus(String id) {
-        return mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(id);
+        return mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(id);
     }
 
     public void deleteFriend(String idFriend) {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).collection("FRIENDS")
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).collection(FirebasePaths.FRIENDS)
                 .whereEqualTo("id", idFriend).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -285,8 +284,8 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                         // Delete a user from the friend list of the current user.
                         for (DocumentSnapshot document : task.getResult()) {
                             Timber.d(document.getId() + " => " + document.getData());
-                            mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS")
-                                    .document(userId).collection("FRIENDS")
+                            mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS)
+                                    .document(userId).collection(FirebasePaths.FRIENDS)
                                     .document(document.getId()).delete()
                                     .addOnSuccessListener(empty -> {
                                         if (getMvpView() != null) {
@@ -314,7 +313,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
     }
 
     public StorageReference getStorageReference(String avatar) {
-        return mDataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + avatar);
+        return mDataManager.getFirebaseService().getFirebaseStorage().getReference( String.format("%s/%s", AVATARS, avatar));
     }
 
     public void getUserAvatar() {
@@ -322,7 +321,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         if (avatarPath.equals(Const.STR_DEFAULT_AVATAR)) {
             ChatViewActivity.bitmapAvatarUser = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.default_avatar);
         } else {
-            mDataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + avatarPath)
+            mDataManager.getFirebaseService().getFirebaseStorage().getReference(String.format("%s/%s", AVATARS, avatarPath))
                     .getBytes(Const.FIVE_MEGABYTE)
                     .addOnSuccessListener(bytes -> {
                         Bitmap src = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);

@@ -11,6 +11,7 @@ import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.injection.ConfigPersistent;
 import org.pl.android.drively.ui.base.BasePresenter;
+import org.pl.android.drively.util.FirebasePaths;
 import org.pl.android.drively.util.ReflectionUtil;
 
 import java.util.ArrayList;
@@ -81,7 +82,7 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
 
             String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
             mDataManager.getFirebaseService().getFirebaseFirestore()
-                    .collection("NOTIFICATIONS")
+                    .collection(FirebasePaths.NOTIFICATIONS)
                     .whereEqualTo("userId", userId)
                     .whereGreaterThan(endTimeFilter, dateFinal)
                     .whereLessThan(endTimeFilter, dt.getTime())
@@ -113,7 +114,7 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
 
     public void deleteEvent(Event event) {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("NOTIFICATIONS").document(event.getFirestoreId()).delete()
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.NOTIFICATIONS).document(event.getFirestoreId()).delete()
                 .addOnSuccessListener(aVoid -> {
                     if (getMvpView() != null) {
                         getMvpView().onSuccessDelete(event);

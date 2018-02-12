@@ -10,6 +10,7 @@ import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.FourSquarePlace;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.Const;
+import org.pl.android.drively.util.FirebasePaths;
 import org.pl.android.drively.util.ViewUtil;
 
 import java.util.HashMap;
@@ -61,7 +62,7 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
 
 
     public DatabaseReference getHotSpotDatabaseRefernce() {
-        return mDataManager.getFirebaseService().getFirebaseDatabase().getReference("HOTSPOT_CURRENT");
+        return mDataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.HOTSPOT_CURRENT);
     }
 
     public String getUid() {
@@ -70,7 +71,7 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
 
     public void loadHotSpotPlace(String key) {
         hotspotKeyList.add(key);
-        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("HOTSPOT").document(key).addSnapshotListener((snapshot, e) -> {
+        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.HOTSPOT).document(key).addSnapshotListener((snapshot, e) -> {
             if (e != null) {
                 Timber.e("Listen failed.", e);
                 return;
@@ -107,7 +108,7 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
         feedBackObject.put("durationInSec", durationInSec);
         feedBackObject.put("distance", distanceValue);
         feedBackObject.put("geoPoint", latLng);
-        mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child("FEEDBACK").push().setValue(feedBackObject);
+        mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child(FirebasePaths.FEEDBACK).push().setValue(feedBackObject);
     }
 
     public double getLastLat() {
@@ -133,7 +134,7 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
     public void sendFeedbackToServer(String feedbackId, int feedbackAnswer) {
         Map<String, Object> feedbackAnswerMap = new HashMap<>();
         feedbackAnswerMap.put("feedbackAnswer", feedbackAnswer);
-        mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child("FEEDBACK").child(feedbackId).updateChildren(feedbackAnswerMap);
+        mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child(FirebasePaths.FEEDBACK).child(feedbackId).updateChildren(feedbackAnswerMap);
     }
 
     public void addItemToFilterList(Const.HotSpotType item) {

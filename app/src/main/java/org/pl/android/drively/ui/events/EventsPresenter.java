@@ -16,6 +16,7 @@ import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.injection.ConfigPersistent;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.Const;
+import org.pl.android.drively.util.FirebasePaths;
 import org.reactivestreams.Subscription;
 
 import java.util.ArrayList;
@@ -91,7 +92,7 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
         eventsKeyList.addAll(keys);
         Date finalDateFinal = dateFinal;
         for (String key : keys) {
-            mDataManager.getFirebaseService().getFirebaseFirestore().collection("HOTSPOT").document(key)
+            mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.HOTSPOT).document(key)
                     .addSnapshotListener((snapshot, e) -> {
                         if (e != null) {
                             Timber.e("Listen failed.", e);
@@ -125,7 +126,7 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
     public void loadDayScheduleEvents() {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
         mDataManager.getFirebaseService().getFirebaseFirestore()
-                .collection("NOTIFICATIONS")
+                .collection(FirebasePaths.NOTIFICATIONS)
                 .whereEqualTo("userId", userId)
                 .addSnapshotListener((value, e) -> {
                     if (e != null) {
@@ -161,7 +162,7 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
         place.put("id", event.getPlace().getId());
         place.put("name", event.getPlace().getName());
         eventMap.put("place", place);
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("NOTIFICATIONS").document(event.getId()).set(eventMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.NOTIFICATIONS).document(event.getId()).set(eventMap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Timber.i("Event saved");
@@ -182,7 +183,7 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
 
 
     public DatabaseReference getHotSpotDatabaseRefernce() {
-        return mDataManager.getFirebaseService().getFirebaseDatabase().getReference("HOTSPOT");
+        return mDataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.HOTSPOT);
     }
 
     public double getLastLat() {

@@ -27,6 +27,7 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 import org.pl.android.drively.BoilerplateApplication;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.util.Const;
+import org.pl.android.drively.util.FirebasePaths;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -88,7 +89,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
             user.put("email", dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getEmail());
             user.put("id", userId);
             user.put("name", name);
-            dataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+            dataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Log.d(TAG, "DocumentSnapshot successfully written!");

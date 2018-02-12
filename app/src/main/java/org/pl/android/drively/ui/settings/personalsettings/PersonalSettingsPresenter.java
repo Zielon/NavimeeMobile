@@ -11,6 +11,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.ui.base.BasePresenter;
+import org.pl.android.drively.util.FirebasePaths;
 
 import javax.inject.Inject;
 
@@ -40,7 +41,7 @@ public class PersonalSettingsPresenter extends BasePresenter<PersonalSettingsMvp
 
     public void loadNotificationConfig() {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
@@ -59,7 +60,7 @@ public class PersonalSettingsPresenter extends BasePresenter<PersonalSettingsMvp
 
     public void submitCheckedChange(String name, boolean checked) {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).update(name, checked).addOnSuccessListener(new OnSuccessListener<Void>() {
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).update(name, checked).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Timber.i("Checked changed ");

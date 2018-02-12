@@ -7,6 +7,7 @@ import com.google.firebase.storage.StorageReference;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.chat.Room;
 import org.pl.android.drively.ui.base.BasePresenter;
+import org.pl.android.drively.util.FirebasePaths;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +41,7 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
 
     public void createGroup(String idGroup, Room room) {
         mDataManager.getFirebaseService().getFirebaseFirestore()
-                .collection("GROUP")
+                .collection(FirebasePaths.GROUP)
                 .document(idGroup).set(room.groupInfo)
                 .addOnSuccessListener(aVoid -> {
                     List<Task<Void>> tasks = new ArrayList<>();
@@ -49,9 +50,9 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
                         member.put("memberId", memberId);
                         tasks.add(mDataManager.getFirebaseService()
                                 .getFirebaseFirestore()
-                                .collection("GROUP")
+                                .collection(FirebasePaths.GROUP)
                                 .document(idGroup)
-                                .collection("MEMBERS").document(memberId).set(member));
+                                .collection(FirebasePaths.MEMBERS).document(memberId).set(member));
                         member.clear();
                     }
                     if (getMvpView() != null) {
@@ -64,7 +65,7 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
     public void addRoomForUser(String roomId, int userIndex, String userId) {
         Map<String, Object> data = new HashMap<>();
         data.put("roomId", roomId);
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).collection("GROUP").add(data)
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).collection(FirebasePaths.GROUP).add(data)
                 .addOnSuccessListener(documentReference -> {
                     if (getMvpView() != null) {
                         getMvpView().addRoomForUser(roomId, userIndex + 1);
@@ -84,11 +85,11 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
     public void editGroup(String idGroup, Room room) {
 
         mDataManager.getFirebaseService().getFirebaseFirestore()
-                .collection("GROUP")
+                .collection(FirebasePaths.GROUP)
                 .document(idGroup)
                 .delete()
                 .addOnSuccessListener(aVoid -> mDataManager.getFirebaseService().getFirebaseFirestore()
-                        .collection("GROUP")
+                        .collection(FirebasePaths.GROUP)
                         .document(idGroup).set(room.groupInfo)
                         .addOnSuccessListener(aVoidd -> {
                             Map<String, String> member = new HashMap<>();
@@ -96,9 +97,9 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
                                 member.put("memberId", memberId);
                                 mDataManager.getFirebaseService()
                                         .getFirebaseFirestore()
-                                        .collection("GROUP")
+                                        .collection(FirebasePaths.GROUP)
                                         .document(idGroup)
-                                        .collection("MEMBERS").document(memberId).set(member);
+                                        .collection(FirebasePaths.MEMBERS).document(memberId).set(member);
                                 member.clear();
                             }
                             if (getMvpView() != null) {
@@ -119,9 +120,9 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
 
     public void deleteUserReference(String userId, String roomId, int userIndex) {
 
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS")
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS)
                 .document(userId)
-                .collection("GROUP").whereEqualTo("roomId", roomId)
+                .collection(FirebasePaths.GROUP).whereEqualTo("roomId", roomId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -132,7 +133,7 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
                         }
                         for (DocumentSnapshot document : task.getResult()) {
                             Timber.d(document.getId() + " => " + document.getData());
-                            mDataManager.getFirebaseService().getFirebaseFirestore().collection("USERS").document(userId).collection("GROUP")
+                            mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).collection(FirebasePaths.GROUP)
                                     .document(document.getId())
                                     .delete()
                                     .addOnSuccessListener(aVoid -> {
@@ -155,9 +156,5 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
                     }
                 });
 
-    }
-
-    public StorageReference getStorageReference(String avatar) {
-        return mDataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + avatar);
     }
 }
