@@ -129,16 +129,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
    private void sendNotificationFromChat(String name, String uderId, String text, String avatarPath, String roomId) {
-                dataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + avatarPath)
-                        .getBytes(Const.FIVE_MEGABYTE)
-                        .addOnSuccessListener(bytes -> {
+            if(!ChatViewActivity.active) {
+               dataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + avatarPath)
+                       .getBytes(Const.FIVE_MEGABYTE)
+                       .addOnSuccessListener(bytes -> {
                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                            sendNotificationFromChatWithIcon(name,text,uderId,bitmap,roomId);
+                           sendNotificationFromChatWithIcon(name, text, uderId, bitmap, roomId);
 
-                        }).addOnFailureListener(exception -> {
-                            Bitmap bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.default_avatar);
-                           sendNotificationFromChatWithIcon(name,text,uderId,bitmap,roomId);
-                });
+                       }).addOnFailureListener(exception -> {
+                   Bitmap bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.default_avatar);
+                   sendNotificationFromChatWithIcon(name, text, uderId, bitmap, roomId);
+               });
+            }
         }
 
     private void sendNotificationFromChatWithIcon(String name, String text, String userId, Bitmap bitmap, String roomId) {
