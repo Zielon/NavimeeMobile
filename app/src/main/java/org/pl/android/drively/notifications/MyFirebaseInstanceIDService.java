@@ -26,6 +26,7 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 
 import org.pl.android.drively.BoilerplateApplication;
 import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
 
@@ -84,23 +85,23 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         if (dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() != null) {
             String userId = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
             String name = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getDisplayName();
-            Map<String, Object> user = new HashMap<>();
-            user.put("token", token);
-            user.put("email", dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getEmail());
-            user.put("id", userId);
-            user.put("name", name);
+            User user = new User();
+            user.setToken(token);
+            user.setEmail(dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getEmail());
+            user.setId(userId);
+            user.setName(name);
             dataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Log.d(TAG, "DocumentSnapshot successfully written!");
                 }
             })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Error writing document", e);
-                        }
-                    });
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.w(TAG, "Error writing document", e);
+                }
+            });
         }
     }
 }
