@@ -35,6 +35,8 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
+import static org.pl.android.drively.util.ReflectionUtil.nameof;
+
 @ConfigPersistent
 public class EventsPresenter extends BasePresenter<EventsMvpView> {
     private final DataManager mDataManager;
@@ -92,51 +94,62 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
         }
         eventsKeyList.addAll(keys);
         Date finalDateFinal = dateFinal;
-        for (String key : keys) {
-            mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.HOTSPOT).document(key)
-                    .addSnapshotListener((snapshot, e) -> {
-                        if (e != null) {
-                            Timber.e("Listen failed.", e);
-                            return;
-                        }
-                        eventsKeyList.remove(snapshot.getId());
-                        if (snapshot != null && snapshot.exists() && snapshot.get("hotspotType").equals(Const.HotSpotType.EVENT.name())) {
-                            Event event = snapshot.toObject(Event.class);
-                            if (event.getEndTime() != null && event.getEndTime().after(finalDateFinal) && event.getEndTime().before(dt.getTime())) {
-                                eventList.add(event);
+        try {
+           final String hotspotTypeFilter = nameof(Event.class,"hotspotType");
+            for (String key : keys) {
+                mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.HOTSPOT).document(key)
+                        .addSnapshotListener((snapshot, e) -> {
+                            if (e != null) {
+                                Timber.e("Listen failed.", e);
+                                return;
                             }
-                        }
-                        if (eventsKeyList.isEmpty()) {
-                            if (getMvpView() != null) {
-                                if (eventList.isEmpty()) {
-                                    getMvpView().showEventsEmpty();
-                                } else {
-                                    Collections.sort(eventList);
-                                    getMvpView().showEvents(eventList);
+                            eventsKeyList.remove(snapshot.getId());
+                            if (snapshot != null && snapshot.exists() && snapshot.get(hotspotTypeFilter).equals(Const.HotSpotType.EVENT.name())) {
+                                Event event = snapshot.toObject(Event.class);
+                                if (event.getEndTime() != null && event.getEndTime().after(finalDateFinal) && event.getEndTime().before(dt.getTime())) {
+                                    eventList.add(event);
                                 }
                             }
-                        }
-                    });
+                            if (eventsKeyList.isEmpty()) {
+                                if (getMvpView() != null) {
+                                    if (eventList.isEmpty()) {
+                                        getMvpView().showEventsEmpty();
+                                    } else {
+                                        Collections.sort(eventList);
+                                        getMvpView().showEvents(eventList);
+                                    }
+                                }
+                            }
+                        });
+            }
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
         }
     }
 
 
     public void loadDayScheduleEvents() {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        mDataManager.getFirebaseService().getFirebaseFirestore()
-                .collection(FirebasePaths.NOTIFICATIONS)
-                .whereEqualTo("userId", userId)
-                .addSnapshotListener((value, e) -> {
-                    if (e != null) {
-                        Timber.e("Listen failed.", e);
-                        return;
-                    }
-                    try {
-                        setDayScheduleList(value.toObjects(Event.class));
-                    } catch (Exception parse) {
-                        Timber.e("Listen failed.", parse);
-                    }
-                });
+        String userIdFilter = null;
+        try {
+            userIdFilter = nameof(EventNotification.class,"userId");
+            mDataManager.getFirebaseService().getFirebaseFirestore()
+                    .collection(FirebasePaths.NOTIFICATIONS)
+                    .whereEqualTo(userIdFilter, userId)
+                    .addSnapshotListener((value, e) -> {
+                        if (e != null) {
+                            Timber.e("Listen failed.", e);
+                            return;
+                        }
+                        try {
+                            setDayScheduleList(value.toObjects(Event.class));
+                        } catch (Exception parse) {
+                            Timber.e("Listen failed.", parse);
+                        }
+                    });
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 
 

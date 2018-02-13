@@ -23,6 +23,8 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
+import static org.pl.android.drively.util.ReflectionUtil.nameof;
+
 public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
 
 
@@ -72,32 +74,37 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
 
     public void loadHotSpotPlace(String key) {
         hotspotKeyList.add(key);
-        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.HOTSPOT).document(key).addSnapshotListener((snapshot, e) -> {
-            if (e != null) {
-                Timber.e("Listen failed.", e);
-                return;
-            }
-            hotspotKeyList.remove(key);
-            if (snapshot != null && snapshot.exists()) {
-                // Timber.d("Current data: " + snapshot.getData());
-                if (snapshot.get("hotspotType").equals(Const.HotSpotType.EVENT.name()) && (filterList.contains(Const.HotSpotType.EVENT) || filterList.isEmpty())) {
-                    if (getMvpView() != null) {
-                        getMvpView().showEventOnMap(snapshot.toObject(Event.class));
+        try {
+            final String hotspotTypeFilter = nameof(Event.class,"hotspotType");
+            mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.HOTSPOT).document(key).addSnapshotListener((snapshot, e) -> {
+                if (e != null) {
+                    Timber.e("Listen failed.", e);
+                    return;
+                }
+                hotspotKeyList.remove(key);
+                if (snapshot != null && snapshot.exists()) {
+                    // Timber.d("Current data: " + snapshot.getData());
+                    if (snapshot.get(hotspotTypeFilter).equals(Const.HotSpotType.EVENT.name()) && (filterList.contains(Const.HotSpotType.EVENT) || filterList.isEmpty())) {
+                        if (getMvpView() != null) {
+                            getMvpView().showEventOnMap(snapshot.toObject(Event.class));
+                        }
+                    } else if (snapshot.get(hotspotTypeFilter).equals(Const.HotSpotType.FOURSQUARE_PLACE.name()) && (filterList.contains(Const.HotSpotType.FOURSQUARE_PLACE) || filterList.isEmpty())) {
+                        if (getMvpView() != null) {
+                            getMvpView().showFoursquareOnMap(snapshot.toObject(FourSquarePlace.class));
+                        }
                     }
-                } else if (snapshot.get("hotspotType").equals(Const.HotSpotType.FOURSQUARE_PLACE.name()) && (filterList.contains(Const.HotSpotType.FOURSQUARE_PLACE) || filterList.isEmpty())) {
-                    if (getMvpView() != null) {
-                        getMvpView().showFoursquareOnMap(snapshot.toObject(FourSquarePlace.class));
-                    }
+
                 }
 
-            }
-
-            if (hotspotKeyList.isEmpty()) {
-                if (getMvpView() != null) {
-                    getMvpView().clusterMap();
+                if (hotspotKeyList.isEmpty()) {
+                    if (getMvpView() != null) {
+                        getMvpView().clusterMap();
+                    }
                 }
-            }
-        });
+            });
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setRouteFromDriver(String locationAddress, String locationName, int durationInSec, int distanceValue, LatLng latLng) {

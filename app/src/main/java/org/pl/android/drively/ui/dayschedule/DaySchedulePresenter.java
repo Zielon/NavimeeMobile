@@ -113,7 +113,6 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
     }
 
     public void deleteEvent(Event event) {
-        String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
         mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.NOTIFICATIONS).document(event.getFirestoreId()).delete()
                 .addOnSuccessListener(aVoid -> {
                     if (getMvpView() != null) {
