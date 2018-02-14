@@ -487,10 +487,10 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                                 @Override
                                 public void onMapReady(GoogleMap mMap) {
                                     googleMap = mMap;
-                                    boolean success = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style));
+                                   /* boolean success = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style));
 
                                     if (!success)
-                                        Timber.i("Map style was not loaded");
+                                        Timber.i("Map style was not loaded");*/
 
                                     // For showing a move to my location button
                                     googleMap.setMyLocationEnabled(true);

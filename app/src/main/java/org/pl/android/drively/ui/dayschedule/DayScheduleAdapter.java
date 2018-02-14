@@ -65,15 +65,15 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
             holder.timeTextView.setText(event.getEndTime().getHours() + ":" + String.format("%02d", event.getEndTime().getMinutes()));
         }
         if (event.getRank() == 1) {
-            holder.imageCount.setImageResource(R.drawable.ranking_1_24dp);
+            holder.imageCount.setImageResource(R.mipmap.ranking_1);
         } else if (event.getRank() == 2) {
-            holder.imageCount.setImageResource(R.drawable.ranking_2_24dp);
+            holder.imageCount.setImageResource(R.mipmap.ranking_2);
         } else if (event.getRank() == 3) {
-            holder.imageCount.setImageResource(R.drawable.ranking_3_24dp);
+            holder.imageCount.setImageResource(R.mipmap.ranking_3);
         } else if (event.getRank() == 4) {
-            holder.imageCount.setImageResource(R.drawable.ranking_4_24dp);
+            holder.imageCount.setImageResource(R.mipmap.ranking_4);
         } else {
-            holder.imageCount.setImageResource(R.drawable.ranking_5_24dp);
+            holder.imageCount.setImageResource(R.mipmap.ranking_5);
         }
 
         if (Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() < 30) {

@@ -8,7 +8,7 @@
         title="@string/hotspot" />
     <tab
         activeColor="@color/settings_switch_color"
-        icon="@drawable/ic_action_place"
+        icon="@drawable/ic_action_today"
         id="@+id/tab_events"
         inActiveColor="@color/colorLine"
         title="@string/events" />

@@ -48,7 +48,7 @@
                 android:paddingLeft="10dp"
                 android:paddingStart="10dp"
                 android:paddingTop="5dp"
-                android:src="@drawable/location_name_24dp" />
+                android:src="@mipmap/place_address" />
 
             <TextView
                 android:id="@+id/text_address_name"
@@ -64,7 +64,7 @@
                 android:textSize="@dimen/text_small_body"
                 tools:text="developer" />
 
-            <ImageView
+            <!--<ImageView
                 android:id="@+id/image_text_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
                 android:layout_centerVertical="true"
                 android:paddingLeft="10dp"
                 android:paddingStart="10dp"
-                android:src="@drawable/location_address_24dp" />
+                android:src="@drawable/location_address_24dp" />-->
 
             <TextView
                 android:id="@+id/text_address"

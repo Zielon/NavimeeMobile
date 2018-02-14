@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:padding="15dp">
 
-            <ImageView
+            <!--<ImageView
                 android:id="@+id/image_address_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
                 android:paddingLeft="10dp"
                 android:paddingStart="10dp"
                 android:src="@drawable/location_address_24dp"
-                android:tint="@color/primary_dark" />
+                android:tint="@color/primary_dark" />-->
 
         </RelativeLayout>
 
