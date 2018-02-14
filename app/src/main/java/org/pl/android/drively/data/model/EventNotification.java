@@ -7,10 +7,6 @@ import org.pl.android.drively.util.Const;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * Created by Wojtek on 2018-02-12.
- */
-
 public class EventNotification implements Comparable<EventNotification>, Serializable {
 
     private String id;

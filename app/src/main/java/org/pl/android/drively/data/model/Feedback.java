@@ -2,12 +2,9 @@ package org.pl.android.drively.data.model;
 
 import com.google.android.gms.maps.model.LatLng;
 
-/**
- * Created by Wojtek on 2018-02-12.
- */
 
 public class Feedback {
-    String userId;
+    private String userId;
     private String locationAddress;
     private String locationName;
     private int durationInSec;

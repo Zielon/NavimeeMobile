@@ -85,22 +85,17 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         if (dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() != null) {
             String userId = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
             String name = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getDisplayName();
+            String email = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getEmail();
             User user = new User();
             user.setToken(token);
-            user.setEmail(dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getEmail());
+            user.setEmail(email);
             user.setId(userId);
             user.setName(name);
-            dataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Log.d(TAG, "DocumentSnapshot successfully written!");
-                }
+            dataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).set(user).addOnSuccessListener(aVoid -> {
+                Log.d(TAG, "DocumentSnapshot successfully written!");
             })
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
+            .addOnFailureListener(e -> {
                     Log.w(TAG, "Error writing document", e);
-                }
             });
         }
     }

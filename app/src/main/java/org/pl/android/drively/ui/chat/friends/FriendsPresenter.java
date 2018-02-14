@@ -14,9 +14,11 @@ import com.google.firebase.storage.StorageReference;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.data.model.chat.ChatUser;
 import org.pl.android.drively.data.model.chat.Friend;
 import org.pl.android.drively.data.model.chat.ListFriend;
+import org.pl.android.drively.data.model.chat.Message;
 import org.pl.android.drively.injection.ActivityContext;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
@@ -37,6 +39,7 @@ import ir.mirrajabi.searchdialog.core.BaseFilter;
 import timber.log.Timber;
 
 import static org.pl.android.drively.util.FirebasePaths.AVATARS;
+import static org.pl.android.drively.util.ReflectionUtil.nameof;
 
 public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
 
@@ -61,38 +64,50 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
 
     public void updateUserStatus() {
         if (NetworkUtil.isNetworkConnected(mContext)) {
+            try {
+                String isOnlineField = nameof(User.class,"isOnline");
+                String timestampField = nameof(User.class,"timestamp");
             if (mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() != null) {
                 String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
                 if (!userId.equals("")) {
                     Map<String, Object> data = new HashMap<>();
-                    data.put("isOnline", true);
-                    data.put("timestamp", System.currentTimeMillis());
+                    data.put(isOnlineField, true);
+                    data.put(timestampField, System.currentTimeMillis());
                     mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).update(data);
                 }
             }
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            }
         }
+
     }
 
     public void updateFriendStatus(ListFriend listFriend) {
         if (NetworkUtil.isNetworkConnected(mContext)) {
-            for (Friend friend : listFriend.getListFriend()) {
-                final String fid = friend.id;
-                mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(fid).get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document != null) {
-                            if (task.getResult().getData().get("isOnline") != null && task.getResult().getData().get("timestamp") != null && (boolean) task.getResult().getData().get("isOnline")
-                                    && (System.currentTimeMillis() - (long) task.getResult().getData().get("timestamp")) > Const.TIME_TO_OFFLINE) {
-                                mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(fid).update("isOnline", false);
+            try {
+                String isOnlineField = nameof(User.class, "isOnline");
+                for (Friend friend : listFriend.getListFriend()) {
+                    final String fid = friend.id;
+                    mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(fid).get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document != null) {
+                                User user = document.toObject(User.class);
+                                if (user.isOnline() && (System.currentTimeMillis() - user.getTimestamp()) > Const.TIME_TO_OFFLINE) {
+                                    mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(fid).update(isOnlineField, false);
+                                }
+                            } else {
+                                Timber.d("No such document");
                             }
                         } else {
-                            Timber.d("No such document");
+                            Timber.e("get failed with ", task.getException());
                         }
-                    } else {
-                        Timber.e("get failed with ", task.getException());
-                    }
-                });
-            }
+                    });
+                }
+            } catch(NoSuchFieldException e){
+                e.printStackTrace();
+             }
         }
     }
 
@@ -123,53 +138,58 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         String finalUpperCase = upperCase;
         String finalEncodeUpperCase = encodeUpperCase;
         String finalEndcode = endcode;
-
-        usersReference
-                .whereGreaterThanOrEqualTo("name", stringQuery).whereLessThan("name", finalEndcode).get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (DocumentSnapshot document : task.getResult()) {
-                            FriendModel friend = new FriendModel(document.toObject(ChatUser.class));
-                            if (!result.contains(friend) && !friendList.contains(friend.getId())) {
-                                result.add(friend);
-                            }
-                        }
-                    } else {
-                        Timber.w("Error getting documents: ", task.getException());
-                    }
-
-                    usersReference.whereGreaterThanOrEqualTo("name", finalUpperCase).whereLessThan("name", finalEncodeUpperCase).get()
-                            .addOnCompleteListener(upperTask -> {
-                                if (upperTask.isSuccessful()) {
-                                    for (DocumentSnapshot document : upperTask.getResult()) {
-                                        FriendModel friend = new FriendModel(document.toObject(ChatUser.class));
-                                        if (!result.contains(friend) && !friendList.contains(friend.getId())) {
-                                            result.add(friend);
-                                        }
-                                    }
-                                } else {
-                                    Timber.w("Error getting documents: ", upperTask.getException());
+        try {
+             String nameField = nameof(User.class,"name");
+             String emailField = nameof(User.class,"email");
+            usersReference
+                    .whereGreaterThanOrEqualTo(nameField, stringQuery).whereLessThan(nameField, finalEndcode).get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                FriendModel friend = new FriendModel(document.toObject(ChatUser.class));
+                                if (!result.contains(friend) && !friendList.contains(friend.getId())) {
+                                    result.add(friend);
                                 }
+                            }
+                        } else {
+                            Timber.w("Error getting documents: ", task.getException());
+                        }
 
-                                usersReference.whereGreaterThanOrEqualTo("email", stringQuery).whereLessThan("email", finalEndcode).get()
-                                        .addOnCompleteListener(stringTask -> {
-                                            if (stringTask.isSuccessful()) {
-                                                for (DocumentSnapshot document : stringTask.getResult()) {
-                                                    FriendModel friend = new FriendModel(document.toObject(ChatUser.class));
-                                                    if (!result.contains(friend) && !friendList.contains(friend.getId())) {
-                                                        result.add(friend);
-                                                    }
-                                                }
-                                            } else {
-                                                Timber.w("Error getting documents: ", stringTask.getException());
+                        usersReference.whereGreaterThanOrEqualTo(nameField, finalUpperCase).whereLessThan(nameField, finalEncodeUpperCase).get()
+                                .addOnCompleteListener(upperTask -> {
+                                    if (upperTask.isSuccessful()) {
+                                        for (DocumentSnapshot document : upperTask.getResult()) {
+                                            FriendModel friend = new FriendModel(document.toObject(ChatUser.class));
+                                            if (!result.contains(friend) && !friendList.contains(friend.getId())) {
+                                                result.add(friend);
                                             }
+                                        }
+                                    } else {
+                                        Timber.w("Error getting documents: ", upperTask.getException());
+                                    }
 
-                                            searchDialogCompat.getFilterResultListener().onFilter(result);
-                                            baseFilter.doAfterFiltering();
-                                        });
-                            });
+                                    usersReference.whereGreaterThanOrEqualTo(emailField, stringQuery).whereLessThan(emailField, finalEndcode).get()
+                                            .addOnCompleteListener(stringTask -> {
+                                                if (stringTask.isSuccessful()) {
+                                                    for (DocumentSnapshot document : stringTask.getResult()) {
+                                                        FriendModel friend = new FriendModel(document.toObject(ChatUser.class));
+                                                        if (!result.contains(friend) && !friendList.contains(friend.getId())) {
+                                                            result.add(friend);
+                                                        }
+                                                    }
+                                                } else {
+                                                    Timber.w("Error getting documents: ", stringTask.getException());
+                                                }
 
-                });
+                                                searchDialogCompat.getFilterResultListener().onFilter(result);
+                                                baseFilter.doAfterFiltering();
+                                            });
+                                });
+
+                    });
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 
     public void getAllFriendInfo(List<String> friendList) {
@@ -210,60 +230,81 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
 
     public void getListFriendUId() {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId)
+         try {
+              String idField = nameof(Friend.class,"id");
+              mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId)
                 .collection(FirebasePaths.FRIENDS).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                List friends = new ArrayList<String>();
-                if (task.getResult().size() == 0) {
-                    getMvpView().listFriendNotFound();
-                    return;
-                }
-                for (DocumentSnapshot document : task.getResult()) {
-                    friends.add(document.get("id"));
-                }
-                if (getMvpView() != null) {
-                    getMvpView().listFriendFound(friends);
-                    friends.clear();
-                }
-            } else {
-                if (getMvpView() != null) {
-                    getMvpView().listFriendNotFound();
-                }
+                if (task.isSuccessful()) {
+                    List friends = new ArrayList<String>();
+                    if (task.getResult().size() == 0) {
+                        getMvpView().listFriendNotFound();
+                        return;
+                    }
+                    for (DocumentSnapshot document : task.getResult()) {
+                        friends.add(document.get(idField));
+                    }
+                    if (getMvpView() != null) {
+                        getMvpView().listFriendFound(friends);
+                        friends.clear();
+                    }
+                    } else {
+                      if (getMvpView() != null) {
+                          getMvpView().listFriendNotFound();
+                      }
+                  }
+                });
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
             }
-        });
     }
 
     public void addFriend(String idFriend) {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
         Map<String, Object> friendMap = new HashMap<>();
-        friendMap.put("id", idFriend);
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId)
-                .collection(FirebasePaths.FRIENDS).add(friendMap).addOnSuccessListener(documentReference -> {
-            if (getMvpView() != null) {
-                getMvpView().addFriendSuccess(idFriend);
+        try {
+            String idField = nameof(Friend.class,"id");
+            friendMap.put(idField, idFriend);
+            mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId)
+                    .collection(FirebasePaths.FRIENDS).add(friendMap).addOnSuccessListener(documentReference -> {
+                if (getMvpView() != null) {
+                    getMvpView().addFriendSuccess(idFriend);
+                }
+            })
+                    .addOnFailureListener(e -> getMvpView().addFriendFailure());
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
             }
-        })
-                .addOnFailureListener(e -> getMvpView().addFriendFailure());
     }
 
     public void addFriendForFriendId(String idFriend) {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
         Map<String, Object> friendMap = new HashMap<>();
-        friendMap.put("id", userId);
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(idFriend).collection(FirebasePaths.FRIENDS)
-                .add(friendMap).addOnSuccessListener(documentReference -> {
-            if (getMvpView() != null) {
-                getMvpView().addFriendIsNotIdFriend();
-            }
-        })
-                .addOnFailureListener(e -> getMvpView().addFriendFailure());
+        try {
+            String idField = nameof(Friend.class,"id");
+            friendMap.put(idField, userId);
+            mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(idFriend).collection(FirebasePaths.FRIENDS)
+                    .add(friendMap).addOnSuccessListener(documentReference -> {
+                if (getMvpView() != null) {
+                    getMvpView().addFriendIsNotIdFriend();
+                }
+            })
+                    .addOnFailureListener(e -> getMvpView().addFriendFailure());
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+        }
     }
 
 
     public Query getLastMessage(String idRoom) {
-        return mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.MESSAGES).document(idRoom)
-                .collection(FirebasePaths.MESSAGES)
-                .orderBy("timestamp", Query.Direction.DESCENDING).limit(1);
+        try {
+            String  timestampField = nameof(Message.class,"timestamp");
+            return mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.MESSAGES).document(idRoom)
+                    .collection(FirebasePaths.MESSAGES)
+                    .orderBy(timestampField, Query.Direction.DESCENDING).limit(1);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public DocumentReference getStatus(String id) {
