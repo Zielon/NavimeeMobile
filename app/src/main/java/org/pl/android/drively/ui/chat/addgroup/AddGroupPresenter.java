@@ -5,6 +5,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.data.model.chat.Room;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.FirebasePaths;
@@ -119,7 +120,6 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
     }
 
     public void deleteUserReference(String userId, String roomId, int userIndex) {
-
         mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS)
                 .document(userId)
                 .collection(FirebasePaths.GROUP).whereEqualTo("roomId", roomId)
