@@ -10,6 +10,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.FirebasePaths;
 
@@ -17,6 +18,8 @@ import javax.inject.Inject;
 
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
+
+import static org.pl.android.drively.util.ReflectionUtil.nameof;
 
 public class PersonalSettingsPresenter extends BasePresenter<PersonalSettingsMvpView> {
 
@@ -41,37 +44,33 @@ public class PersonalSettingsPresenter extends BasePresenter<PersonalSettingsMvp
 
     public void loadNotificationConfig() {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (!document.exists()) return;
-                    Timber.d(document.getId() + " => " + document.getData());
+        try {
+            String dayScheduleNotificationField = nameof(User.class,"dayScheduleNotification");
+            mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (!document.exists()) return;
+                        Timber.d(document.getId() + " => " + document.getData());
 
-                    boolean dayScheduleNotification = (Boolean) document.getData().get("dayScheduleNotification");
-//                    boolean bigEventsNotification = (Boolean) document.getData().get("bigEventsNotification");
+                        boolean dayScheduleNotification = (Boolean) document.getData().get(dayScheduleNotificationField);
+    //                    boolean bigEventsNotification = (Boolean) document.getData().get("bigEventsNotification");
 
-                    getMvpView().setSwitches(dayScheduleNotification);
-                }
-            }
-        });
+                        getMvpView().setSwitches(dayScheduleNotification);
+                    }
+                });
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 
     public void submitCheckedChange(String name, boolean checked) {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).update(name, checked).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).update(name, checked)
+                .addOnSuccessListener(aVoid -> {
                 Timber.i("Checked changed ");
-            }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @SuppressLint("TimberArgCount")
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
+                })
+                .addOnFailureListener(e -> {
                         Timber.e("Error saving event", e);
-                    }
                 });
 
 
