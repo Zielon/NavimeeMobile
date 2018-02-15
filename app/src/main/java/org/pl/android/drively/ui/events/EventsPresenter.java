@@ -79,6 +79,7 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
 
         // next day
         dt.add(Calendar.DAY_OF_MONTH, 1);
+        dt.add(Calendar.HOUR,5);
         DateTime dateTime = new DateTime(date);
         Date dateFinal = date;
         if (!DateUtils.isToday(dateTime)) {
@@ -116,7 +117,7 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
                                         getMvpView().showEventsEmpty();
                                     } else {
                                         Collections.sort(eventList);
-                                        getMvpView().showEvents(eventList);
+                                        getMvpView().showEvents(eventList,dateTime);
                                     }
                                 }
                             }

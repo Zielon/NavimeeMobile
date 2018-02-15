@@ -23,6 +23,7 @@ import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.google.firebase.database.DatabaseError;
 
+import org.joda.time.DateTime;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.ui.base.BaseActivity;
@@ -235,13 +236,14 @@ public class EventsFragment extends Fragment implements EventsMvpView {
     }
 
     @Override
-    public void showEvents(List<Event> eventsList) {
+    public void showEvents(List<Event> eventsList, DateTime dateTime) {
         if (eventsList.size() == 0) {
             showEventsEmpty();
         } else {
             mEventsRecycler.setVisibility(View.VISIBLE);
             mEventsEmptyLayout.setVisibility(View.GONE);
             mEventsAdapter.addEvents(eventsList);
+            mEventsAdapter.setDateTime(dateTime);
             mEventsAdapter.notifyDataSetChanged();
             skeletonScreen.hide();
         }

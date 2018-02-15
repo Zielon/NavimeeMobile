@@ -11,7 +11,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import net.danlew.android.joda.DateUtils;
+
 import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.joda.time.Minutes;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.Event;
@@ -32,6 +35,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
     EventsPresenter mEventsPresenter;
     private List<Event> mEvents;
     private Context mContext;
+    private DateTime dateTime;
 
     @Inject
     public EventsAdapter(@ActivityContext Context context) {
@@ -60,7 +64,14 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
             }
         }
         if (event.getEndTime() != null) {
-            holder.timeTextView.setText(event.getEndTime().getHours() + ":" + String.format("%02d", event.getEndTime().getMinutes()));
+            DateTime startTime = new DateTime(event.getStartTime());
+            if(Days.daysBetween(startTime.withTimeAtStartOfDay(), dateTime.withTimeAtStartOfDay()).getDays() == 0) {
+                holder.timeTextView.setText(event.getStartTime().getHours() + ":" + String.format("%02d", event.getStartTime().getMinutes()) + "-" +
+                        event.getEndTime().getHours() + ":" + String.format("%02d", event.getEndTime().getMinutes()));
+            } else {
+                holder.timeTextView.setText("wcz. "+event.getStartTime().getHours() + ":" + String.format("%02d", event.getStartTime().getMinutes()) + "-" +
+                        event.getEndTime().getHours() + ":" + String.format("%02d", event.getEndTime().getMinutes()));
+            }
         }
         holder.addButton.setTag(0);
         if (event.getRank() == 1) {
@@ -125,6 +136,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
 
     public void clearEvents() {
         mEvents.clear();
+    }
+
+    public void setDateTime(DateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
 

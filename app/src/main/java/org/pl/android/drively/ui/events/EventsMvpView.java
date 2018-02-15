@@ -1,8 +1,8 @@
 package org.pl.android.drively.ui.events;
 
+import org.joda.time.DateTime;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.ui.base.MvpView;
-
 import java.util.List;
 
 public interface EventsMvpView extends MvpView {
@@ -14,5 +14,5 @@ public interface EventsMvpView extends MvpView {
 
     void onSuccessSave();
 
-    void showEvents(List<Event> eventsList);
+    void showEvents(List<Event> eventsList, DateTime dateTime);
 }
