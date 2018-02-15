@@ -5,6 +5,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.data.model.RoomMember;
 import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.data.model.chat.Room;
 import org.pl.android.drively.ui.base.BasePresenter;
@@ -46,15 +47,14 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
                 .document(idGroup).set(room.groupInfo)
                 .addOnSuccessListener(aVoid -> {
                     List<Task<Void>> tasks = new ArrayList<>();
-                    Map<String, String> member = new HashMap<>();
                     for (String memberId : room.member) {
-                        member.put("memberId", memberId);
+                        RoomMember roomMember = new RoomMember();
+                        roomMember.setMemberId(memberId);
                         tasks.add(mDataManager.getFirebaseService()
                                 .getFirebaseFirestore()
                                 .collection(FirebasePaths.GROUP)
                                 .document(idGroup)
-                                .collection(FirebasePaths.MEMBERS).document(memberId).set(member));
-                        member.clear();
+                                .collection(FirebasePaths.MEMBERS).document(memberId).set(roomMember));
                     }
                     if (getMvpView() != null) {
                         getMvpView().addRoomForUser(idGroup, 0);
@@ -93,15 +93,14 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
                         .collection(FirebasePaths.GROUP)
                         .document(idGroup).set(room.groupInfo)
                         .addOnSuccessListener(aVoidd -> {
-                            Map<String, String> member = new HashMap<>();
                             for (String memberId : room.member) {
-                                member.put("memberId", memberId);
+                                RoomMember roomMember = new RoomMember();
+                                roomMember.setMemberId(memberId);
                                 mDataManager.getFirebaseService()
                                         .getFirebaseFirestore()
                                         .collection(FirebasePaths.GROUP)
                                         .document(idGroup)
-                                        .collection(FirebasePaths.MEMBERS).document(memberId).set(member);
-                                member.clear();
+                                        .collection(FirebasePaths.MEMBERS).document(memberId).set(roomMember);
                             }
                             if (getMvpView() != null) {
                                 getMvpView().editGroupSuccess(idGroup);
