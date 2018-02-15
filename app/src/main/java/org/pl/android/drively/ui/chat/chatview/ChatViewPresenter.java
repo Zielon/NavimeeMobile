@@ -42,11 +42,11 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
 
 
     public void setMessageListener(String roomId, boolean isGroupChat) {
-        String messagePath = isGroupChat ? MESSAGES_GROUPS : MESSAGES;
+        String messagePath = isGroupChat ? MESSAGES_GROUPS : MESSAGES_PRIVATE;
         mDataManager.getFirebaseService().getFirebaseFirestore()
                 .collection(messagePath)
                 .document(roomId)
-                .collection(MESSAGES).orderBy("timestamp")
+                .collection(MESSAGES_PRIVATE).orderBy("timestamp")
                 .addSnapshotListener((value, e) -> {
                     if (e != null) {
                         Timber.w("Listen failed.", e);
@@ -61,9 +61,9 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
     }
 
     public void addMessage(String roomId, Message newMessage) {
-        String messagePath = newMessage instanceof PrivateMessage ? MESSAGES : MESSAGES_GROUPS;
+        String messagePath = newMessage instanceof PrivateMessage ? MESSAGES_PRIVATE : MESSAGES_GROUPS;
         mDataManager.getFirebaseService().getFirebaseFirestore().collection(messagePath)
-                .document(roomId).collection(MESSAGES).add(newMessage)
+                .document(roomId).collection(MESSAGES_PRIVATE).add(newMessage)
                 .addOnSuccessListener(documentReference -> Timber.w("DocumentSnapshot successfully written!"))
                 .addOnFailureListener(e -> Timber.w("Error writing document", e));
     }

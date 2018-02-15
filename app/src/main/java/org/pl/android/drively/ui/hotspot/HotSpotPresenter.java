@@ -7,9 +7,11 @@ import com.google.firebase.firestore.ListenerRegistration;
 
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.Event;
+import org.pl.android.drively.data.model.Feedback;
 import org.pl.android.drively.data.model.FourSquarePlace;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.Const;
+import org.pl.android.drively.util.FirebasePaths;
 import org.pl.android.drively.util.ViewUtil;
 
 import java.util.HashMap;
@@ -20,6 +22,8 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import timber.log.Timber;
+
+import static org.pl.android.drively.util.ReflectionUtil.nameof;
 
 public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
 
@@ -61,7 +65,7 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
 
 
     public DatabaseReference getHotSpotDatabaseRefernce() {
-        return mDataManager.getFirebaseService().getFirebaseDatabase().getReference("HOTSPOT_CURRENT");
+        return mDataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.HOTSPOT_CURRENT);
     }
 
     public String getUid() {
@@ -70,44 +74,49 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
 
     public void loadHotSpotPlace(String key) {
         hotspotKeyList.add(key);
-        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("HOTSPOT").document(key).addSnapshotListener((snapshot, e) -> {
-            if (e != null) {
-                Timber.e("Listen failed.", e);
-                return;
-            }
-            hotspotKeyList.remove(key);
-            if (snapshot != null && snapshot.exists()) {
-                // Timber.d("Current data: " + snapshot.getData());
-                if (snapshot.get("hotspotType").equals(Const.HotSpotType.EVENT.name()) && (filterList.contains(Const.HotSpotType.EVENT) || filterList.isEmpty())) {
-                    if (getMvpView() != null) {
-                        getMvpView().showEventOnMap(snapshot.toObject(Event.class));
+        try {
+            final String hotspotTypeFilter = nameof(Event.class,"hotspotType");
+            mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.HOTSPOT).document(key).addSnapshotListener((snapshot, e) -> {
+                if (e != null) {
+                    Timber.e("Listen failed.", e);
+                    return;
+                }
+                hotspotKeyList.remove(key);
+                if (snapshot != null && snapshot.exists()) {
+                    // Timber.d("Current data: " + snapshot.getData());
+                    if (snapshot.get(hotspotTypeFilter).equals(Const.HotSpotType.EVENT.name()) && (filterList.contains(Const.HotSpotType.EVENT) || filterList.isEmpty())) {
+                        if (getMvpView() != null) {
+                            getMvpView().showEventOnMap(snapshot.toObject(Event.class));
+                        }
+                    } else if (snapshot.get(hotspotTypeFilter).equals(Const.HotSpotType.FOURSQUARE_PLACE.name()) && (filterList.contains(Const.HotSpotType.FOURSQUARE_PLACE) || filterList.isEmpty())) {
+                        if (getMvpView() != null) {
+                            getMvpView().showFoursquareOnMap(snapshot.toObject(FourSquarePlace.class));
+                        }
                     }
-                } else if (snapshot.get("hotspotType").equals(Const.HotSpotType.FOURSQUARE_PLACE.name()) && (filterList.contains(Const.HotSpotType.FOURSQUARE_PLACE) || filterList.isEmpty())) {
-                    if (getMvpView() != null) {
-                        getMvpView().showFoursquareOnMap(snapshot.toObject(FourSquarePlace.class));
-                    }
+
                 }
 
-            }
-
-            if (hotspotKeyList.isEmpty()) {
-                if (getMvpView() != null) {
-                    getMvpView().clusterMap();
+                if (hotspotKeyList.isEmpty()) {
+                    if (getMvpView() != null) {
+                        getMvpView().clusterMap();
+                    }
                 }
-            }
-        });
+            });
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setRouteFromDriver(String locationAddress, String locationName, int durationInSec, int distanceValue, LatLng latLng) {
-        HashMap<String, Object> feedBackObject = new HashMap<>();
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        feedBackObject.put("userId", userId);
-        feedBackObject.put("locationAddress", locationAddress);
-        feedBackObject.put("locationName", locationName);
-        feedBackObject.put("durationInSec", durationInSec);
-        feedBackObject.put("distance", distanceValue);
-        feedBackObject.put("geoPoint", latLng);
-        mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child("FEEDBACK").push().setValue(feedBackObject);
+        Feedback feedback = new Feedback();
+        feedback.setUserId(userId);
+        feedback.setLocationAddress(locationAddress);
+        feedback.setLocationName(locationName);
+        feedback.setDurationInSec(durationInSec);
+        feedback.setDistanceValue(distanceValue);
+        feedback.setGeoPoint(latLng);
+        mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child(FirebasePaths.FEEDBACK).push().setValue(feedback);
     }
 
     public double getLastLat() {
@@ -133,7 +142,7 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
     public void sendFeedbackToServer(String feedbackId, int feedbackAnswer) {
         Map<String, Object> feedbackAnswerMap = new HashMap<>();
         feedbackAnswerMap.put("feedbackAnswer", feedbackAnswer);
-        mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child("FEEDBACK").child(feedbackId).updateChildren(feedbackAnswerMap);
+        mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child(FirebasePaths.FEEDBACK).child(feedbackId).updateChildren(feedbackAnswerMap);
     }
 
     public void addItemToFilterList(Const.HotSpotType item) {

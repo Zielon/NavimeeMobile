@@ -42,10 +42,6 @@ public class FriendModelAdapter extends RecyclerView.Adapter<FriendModelAdapter.
         this(context, layout, null, items);
     }
 
-    public FriendModelAdapter(Context context, AdapterViewBinder<FriendModel> viewBinder, @LayoutRes int layout, List<FriendModel> items) {
-        this(context, layout, viewBinder, items);
-    }
-
     public FriendModelAdapter(Context context, @LayoutRes int layout,
                               @Nullable AdapterViewBinder<FriendModel> viewBinder,
                               List<FriendModel> items) {
@@ -124,30 +120,9 @@ public class FriendModelAdapter extends RecyclerView.Adapter<FriendModelAdapter.
             holder.getBaseView().setOnClickListener(view -> mSearchResultListener.onSelected(mSearchDialog, object, position));
     }
 
-    public SearchResultListener getSearchResultListener() {
-        return mSearchResultListener;
-    }
 
     public void setSearchResultListener(SearchResultListener searchResultListener) {
         this.mSearchResultListener = searchResultListener;
-    }
-
-    public String getSearchTag() {
-        return mSearchTag;
-    }
-
-    public FriendModelAdapter setSearchTag(String searchTag) {
-        mSearchTag = searchTag;
-        return this;
-    }
-
-    public boolean isHighlightPartsInCommon() {
-        return mHighlightPartsInCommon;
-    }
-
-    public FriendModelAdapter setHighlightPartsInCommon(boolean highlightPartsInCommon) {
-        mHighlightPartsInCommon = highlightPartsInCommon;
-        return this;
     }
 
     public FriendModelAdapter setSearchDialog(BaseSearchDialogCompat searchDialog) {
@@ -175,8 +150,5 @@ public class FriendModelAdapter extends RecyclerView.Adapter<FriendModelAdapter.
             return (T) mBaseView.findViewById(id);
         }
 
-        public void clearAnimation(@IdRes int id) {
-            mBaseView.findViewById(id).clearAnimation();
-        }
     }
 }

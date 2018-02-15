@@ -13,9 +13,11 @@ import net.danlew.android.joda.DateUtils;
 import org.joda.time.DateTime;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.Event;
+import org.pl.android.drively.data.model.EventNotification;
 import org.pl.android.drively.injection.ConfigPersistent;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.Const;
+import org.pl.android.drively.util.FirebasePaths;
 import org.reactivestreams.Subscription;
 
 import java.util.ArrayList;
@@ -32,6 +34,8 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import timber.log.Timber;
+
+import static org.pl.android.drively.util.ReflectionUtil.nameof;
 
 @ConfigPersistent
 public class EventsPresenter extends BasePresenter<EventsMvpView> {
@@ -90,78 +94,78 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
         }
         eventsKeyList.addAll(keys);
         Date finalDateFinal = dateFinal;
-        for (String key : keys) {
-            mDataManager.getFirebaseService().getFirebaseFirestore().collection("HOTSPOT").document(key)
-                    .addSnapshotListener((snapshot, e) -> {
-                        if (e != null) {
-                            Timber.e("Listen failed.", e);
-                            return;
-                        }
-                        eventsKeyList.remove(snapshot.getId());
-                        if (snapshot != null && snapshot.exists() && snapshot.get("hotspotType").equals(Const.HotSpotType.EVENT.name())) {
-                            Event event = snapshot.toObject(Event.class);
-                            if (event.getEndTime() != null && event.getEndTime().after(finalDateFinal) && event.getEndTime().before(dt.getTime())) {
-                               /* if(getMvpView() != null) {
-                                    getMvpView().showEvent(snapshot.toObject(Event.class));
-                                }*/
-                                eventList.add(event);
+        try {
+           final String hotspotTypeFilter = nameof(Event.class,"hotspotType");
+            for (String key : keys) {
+                mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.HOTSPOT).document(key)
+                        .addSnapshotListener((snapshot, e) -> {
+                            if (e != null) {
+                                Timber.e("Listen failed.", e);
+                                return;
                             }
-                        }
-                        if (eventsKeyList.isEmpty()) {
-                            if (getMvpView() != null) {
-                                if (eventList.isEmpty()) {
-                                    getMvpView().showEventsEmpty();
-                                } else {
-                                    Collections.sort(eventList);
-                                    getMvpView().showEvents(eventList);
+                            eventsKeyList.remove(snapshot.getId());
+                            if (snapshot != null && snapshot.exists() && snapshot.get(hotspotTypeFilter).equals(Const.HotSpotType.EVENT.name())) {
+                                Event event = snapshot.toObject(Event.class);
+                                if (event.getEndTime() != null && event.getEndTime().after(finalDateFinal) && event.getEndTime().before(dt.getTime())) {
+                                    eventList.add(event);
                                 }
                             }
-                        }
-                    });
+                            if (eventsKeyList.isEmpty()) {
+                                if (getMvpView() != null) {
+                                    if (eventList.isEmpty()) {
+                                        getMvpView().showEventsEmpty();
+                                    } else {
+                                        Collections.sort(eventList);
+                                        getMvpView().showEvents(eventList);
+                                    }
+                                }
+                            }
+                        });
+            }
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
         }
     }
 
 
     public void loadDayScheduleEvents() {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        mDataManager.getFirebaseService().getFirebaseFirestore()
-                .collection("NOTIFICATIONS")
-                .whereEqualTo("userId", userId)
-                .addSnapshotListener((value, e) -> {
-                    if (e != null) {
-                        Timber.e("Listen failed.", e);
-                        return;
-                    }
-                    try {
-                        setDayScheduleList(value.toObjects(Event.class));
-                    } catch (Exception parse) {
-                        Timber.e("Listen failed.", parse);
-                    }
-                });
+        String userIdFilter = null;
+        try {
+            userIdFilter = nameof(EventNotification.class,"userId");
+            mDataManager.getFirebaseService().getFirebaseFirestore()
+                    .collection(FirebasePaths.NOTIFICATIONS)
+                    .whereEqualTo(userIdFilter, userId)
+                    .addSnapshotListener((value, e) -> {
+                        if (e != null) {
+                            Timber.e("Listen failed.", e);
+                            return;
+                        }
+                        try {
+                            setDayScheduleList(value.toObjects(Event.class));
+                        } catch (Exception parse) {
+                            Timber.e("Listen failed.", parse);
+                        }
+                    });
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 
 
     public void saveEvent(Event event) {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-
-        Map<String, Object> eventMap = new HashMap<>();
-        eventMap.put("startTime", event.getStartTime());
-        eventMap.put("endTime", event.getEndTime());
-        eventMap.put("hotspotType", event.getHotspotType().name());
-        eventMap.put("userId", userId);
-        eventMap.put("id", event.getId());
-        eventMap.put("title", event.getTitle());
-        eventMap.put("rank", event.getRank());
-        eventMap.put("isSent", false);
-        Map<String, Object> place = new HashMap<>();
-        place.put("address", event.getPlace().getAddress());
-        place.put("category", event.getPlace().getCategory());
-        place.put("city", event.getPlace().getCity());
-        place.put("geoPoint", event.getPlace().getGeoPoint());
-        place.put("id", event.getPlace().getId());
-        place.put("name", event.getPlace().getName());
-        eventMap.put("place", place);
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection("NOTIFICATIONS").document(event.getId()).set(eventMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+        EventNotification eventNotification = new EventNotification();
+        eventNotification.setStartTime(event.getStartTime());
+        eventNotification.setEndTime(event.getEndTime());
+        eventNotification.setHotspotType(event.getHotspotType());
+        eventNotification.setUserId(userId);
+        eventNotification.setId(event.getId());
+        eventNotification.setTitle(event.getTitle());
+        eventNotification.setRank(event.getRank());
+        eventNotification.setSent(false);
+        eventNotification.setPlace(event.getPlace());
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.NOTIFICATIONS).document(event.getId()).set(eventNotification).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Timber.i("Event saved");
@@ -170,19 +174,19 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
                 }
             }
         })
-                .addOnFailureListener(new OnFailureListener() {
-                    @SuppressLint("TimberArgCount")
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Timber.e("Error saving event", e);
-                    }
-                });
+        .addOnFailureListener(new OnFailureListener() {
+            @SuppressLint("TimberArgCount")
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Timber.e("Error saving event", e);
+            }
+        });
 
     }
 
 
     public DatabaseReference getHotSpotDatabaseRefernce() {
-        return mDataManager.getFirebaseService().getFirebaseDatabase().getReference("HOTSPOT");
+        return mDataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.HOTSPOT);
     }
 
     public double getLastLat() {
@@ -199,14 +203,6 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
 
     public void setDayScheduleList(List<Event> dayScheduleList) {
         this.dayScheduleList = dayScheduleList;
-    }
-
-    public Set<String> getEventsKeyList() {
-        return eventsKeyList;
-    }
-
-    public void setEventsKeyList(Set<String> eventsKeyList) {
-        this.eventsKeyList = eventsKeyList;
     }
 
     public void clearEvents() {

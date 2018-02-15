@@ -9,7 +9,6 @@ import org.pl.android.drively.injection.ApplicationContext;
 import org.pl.android.drively.injection.module.ApplicationModule;
 import org.pl.android.drively.notifications.MyFirebaseInstanceIDService;
 import org.pl.android.drively.notifications.MyFirebaseMessagingService;
-import org.pl.android.drively.ui.chat.service.FriendChatService;
 
 import javax.inject.Singleton;
 
@@ -22,8 +21,6 @@ public interface ApplicationComponent {
     void inject(MyFirebaseInstanceIDService myFirebaseInstanceIDService);
 
     void inject(MyFirebaseMessagingService myFirebaseMessagingService);
-
-    void inject(FriendChatService friendChatService);
 
     @ApplicationContext
     Context context();
