@@ -298,8 +298,8 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
     public Query getLastMessage(String idRoom) {
         try {
             String  timestampField = nameof(Message.class,"timestamp");
-            return mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.MESSAGES).document(idRoom)
-                    .collection(FirebasePaths.MESSAGES)
+            return mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.MESSAGES_PRIVATE).document(idRoom)
+                    .collection(FirebasePaths.MESSAGES_PRIVATE)
                     .orderBy(timestampField, Query.Direction.DESCENDING).limit(1);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
