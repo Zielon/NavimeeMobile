@@ -92,7 +92,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                     mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(fid).get().addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
-                            if (document != null) {
+                            if (document != null && document.exists()) {
                                 User user = document.toObject(User.class);
                                 if (user.isOnline() && (System.currentTimeMillis() - user.getTimestamp()) > Const.TIME_TO_OFFLINE) {
                                     mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(fid).update(isOnlineField, false);
@@ -263,17 +263,27 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         Map<String, Object> friendMap = new HashMap<>();
         try {
             String idField = nameof(Friend.class,"id");
-            friendMap.put(idField, idFriend);
-            mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId)
-                    .collection(FirebasePaths.FRIENDS).add(friendMap).addOnSuccessListener(documentReference -> {
-                if (getMvpView() != null) {
-                    getMvpView().addFriendSuccess(idFriend);
-                }
-            })
-                    .addOnFailureListener(e -> getMvpView().addFriendFailure());
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            }
+            mDataManager.getFirebaseService().getFirebaseFirestore()
+                    .collection(FirebasePaths.USERS)
+                    .document(userId)
+                    .collection(FirebasePaths.FRIENDS)
+                    .whereEqualTo(idField, userId).get()
+                    .addOnSuccessListener(documentSnapshots -> {
+                        if(!documentSnapshots.isEmpty()) return;
+                        friendMap.put(idField, idFriend);
+                        mDataManager.getFirebaseService().getFirebaseFirestore()
+                                .collection(FirebasePaths.USERS)
+                                .document(userId)
+                                .collection(FirebasePaths.FRIENDS)
+                                .add(friendMap).addOnSuccessListener(documentReference -> {
+                                    if (getMvpView() != null)
+                                        getMvpView().addFriendSuccess(idFriend);
+                        }).addOnFailureListener(e -> getMvpView().addFriendFailure());
+            });
+
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addFriendForFriendId(String idFriend) {

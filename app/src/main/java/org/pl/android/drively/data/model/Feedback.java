@@ -2,7 +2,6 @@ package org.pl.android.drively.data.model;
 
 import com.google.android.gms.maps.model.LatLng;
 
-
 public class Feedback {
     private String userId;
     private String locationAddress;
