@@ -12,4 +12,5 @@ public class FirebasePaths {
     public static final String GROUP = "GROUP";
     public static final String MEMBERS = "MEMBERS";
     public static final String FRIENDS = "FRIENDS";
+    public static final String USER_LOCATION = "USER_LOCATION";
 }

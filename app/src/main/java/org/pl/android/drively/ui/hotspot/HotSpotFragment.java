@@ -72,12 +72,14 @@ import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.FourSquarePlace;
 import org.pl.android.drively.data.model.eventbus.NotificationEvent;
 import org.pl.android.drively.data.model.maps.ClusterItemGoogleMap;
+import org.pl.android.drively.service.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.main.MainActivity;
 import org.pl.android.drively.util.AddressToStringFunc;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.DetectedActivityToString;
 import org.pl.android.drively.util.DisplayTextOnViewAction;
+import org.pl.android.drively.util.FirebasePaths;
 import org.pl.android.drively.util.MultiDrawable;
 import org.pl.android.drively.util.ToMostProbableActivity;
 
@@ -175,6 +177,9 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         if (actionBar != null && actionBar.getCustomView() != null) {
             TextView text = (TextView) actionBar.getCustomView().findViewById(R.id.app_bar_text);
             text.setText(getResources().getString(R.string.hotspot));
+        }
+        if(mHotspotPresenter.checkLogin() != null) {
+            getActivity().startService(new Intent(getActivity(), GeolocationUpdateService.class));
         }
 
         initGeolocation();
@@ -763,7 +768,14 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     @Override
     public void onKeyEntered(String key, GeoLocation location) {
         Timber.i(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
-        mHotspotPresenter.loadHotSpotPlace(key);
+        if(key.contains(FirebasePaths.USER_LOCATION)) {
+            Timber.i("USER LOCATION");
+            ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(key, new LatLng(location.latitude, location.longitude), "USER_LOCATION", "0", Const.HotSpotType.USER_LOCATION, R.drawable.add_event_24dp);
+            eventsOnMap.put(key, clusterItemGoogleMap);
+            mClusterManager.addItem(eventsOnMap.get(key));
+        } else {
+            mHotspotPresenter.loadHotSpotPlace(key);
+        }
     }
 
     @Override
@@ -784,16 +796,17 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
             mClusterManager.removeItem(eventsOnMap.get(key));
             eventsOnMap.get(key).setPosition(new LatLng(location.latitude, location.longitude));
             mClusterManager.addItem(eventsOnMap.get(key));
+            mClusterManager.cluster();
         }
     }
 
     @Override
     public void onGeoQueryReady() {
         Timber.i("All initial data has been loaded and events have been fired!");
-      /*  if(mClusterManager != null) {
+        if(mClusterManager != null) {
             Timber.i("Cluster size" +mClusterManager.getAlgorithm().getItems().size());
             mClusterManager.cluster();
-        }*/
+        }
     }
 
     @Override
