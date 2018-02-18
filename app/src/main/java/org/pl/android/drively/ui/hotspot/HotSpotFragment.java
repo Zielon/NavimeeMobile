@@ -796,7 +796,6 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
             mClusterManager.removeItem((ClusterItemGoogleMap) eventsOnMap.get(key));
             eventsOnMap.remove(key);
         } else if(key.contains(FirebasePaths.USER_LOCATION)) {
-            googleMap.add
             usersMarkers.remove(key);
         }
 
