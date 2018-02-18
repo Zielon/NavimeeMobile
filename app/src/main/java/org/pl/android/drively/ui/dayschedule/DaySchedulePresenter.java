@@ -8,11 +8,9 @@ import net.danlew.android.joda.DateUtils;
 import org.joda.time.DateTime;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.Event;
-import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.injection.ConfigPersistent;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.FirebasePaths;
-import org.pl.android.drively.util.ReflectionUtil;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -77,8 +75,8 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
 
         try {
             //TODO create the notification data model and replace `userId` with the correct type!
-            String endTimeFilter = nameof(Event.class,"endTime");
-            String rankFilter = nameof(Event.class,"rank");
+            String endTimeFilter = nameof(Event.class, "endTime");
+            String rankFilter = nameof(Event.class, "rank");
 
             String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
             mDataManager.getFirebaseService().getFirebaseFirestore()

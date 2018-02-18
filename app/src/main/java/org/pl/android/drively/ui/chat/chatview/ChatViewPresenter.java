@@ -13,10 +13,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static org.pl.android.drively.util.FirebasePaths.*;
-
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
+
+import static org.pl.android.drively.util.FirebasePaths.AVATARS;
+import static org.pl.android.drively.util.FirebasePaths.MESSAGES_GROUPS;
+import static org.pl.android.drively.util.FirebasePaths.MESSAGES_PRIVATE;
 
 @ConfigPersistent
 public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
@@ -79,6 +81,6 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
     }
 
     public StorageReference getStorageReference(String avatar) {
-        return mDataManager.getFirebaseService().getFirebaseStorage().getReference( String.format("%s/%s", AVATARS, avatar));
+        return mDataManager.getFirebaseService().getFirebaseStorage().getReference(String.format("%s/%s", AVATARS, avatar));
     }
 }

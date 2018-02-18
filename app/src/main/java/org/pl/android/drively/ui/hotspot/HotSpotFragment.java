@@ -472,7 +472,6 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     }
 
 
-
     @Override
     public void onResume() {
         super.onResume();
@@ -575,7 +574,9 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(NotificationEvent notificationEvent) {
         route(latLngCurrent, new LatLng(notificationEvent.getLat(), notificationEvent.getLng()), notificationEvent.getName(), notificationEvent.getCount());
-    };
+    }
+
+    ;
 
 
     @Override

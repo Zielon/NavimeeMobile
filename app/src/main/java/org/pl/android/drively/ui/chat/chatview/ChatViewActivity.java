@@ -51,6 +51,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
     public static final int VIEW_TYPE_FRIEND_MESSAGE = 1;
     public static HashMap<String, Bitmap> bitmapAvataFriend;
     public static Bitmap bitmapAvatarUser;
+    public static boolean active = false;
     public String UID;
     @Inject
     ChatViewPresenter mChatViewPresenter;
@@ -63,7 +64,6 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
     private EditText editWriteMessage;
     private LinearLayoutManager linearLayoutManager;
     private Boolean isGroupChat;
-    public static boolean active = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

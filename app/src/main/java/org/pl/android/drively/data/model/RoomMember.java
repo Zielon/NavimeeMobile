@@ -8,7 +8,7 @@ public class RoomMember {
         this.notification = true;
     }
 
-    public RoomMember(String memberId){
+    public RoomMember(String memberId) {
         this();
         this.memberId = memberId;
     }
@@ -31,6 +31,6 @@ public class RoomMember {
 
     @Override
     public boolean equals(Object obj) {
-        return this.memberId.equals(((RoomMember)obj).getMemberId());
+        return this.memberId.equals(((RoomMember) obj).getMemberId());
     }
 }

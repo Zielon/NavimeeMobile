@@ -75,7 +75,7 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
     public void loadHotSpotPlace(String key) {
         hotspotKeyList.add(key);
         try {
-            final String hotspotTypeFilter = nameof(Event.class,"hotspotType");
+            final String hotspotTypeFilter = nameof(Event.class, "hotspotType");
             mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.HOTSPOT).document(key).addSnapshotListener((snapshot, e) -> {
                 if (e != null) {
                     Timber.e("Listen failed.", e);

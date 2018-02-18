@@ -12,11 +12,12 @@ import java.util.Map;
 
 @IgnoreExtraProperties
 public class Room {
-    @Exclude private List<RoomMember> members;
+    @Exclude
+    private List<RoomMember> members;
     private String admin;
     private String name;
 
-    public Room(){
+    public Room() {
         this.members = new ArrayList<>();
     }
 
@@ -50,7 +51,7 @@ public class Room {
         this.name = name;
     }
 
-    public Map<String, Object> toMap(){
+    public Map<String, Object> toMap() {
         HashMap<String, Object> map = new HashMap<>();
         map.put("admin", this.admin);
         map.put("name", this.name);

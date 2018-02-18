@@ -84,7 +84,7 @@ public class PreferencesHelper {
         e.apply();
     }
 
-    public String getCountry(){
+    public String getCountry() {
         return "POLAND";
     }
 

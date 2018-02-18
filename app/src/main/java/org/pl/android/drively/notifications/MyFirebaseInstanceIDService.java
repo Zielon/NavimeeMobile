@@ -16,11 +16,8 @@
 
 package org.pl.android.drively.notifications;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
@@ -29,9 +26,6 @@ import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -94,9 +88,9 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
             dataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).set(user).addOnSuccessListener(aVoid -> {
                 Log.d(TAG, "DocumentSnapshot successfully written!");
             })
-            .addOnFailureListener(e -> {
-                    Log.w(TAG, "Error writing document", e);
-            });
+                    .addOnFailureListener(e -> {
+                        Log.w(TAG, "Error writing document", e);
+                    });
         }
     }
 }

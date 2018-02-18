@@ -30,8 +30,8 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-import static org.pl.android.drively.util.FirebasePaths.ROOM_DETAILS;
 import static org.pl.android.drively.util.FirebasePaths.MEMBERS;
+import static org.pl.android.drively.util.FirebasePaths.ROOM_DETAILS;
 
 public class GroupPresenter extends BasePresenter<GroupMvpView> {
 
@@ -92,17 +92,17 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
                     Room room = document.toObject(Room.class);
                     document.getReference().collection(MEMBERS)
                             .get().addOnCompleteListener(members -> {
-                                if (members.isSuccessful()) {
-                                    for (DocumentSnapshot member : members.getResult()) {
-                                        room.getMembers().add(new RoomMember(member.getId()));
-                                    }
-                                    if (getMvpView() != null) {
-                                        getMvpView().setGroupInfo(groupIndex, room);
-                                    }
-                                } else {
-                                    Timber.w("Error geting document");
-                                }
-                            });
+                        if (members.isSuccessful()) {
+                            for (DocumentSnapshot member : members.getResult()) {
+                                room.getMembers().add(new RoomMember(member.getId()));
+                            }
+                            if (getMvpView() != null) {
+                                getMvpView().setGroupInfo(groupIndex, room);
+                            }
+                        } else {
+                            Timber.w("Error geting document");
+                        }
+                    });
                 } else {
                     Timber.w("Error geting document");
                 }

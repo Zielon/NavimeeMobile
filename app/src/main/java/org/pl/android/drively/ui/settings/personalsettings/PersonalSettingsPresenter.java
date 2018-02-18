@@ -1,12 +1,5 @@
 package org.pl.android.drively.ui.settings.personalsettings;
 
-import android.annotation.SuppressLint;
-import android.support.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import org.pl.android.drively.data.DataManager;
@@ -45,19 +38,19 @@ public class PersonalSettingsPresenter extends BasePresenter<PersonalSettingsMvp
     public void loadNotificationConfig() {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
         try {
-            String dayScheduleNotificationField = nameof(User.class,"dayScheduleNotification");
+            String dayScheduleNotificationField = nameof(User.class, "dayScheduleNotification");
             mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (!document.exists()) return;
-                        Timber.d(document.getId() + " => " + document.getData());
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (!document.exists()) return;
+                    Timber.d(document.getId() + " => " + document.getData());
 
-                        boolean dayScheduleNotification = (Boolean) document.getData().get(dayScheduleNotificationField);
-    //                    boolean bigEventsNotification = (Boolean) document.getData().get("bigEventsNotification");
+                    boolean dayScheduleNotification = (Boolean) document.getData().get(dayScheduleNotificationField);
+                    //                    boolean bigEventsNotification = (Boolean) document.getData().get("bigEventsNotification");
 
-                        getMvpView().setSwitches(dayScheduleNotification);
-                    }
-                });
+                    getMvpView().setSwitches(dayScheduleNotification);
+                }
+            });
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
@@ -67,10 +60,10 @@ public class PersonalSettingsPresenter extends BasePresenter<PersonalSettingsMvp
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
         mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).update(name, checked)
                 .addOnSuccessListener(aVoid -> {
-                Timber.i("Checked changed ");
+                    Timber.i("Checked changed ");
                 })
                 .addOnFailureListener(e -> {
-                        Timber.e("Error saving event", e);
+                    Timber.e("Error saving event", e);
                 });
 
 
