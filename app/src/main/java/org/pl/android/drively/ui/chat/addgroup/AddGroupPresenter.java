@@ -2,6 +2,7 @@ package org.pl.android.drively.ui.chat.addgroup;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import org.pl.android.drively.data.DataManager;
@@ -41,32 +42,25 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
     }
 
     public void createGroup(String idGroup, Room room) {
-        mDataManager.getFirebaseService().getFirebaseFirestore()
+
+        DocumentReference chat = mDataManager.getFirebaseService().getFirebaseFirestore()
                 .collection(FirebasePaths.GROUP)
                 .document(mDataManager.getPreferencesHelper().getCountry())
-                .collection(idGroup).document(FirebasePaths.ROOM_DETAILS)
-                .set(room.toMap())
-                .addOnSuccessListener(aVoid -> {
-                    List<Task<Void>> tasks = new ArrayList<>();
-                    for (RoomMember member : room.getMembers()) {
-                        RoomMember roomMember = new RoomMember();
-                        roomMember.setMemberId(member.getMemberId());
-                        tasks.add(mDataManager.getFirebaseService()
-                                .getFirebaseFirestore()
-                                .collection(FirebasePaths.GROUP)
-                                .document(mDataManager.getPreferencesHelper().getCountry())
-                                .collection(idGroup)
-                                .document(FirebasePaths.ROOM_DETAILS)
-                                .collection(FirebasePaths.MEMBERS)
-                                .document(roomMember.getMemberId()).set(roomMember));
-                    }
-                    Tasks.whenAll(tasks).addOnSuccessListener(end -> {
-                        if (getMvpView() != null) {
-                            getMvpView().addRoomForUser(idGroup, 0);
-                        }
-                    });
-                })
-                .addOnFailureListener(e -> Timber.w("Error writing document", e));
+                .collection(idGroup).document(FirebasePaths.ROOM_DETAILS);
+
+        chat.set(room.toMap()).addOnSuccessListener(aVoid -> {
+            List<Task<Void>> tasks = new ArrayList<>();
+            for (RoomMember member : room.getMembers()) {
+                RoomMember roomMember = new RoomMember();
+                roomMember.setMemberId(member.getMemberId());
+                tasks.add(chat.collection(FirebasePaths.MEMBERS).document(roomMember.getMemberId()).set(roomMember));
+            }
+            Tasks.whenAll(tasks).addOnSuccessListener(end -> {
+                if (getMvpView() != null) {
+                    getMvpView().addRoomForUser(idGroup, 0);
+                }
+            });
+        }).addOnFailureListener(e -> Timber.w("Error writing document", e));
     }
 
     public void addRoomForUser(String roomId, int userIndex, String userId) {
@@ -91,41 +85,31 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
 
     public void editGroup(String idGroup, Room room) {
 
-        mDataManager.getFirebaseService().getFirebaseFirestore()
+        DocumentReference chat = mDataManager.getFirebaseService().getFirebaseFirestore()
                 .collection(FirebasePaths.GROUP)
-                .document(idGroup)
-                .delete()
-                .addOnSuccessListener(group -> mDataManager.getFirebaseService().getFirebaseFirestore()
-                        .collection(FirebasePaths.GROUP)
-                        .document(mDataManager.getPreferencesHelper().getCountry())
-                        .collection(idGroup).document(FirebasePaths.ROOM_DETAILS)
-                        .set(room.toMap())
-                        .addOnSuccessListener(result -> {
-                            List<Task<Void>> tasks = new ArrayList<>();
-                            for (RoomMember member : room.getMembers()) {
-                                RoomMember roomMember = new RoomMember();
-                                roomMember.setMemberId(member.getMemberId());
-                                tasks.add(mDataManager.getFirebaseService()
-                                        .getFirebaseFirestore()
-                                        .collection(FirebasePaths.GROUP)
-                                        .document(mDataManager.getPreferencesHelper().getCountry())
-                                        .collection(idGroup)
-                                        .document(FirebasePaths.ROOM_DETAILS)
-                                        .collection(FirebasePaths.MEMBERS)
-                                        .document(roomMember.getMemberId()).set(roomMember));
-                            }
+                .document(mDataManager.getPreferencesHelper().getCountry())
+                .collection(idGroup).document(FirebasePaths.ROOM_DETAILS);
 
-                            Tasks.whenAll(tasks).addOnSuccessListener(end -> {
-                                if (getMvpView() != null) {
-                                    getMvpView().editGroupSuccess(idGroup);
-                                }
-                            });
-                        })
-                        .addOnFailureListener(e -> {
-                            if (getMvpView() != null) {
-                                getMvpView().editGroupFailure();
-                            }
-                        }))
+        chat.delete().addOnSuccessListener(group -> chat.set(room.toMap())
+                .addOnSuccessListener(result -> {
+                    List<Task<Void>> tasks = new ArrayList<>();
+                    for (RoomMember member : room.getMembers()) {
+                        RoomMember roomMember = new RoomMember();
+                        roomMember.setMemberId(member.getMemberId());
+                        tasks.add(chat.collection(FirebasePaths.MEMBERS).document(roomMember.getMemberId()).set(roomMember));
+                    }
+
+                    Tasks.whenAll(tasks).addOnSuccessListener(end -> {
+                        if (getMvpView() != null) {
+                            getMvpView().editGroupSuccess(idGroup);
+                        }
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    if (getMvpView() != null) {
+                        getMvpView().editGroupFailure();
+                    }
+                }))
                 .addOnFailureListener(e -> {
                     if (getMvpView() != null) {
                         getMvpView().editGroupFailure();
