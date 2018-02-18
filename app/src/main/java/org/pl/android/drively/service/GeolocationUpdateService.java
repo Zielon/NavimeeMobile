@@ -35,7 +35,6 @@ public class GeolocationUpdateService extends Service
     private static final float LOCATION_DISTANCE = 10f;
 
     GeoFire geoFire;
-    GeoQuery geoQuery;
 
     @Inject
     DataManager dataManager;
