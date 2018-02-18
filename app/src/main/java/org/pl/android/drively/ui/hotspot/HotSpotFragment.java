@@ -796,6 +796,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
             mClusterManager.removeItem((ClusterItemGoogleMap) eventsOnMap.get(key));
             eventsOnMap.remove(key);
         } else if(key.contains(FirebasePaths.USER_LOCATION)) {
+            googleMap.add
             usersMarkers.remove(key);
         }
 
@@ -812,7 +813,9 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
             mClusterManager.addItem(eventsOnMap.get(key));
         }  else if(key.contains(FirebasePaths.USER_LOCATION) && !key.contains(mHotspotPresenter.getUid())) {
             Timber.i("USER LOCATION");
-            animateMarker(usersMarkers.get(key),new LatLng(location.latitude, location.longitude),false);
+            if(usersMarkers.containsKey(key)) {
+                animateMarker(usersMarkers.get(key), new LatLng(location.latitude, location.longitude), false);
+            }
         }
     }
 
