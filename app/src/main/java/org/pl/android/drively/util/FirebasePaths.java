@@ -13,4 +13,5 @@ public class FirebasePaths {
     public static final String ROOM_DETAILS = "ROOM_DETAILS";
     public static final String MEMBERS = "MEMBERS";
     public static final String FRIENDS = "FRIENDS";
+    public static final String USER_LOCATION = "USER_LOCATION";
 }

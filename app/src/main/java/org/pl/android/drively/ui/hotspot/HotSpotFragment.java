@@ -6,11 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -20,6 +23,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -49,6 +54,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -72,12 +78,14 @@ import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.FourSquarePlace;
 import org.pl.android.drively.data.model.eventbus.NotificationEvent;
 import org.pl.android.drively.data.model.maps.ClusterItemGoogleMap;
+import org.pl.android.drively.service.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.main.MainActivity;
 import org.pl.android.drively.util.AddressToStringFunc;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.DetectedActivityToString;
 import org.pl.android.drively.util.DisplayTextOnViewAction;
+import org.pl.android.drively.util.FirebasePaths;
 import org.pl.android.drively.util.MultiDrawable;
 import org.pl.android.drively.util.ToMostProbableActivity;
 
@@ -160,6 +168,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     private List<Polyline> polylines;
     private ClusterManager<ClusterItemGoogleMap> mClusterManager;
     private HashMap<String, ClusterItemGoogleMap> eventsOnMap = new HashMap<>();
+    private HashMap<String, Marker> usersMarkers = new HashMap<>();
     private Context context;
 
     public static HotSpotFragment newInstance() {
@@ -175,6 +184,9 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         if (actionBar != null && actionBar.getCustomView() != null) {
             TextView text = (TextView) actionBar.getCustomView().findViewById(R.id.app_bar_text);
             text.setText(getResources().getString(R.string.hotspot));
+        }
+        if(mHotspotPresenter.checkLogin() != null) {
+            getActivity().startService(new Intent(getActivity(), GeolocationUpdateService.class));
         }
 
         initGeolocation();
@@ -764,7 +776,17 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     @Override
     public void onKeyEntered(String key, GeoLocation location) {
         Timber.i(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
-        mHotspotPresenter.loadHotSpotPlace(key);
+        if(key.contains(FirebasePaths.USER_LOCATION) && !key.contains(mHotspotPresenter.getUid())) {
+            Timber.i("USER LOCATION");
+            if(!usersMarkers.containsKey(key)) {
+                MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude));
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_directions_car_black_24dp));
+                Marker marker = googleMap.addMarker(markerOptions);
+                usersMarkers.put(key, marker);
+            }
+        } else {
+            mHotspotPresenter.loadHotSpotPlace(key);
+        }
     }
 
     @Override
@@ -773,7 +795,10 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         if (eventsOnMap.containsKey(key)) {
             mClusterManager.removeItem((ClusterItemGoogleMap) eventsOnMap.get(key));
             eventsOnMap.remove(key);
+        } else if(key.contains(FirebasePaths.USER_LOCATION)) {
+            usersMarkers.remove(key);
         }
+
     }
 
     @Override
@@ -785,21 +810,61 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
             mClusterManager.removeItem(eventsOnMap.get(key));
             eventsOnMap.get(key).setPosition(new LatLng(location.latitude, location.longitude));
             mClusterManager.addItem(eventsOnMap.get(key));
+        }  else if(key.contains(FirebasePaths.USER_LOCATION) && !key.contains(mHotspotPresenter.getUid())) {
+            Timber.i("USER LOCATION");
+            animateMarker(usersMarkers.get(key),new LatLng(location.latitude, location.longitude),false);
         }
     }
 
     @Override
     public void onGeoQueryReady() {
         Timber.i("All initial data has been loaded and events have been fired!");
-      /*  if(mClusterManager != null) {
+        if(mClusterManager != null) {
             Timber.i("Cluster size" +mClusterManager.getAlgorithm().getItems().size());
             mClusterManager.cluster();
-        }*/
+        }
     }
 
     @Override
     public void onGeoQueryError(DatabaseError error) {
         Timber.e("There was an error with this query: " + error);
+    }
+
+    public void animateMarker(final Marker marker, final LatLng toPosition,
+                              final boolean hideMarker) {
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        Projection proj = googleMap.getProjection();
+        Point startPoint = proj.toScreenLocation(marker.getPosition());
+        final LatLng startLatLng = proj.fromScreenLocation(startPoint);
+        final long duration = 500;
+
+        final Interpolator interpolator = new LinearInterpolator();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                float t = interpolator.getInterpolation((float) elapsed
+                        / duration);
+                double lng = t * toPosition.longitude + (1 - t)
+                        * startLatLng.longitude;
+                double lat = t * toPosition.latitude + (1 - t)
+                        * startLatLng.latitude;
+                marker.setPosition(new LatLng(lat, lng));
+
+                if (t < 1.0) {
+                    // Post again 16ms later.
+                    handler.postDelayed(this, 16);
+                } else {
+                    if (hideMarker) {
+                        marker.setVisible(false);
+                    } else {
+                        marker.setVisible(true);
+                    }
+                }
+            }
+        });
     }
 
     @Override
