@@ -422,7 +422,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                         Timber.d("ON LOCATION UPDATE");
                         mHotspotPresenter.setLastLocationLatLng(latLng);
                         if (isFirstAfterPermissionGranted) {
-                            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 14);
+                            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 12);
                             googleMap.moveCamera(yourLocation);
                             isFirstAfterPermissionGranted = false;
                         } else {

@@ -20,6 +20,7 @@ import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.injection.ActivityContext;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -65,12 +66,17 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         }
         if (event.getEndTime() != null) {
             DateTime startTime = new DateTime(event.getStartTime());
-            if(Days.daysBetween(startTime.withTimeAtStartOfDay(), dateTime.withTimeAtStartOfDay()).getDays() == 0) {
+            DateTime endTime = new DateTime(event.getEndTime());
+            if(Days.daysBetween(startTime.withTimeAtStartOfDay(), dateTime.withTimeAtStartOfDay()).getDays() == 0
+                    && Days.daysBetween(endTime.withTimeAtStartOfDay(), dateTime.withTimeAtStartOfDay()).getDays() == 0) {
                 holder.timeTextView.setText(event.getStartTime().getHours() + ":" + String.format("%02d", event.getStartTime().getMinutes()) + "-" +
                         event.getEndTime().getHours() + ":" + String.format("%02d", event.getEndTime().getMinutes()));
             } else {
-                holder.timeTextView.setText("wcz. "+event.getStartTime().getHours() + ":" + String.format("%02d", event.getStartTime().getMinutes()) + "-" +
-                        event.getEndTime().getHours() + ":" + String.format("%02d", event.getEndTime().getMinutes()));
+                SimpleDateFormat simpleDateformat = new SimpleDateFormat("E"); // the day of the week abbreviated
+                String startDay = simpleDateformat.format(event.getStartTime());
+                String endDay = simpleDateformat.format(event.getEndTime());
+                holder.timeTextView.setText(startDay+" "+event.getStartTime().getHours() + ":" + String.format("%02d", event.getStartTime().getMinutes()) + "-" +
+                       endDay+ " "+ event.getEndTime().getHours() + ":" + String.format("%02d", event.getEndTime().getMinutes()));
             }
         }
         holder.addButton.setTag(0);
