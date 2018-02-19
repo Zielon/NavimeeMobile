@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
+import org.pl.android.drively.data.model.RoomMember;
 import org.pl.android.drively.data.model.chat.Group;
 
 import java.util.ArrayList;
@@ -48,11 +49,11 @@ public class GroupDB {
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(FeedEntry.COLUMN_GROUP_ID, group.id);
-        values.put(FeedEntry.COLUMN_GROUP_NAME, group.groupInfo.get("name"));
-        values.put(FeedEntry.COLUMN_GROUP_ADMIN, group.groupInfo.get("admin"));
+        values.put(FeedEntry.COLUMN_GROUP_NAME, group.getName());
+        values.put(FeedEntry.COLUMN_GROUP_ADMIN, group.getAdmin());
 
-        for (String idMenber : group.member) {
-            values.put(FeedEntry.COLUMN_GROUP_MEMBER, idMenber);
+        for (RoomMember member : group.getMembers()) {
+            values.put(FeedEntry.COLUMN_GROUP_MEMBER, member.getMemberId());
             // Insert the new row, returning the primary key value of the new row
             db.insert(FeedEntry.TABLE_NAME, null, values);
         }
@@ -79,9 +80,9 @@ public class GroupDB {
             String admin = cursor.getString(2);
             String member = cursor.getString(3);
             newGroup.id = idGroup;
-            newGroup.groupInfo.put("name", nameGroup);
-            newGroup.groupInfo.put("admin", admin);
-            newGroup.member.add(member);
+            newGroup.setName(nameGroup);
+            newGroup.setAdmin(admin);
+            newGroup.getMembers().add(new RoomMember(member));
         }
         return newGroup;
     }
@@ -102,18 +103,18 @@ public class GroupDB {
                 if (!listKey.contains(idGroup)) {
                     Group newGroup = new Group();
                     newGroup.id = idGroup;
-                    newGroup.groupInfo.put("name", nameGroup);
-                    newGroup.groupInfo.put("admin", admin);
-                    newGroup.member.add(member);
+                    newGroup.setName(nameGroup);
+                    newGroup.setAdmin(admin);
+                    newGroup.getMembers().add(new RoomMember(member));
                     listKey.add(idGroup);
                     mapGroup.put(idGroup, newGroup);
                 } else {
-                    mapGroup.get(idGroup).member.add(member);
+                    mapGroup.get(idGroup).getMembers().add(new RoomMember(member));
                 }
             }
             cursor.close();
         } catch (Exception e) {
-            return new ArrayList<Group>();
+            return new ArrayList<>();
         }
 
         ArrayList<Group> listGroup = new ArrayList<>();

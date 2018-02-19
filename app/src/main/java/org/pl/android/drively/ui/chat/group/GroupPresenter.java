@@ -1,9 +1,7 @@
 package org.pl.android.drively.ui.chat.group;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
@@ -13,9 +11,9 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
-import com.google.firebase.storage.StorageReference;
 
 import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.data.model.RoomMember;
 import org.pl.android.drively.data.model.chat.Group;
 import org.pl.android.drively.data.model.chat.Room;
 import org.pl.android.drively.injection.ActivityContext;
@@ -32,7 +30,8 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-import static org.pl.android.drively.util.FirebasePaths.AVATARS;
+import static org.pl.android.drively.util.FirebasePaths.MEMBERS;
+import static org.pl.android.drively.util.FirebasePaths.ROOM_DETAILS;
 
 public class GroupPresenter extends BasePresenter<GroupMvpView> {
 
@@ -80,31 +79,28 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
                 });
     }
 
-
     public void getGroupInfo(int groupIndex, String id) {
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.GROUP).document(id)
+        mDataManager.getFirebaseService().getFirebaseFirestore()
+                .collection(FirebasePaths.GROUP)
+                .document(mDataManager.getPreferencesHelper().getCountry())
+                .collection(id)
+                .document(ROOM_DETAILS)
                 .get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document != null && document.exists()) {
-                    Room room = new Room();
-                    room.groupInfo.put("admin", task.getResult().getString("admin"));
-                    room.groupInfo.put("name", task.getResult().getString("name"));
-                    mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.GROUP)
-                            .document(id).collection(FirebasePaths.MEMBERS)
-                            .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (DocumentSnapshot document : task.getResult()) {
-                                    room.member.add(document.getId());
-                                }
-                                if (getMvpView() != null) {
-                                    getMvpView().setGroupInfo(groupIndex, room);
-                                }
-                            } else {
-                                Timber.w("Error geting document");
+                    Room room = document.toObject(Room.class);
+                    document.getReference().collection(MEMBERS)
+                            .get().addOnCompleteListener(members -> {
+                        if (members.isSuccessful()) {
+                            for (DocumentSnapshot member : members.getResult()) {
+                                room.getMembers().add(new RoomMember(member.getId()));
                             }
+                            if (getMvpView() != null) {
+                                getMvpView().setGroupInfo(groupIndex, room);
+                            }
+                        } else {
+                            Timber.w("Error geting document");
                         }
                     });
                 } else {
@@ -180,7 +176,7 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
 
     public void deleteGroupReference(int index, Group group) {
         mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS)
-                .document(group.member.get(index))
+                .document(group.getMembers().get(index).getMemberId())
                 .collection(FirebasePaths.GROUP).whereEqualTo("roomId", group.id)
                 .get()
                 .addOnCompleteListener(task -> {
@@ -193,7 +189,7 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
                         }
                         for (DocumentSnapshot document : task.getResult()) {
                             Timber.d(document.getId() + " => " + document.getData());
-                            mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(group.member.get(index)).collection(FirebasePaths.GROUP)
+                            mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(group.getMembers().get(index).getMemberId()).collection(FirebasePaths.GROUP)
                                     .document(document.getId())
                                     .delete()
                                     .addOnSuccessListener(aVoid -> {

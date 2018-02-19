@@ -13,10 +13,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static org.pl.android.drively.util.FirebasePaths.*;
-
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
+
+import static org.pl.android.drively.util.FirebasePaths.AVATARS;
+import static org.pl.android.drively.util.FirebasePaths.MESSAGES_GROUPS;
+import static org.pl.android.drively.util.FirebasePaths.MESSAGES_PRIVATE;
 
 @ConfigPersistent
 public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
@@ -45,8 +47,9 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
         String messagePath = isGroupChat ? MESSAGES_GROUPS : MESSAGES_PRIVATE;
         mDataManager.getFirebaseService().getFirebaseFirestore()
                 .collection(messagePath)
-                .document(roomId)
-                .collection(MESSAGES_PRIVATE).orderBy("timestamp")
+                .document(mDataManager.getPreferencesHelper().getCountry())
+                .collection(roomId)
+                .orderBy("timestamp")
                 .addSnapshotListener((value, e) -> {
                     if (e != null) {
                         Timber.w("Listen failed.", e);
@@ -57,13 +60,14 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
                         getMvpView().roomChangesListerSet(messageList);
                     }
                 });
-
     }
 
     public void addMessage(String roomId, Message newMessage) {
         String messagePath = newMessage instanceof PrivateMessage ? MESSAGES_PRIVATE : MESSAGES_GROUPS;
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection(messagePath)
-                .document(roomId).collection(MESSAGES_PRIVATE).add(newMessage)
+        mDataManager.getFirebaseService().getFirebaseFirestore()
+                .collection(messagePath)
+                .document(mDataManager.getPreferencesHelper().getCountry())
+                .collection(roomId).add(newMessage)
                 .addOnSuccessListener(documentReference -> Timber.w("DocumentSnapshot successfully written!"))
                 .addOnFailureListener(e -> Timber.w("Error writing document", e));
     }
@@ -77,6 +81,6 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
     }
 
     public StorageReference getStorageReference(String avatar) {
-        return mDataManager.getFirebaseService().getFirebaseStorage().getReference( String.format("%s/%s", AVATARS, avatar));
+        return mDataManager.getFirebaseService().getFirebaseStorage().getReference(String.format("%s/%s", AVATARS, avatar));
     }
 }

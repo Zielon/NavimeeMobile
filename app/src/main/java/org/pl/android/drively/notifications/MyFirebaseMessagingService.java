@@ -108,10 +108,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 sendNotification(remoteMessage.getData().get("title"), remoteMessage.getData().get("endTime"), remoteMessage.getData().get("lat"), remoteMessage.getData().get("lng"));
                 break;
             case MESSAGE_PRIVATE:
-                sendNotificationFromChat(remoteMessage.getData().get("nameSender"), remoteMessage.getData().get("idSender"), remoteMessage.getData().get("text"), remoteMessage.getData().get("avatar"),remoteMessage.getData().get("idRoom"));
+                sendNotificationFromChat(remoteMessage.getData().get("nameSender"), remoteMessage.getData().get("idSender"), remoteMessage.getData().get("text"), remoteMessage.getData().get("avatar"), remoteMessage.getData().get("idRoom"));
                 break;
             case MESSAGE_GROUP:
-                sendNotificationFromChat(remoteMessage.getData().get("nameSender"), remoteMessage.getData().get("idSender"), remoteMessage.getData().get("text"), remoteMessage.getData().get("avatar"),remoteMessage.getData().get("idRoom"));
+                sendNotificationFromChat(remoteMessage.getData().get("nameSender"), remoteMessage.getData().get("idSender"), remoteMessage.getData().get("text"), remoteMessage.getData().get("avatar"), remoteMessage.getData().get("idRoom"));
                 break;
         }
     }
@@ -128,20 +128,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "Short lived task is done.");
     }
 
-   private void sendNotificationFromChat(String name, String uderId, String text, String avatarPath, String roomId) {
-            if(!ChatViewActivity.active) {
-               dataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + avatarPath)
-                       .getBytes(Const.FIVE_MEGABYTE)
-                       .addOnSuccessListener(bytes -> {
-                           Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                           sendNotificationFromChatWithIcon(name, text, uderId, bitmap, roomId);
+    private void sendNotificationFromChat(String name, String uderId, String text, String avatarPath, String roomId) {
+        if (!ChatViewActivity.active) {
+            dataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + avatarPath)
+                    .getBytes(Const.FIVE_MEGABYTE)
+                    .addOnSuccessListener(bytes -> {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        sendNotificationFromChatWithIcon(name, text, uderId, bitmap, roomId);
 
-                       }).addOnFailureListener(exception -> {
-                   Bitmap bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.default_avatar);
-                   sendNotificationFromChatWithIcon(name, text, uderId, bitmap, roomId);
-               });
-            }
+                    }).addOnFailureListener(exception -> {
+                Bitmap bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.default_avatar);
+                sendNotificationFromChatWithIcon(name, text, uderId, bitmap, roomId);
+            });
         }
+    }
 
     private void sendNotificationFromChatWithIcon(String name, String text, String userId, Bitmap bitmap, String roomId) {
         Intent intent = new Intent(this, ChatViewActivity.class);
@@ -176,7 +176,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(0 , notificationBuilder.build());
+        notificationManager.notify(0, notificationBuilder.build());
     }
 
 
@@ -184,7 +184,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     /**
      * Create and show a simple notification containing the received FCM message.
-     *
      */
     private void sendNotification(String title, String dateTime, String lat, String lng) {
         Intent intent = new Intent(this, MainActivity.class);

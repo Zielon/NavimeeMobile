@@ -34,7 +34,8 @@ public class Const {
     public enum HotSpotType {
         EVENT,
         UBER_MULTIPLIER,
-        FOURSQUARE_PLACE
+        FOURSQUARE_PLACE,
+        USER_LOCATION
     }
 
     public enum EventType {

@@ -14,6 +14,9 @@ import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
 import org.pl.android.drively.util.ViewUtil;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -68,6 +71,12 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
         return mDataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.HOTSPOT_CURRENT);
     }
 
+
+    public DatabaseReference getUsersLocationDatabaseRefernce() {
+        return mDataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.USER_LOCATION);
+    }
+
+
     public String getUid() {
         return mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
     }
@@ -75,7 +84,7 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
     public void loadHotSpotPlace(String key) {
         hotspotKeyList.add(key);
         try {
-            final String hotspotTypeFilter = nameof(Event.class,"hotspotType");
+            final String hotspotTypeFilter = nameof(Event.class, "hotspotType");
             mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.HOTSPOT).document(key).addSnapshotListener((snapshot, e) -> {
                 if (e != null) {
                     Timber.e("Listen failed.", e);
@@ -116,6 +125,10 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
         feedback.setDurationInSec(durationInSec);
         feedback.setDistanceValue(distanceValue);
         feedback.setGeoPoint(latLng);
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+        String formattedDate = df.format(c);
+        feedback.setDate(formattedDate);
         mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child(FirebasePaths.FEEDBACK).push().setValue(feedback);
     }
 

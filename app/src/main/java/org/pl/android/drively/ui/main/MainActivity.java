@@ -51,6 +51,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         intent.putExtra(EXTRA_TRIGGER_SYNC_FLAG, triggerDataSyncOnCreate);
         return intent;
     }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -60,7 +61,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
             double lng = Double.valueOf(intent.getExtras().getString("lng"));
             String name = intent.getExtras().getString("name");
             String count = intent.getExtras().getString("count");
-            EventBus.getDefault().post(new NotificationEvent(lat,lng,name,count));
+            EventBus.getDefault().post(new NotificationEvent(lat, lng, name, count));
         }
     }
 

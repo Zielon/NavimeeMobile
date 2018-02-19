@@ -2,7 +2,6 @@ package org.pl.android.drively.data.model;
 
 import com.google.android.gms.maps.model.LatLng;
 
-
 public class Feedback {
     private String userId;
     private String locationAddress;
@@ -10,6 +9,7 @@ public class Feedback {
     private int durationInSec;
     private int distanceValue;
     private LatLng geoPoint;
+    private String date;
 
     public Feedback() {
     }
@@ -60,6 +60,14 @@ public class Feedback {
 
     public void setGeoPoint(LatLng geoPoint) {
         this.geoPoint = geoPoint;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }
 

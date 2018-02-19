@@ -6,10 +6,6 @@ import com.google.firebase.firestore.IgnoreExtraProperties;
 
 import java.io.Serializable;
 
-/**
- * Created by Wojtek on 2017-10-22.
- */
-
 @IgnoreExtraProperties
 public class Place implements Serializable {
     private GeoPoint geoPoint;

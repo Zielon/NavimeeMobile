@@ -28,6 +28,7 @@ import com.yarolegovich.lovelydialog.LovelyInfoDialog;
 import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 
 import org.pl.android.drively.R;
+import org.pl.android.drively.data.model.RoomMember;
 import org.pl.android.drively.data.model.chat.Group;
 import org.pl.android.drively.data.model.chat.ListFriend;
 import org.pl.android.drively.data.model.chat.Room;
@@ -170,11 +171,11 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @SuppressLint("TimberArgCount")
     @Override
     public void setGroupInfo(int groupIndex, Room room) {
-        for (String member : room.member) {
-            listGroup.get(groupIndex).member.add(member);
+        for (RoomMember member : room.getMembers()) {
+            listGroup.get(groupIndex).getMembers().add(member);
         }
-        listGroup.get(groupIndex).groupInfo.put("name", room.groupInfo.get("name"));
-        listGroup.get(groupIndex).groupInfo.put("admin", room.groupInfo.get("admin"));
+        listGroup.get(groupIndex).setName(room.getName());
+        listGroup.get(groupIndex).setAdmin(room.getAdmin());
         GroupDB.getInstance(getContext()).addGroup(listGroup.get(groupIndex));
         Timber.d("GroupFragment", listGroup.get(groupIndex).id + ": " + room.toString());
         getGroupInfo(groupIndex + 1);
@@ -196,7 +197,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         switch (item.getItemId()) {
             case CONTEXT_MENU_DELETE:
                 int posGroup = item.getIntent().getIntExtra(CONTEXT_MENU_KEY_INTENT_DATA_POS, -1);
-                if (((String) listGroup.get(posGroup).groupInfo.get("admin")).equals(mGroupPresenter.getId())) {
+                if (listGroup.get(posGroup).getAdmin().equals(mGroupPresenter.getId())) {
                     Group group = listGroup.get(posGroup);
                     listGroup.remove(posGroup);
                     if (group != null) {
@@ -221,7 +222,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
             case CONTEXT_MENU_LEAVE:
                 int position = item.getIntent().getIntExtra(CONTEXT_MENU_KEY_INTENT_DATA_POS, -1);
-                if (((String) listGroup.get(position).groupInfo.get("admin")).equals(mGroupPresenter.getId())) {
+                if (listGroup.get(position).getAdmin().equals(mGroupPresenter.getId())) {
                     Toast.makeText(getActivity(), getResources().getString(R.string.admin_cannot_leave), Toast.LENGTH_LONG).show();
                 } else {
                     waitingLeavingGroup.show();
@@ -235,7 +236,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     public void deleteGroup(final Group group, final int index) {
-        if (index == group.member.size()) {
+        if (index == group.getMembers().size()) {
             mGroupPresenter.deleteGroup(group);
         } else {
             mGroupPresenter.deleteGroupReference(index, group);
@@ -357,7 +358,7 @@ class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
         final Group group = listGroup.get(position);
-        final String groupName = group.groupInfo.get("name");
+        final String groupName = group.getName();
         ItemGroupViewHolder holder = ((ItemGroupViewHolder) viewHolder);
 
         if (groupName != null && groupName.length() > 0) {
@@ -389,7 +390,8 @@ class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, groupName);
             ArrayList<CharSequence> idFriend = new ArrayList<>();
             ChatViewActivity.bitmapAvataFriend = new HashMap<>();
-            for (String id : listGroup.get(position).member) {
+            for (RoomMember member : listGroup.get(position).getMembers()) {
+                String id = member.getMemberId();
                 idFriend.add(id);
                 String avatar = listFriend.getAvataById(id);
                 if (!avatar.equals(Const.STR_DEFAULT_AVATAR) && listFriend.getById(id) != null && listFriend.getById(id).avatarBytes != null) {

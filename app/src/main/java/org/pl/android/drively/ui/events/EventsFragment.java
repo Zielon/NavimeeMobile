@@ -1,7 +1,5 @@
 package org.pl.android.drively.ui.events;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -207,7 +204,7 @@ public class EventsFragment extends Fragment implements EventsMvpView {
         moveToNextDay();
     }
 
-    private void moveToNextDay(){
+    private void moveToNextDay() {
         Date dt;
         Calendar c = Calendar.getInstance();
         c.setTime(horizontalCalendar.getSelectedDate());

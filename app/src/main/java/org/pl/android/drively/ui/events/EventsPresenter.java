@@ -25,10 +25,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -96,7 +94,7 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
         eventsKeyList.addAll(keys);
         Date finalDateFinal = dateFinal;
         try {
-           final String hotspotTypeFilter = nameof(Event.class,"hotspotType");
+            final String hotspotTypeFilter = nameof(Event.class, "hotspotType");
             for (String key : keys) {
                 mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.HOTSPOT).document(key)
                         .addSnapshotListener((snapshot, e) -> {
@@ -133,7 +131,7 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
         String userIdFilter = null;
         try {
-            userIdFilter = nameof(EventNotification.class,"userId");
+            userIdFilter = nameof(EventNotification.class, "userId");
             mDataManager.getFirebaseService().getFirebaseFirestore()
                     .collection(FirebasePaths.NOTIFICATIONS)
                     .whereEqualTo(userIdFilter, userId)
@@ -175,13 +173,13 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
                 }
             }
         })
-        .addOnFailureListener(new OnFailureListener() {
-            @SuppressLint("TimberArgCount")
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Timber.e("Error saving event", e);
-            }
-        });
+                .addOnFailureListener(new OnFailureListener() {
+                    @SuppressLint("TimberArgCount")
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Timber.e("Error saving event", e);
+                    }
+                });
 
     }
 

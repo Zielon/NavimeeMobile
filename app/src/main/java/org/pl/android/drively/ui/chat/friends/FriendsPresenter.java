@@ -65,17 +65,17 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
     public void updateUserStatus() {
         if (NetworkUtil.isNetworkConnected(mContext)) {
             try {
-                String isOnlineField = nameof(User.class,"isOnline");
-                String timestampField = nameof(User.class,"timestamp");
-            if (mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() != null) {
-                String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-                if (!userId.equals("")) {
-                    Map<String, Object> data = new HashMap<>();
-                    data.put(isOnlineField, true);
-                    data.put(timestampField, System.currentTimeMillis());
-                    mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).update(data);
+                String isOnlineField = nameof(User.class, "isOnline");
+                String timestampField = nameof(User.class, "timestamp");
+                if (mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() != null) {
+                    String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+                    if (!userId.equals("")) {
+                        Map<String, Object> data = new HashMap<>();
+                        data.put(isOnlineField, true);
+                        data.put(timestampField, System.currentTimeMillis());
+                        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).update(data);
+                    }
                 }
-            }
             } catch (NoSuchFieldException e) {
                 e.printStackTrace();
             }
@@ -92,7 +92,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                     mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(fid).get().addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
-                            if (document != null) {
+                            if (document != null && document.exists()) {
                                 User user = document.toObject(User.class);
                                 if (user.isOnline() && (System.currentTimeMillis() - user.getTimestamp()) > Const.TIME_TO_OFFLINE) {
                                     mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(fid).update(isOnlineField, false);
@@ -105,9 +105,9 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                         }
                     });
                 }
-            } catch(NoSuchFieldException e){
+            } catch (NoSuchFieldException e) {
                 e.printStackTrace();
-             }
+            }
         }
     }
 
@@ -139,8 +139,8 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         String finalEncodeUpperCase = encodeUpperCase;
         String finalEndcode = endcode;
         try {
-             String nameField = nameof(User.class,"name");
-             String emailField = nameof(User.class,"email");
+            String nameField = nameof(User.class, "name");
+            String emailField = nameof(User.class, "email");
             usersReference
                     .whereGreaterThanOrEqualTo(nameField, stringQuery).whereLessThan(nameField, finalEndcode).get()
                     .addOnCompleteListener(task -> {
@@ -230,10 +230,10 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
 
     public void getListFriendUId() {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-         try {
-              String idField = nameof(Friend.class,"id");
-              mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId)
-                .collection(FirebasePaths.FRIENDS).get().addOnCompleteListener(task -> {
+        try {
+            String idField = nameof(Friend.class, "id");
+            mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId)
+                    .collection(FirebasePaths.FRIENDS).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     List friends = new ArrayList<String>();
                     if (task.getResult().size() == 0) {
@@ -247,40 +247,50 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                         getMvpView().listFriendFound(friends);
                         friends.clear();
                     }
-                    } else {
-                      if (getMvpView() != null) {
-                          getMvpView().listFriendNotFound();
-                      }
-                  }
-                });
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            }
+                } else {
+                    if (getMvpView() != null) {
+                        getMvpView().listFriendNotFound();
+                    }
+                }
+            });
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addFriend(String idFriend) {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
         Map<String, Object> friendMap = new HashMap<>();
         try {
-            String idField = nameof(Friend.class,"id");
-            friendMap.put(idField, idFriend);
-            mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId)
-                    .collection(FirebasePaths.FRIENDS).add(friendMap).addOnSuccessListener(documentReference -> {
-                if (getMvpView() != null) {
-                    getMvpView().addFriendSuccess(idFriend);
-                }
-            })
-                    .addOnFailureListener(e -> getMvpView().addFriendFailure());
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            }
+            String idField = nameof(Friend.class, "id");
+            mDataManager.getFirebaseService().getFirebaseFirestore()
+                    .collection(FirebasePaths.USERS)
+                    .document(userId)
+                    .collection(FirebasePaths.FRIENDS)
+                    .whereEqualTo(idField, userId).get()
+                    .addOnSuccessListener(documentSnapshots -> {
+                        if (!documentSnapshots.isEmpty()) return;
+                        friendMap.put(idField, idFriend);
+                        mDataManager.getFirebaseService().getFirebaseFirestore()
+                                .collection(FirebasePaths.USERS)
+                                .document(userId)
+                                .collection(FirebasePaths.FRIENDS)
+                                .add(friendMap).addOnSuccessListener(documentReference -> {
+                            if (getMvpView() != null)
+                                getMvpView().addFriendSuccess(idFriend);
+                        }).addOnFailureListener(e -> getMvpView().addFriendFailure());
+                    });
+
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addFriendForFriendId(String idFriend) {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
         Map<String, Object> friendMap = new HashMap<>();
         try {
-            String idField = nameof(Friend.class,"id");
+            String idField = nameof(Friend.class, "id");
             friendMap.put(idField, userId);
             mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(idFriend).collection(FirebasePaths.FRIENDS)
                     .add(friendMap).addOnSuccessListener(documentReference -> {
@@ -289,15 +299,15 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                 }
             })
                     .addOnFailureListener(e -> getMvpView().addFriendFailure());
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
         }
     }
 
 
     public Query getLastMessage(String idRoom) {
         try {
-            String  timestampField = nameof(Message.class,"timestamp");
+            String timestampField = nameof(Message.class, "timestamp");
             return mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.MESSAGES_PRIVATE).document(idRoom)
                     .collection(FirebasePaths.MESSAGES_PRIVATE)
                     .orderBy(timestampField, Query.Direction.DESCENDING).limit(1);
@@ -354,7 +364,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
     }
 
     public StorageReference getStorageReference(String avatar) {
-        return mDataManager.getFirebaseService().getFirebaseStorage().getReference( String.format("%s/%s", AVATARS, avatar));
+        return mDataManager.getFirebaseService().getFirebaseStorage().getReference(String.format("%s/%s", AVATARS, avatar));
     }
 
     public void getUserAvatar() {

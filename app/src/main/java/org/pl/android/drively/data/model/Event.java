@@ -10,9 +10,6 @@ import org.pl.android.drively.util.Const;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * Created by Wojtek on 2017-10-21.
- */
 @IgnoreExtraProperties
 public class Event implements Comparable<Event>, Serializable {
 

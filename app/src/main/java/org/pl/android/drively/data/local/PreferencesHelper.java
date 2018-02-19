@@ -84,6 +84,10 @@ public class PreferencesHelper {
         e.apply();
     }
 
+    public String getCountry() {
+        return "POLAND";
+    }
+
     public void saveUserInfo(User user) {
         SharedPreferences.Editor e = mPref.edit();
         e.putString(SHARE_KEY_NAME, user.getName());

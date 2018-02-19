@@ -29,6 +29,4 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         super.detachView();
         if (mDisposable != null) mDisposable.dispose();
     }
-
-
 }
