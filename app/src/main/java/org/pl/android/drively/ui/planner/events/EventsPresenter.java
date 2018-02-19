@@ -1,4 +1,4 @@
-package org.pl.android.drively.ui.events;
+package org.pl.android.drively.ui.planner.events;
 
 import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;

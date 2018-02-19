@@ -1,4 +1,4 @@
-package org.pl.android.drively.ui.dayschedule;
+package org.pl.android.drively.ui.planner.dayschedule;
 
 import android.content.Context;
 import android.content.Intent;

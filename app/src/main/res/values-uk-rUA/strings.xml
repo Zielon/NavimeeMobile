@@ -111,4 +111,5 @@
     <string name="delete_group">Видалити групу</string>
     <string name="leave_group">покинути групу</string>
     <string name="accept_regulation">Під час входу до програми ви приймаєте <u>правила</u></string>
+    <string name="your_plan">Ваш план</string>
 </resources>

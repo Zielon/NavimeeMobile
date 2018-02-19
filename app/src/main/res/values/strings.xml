@@ -121,4 +121,5 @@
     <string name="success_leaveing_group">You left this group</string>
     <string name="delete_group">Delete group</string>
     <string name="leave_group">Leave group</string>
+    <string name="your_plan">Your plan</string>
 </resources>

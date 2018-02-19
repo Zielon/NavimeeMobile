@@ -1,4 +1,4 @@
-package org.pl.android.drively.ui.events;
+package org.pl.android.drively.ui.planner.events;
 
 import org.joda.time.DateTime;
 import org.pl.android.drively.data.model.Event;

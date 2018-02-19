@@ -1,4 +1,4 @@
-package org.pl.android.drively.ui.events;
+package org.pl.android.drively.ui.planner.events;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import net.danlew.android.joda.DateUtils;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;

@@ -1,4 +1,4 @@
-package org.pl.android.drively.ui.dayschedule;
+package org.pl.android.drively.ui.planner.dayschedule;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
