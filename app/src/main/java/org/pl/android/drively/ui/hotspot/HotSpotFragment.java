@@ -142,8 +142,8 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     RxPermissions rxPermissions;
     LatLng latLngCurrent, latLngEnd;
     String sEventName, sEventCount;
-    GeoFire geoFire;
-    GeoQuery geoQuery;
+    GeoFire geoFire,geoFireUsersLocation;
+    GeoQuery geoQuery,geoQueryUsersLocation;
     MyFabFragment dialogFrag;
     boolean isFirstAfterPermissionGranted = true;
     int durationInSec, distanceValue;
@@ -402,7 +402,9 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
         geoFire = new GeoFire(mHotspotPresenter.getHotSpotDatabaseRefernce());
+        geoFireUsersLocation = new GeoFire(mHotspotPresenter.getUsersLocationDatabaseRefernce());
         this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radius);
+        this.geoQueryUsersLocation = this.geoFireUsersLocation.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radius);
     }
 
     protected void onLocationPermissionGranted() {
@@ -448,6 +450,8 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                         }
                         geoQuery = geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
                         geoQuery.addGeoQueryEventListener(HotSpotFragment.this);
+                        geoQueryUsersLocation = geoFireUsersLocation.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
+                        geoQueryUsersLocation.addGeoQueryEventListener(HotSpotFragment.this);
                         eventsOnMap.clear();
                         mClusterManager.clearItems();
 
@@ -478,6 +482,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         mMapView.onResume();
         try {
             this.geoQuery.addGeoQueryEventListener(this);
+            this.geoQueryUsersLocation.addGeoQueryEventListener(this);
         } catch (Exception e) {
 
         }
@@ -615,6 +620,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         dispose(activityDisposable);
         dispose(addressDisposable);
         this.geoQuery.removeAllListeners();
+        this.geoQueryUsersLocation.removeAllListeners();
     }
 
     @Override

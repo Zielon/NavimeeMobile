@@ -102,7 +102,7 @@ public class GeolocationUpdateService extends Service
         Timber.e("onCreate");
         super.onCreate();
         BoilerplateApplication.get(this).getComponent().inject(this);
-        DatabaseReference databaseReference = dataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.HOTSPOT_CURRENT);
+        DatabaseReference databaseReference = dataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.USER_LOCATION);
         geoFire = new GeoFire(databaseReference);
         initializeLocationManager();
 
