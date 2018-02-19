@@ -9,6 +9,7 @@ public class Feedback {
     private int durationInSec;
     private int distanceValue;
     private LatLng geoPoint;
+    private String date;
 
     public Feedback() {
     }
@@ -59,6 +60,14 @@ public class Feedback {
 
     public void setGeoPoint(LatLng geoPoint) {
         this.geoPoint = geoPoint;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }
 

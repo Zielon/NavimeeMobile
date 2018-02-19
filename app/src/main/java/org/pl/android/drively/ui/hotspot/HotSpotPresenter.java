@@ -14,6 +14,9 @@ import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
 import org.pl.android.drively.util.ViewUtil;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -122,6 +125,10 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
         feedback.setDurationInSec(durationInSec);
         feedback.setDistanceValue(distanceValue);
         feedback.setGeoPoint(latLng);
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+        String formattedDate = df.format(c);
+        feedback.setDate(formattedDate);
         mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child(FirebasePaths.FEEDBACK).push().setValue(feedback);
     }
 
