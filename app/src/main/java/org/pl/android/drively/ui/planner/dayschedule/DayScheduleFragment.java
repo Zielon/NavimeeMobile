@@ -87,6 +87,7 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
                 .startDate(startDate.getTime())
                 .endDate(endDate.getTime())
                 .datesNumberOnScreen(5)   // Number of Dates cells shown on screen (Recommended 5)
+                .textSize(15,15,15)
                 .dayNameFormat("EEE")      // WeekDay text format
                 .dayNumberFormat("dd")// Date format
                 .monthFormat("MMM")      // Month format

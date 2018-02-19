@@ -95,6 +95,7 @@ public class EventsFragment extends Fragment implements EventsMvpView {
         horizontalCalendar = new HorizontalCalendar.Builder(fragmentView, R.id.calendarView)
                 .startDate(startDate.getTime())
                 .endDate(endDate.getTime())
+                .textSize(15,15,15)
                 .datesNumberOnScreen(5)   // Number of Dates cells shown on screen (Recommended 5)
                 .dayNameFormat("EEE")      // WeekDay text format
                 .dayNumberFormat("dd")// Date format
