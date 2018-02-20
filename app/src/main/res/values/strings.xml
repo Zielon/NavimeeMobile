@@ -121,4 +121,7 @@
     <string name="success_leaveing_group">You left this group</string>
     <string name="delete_group">Delete group</string>
     <string name="leave_group">Leave group</string>
+    <string name="network_lack">No network</string>
+    <string name="check_internet">Check Internet</string>
+    <string name="close">Close</string>
 </resources>

@@ -949,7 +949,6 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     private class ErrorHandler implements Consumer<Throwable> {
         @Override
         public void accept(Throwable throwable) {
-            Toast.makeText(getApplicationContext(), "Error occurred.", Toast.LENGTH_SHORT).show();
             Log.d("MainActivity", "Error occurred", throwable);
         }
     }
