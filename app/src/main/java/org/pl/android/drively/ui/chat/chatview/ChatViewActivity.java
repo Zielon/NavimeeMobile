@@ -168,14 +168,15 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
             String content = editWriteMessage.getText().toString().trim();
             if (content.length() > 0) {
                 editWriteMessage.setText("");
-                Message newMessage = isGroupChat ? new GroupMessage() : new PrivateMessage();
+                Message newMessage = isGroupChat ? new GroupMessage() : new PrivateMessage(idFriend.get(0).toString());
+
                 newMessage.text = content;
                 newMessage.idSender = mChatViewPresenter.getId();
-                newMessage.idReceiver = idFriend.get(0).toString();
                 newMessage.idRoom = roomId;
                 newMessage.nameSender = mChatViewPresenter.getUserInfo().getName();
                 newMessage.emailSender = mChatViewPresenter.getUserInfo().getEmail();
                 newMessage.timestamp = System.currentTimeMillis();
+
                 mChatViewPresenter.addMessage(roomId, newMessage);
             }
         }
