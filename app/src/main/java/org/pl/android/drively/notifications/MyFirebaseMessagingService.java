@@ -1,19 +1,3 @@
-/**
- * Copyright 2016 Google Inc. All Rights Reserved.
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.pl.android.drively.notifications;
 
 import android.app.Notification;
@@ -44,6 +28,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.inject.Inject;
+
+import static org.pl.android.drively.util.BitmapUtils.getCircular;
+
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -147,13 +134,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Intent intent = new Intent(this, ChatViewActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, name);
-        ArrayList<CharSequence> idFriend = new ArrayList<CharSequence>();
+        ArrayList<CharSequence> idFriend = new ArrayList<>();
+        Bitmap avatar = getCircular(bitmap);
         idFriend.add(userId);
         intent.putCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID, idFriend);
         intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, roomId);
         ChatViewActivity.bitmapAvataFriend = new HashMap<>();
-        ChatViewActivity.bitmapAvataFriend.put(userId, bitmap);
-
+        ChatViewActivity.bitmapAvataFriend.put(userId, avatar);
 
         PendingIntent navigationIntent = TaskStackBuilder.create(this)
                 .addParentStack(ChatViewActivity.class)
@@ -164,7 +151,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.notification_d)
                 .setColor(getResources().getColor(R.color.primary_dark))
-                .setLargeIcon(bitmap)
+                .setLargeIcon(avatar)
                 .setContentTitle(name)
                 .setContentText(text)
                 .setAutoCancel(true)
@@ -172,7 +159,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setSound(defaultSoundUri)
                 .addAction(R.drawable.ic_action_whatshot, getResources().getString(R.string.check_in_app), navigationIntent)
                 .setContentIntent(navigationIntent);
-
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
