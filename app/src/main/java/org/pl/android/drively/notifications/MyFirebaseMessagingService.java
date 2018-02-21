@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -20,6 +21,9 @@ import org.joda.time.DateTime;
 import org.pl.android.drively.BoilerplateApplication;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.data.model.notifications.EventNotificationFCM;
+import org.pl.android.drively.data.model.notifications.FeedbackNotificationFCM;
+import org.pl.android.drively.data.model.notifications.MessageNotificationFCM;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.ui.main.MainActivity;
 import org.pl.android.drively.util.Const;
@@ -79,26 +83,34 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         //if (remoteMessage.getNotification() != null) {
         Log.d(TAG, "Data manager in service: " + dataManager.toString());
         Const.NotificationsType type = Const.NotificationsType.valueOf(remoteMessage.getData().get("type"));
-
+        final ObjectMapper mapper = new ObjectMapper();
         switch (type) {
             case FEEDBACK:
+               // jackson's objectmapper
+                final FeedbackNotificationFCM feedbackNotification = mapper.convertValue(remoteMessage.getData(), FeedbackNotificationFCM.class);
                 dataManager.getPreferencesHelper().setValue(Const.IS_FEEDBACK, true);
-                dataManager.getPreferencesHelper().setValue(Const.LOCATION_NAME, remoteMessage.getData().get("locationName"));
-                dataManager.getPreferencesHelper().setValue(Const.NAME, remoteMessage.getData().get("name"));
-                dataManager.getPreferencesHelper().setValue(Const.LOCATION_ADDRESS, remoteMessage.getData().get("locationAddress"));
-                dataManager.getPreferencesHelper().setValue(Const.FEEDBACK_ID, remoteMessage.getData().get("id"));
+                dataManager.getPreferencesHelper().setValue(Const.LOCATION_NAME, feedbackNotification.getLocationName());
+                dataManager.getPreferencesHelper().setValue(Const.NAME, feedbackNotification.getName());
+                dataManager.getPreferencesHelper().setValue(Const.LOCATION_ADDRESS, feedbackNotification.getLocationAddress());
+                dataManager.getPreferencesHelper().setValue(Const.FEEDBACK_ID, feedbackNotification.getId());
                 break;
             case SCHEDULED_EVENT:
-                sendNotification(remoteMessage.getData().get("title"), remoteMessage.getData().get("endTime"), remoteMessage.getData().get("lat"), remoteMessage.getData().get("lng"));
+                final EventNotificationFCM eventNotificationScheduled = mapper.convertValue(remoteMessage.getData(), EventNotificationFCM.class);
+                sendNotification(eventNotificationScheduled.getTitle(), eventNotificationScheduled.getEndTime(), eventNotificationScheduled.getLat(), eventNotificationScheduled.getLng());
                 break;
             case BIG_EVENT:
-                sendNotification(remoteMessage.getData().get("title"), remoteMessage.getData().get("endTime"), remoteMessage.getData().get("lat"), remoteMessage.getData().get("lng"));
+                final EventNotificationFCM eventNotificationBig = mapper.convertValue(remoteMessage.getData(), EventNotificationFCM.class);
+                sendNotification(eventNotificationBig.getTitle(), eventNotificationBig.getEndTime(), eventNotificationBig.getLat(), eventNotificationBig.getLng());
                 break;
             case MESSAGE_PRIVATE:
-                sendNotificationFromChat(remoteMessage.getData().get("nameSender"), remoteMessage.getData().get("idSender"), remoteMessage.getData().get("text"), remoteMessage.getData().get("avatar"), remoteMessage.getData().get("idRoom"));
+                final MessageNotificationFCM messageNotificationPrivate = mapper.convertValue(remoteMessage.getData(), MessageNotificationFCM.class);
+                sendNotificationFromChat(messageNotificationPrivate.getNameSender(), messageNotificationPrivate.getIdSender(), messageNotificationPrivate.getText(),
+                        messageNotificationPrivate.getAvatar(), messageNotificationPrivate.getIdRoom());
                 break;
             case MESSAGE_GROUP:
-                sendNotificationFromChat(remoteMessage.getData().get("nameSender"), remoteMessage.getData().get("idSender"), remoteMessage.getData().get("text"), remoteMessage.getData().get("avatar"), remoteMessage.getData().get("idRoom"));
+                final MessageNotificationFCM messageNotificationGroup = mapper.convertValue(remoteMessage.getData(), MessageNotificationFCM.class);
+                sendNotificationFromChat(messageNotificationGroup.getNameSender(), messageNotificationGroup.getIdSender(), messageNotificationGroup.getText(),
+                        messageNotificationGroup.getAvatar(), messageNotificationGroup.getIdRoom());
                 break;
         }
     }
