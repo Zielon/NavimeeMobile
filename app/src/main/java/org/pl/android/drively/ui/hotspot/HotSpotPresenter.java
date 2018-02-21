@@ -6,6 +6,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.ListenerRegistration;
 
 import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.data.model.CityAvailable;
+import org.pl.android.drively.data.model.CityNotAvailable;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.Feedback;
 import org.pl.android.drively.data.model.FourSquarePlace;
@@ -166,8 +168,41 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
         filterList.clear();
     }
 
-    public void  sendMessageWhenCityNotAvailable(String city) {
+    public void  sendMessageWhenCityNotAvailable(CityNotAvailable city) {
+        mDataManager.getFirebaseService().getFirebaseFirestore()
+                .collection(FirebasePaths.NOT_AVAILABLE_CITIES)
+                .add(city);
     }
 
 
+    public void checkAvailableCities(String countryCode, String city) {
+        CityNotAvailable cityNotAvailable = new CityNotAvailable();
+        try {
+            final String cityFilter = nameof(CityAvailable.class, "city");
+            mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.AVAILABLE_CITIES_NATIVE)
+                    .document(countryCode)
+                    .collection(FirebasePaths.BY_CITY)
+                    .whereEqualTo(cityFilter , city.toUpperCase())
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            if(task.getResult().getDocuments().size() == 0) {
+                                if (getMvpView() != null) {
+                                    cityNotAvailable.setCity(city);
+                                    cityNotAvailable.setCountryCode(countryCode);
+                                    getMvpView().showNotAvailableCity(cityNotAvailable);
+                                }
+                            }
+                        } else {
+                            if (getMvpView() != null) {
+                                cityNotAvailable.setCity(city);
+                                cityNotAvailable.setCountryCode(countryCode);
+                                getMvpView().showNotAvailableCity(cityNotAvailable);
+                            }
+                        }
+                    });
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+    }
 }
