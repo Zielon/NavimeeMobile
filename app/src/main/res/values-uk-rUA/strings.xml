@@ -114,4 +114,6 @@
     <string name="network_lack">немає інтернету</string>
     <string name="check_internet">Wi-Fi налаштування</string>
     <string name="close">близько</string>
+    <string name="let_us_know">Дайте нам інформацію</string>
+    <string name="not_available_in_city">Ми не доступні у вашому місті</string>
 </resources>

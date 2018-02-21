@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -32,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.allattentionhere.fabulousfilter.AAH_FabulousFragment;
 import com.directions.route.Route;
@@ -153,6 +155,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     double lngNotification;
     boolean isFromNotification = false;
     String notificationName, notificationCount;
+    boolean isGeofireIsInCity = false;
     @Inject
     HotSpotPresenter mHotspotPresenter;
     private GoogleMap googleMap;
@@ -781,6 +784,9 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
 
     @Override
     public void onKeyEntered(String key, GeoLocation location) {
+        if(!isGeofireIsInCity) {
+            isGeofireIsInCity = true;
+        }
         Timber.i(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
         if(key.contains(FirebasePaths.USER_LOCATION) && !key.contains(mHotspotPresenter.getUid())) {
             Timber.i("USER LOCATION");
@@ -830,6 +836,19 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         if(mClusterManager != null) {
             Timber.i("Cluster size" +mClusterManager.getAlgorithm().getItems().size());
             mClusterManager.cluster();
+        }
+        if(!isGeofireIsInCity) {
+            MaterialDialog dialogAlert = new MaterialDialog.Builder(getActivity())
+                    .title(R.string.not_available_in_city)
+                    .backgroundColor(getResources().getColor(R.color.primary_dark))
+                    .contentColor(getResources().getColor(R.color.white))
+                    .positiveText(R.string.let_us_know)
+                    .onPositive((MaterialDialog dialog, DialogAction which) ->  {
+                        String city;
+                        mHotspotPresenter.sendMessageWhenCityNotAvailable(city);
+                    })
+                    .build();
+            dialogAlert.show();
         }
     }
 

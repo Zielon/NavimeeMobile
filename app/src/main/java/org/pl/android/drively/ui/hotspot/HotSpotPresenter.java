@@ -165,4 +165,9 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
     public void clearFilterList() {
         filterList.clear();
     }
+
+    public void  sendMessageWhenCityNotAvailable(String city) {
+    }
+
+
 }

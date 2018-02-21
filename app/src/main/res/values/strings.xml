@@ -124,4 +124,6 @@
     <string name="network_lack">No network</string>
     <string name="check_internet">Check Internet</string>
     <string name="close">Close</string>
+    <string name="let_us_know">Give us info</string>
+    <string name="not_available_in_city">We are not available in your city</string>
 </resources>
