@@ -98,8 +98,8 @@ public class ChatFragment extends Fragment implements ChatMvpView {
 
     private void setupTabIcons() {
         int[] tabIcons = {
-                R.drawable.ic_tab_person,
-                R.drawable.ic_tab_group
+                R.drawable.ic_tab_group,
+                R.drawable.ic_tab_person
         };
 
         tabLayout.getTabAt(0).setIcon(tabIcons[0]);
