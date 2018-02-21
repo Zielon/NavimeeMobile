@@ -6,8 +6,9 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/avatar"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
         android:scaleType="centerCrop" />
 
@@ -41,5 +42,21 @@
         android:singleLine="true"
         android:textColor="@color/white"
         android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/sendMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/name"
+        android:layout_alignRight="@+id/name"
+        android:layout_below="@id/name"
+        android:layout_gravity="center"
+        android:layout_marginLeft="16dp"
+        android:textAllCaps="false"
+        android:layout_toEndOf="@id/avatar"
+        android:layout_toRightOf="@id/avatar"
+        android:backgroundTint="@color/button_background"
+        android:text="@string/send_private_message"
+        android:textAlignment="center" />
 
 </RelativeLayout>

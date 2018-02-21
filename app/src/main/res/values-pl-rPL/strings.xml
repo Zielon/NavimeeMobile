@@ -112,6 +112,7 @@
     <string name="delete_group">Usuń grupę</string>
     <string name="leave_group">Opuść grupę</string>
     <string name="accept_regulation">Logując się do aplikacji akceptujesz <u>regulamin</u></string>
+    <string name="send_private_message">Wyślij prywatnę wiadomość</string>
     <string name="network_lack">Brak internetu</string>
     <string name="check_internet">Ustawienia Wi-fi</string>
     <string name="close">Zamknij</string>
