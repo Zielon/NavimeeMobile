@@ -45,17 +45,18 @@
 
     <Button
         android:id="@+id/sendMessage"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/name"
         android:layout_alignRight="@+id/name"
         android:layout_below="@id/name"
         android:layout_gravity="center"
         android:layout_marginLeft="16dp"
+        android:textAllCaps="false"
         android:layout_toEndOf="@id/avatar"
         android:layout_toRightOf="@id/avatar"
         android:backgroundTint="@color/button_background"
-        android:text="Send a private message"
+        android:text="@string/send_private_message"
         android:textAlignment="center" />
 
 </RelativeLayout>
