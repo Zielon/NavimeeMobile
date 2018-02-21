@@ -39,11 +39,13 @@ import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.chat.Friend;
 import org.pl.android.drively.data.model.chat.ListFriend;
+import org.pl.android.drively.data.model.chat.PrivateMessage;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.ui.chat.data.FriendDB;
 import org.pl.android.drively.ui.chat.friendsearch.FriendModel;
 import org.pl.android.drively.ui.chat.friendsearch.FriendSearchDialogCompat;
+import org.pl.android.drively.util.ChatUtils;
 import org.pl.android.drively.util.Const;
 
 import java.text.SimpleDateFormat;
@@ -133,7 +135,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         dialogFindAllFriend = new LovelyProgressDialog(getContext());
         dialogWait = new LovelyProgressDialog((getContext()));
         dialogWaitDeleting = new LovelyProgressDialog((getContext()));
-        adapter = new ListFriendsAdapter(getContext(), dataListFriend, this, dialogWaitDeleting);
+        adapter = new ListFriendsAdapter(getContext(), dataListFriend, this, dialogWaitDeleting, mFriendsPresenter.getId());
         recyclerListFrends.setAdapter(adapter);
 
         if (listFriendID == null) {
@@ -366,7 +368,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                                     friend.email = item.getEmail();
                                     friend.id = item.getId();
                                     friend.avatar = item.getAvatar();
-                                    friend.idRoom = item.getId().compareTo(mFriendsPresenter.getId()) > 0 ? (mFriendsPresenter.getId() + item.getId()).hashCode() + "" : "" + (item.getId() + mFriendsPresenter.getId()).hashCode();
+                                    friend.idRoom = ChatUtils.getRoomId(item.getId(), mFriendsPresenter.getId());
                                     mFriendsPresenter.getStorageReference(friend.avatar)
                                             .getBytes(Const.FIVE_MEGABYTE)
                                             .addOnSuccessListener(bytes -> {
@@ -432,9 +434,9 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ListFriend listFriend;
     private Context context;
     private FriendsFragment fragment;
+    private String currentUser;
 
-
-    public ListFriendsAdapter(Context context, ListFriend listFriend, FriendsFragment fragment, LovelyProgressDialog dialogWaitDeleting) {
+    public ListFriendsAdapter(Context context, ListFriend listFriend, FriendsFragment fragment, LovelyProgressDialog dialogWaitDeleting, String currentUser) {
         this.listFriend = listFriend;
         this.context = context;
         mapQuery = new HashMap<>();
@@ -444,6 +446,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         mapQueryOnline = new HashMap<>();
         this.fragment = fragment;
         this.dialogWaitDeleting = dialogWaitDeleting;
+        this.currentUser = currentUser;
     }
 
     @Override
@@ -506,19 +509,16 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     return true;
                 });
 
-
         if (listFriend.getListFriend().get(position).message != null) {
             ((ItemFriendViewHolder) holder).txtMessage.setVisibility(View.VISIBLE);
             ((ItemFriendViewHolder) holder).txtTime.setVisibility(View.VISIBLE);
-            if (!listFriend.getListFriend().get(position).message.text.startsWith(id)) {
-                ((ItemFriendViewHolder) holder).txtMessage.setText(listFriend.getListFriend().get(position).message.text);
-                ((ItemFriendViewHolder) holder).txtMessage.setTypeface(Typeface.DEFAULT);
-                ((ItemFriendViewHolder) holder).txtName.setTypeface(Typeface.DEFAULT);
-            } else {
-                ((ItemFriendViewHolder) holder).txtMessage.setText(listFriend.getListFriend().get(position).message.text.substring((id + "").length()));
+
+            ((ItemFriendViewHolder) holder).txtMessage.setText(listFriend.getListFriend().get(position).message.text);
+
+            if(!listFriend.getListFriend().get(position).message.idSender.equals(currentUser)){
                 ((ItemFriendViewHolder) holder).txtMessage.setTypeface(Typeface.DEFAULT_BOLD);
-                ((ItemFriendViewHolder) holder).txtName.setTypeface(Typeface.DEFAULT_BOLD);
             }
+
             String time = new SimpleDateFormat("EEE, d MMM yyyy").format(new Date(listFriend.getListFriend().get(position).message.timestamp));
             String today = new SimpleDateFormat("EEE, d MMM yyyy").format(new Date(System.currentTimeMillis()));
             if (today.equals(time)) {
@@ -531,42 +531,24 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((ItemFriendViewHolder) holder).txtTime.setVisibility(View.GONE);
             if (mapQuery.get(id) == null && mapChildListener.get(id) == null) {
                 mapQuery.put(id, this.fragment.mFriendsPresenter.getLastMessage(idRoom));
-                mapChildListener.put(id, new EventListener<QuerySnapshot>() {
-                    @SuppressLint("TimberArgCount")
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot snapshots,
-                                        @Nullable FirebaseFirestoreException e) {
-                        if (e != null) {
-                            Timber.e("Listen failed.", e);
-                            return;
+                mapChildListener.put(id, (snapshots, e) -> {
+                    if (e != null) {
+                        Timber.e("Listen failed.", e);
+                        return;
+                    }
+                    try {
+                        for (DocumentSnapshot documentSnapshot : snapshots.getDocuments()) {
+                            PrivateMessage message = new PrivateMessage();
+                            message.idSender = (String) documentSnapshot.getData().get("idSender");
+                            message.text = (String) documentSnapshot.getData().get("text");
+                            message.timestamp = (long) documentSnapshot.getData().get("timestamp");
+                            listFriend.getListFriend().get(position).message = message;
+                            notifyDataSetChanged();
                         }
-                        try {
-                            for (DocumentSnapshot documentSnapshot : snapshots) {
-                                if (mapMark.get(id) != null) {
-                                    if (!mapMark.get(id)) {
-                                        if (listFriend.getListFriend().get(position).message.timestamp != documentSnapshot.getLong("timestamp")
-                                                && listFriend.getListFriend().get(position).message.text != documentSnapshot.get("text")
-                                                && listFriend.getListFriend().get(position).message.idRoom != documentSnapshot.get("idRoom")
-                                                && listFriend.getListFriend().get(position).message.idSender != documentSnapshot.get("idSender")) {
-
-                                            listFriend.getListFriend().get(position).message.text = id + documentSnapshot.get("text");
-                                        }
-                                    } else {
-                                        listFriend.getListFriend().get(position).message.text = (String) documentSnapshot.get("text");
-                                    }
-                                    notifyDataSetChanged();
-                                    mapMark.put(id, false);
-                                } else {
-                                    listFriend.getListFriend().get(position).message.text = (String) documentSnapshot.get("text");
-                                    notifyDataSetChanged();
-                                }
-                                listFriend.getListFriend().get(position).message.timestamp = (long) documentSnapshot.get("timestamp");
-                            }
-                        } catch (IndexOutOfBoundsException ex) {
-                            Timber.w("Exception occured.", ex);
-                        } catch (Exception ex) {
-                            Timber.w("Exception occured.", ex);
-                        }
+                    } catch (IndexOutOfBoundsException ex) {
+                        Timber.w("Exception occured.", ex);
+                    } catch (Exception ex) {
+                        Timber.w("Exception occured.", ex);
                     }
                 });
                 mapQuery.get(id).addSnapshotListener(mapChildListener.get(id));

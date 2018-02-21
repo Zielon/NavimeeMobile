@@ -24,6 +24,7 @@ import org.pl.android.drively.data.model.chat.GroupMessage;
 import org.pl.android.drively.data.model.chat.Message;
 import org.pl.android.drively.data.model.chat.PrivateMessage;
 import org.pl.android.drively.ui.base.BaseActivity;
+import org.pl.android.drively.util.ChatUtils;
 import org.pl.android.drively.util.Const;
 
 import java.text.SimpleDateFormat;
@@ -188,7 +189,11 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private String mUID;
     private RecyclerViewPositionHelper positionHelper;
 
-    public ListMessageAdapter(Context context, Conversation conversation, RecyclerViewPositionHelper positionHelper, HashMap<String, Bitmap> bitmapAvata, Bitmap bitmapAvataUser, String UID) {
+    public ListMessageAdapter(Context context,
+                              Conversation conversation,
+                              RecyclerViewPositionHelper positionHelper,
+                              HashMap<String, Bitmap> bitmapAvata,
+                              Bitmap bitmapAvataUser, String UID) {
         this.context = context;
         this.conversation = conversation;
         this.bitmapAvatars = bitmapAvata;
@@ -288,8 +293,8 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     ArrayList<CharSequence> idFriend = new ArrayList<>();
                     idFriend.add(message.idSender);
                     intent.putCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID, idFriend);
-                    //intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, message);
-                    //context.startActivity(intent);
+                    intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, ChatUtils.getRoomId(message.idSender, mUID));
+                    context.startActivity(intent);
                 });
 
             if(message instanceof PrivateMessage)
