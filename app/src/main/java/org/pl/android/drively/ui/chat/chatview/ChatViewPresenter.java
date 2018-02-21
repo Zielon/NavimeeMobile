@@ -4,13 +4,17 @@ import com.google.firebase.storage.StorageReference;
 
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.User;
+import org.pl.android.drively.data.model.chat.Friend;
 import org.pl.android.drively.data.model.chat.GroupMessage;
 import org.pl.android.drively.data.model.chat.Message;
 import org.pl.android.drively.data.model.chat.PrivateMessage;
 import org.pl.android.drively.injection.ConfigPersistent;
 import org.pl.android.drively.ui.base.BasePresenter;
+import org.pl.android.drively.util.FirebasePaths;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -20,6 +24,7 @@ import timber.log.Timber;
 import static org.pl.android.drively.util.FirebasePaths.AVATARS;
 import static org.pl.android.drively.util.FirebasePaths.MESSAGES_GROUPS;
 import static org.pl.android.drively.util.FirebasePaths.MESSAGES_PRIVATE;
+import static org.pl.android.drively.util.ReflectionUtil.nameof;
 
 @ConfigPersistent
 public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
@@ -43,6 +48,31 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
         if (mDisposable != null) mDisposable.dispose();
     }
 
+    public void addFriend(String idFriend) {
+        String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+        Map<String, Object> friendMap = new HashMap<>();
+        try {
+            String idField = nameof(Friend.class, "id");
+            mDataManager.getFirebaseService().getFirebaseFirestore()
+                    .collection(FirebasePaths.USERS)
+                    .document(userId)
+                    .collection(FirebasePaths.FRIENDS)
+                    .whereEqualTo(idField, userId).get()
+                    .addOnSuccessListener(documentSnapshots -> {
+                        if (!documentSnapshots.isEmpty()) return;
+                        friendMap.put(idField, idFriend);
+                        mDataManager.getFirebaseService().getFirebaseFirestore()
+                                .collection(FirebasePaths.USERS)
+                                .document(userId)
+                                .collection(FirebasePaths.FRIENDS)
+                                .add(friendMap).addOnSuccessListener(documentReference -> {
+                        });
+                    });
+
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void setMessageListener(String roomId, boolean isGroupChat) {
         String messagePath = isGroupChat ? MESSAGES_GROUPS : MESSAGES_PRIVATE;

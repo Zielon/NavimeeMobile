@@ -97,7 +97,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
                     new RecyclerViewPositionHelper(recyclerChat),
                     bitmapAvataFriend,
                     bitmapAvatarUser,
-                    mChatViewPresenter.getId());
+                    mChatViewPresenter);
 
             mChatViewPresenter.setMessageListener(roomId, isGroupChat);
             recyclerChat.setAdapter(adapter);
@@ -186,19 +186,19 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Conversation conversation;
     private HashMap<String, Bitmap> bitmapAvatars;
     private Bitmap bitmapAvataUser;
-    private String mUID;
+    private ChatViewPresenter chatViewPresenter;
     private RecyclerViewPositionHelper positionHelper;
 
     public ListMessageAdapter(Context context,
                               Conversation conversation,
                               RecyclerViewPositionHelper positionHelper,
                               HashMap<String, Bitmap> bitmapAvata,
-                              Bitmap bitmapAvataUser, String UID) {
+                              Bitmap bitmapAvataUser, ChatViewPresenter chatViewPresenter) {
         this.context = context;
         this.conversation = conversation;
         this.bitmapAvatars = bitmapAvata;
         this.bitmapAvataUser = bitmapAvataUser;
-        this.mUID = UID;
+        this.chatViewPresenter = chatViewPresenter;
         this.positionHelper = positionHelper;
     }
 
@@ -293,7 +293,8 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     ArrayList<CharSequence> idFriend = new ArrayList<>();
                     idFriend.add(message.idSender);
                     intent.putCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID, idFriend);
-                    intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, ChatUtils.getRoomId(message.idSender, mUID));
+                    intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, ChatUtils.getRoomId(message.idSender, chatViewPresenter.getId()));
+                    chatViewPresenter.addFriend(message.idSender);
                     context.startActivity(intent);
                 });
 
@@ -327,7 +328,7 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        return conversation.getListMessageData().get(position).idSender.equals(mUID) ? ChatViewActivity.VIEW_TYPE_USER_MESSAGE : ChatViewActivity.VIEW_TYPE_FRIEND_MESSAGE;
+        return conversation.getListMessageData().get(position).idSender.equals(chatViewPresenter.getId()) ? ChatViewActivity.VIEW_TYPE_USER_MESSAGE : ChatViewActivity.VIEW_TYPE_FRIEND_MESSAGE;
     }
 
     @Override
