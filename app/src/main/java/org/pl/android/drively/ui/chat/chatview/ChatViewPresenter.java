@@ -4,6 +4,7 @@ import com.google.firebase.storage.StorageReference;
 
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.User;
+import org.pl.android.drively.data.model.chat.GroupMessage;
 import org.pl.android.drively.data.model.chat.Message;
 import org.pl.android.drively.data.model.chat.PrivateMessage;
 import org.pl.android.drively.injection.ConfigPersistent;
@@ -55,7 +56,7 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
                         Timber.w("Listen failed.", e);
                         return;
                     }
-                    List messageList = value.toObjects(PrivateMessage.class);
+                    List messageList = isGroupChat ? value.toObjects(GroupMessage.class) : value.toObjects(PrivateMessage.class);
                     if (getMvpView() != null) {
                         getMvpView().roomChangesListerSet(messageList);
                     }

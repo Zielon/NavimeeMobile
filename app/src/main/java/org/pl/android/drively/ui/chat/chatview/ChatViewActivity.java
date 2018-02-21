@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -33,6 +34,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static org.pl.android.drively.util.BitmapUtils.getCircular;
 
 interface MessageHolder {
     TextView getTextContent();
@@ -276,6 +279,21 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             ((TextView) view.findViewById(R.id.message_time)).setText(time);
             ((TextView) view.findViewById(R.id.name)).setText(message.nameSender);
+
+            if(message instanceof GroupMessage)
+                view.findViewById(R.id.sendMessage).setOnClickListener((onClick) -> {
+                    Intent intent = new Intent(context, ChatViewActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, message.nameSender);
+                    ArrayList<CharSequence> idFriend = new ArrayList<>();
+                    idFriend.add(message.idSender);
+                    intent.putCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID, idFriend);
+                    //intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, message);
+                    //context.startActivity(intent);
+                });
+
+            if(message instanceof PrivateMessage)
+                view.findViewById(R.id.sendMessage).setVisibility(View.GONE);
 
             messageHolder.timeStamp.setText(new SimpleDateFormat("EEE 'AT' HH:mm").format(message.timestamp).toUpperCase());
 
