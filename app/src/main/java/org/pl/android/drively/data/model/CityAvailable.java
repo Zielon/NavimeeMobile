@@ -3,9 +3,6 @@ package org.pl.android.drively.data.model;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Wojtek on 2018-02-21.
- */
 
 public class CityAvailable {
     private List<String> cities;

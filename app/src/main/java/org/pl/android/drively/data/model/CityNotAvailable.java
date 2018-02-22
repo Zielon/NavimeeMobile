@@ -1,8 +1,5 @@
 package org.pl.android.drively.data.model;
 
-/**
- * Created by Wojtek on 2018-02-21.
- */
 
 public class CityNotAvailable {
     private String city;
