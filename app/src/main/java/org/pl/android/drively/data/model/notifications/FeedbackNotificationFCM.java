@@ -1,7 +1,6 @@
 package org.pl.android.drively.data.model.notifications;
 
 
-
 public class FeedbackNotificationFCM {
     private String locationName;
     private String name;

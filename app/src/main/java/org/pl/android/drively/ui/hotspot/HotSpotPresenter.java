@@ -17,12 +17,10 @@ import org.pl.android.drively.util.FirebasePaths;
 import org.pl.android.drively.util.ViewUtil;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -170,7 +168,7 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
         filterList.clear();
     }
 
-    public void  sendMessageWhenCityNotAvailable(CityNotAvailable city) {
+    public void sendMessageWhenCityNotAvailable(CityNotAvailable city) {
         mDataManager.getFirebaseService().getFirebaseFirestore()
                 .collection(FirebasePaths.NOT_AVAILABLE_CITIES)
                 .add(city);
@@ -180,14 +178,14 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
     public void checkAvailableCities(String countryCode, String city) {
         CityNotAvailable cityNotAvailable = new CityNotAvailable();
         try {
-            final String citiesField= nameof(CityAvailable.class, "cities");
+            final String citiesField = nameof(CityAvailable.class, "cities");
             mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.AVAILABLE_CITIES_NATIVE)
                     .document(countryCode)
                     .get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful() && task.getResult().exists()) {
                             CityAvailable citiesList = task.getResult().toObject(CityAvailable.class);
-                            if(!citiesList.getCities().contains(city.toUpperCase())) {
+                            if (!citiesList.getCities().contains(city.toUpperCase())) {
                                 if (getMvpView() != null) {
                                     cityNotAvailable.setCity(city);
                                     cityNotAvailable.setCountryCode(countryCode);

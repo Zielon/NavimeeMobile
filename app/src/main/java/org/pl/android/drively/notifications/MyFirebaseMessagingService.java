@@ -87,7 +87,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         final ObjectMapper mapper = new ObjectMapper();
         switch (type) {
             case FEEDBACK:
-               // jackson's objectmapper
+                // jackson's objectmapper
                 final FeedbackNotificationFCM feedbackNotification = mapper.convertValue(remoteMessage.getData(), FeedbackNotificationFCM.class);
                 dataManager.getPreferencesHelper().setValue(Const.IS_FEEDBACK, true);
                 dataManager.getPreferencesHelper().setValue(Const.LOCATION_NAME, feedbackNotification.getLocationName());
@@ -106,12 +106,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             case MESSAGE_PRIVATE:
                 final MessageNotificationFCM messageNotificationPrivate = mapper.convertValue(remoteMessage.getData(), MessageNotificationFCM.class);
                 sendNotificationFromChat(messageNotificationPrivate.getNameSender(), messageNotificationPrivate.getIdSender(), messageNotificationPrivate.getText(),
-                        messageNotificationPrivate.getAvatar(), messageNotificationPrivate.getIdRoom(),false);
+                        messageNotificationPrivate.getAvatar(), messageNotificationPrivate.getIdRoom(), false);
                 break;
             case MESSAGE_GROUP:
                 final MessageNotificationGroupFCM messageNotificationGroup = mapper.convertValue(remoteMessage.getData(), MessageNotificationGroupFCM.class);
                 sendNotificationFromChat(messageNotificationGroup.getRoomName(), messageNotificationGroup.getIdSender(), messageNotificationGroup.getText(),
-                        messageNotificationGroup.getAvatar(), messageNotificationGroup.getIdRoom(),true);
+                        messageNotificationGroup.getAvatar(), messageNotificationGroup.getIdRoom(), true);
                 break;
         }
     }
