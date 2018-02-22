@@ -127,4 +127,12 @@
     <string name="notifications_chat_group_description">Disable notifications for group chat</string>
     <string name="notifications_chat_private">Chat private</string>
     <string name="notifications_chat_private_description">Disable notifications for private conversations</string>
+
+    <!--Network connection-->
+    <string name="network_lack">No network</string>
+    <string name="check_internet">Check Internet</string>
+    <string name="close">Close</string>
+    <string name="let_us_know">Give us info</string>
+    <string name="not_available_in_city">We are not available in your city</string>
+
 </resources>
