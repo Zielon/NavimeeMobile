@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -32,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.allattentionhere.fabulousfilter.AAH_FabulousFragment;
 import com.directions.route.Route;
@@ -74,6 +76,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.pl.android.drively.BuildConfig;
 import org.pl.android.drively.R;
+import org.pl.android.drively.data.model.CityNotAvailable;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.FourSquarePlace;
 import org.pl.android.drively.data.model.eventbus.NotificationEvent;
@@ -81,7 +84,6 @@ import org.pl.android.drively.data.model.maps.ClusterItemGoogleMap;
 import org.pl.android.drively.service.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.main.MainActivity;
-import org.pl.android.drively.util.AddressToStringFunc;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.DetectedActivityToString;
 import org.pl.android.drively.util.DisplayTextOnViewAction;
@@ -160,7 +162,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     private Observable<Location> locationUpdatesObservable;
     private Observable<Location> lastKnownLocationObservable;
     private Observable<ActivityRecognitionResult> activityObservable;
-    private Observable<String> addressObservable;
+    private Observable<Address> addressObservable;
     private Disposable lastKnownLocationDisposable;
     private Disposable updatableLocationDisposable;
     private Disposable activityDisposable;
@@ -398,7 +400,6 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                         return addresses != null && !addresses.isEmpty() ? addresses.get(0) : null;
                     }
                 })
-                .map(new AddressToStringFunc())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
         geoFire = new GeoFire(mHotspotPresenter.getHotSpotDatabaseRefernce());
@@ -464,10 +465,11 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                 .subscribe(new DisplayTextOnViewAction(), new ErrorHandler());
 
         addressDisposable = addressObservable
-                .subscribe(new Consumer<String>() {
+                .subscribe(new Consumer<Address>() {
                     @Override
-                    public void accept(String address) throws Exception {
-                        mHotspotPresenter.setLastLocation(address);
+                    public void accept(Address address) throws Exception {
+                        mHotspotPresenter.setLastLocation(address.getLocality());
+                        mHotspotPresenter.checkAvailableCities(address.getCountryCode(),address.getLocality());
                         Timber.d("address " + address);
                     }
                 }, new ErrorHandler());
@@ -773,6 +775,20 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         }
     }
 
+    @Override
+    public void showNotAvailableCity(CityNotAvailable city) {
+        MaterialDialog dialogAlert = new MaterialDialog.Builder(getActivity())
+                .title(R.string.not_available_in_city)
+                .backgroundColor(getResources().getColor(R.color.primary_dark))
+                .contentColor(getResources().getColor(R.color.white))
+                .positiveText(R.string.let_us_know)
+                .onPositive((MaterialDialog dialog, DialogAction which) ->  {
+                    mHotspotPresenter.sendMessageWhenCityNotAvailable(city);
+                })
+                .build();
+        dialogAlert.show();
+    }
+
 
     protected GoogleMap getMap() {
         return googleMap;
@@ -948,7 +964,6 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     private class ErrorHandler implements Consumer<Throwable> {
         @Override
         public void accept(Throwable throwable) {
-            Toast.makeText(getApplicationContext(), "Error occurred.", Toast.LENGTH_SHORT).show();
             Log.d("MainActivity", "Error occurred", throwable);
         }
     }

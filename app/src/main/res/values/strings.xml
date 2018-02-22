@@ -122,4 +122,9 @@
     <string name="delete_group">Delete group</string>
     <string name="leave_group">Leave group</string>
     <string name="send_private_message">Send a private message</string>
+    <string name="network_lack">No network</string>
+    <string name="check_internet">Check Internet</string>
+    <string name="close">Close</string>
+    <string name="let_us_know">Give us info</string>
+    <string name="not_available_in_city">We are not available in your city</string>
 </resources>

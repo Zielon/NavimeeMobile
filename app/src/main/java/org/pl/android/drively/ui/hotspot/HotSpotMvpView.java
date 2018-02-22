@@ -1,5 +1,6 @@
 package org.pl.android.drively.ui.hotspot;
 
+import org.pl.android.drively.data.model.CityNotAvailable;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.FourSquarePlace;
 import org.pl.android.drively.ui.base.MvpView;
@@ -12,4 +13,5 @@ public interface HotSpotMvpView extends MvpView {
 
     void clusterMap();
 
+    void showNotAvailableCity(CityNotAvailable city);
 }
