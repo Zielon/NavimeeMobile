@@ -110,7 +110,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 break;
             case MESSAGE_GROUP:
                 final MessageNotificationGroupFCM messageNotificationGroup = mapper.convertValue(remoteMessage.getData(), MessageNotificationGroupFCM.class);
-                sendNotificationFromChat(messageNotificationGroup.getName(), messageNotificationGroup.getIdSender(), messageNotificationGroup.getText(),
+                sendNotificationFromChat(messageNotificationGroup.getRoomName(), messageNotificationGroup.getIdSender(), messageNotificationGroup.getText(),
                         messageNotificationGroup.getAvatar(), messageNotificationGroup.getIdRoom(),true);
                 break;
         }
