@@ -29,10 +29,6 @@
     <string name="already_member_login">Masz już konto? Zaloguj się</string>
     <string name="login">Zaloguj się</string>
     <string name="logout">Wyloguj się</string>
-    <string name="settings">Ustawienia</string>
-    <string name="notifications_day_schedule">Plan Dnia</string>
-    <string name="notifications_day_schedule_description">Powiadom o kończących się wydarzeniach z Planu Dnia</string>
-    <string name="notifications">Powiadomienia</string>
     <string name="change_email">Zmień email</string>
     <string name="change_email_failed">Zmiana email nie powiodła się!</string>
     <string name="change_email_succeed">Zmiana email powiodła się!</string>
@@ -113,4 +109,15 @@
     <string name="leave_group">Opuść grupę</string>
     <string name="accept_regulation">Logując się do aplikacji akceptujesz <u>regulamin</u></string>
     <string name="send_private_message">Wyślij prywatnę wiadomość</string>
+
+    <!--Settings-->
+    <string name="settings">Ustawienia</string>
+    <string name="notifications">Powiadomienia</string>
+    <string name="notifications_day_schedule">Plan Dnia</string>
+    <string name="notifications_day_schedule_description">Powiadom o kończących się wydarzeniach z Planu Dnia</string>
+    <string name="notifications_chat_group">Czat grupowy</string>
+    <string name="notifications_chat_group_description">Wyłącz notyfikacje dla czatu grupowego</string>
+    <string name="notifications_chat_private">Prywatny czat</string>
+    <string name="notifications_chat_private_description">Wyłącz notyfikacje dla prywatnych wiadomości</string>
+
 </resources>

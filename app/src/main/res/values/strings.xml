@@ -35,11 +35,6 @@
     <string name="already_member_login">Already have an account? Login in</string>
     <string name="login">Log in</string>
     <string name="logout">Sign out</string>
-    <string name="settings">Settings</string>
-    <string name="notifications">Notifications</string>
-    <string name="notifications_day_schedule">Notifications from the Schedule</string>
-    <string name="notifications_day_schedule_description">Notify me before events from the Schedule end up</string>
-    <string name="notifications_big_events">Notifications on Big Events</string>
     <string name="change_email">Change email</string>
     <string name="change_email_failed">Failed to change your email!</string>
     <string name="change_email_succeed">Your email was changed successfully!</string>
@@ -122,4 +117,14 @@
     <string name="delete_group">Delete group</string>
     <string name="leave_group">Leave group</string>
     <string name="send_private_message">Send a private message</string>
+
+    <!--Settings-->
+    <string name="settings">Settings</string>
+    <string name="notifications">Notifications</string>
+    <string name="notifications_day_schedule">Notifications from the Schedule</string>
+    <string name="notifications_day_schedule_description">Notify me before events from the Schedule end up</string>
+    <string name="notifications_chat_group">Chat group</string>
+    <string name="notifications_chat_group_description">Disable notifications for group chat</string>
+    <string name="notifications_chat_private">Chat private</string>
+    <string name="notifications_chat_private_description">Disable notifications for private conversations</string>
 </resources>

@@ -8,7 +8,6 @@ import android.view.MenuItem;
 
 import org.pl.android.drively.BoilerplateApplication;
 import org.pl.android.drively.R;
-import org.pl.android.drively.ui.base.BaseActivity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,12 +21,12 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
     @Inject
     SettingsPreferencesPresenter settingsPreferencesPresenter;
 
-    private  Preference.OnPreferenceChangeListener preferenceChangeListener = (preference, newValue) -> {
+    private Preference.OnPreferenceChangeListener preferenceChangeListener = (preference, newValue) -> {
         settingsPreferencesPresenter.updatePreference(preference, newValue);
         return true;
     };
 
-    private  void bindPreferenceToValue(Preference preference) {
+    private void bindPreferenceToValue(Preference preference) {
         preference.setOnPreferenceChangeListener(preferenceChangeListener);
     }
 
@@ -61,10 +60,12 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
             preferences.put("chatGroupNotification", findPreference("chatGroupNotification"));
             preferences.put("dayScheduleNotification", findPreference("dayScheduleNotification"));
 
-            for (Map.Entry<String, Preference> entry : preferences.entrySet())
+            for (Map.Entry<String, Preference> entry : preferences.entrySet()) {
                 entry.getValue().setEnabled(false);
+                bindPreferenceToValue(entry.getValue());
+            }
 
-            settingsPreferencesPresenter.setDefaultPreferences(preferences);
+            settingsPreferencesPresenter.setPreferences(preferences);
         }
     }
 }

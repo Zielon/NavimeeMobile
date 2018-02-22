@@ -6,20 +6,20 @@
         <SwitchPreference
             android:defaultValue="true"
             android:key="dayScheduleNotification"
-            android:summary="@string/notifications_day_schedule_description"
-            android:title="@string/notifications_day_schedule" />
+            android:title="@string/notifications_day_schedule"
+            android:summary="@string/notifications_day_schedule_description" />
 
         <SwitchPreference
             android:defaultValue="true"
             android:key="chatGroupNotification"
-            android:summary="Send a notifications for groups messages"
-            android:title="Chat groups" />
+            android:title="@string/notifications_chat_group"
+            android:summary="@string/notifications_chat_group_description"/>
 
         <SwitchPreference
             android:defaultValue="true"
             android:key="chatPrivateNotification"
-            android:summary="Send a notifications for privates messages"
-            android:title="Chat private" />
+            android:title="@string/notifications_chat_private"
+            android:summary="@string/notifications_chat_private_description"/>
 
     </PreferenceCategory>
 
