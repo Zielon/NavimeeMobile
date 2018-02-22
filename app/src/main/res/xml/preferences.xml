@@ -1,68 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:key="first_level"
-    android:title="@string/settings">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="Safe world">
-        <CheckBoxPreference
+    <PreferenceCategory android:title="@string/notifications">
+
+        <SwitchPreference
             android:defaultValue="true"
-            android:key="example_checkbox"
-            android:summary="Worth trying..."
-            android:title="I want chocolate" />
+            android:key="dayScheduleNotification"
+            android:title="@string/notifications_day_schedule"
+            android:summary="@string/notifications_day_schedule_description" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="chatGroupNotification"
+            android:title="@string/notifications_chat_group"
+            android:summary="@string/notifications_chat_group_description"/>
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="chatPrivateNotification"
+            android:title="@string/notifications_chat_private"
+            android:summary="@string/notifications_chat_private_description"/>
+
     </PreferenceCategory>
 
-    <PreferenceScreen
-        android:key="second_level_screen"
-        android:title="Second level">
-        <PreferenceCategory android:title="Switch preference">
-            <CheckBoxPreference
-                android:defaultValue="true"
-                android:key="second_example"
-                android:summary="This switch needs some work on pre-Lollipop."
-                android:title="Destroy the galaxy"
-                android:widgetLayout="@layout/mp_preference_switch" />
-        </PreferenceCategory>
-
-        <PreferenceScreen
-            android:key="third_level_screen"
-            android:title="Third level">
-            <PreferenceCategory android:title="Dark forces">
-                <PreferenceScreen
-                    android:key="fourth_level_screen"
-                    android:title="Fourth level">
-                    <PreferenceCategory android:title="Test">
-                        <CheckBoxPreference
-                            android:defaultValue="true"
-                            android:key="fourth_example"
-                            android:summary="Write something useful here."
-                            android:title="Really, be careful!" />
-                    </PreferenceCategory>
-                </PreferenceScreen>
-            </PreferenceCategory>
-        </PreferenceScreen>
-
-
-        <PreferenceScreen
-            android:key="third_level_screen_2"
-            android:title="Third level 2">
-            <PreferenceCategory android:title="Where am I?">
-                <CheckBoxPreference
-                    android:defaultValue="true"
-                    android:key="third_example_2"
-                    android:summary="Go back!"
-                    android:title="Are you lost?" />
-            </PreferenceCategory>
-        </PreferenceScreen>
-    </PreferenceScreen>
-
-    <PreferenceScreen
-        android:key="another_activity"
-        android:summary="Click to open the about activity"
-        android:title="About">
-        <intent android:action="android.intent.action.ABOUT_ACTIVITY" />
-    </PreferenceScreen>
-
-    <Preference
-        android:key="logout"
-        android:title="@string/logout" />
 </PreferenceScreen>

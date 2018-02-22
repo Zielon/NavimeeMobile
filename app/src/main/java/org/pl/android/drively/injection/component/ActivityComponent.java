@@ -15,7 +15,7 @@ import org.pl.android.drively.ui.events.EventsFragment;
 import org.pl.android.drively.ui.hotspot.HotSpotFragment;
 import org.pl.android.drively.ui.main.MainActivity;
 import org.pl.android.drively.ui.settings.SettingsActivity;
-import org.pl.android.drively.ui.settings.personalsettings.PersonalSettingsActivity;
+import org.pl.android.drively.ui.settings.personalsettings.SettingsPreferencesActivity;
 import org.pl.android.drively.ui.settings.user.UserSettingsActivity;
 import org.pl.android.drively.ui.settings.user.email.UserEmailChangeActivity;
 import org.pl.android.drively.ui.settings.user.name.UserNameChangeActivity;
@@ -32,8 +32,6 @@ import dagger.Subcomponent;
 public interface ActivityComponent {
 
     void inject(MainActivity mainActivity);
-
-    void inject(PersonalSettingsActivity notificationActivity);
 
     void inject(EventsFragment eventsFragment);
 
