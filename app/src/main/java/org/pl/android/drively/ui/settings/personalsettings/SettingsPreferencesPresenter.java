@@ -15,7 +15,6 @@ import javax.inject.Inject;
 import static org.pl.android.drively.util.ReflectionUtil.nameof;
 import static org.pl.android.drively.util.ReflectionUtil.valueof;
 
-@ConfigPersistent
 public class SettingsPreferencesPresenter extends BasePresenter<SettingsPreferencesMvpView> {
 
     private final DataManager dataManager;

@@ -10,6 +10,7 @@ import org.pl.android.drively.injection.module.ApplicationModule;
 import org.pl.android.drively.notifications.MyFirebaseInstanceIDService;
 import org.pl.android.drively.notifications.MyFirebaseMessagingService;
 import org.pl.android.drively.service.GeolocationUpdateService;
+import org.pl.android.drively.ui.settings.personalsettings.SettingsPreferencesActivity;
 
 import javax.inject.Singleton;
 
@@ -24,6 +25,8 @@ public interface ApplicationComponent {
     void inject(MyFirebaseMessagingService myFirebaseMessagingService);
 
     void inject(GeolocationUpdateService geolocationUpdateService);
+
+    void inject(SettingsPreferencesActivity settingsPreferencesActivity);
 
     @ApplicationContext
     Context context();

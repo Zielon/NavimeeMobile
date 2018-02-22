@@ -33,8 +33,6 @@ public interface ActivityComponent {
 
     void inject(MainActivity mainActivity);
 
-    void inject(SettingsPreferencesActivity settingsPreferencesActivity);
-
     void inject(EventsFragment eventsFragment);
 
     void inject(HotSpotFragment hotSpotFragment);

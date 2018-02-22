@@ -1,11 +1,14 @@
 package org.pl.android.drively.ui.settings.personalsettings;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.view.MenuItem;
 
+import org.pl.android.drively.BoilerplateApplication;
 import org.pl.android.drively.R;
+import org.pl.android.drively.ui.base.BaseActivity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,14 +20,14 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
     private static final String TAG = SettingsPreferencesActivity.class.getSimpleName();
 
     @Inject
-    static SettingsPreferencesPresenter settingsPreferencesPresenter;
+    SettingsPreferencesPresenter settingsPreferencesPresenter;
 
-    private static Preference.OnPreferenceChangeListener preferenceChangeListener = (preference, newValue) -> {
+    private  Preference.OnPreferenceChangeListener preferenceChangeListener = (preference, newValue) -> {
         settingsPreferencesPresenter.updatePreference(preference, newValue);
         return true;
     };
 
-    private static void bindPreferenceToValue(Preference preference) {
+    private  void bindPreferenceToValue(Preference preference) {
         preference.setOnPreferenceChangeListener(preferenceChangeListener);
     }
 
@@ -33,6 +36,7 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getFragmentManager().beginTransaction().replace(android.R.id.content, new MainPreferenceFragment()).commit();
+        BoilerplateApplication.get(this).getComponent().inject(this);
     }
 
     @Override
@@ -43,7 +47,8 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
         return super.onOptionsItemSelected(item);
     }
 
-    public static class MainPreferenceFragment extends PreferenceFragment {
+    @SuppressLint("ValidFragment")
+    public class MainPreferenceFragment extends PreferenceFragment {
 
         private Map<String, Preference> preferences = new HashMap<>();
 
