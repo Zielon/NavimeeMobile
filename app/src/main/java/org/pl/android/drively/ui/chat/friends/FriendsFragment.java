@@ -82,7 +82,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private ListFriendsAdapter adapter;
     private ListFriend dataListFriend = null;
     private ArrayList<String> listFriendID = null;
-    private LovelyProgressDialog dialogFindAllFriend;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private CountDownTimer detectFriendOnline;
     private LovelyProgressDialog dialogWait;
@@ -132,7 +131,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         recyclerListFrends.setLayoutManager(linearLayoutManager);
         mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        dialogFindAllFriend = new LovelyProgressDialog(getContext());
         dialogWait = new LovelyProgressDialog((getContext()));
         dialogWaitDeleting = new LovelyProgressDialog((getContext()));
         adapter = new ListFriendsAdapter(getContext(), dataListFriend, this, dialogWaitDeleting, mFriendsPresenter.getId());
@@ -140,11 +138,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
         if (listFriendID == null) {
             listFriendID = new ArrayList<>();
-            dialogFindAllFriend.setCancelable(false)
-                    .setIcon(R.drawable.ic_add_friend)
-                    .setTitle(getResources().getString(R.string.get_all_friend))
-                    .setTopColorRes(R.color.primary)
-                    .show();
+            mSwipeRefreshLayout.setRefreshing(true);
             getListFriendUId();
         }
 
@@ -316,7 +310,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     @Override
     public void listFriendNotFound() {
-        dialogFindAllFriend.dismiss();
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
@@ -325,7 +318,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         Collections.sort(dataListFriend.getListFriend());
         FriendDB.getInstance(getContext()).addListFriend(dataListFriend);
         adapter.notifyDataSetChanged();
-        dialogFindAllFriend.dismiss();
         mSwipeRefreshLayout.setRefreshing(false);
         detectFriendOnline.start();
     }
@@ -335,7 +327,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         if (!dataListFriend.getListFriend().contains(friend)) {
             dataListFriend.getListFriend().add(friend);
         } else {
-            dialogFindAllFriend.dismiss();
             mSwipeRefreshLayout.setRefreshing(false);
         }
     }
