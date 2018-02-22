@@ -1,20 +1,23 @@
 package org.pl.android.drively.data.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Wojtek on 2018-02-21.
  */
 
 public class CityAvailable {
-    private String city;
+    private List<String> cities;
 
     public CityAvailable() {
     }
 
-    public String getCity() {
-        return city;
+    public List<String> getCities() {
+        return cities;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setCities(List<String> cities) {
+        this.cities = cities;
     }
 }
