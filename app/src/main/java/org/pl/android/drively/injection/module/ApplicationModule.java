@@ -8,7 +8,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 
+import org.pl.android.drively.contracts.repositories.UsersRepository;
 import org.pl.android.drively.injection.ApplicationContext;
+import org.pl.android.drively.repositories.UsersRepositoryImpl;
 
 import javax.inject.Singleton;
 
@@ -61,5 +63,11 @@ public class ApplicationModule {
     public FirebaseStorage provideFirebaseStorage() {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         return storage;
+    }
+
+    @Provides
+    @Singleton
+    public UsersRepository provideUserRepository() {
+        return new UsersRepositoryImpl();
     }
 }

@@ -39,5 +39,4 @@ public interface ApplicationComponent {
     PreferencesHelper preferencesHelper();
 
     DataManager dataManager();
-
 }
