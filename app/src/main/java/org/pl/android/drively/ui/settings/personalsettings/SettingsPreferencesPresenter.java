@@ -2,6 +2,7 @@ package org.pl.android.drively.ui.settings.personalsettings;
 
 import android.preference.Preference;
 
+import org.pl.android.drively.contracts.repositories.UsersRepository;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.ui.base.BasePresenter;
@@ -17,10 +18,12 @@ import static org.pl.android.drively.util.ReflectionUtil.valueof;
 public class SettingsPreferencesPresenter extends BasePresenter<SettingsPreferencesMvpView> {
 
     private final DataManager dataManager;
+    private UsersRepository usersRepository;
 
     @Inject
-    public SettingsPreferencesPresenter(DataManager dataManager) {
+    public SettingsPreferencesPresenter(DataManager dataManager, UsersRepository usersRepository) {
         this.dataManager = dataManager;
+        this.usersRepository = usersRepository;
     }
 
     public void updatePreference(Preference preference, Object newValue) {
@@ -33,6 +36,8 @@ public class SettingsPreferencesPresenter extends BasePresenter<SettingsPreferen
 
     public void setPreferences(Map<String, Preference> preferences) {
         String userId = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+        usersRepository.getUser(userId).getResult();
+
         dataManager.getFirebaseService()
                 .getFirebaseFirestore()
                 .collection(FirebasePaths.USERS).document(userId).get()

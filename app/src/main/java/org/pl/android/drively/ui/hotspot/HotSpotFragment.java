@@ -94,6 +94,7 @@ import org.pl.android.drively.util.ToMostProbableActivity;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -391,7 +392,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                 .flatMap(new Function<Location, Observable<List<Address>>>() {
                     @Override
                     public Observable<List<Address>> apply(Location location) {
-                        return locationProvider.getReverseGeocodeObservable(location.getLatitude(), location.getLongitude(), 1);
+                        return locationProvider.getReverseGeocodeObservable(Locale.ENGLISH, location.getLatitude(), location.getLongitude(), 1);
                     }
                 })
                 .map(new Function<List<Address>, Address>() {
@@ -469,7 +470,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                     @Override
                     public void accept(Address address) throws Exception {
                         mHotspotPresenter.setLastLocation(address.getLocality());
-                        mHotspotPresenter.checkAvailableCities(address.getCountryCode(),address.getLocality());
+                        mHotspotPresenter.checkAvailableCities(address.getCountryName(), address.getLocality());
                         Timber.d("address " + address);
                     }
                 }, new ErrorHandler());
