@@ -7,13 +7,13 @@ import com.kelvinapps.rxfirebase.RxFirebaseUser;
 
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.ui.signinup.BaseSignPresenter;
+import org.pl.android.drively.util.Const;
 
 import javax.inject.Inject;
 
 import timber.log.Timber;
 
 public class SignUpPresenter extends BaseSignPresenter {
-
 
     @Inject
     public SignUpPresenter(DataManager dataManager) {
@@ -26,6 +26,7 @@ public class SignUpPresenter extends BaseSignPresenter {
                 .subscribe(token -> {
                     Timber.i("RxFirebaseSample", "user token: " + token.getToken());
                     FirebaseUser user = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
+                    mDataManager.getPreferencesHelper().setValue(Const.MESSAGING_TOKEN, token.getToken());
                     UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
                     RxFirebaseUser.updateProfile(user, profile).subscribe(sub -> mMvpView.onSuccess());
                 }, throwable -> {

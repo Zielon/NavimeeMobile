@@ -98,8 +98,7 @@ public class SignInActivity extends BaseSignActivity implements BaseSignMvpView 
     @Override
     public void onSuccess() {
         loginButton.setEnabled(true);
-        mSignInPresenter.registerMessagingToken();
-        mSignInPresenter.saveUserInfo();
+        mSignInPresenter.registerUser();
         progressDialog.dismiss();
         setResult(RESULT_OK, null);
         finish();

@@ -11,7 +11,7 @@ public class ChatUser {
 
     public ChatUser() {
         status = new Status();
-        status.isOnline = false;
+        status.online = false;
         status.timestamp = 0;
         avatar = "DEFAULT";
     }
