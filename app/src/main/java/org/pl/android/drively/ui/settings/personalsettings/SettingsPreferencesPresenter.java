@@ -1,5 +1,6 @@
 package org.pl.android.drively.ui.settings.personalsettings;
 
+import android.content.pm.PackageInfo;
 import android.preference.Preference;
 
 import org.pl.android.drively.contracts.repositories.UsersRepository;

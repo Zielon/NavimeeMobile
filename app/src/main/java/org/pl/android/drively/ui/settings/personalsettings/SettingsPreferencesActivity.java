@@ -1,6 +1,9 @@
 package org.pl.android.drively.ui.settings.personalsettings;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -20,6 +23,8 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
 
     @Inject
     SettingsPreferencesPresenter settingsPreferencesPresenter;
+    Context context;
+
 
     private Preference.OnPreferenceChangeListener preferenceChangeListener = (preference, newValue) -> {
         settingsPreferencesPresenter.updatePreference(preference, newValue);
@@ -36,6 +41,7 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getFragmentManager().beginTransaction().replace(android.R.id.content, new MainPreferenceFragment()).commit();
         BoilerplateApplication.get(this).getComponent().inject(this);
+        this.context = this;
     }
 
     @Override
@@ -55,6 +61,7 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
         public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
+            updateAbout();
 
             preferences.put("chatPrivateNotification", findPreference("chatPrivateNotification"));
             preferences.put("chatGroupNotification", findPreference("chatGroupNotification"));
@@ -66,6 +73,15 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
             }
 
             settingsPreferencesPresenter.setPreferences(preferences);
+        }
+
+        private void updateAbout(){
+            try {
+                PackageInfo packageInfo = context.getPackageManager().getPackageInfo(getPackageName(), 0);
+                findPreference("version").setSummary(String.format("Drively %s", packageInfo.versionName));
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

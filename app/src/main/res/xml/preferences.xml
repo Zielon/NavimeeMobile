@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+
+    <PreferenceCategory android:title="@string/general">
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="dayScheduleNotification"
+            android:title="@string/shareLocalization"
+            android:summary="@string/shareLocalization_description" />
+
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/notifications">
 
         <SwitchPreference
@@ -21,6 +32,13 @@
             android:title="@string/notifications_chat_private"
             android:summary="@string/notifications_chat_private_description"/>
 
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="About" >
+        <EditTextPreference
+            android:title="Version"
+            android:summary="1.0"
+            android:key="version"/>
     </PreferenceCategory>
 
 </PreferenceScreen>
