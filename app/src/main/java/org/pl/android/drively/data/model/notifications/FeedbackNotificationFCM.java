@@ -1,12 +1,11 @@
 package org.pl.android.drively.data.model.notifications;
 
 
-public class FeedbackNotificationFCM {
+public class FeedbackNotificationFCM extends NotificationFCM {
     private String locationName;
     private String name;
     private String locationAddress;
     private String id;
-    private String type;
 
     public FeedbackNotificationFCM() {
     }
@@ -43,11 +42,4 @@ public class FeedbackNotificationFCM {
         this.id = id;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 }

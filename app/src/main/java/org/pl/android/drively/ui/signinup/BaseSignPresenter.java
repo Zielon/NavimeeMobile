@@ -1,5 +1,7 @@
 package org.pl.android.drively.ui.signinup;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthCredential;
 import com.kelvinapps.rxfirebase.RxFirebaseAuth;
 import com.kelvinapps.rxfirebase.RxFirebaseUser;
@@ -34,12 +36,9 @@ public class BaseSignPresenter extends BasePresenter<BaseSignMvpView> {
         RxFirebaseAuth.signInWithCredential(mDataManager.getFirebaseService().getFirebaseAuth(), credential)
                 .flatMap(x -> RxFirebaseUser.getToken(mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser(), false))
                 .subscribe(token -> {
-                    Timber.i("RxFirebaseSample", "user token: " + token.getToken());
+                    mDataManager.getPreferencesHelper().setValue(Const.MESSAGING_TOKEN, token.getToken());
                     mMvpView.onSuccess();
-                }, throwable -> {
-                    Timber.e("RxFirebaseSample", throwable.toString());
-                    mMvpView.onError(throwable);
-                });
+                }, throwable -> mMvpView.onError(throwable));
     }
 
     public void saveUserInfo() {
@@ -47,15 +46,15 @@ public class BaseSignPresenter extends BasePresenter<BaseSignMvpView> {
         usersRepository.getUser(userId).addOnSuccessListener(user -> mDataManager.getPreferencesHelper().saveUserInfo(user));
     }
 
-    public void registerUser() {
-        if (mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() == null) return;
+    public Task<User> registerUser() {
+        if (mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() == null) return Tasks.forResult(null);
 
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
         String name = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getDisplayName();
         String email = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getEmail();
         String token = mDataManager.getPreferencesHelper().getValueString(Const.MESSAGING_TOKEN);
 
-        usersRepository.getUser(userId).addOnSuccessListener(user -> {
+        return usersRepository.getUser(userId).addOnSuccessListener(user -> {
             user.setToken(token);
             usersRepository.updateUser(user);
         }).addOnFailureListener(fail -> {
@@ -67,7 +66,7 @@ public class BaseSignPresenter extends BasePresenter<BaseSignMvpView> {
             usersRepository.updateUser(user);
         }).continueWith(result -> {
             saveUserInfo();
-            return result;
+            return result.getResult();
         });
     }
 }

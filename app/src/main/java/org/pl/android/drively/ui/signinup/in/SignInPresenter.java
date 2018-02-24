@@ -22,12 +22,8 @@ public class SignInPresenter extends BaseSignPresenter {
         RxFirebaseAuth.signInWithEmailAndPassword(mDataManager.getFirebaseService().getFirebaseAuth(), email, password)
                 .flatMap(x -> RxFirebaseUser.getToken(mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser(), false))
                 .subscribe(token -> {
-                    Timber.i("RxFirebaseSample", "user token: " + token.getToken());
                     mDataManager.getPreferencesHelper().setValue(Const.MESSAGING_TOKEN, token.getToken());
                     mMvpView.onSuccess();
-                }, throwable -> {
-                    Timber.e("RxFirebaseSample", throwable.toString());
-                    mMvpView.onError(throwable);
-                });
+                }, throwable -> mMvpView.onError(throwable));
     }
 }

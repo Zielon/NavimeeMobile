@@ -4,13 +4,12 @@ package org.pl.android.drively.data.model.notifications;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MessageNotificationFCM {
+public class MessageNotificationFCM extends NotificationFCM {
     private String nameSender;
     private String idSender;
     private String text;
     private String avatar;
     private String idRoom;
-    private String type;
 
     public MessageNotificationFCM() {
     }
@@ -55,11 +54,4 @@ public class MessageNotificationFCM {
         this.idRoom = idRoom;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 }
