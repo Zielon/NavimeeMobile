@@ -68,7 +68,7 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
         private void updateAbout() {
             try {
                 PackageInfo packageInfo = context.getPackageManager().getPackageInfo(getPackageName(), 0);
-                findPreference("version").setSummary(String.format("Drively %s", packageInfo.versionName));
+                findPreference("version").setSummary(String.format("Drively %s", packageInfo.versionName.split(" ")[0]));
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
