@@ -14,7 +14,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.provider.Settings;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -145,8 +144,8 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     RxPermissions rxPermissions;
     LatLng latLngCurrent, latLngEnd;
     String sEventName, sEventCount;
-    GeoFire geoFire,geoFireUsersLocation;
-    GeoQuery geoQuery,geoQueryUsersLocation;
+    GeoFire geoFire, geoFireUsersLocation;
+    GeoQuery geoQuery, geoQueryUsersLocation;
     MyFabFragment dialogFrag;
     boolean isFirstAfterPermissionGranted = true;
     int durationInSec, distanceValue;
@@ -188,7 +187,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
             TextView text = (TextView) actionBar.getCustomView().findViewById(R.id.app_bar_text);
             text.setText(getResources().getString(R.string.hotspot));
         }
-        if(mHotspotPresenter.checkLogin() != null) {
+        if (mHotspotPresenter.checkLogin() != null) {
             getActivity().startService(new Intent(getActivity(), GeolocationUpdateService.class));
         }
 
@@ -470,7 +469,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                     @Override
                     public void accept(Address address) throws Exception {
                         mHotspotPresenter.setLastLocation(address.getLocality());
-                        mHotspotPresenter.checkAvailableCities(address.getCountryName(), address.getLocality());
+                        mHotspotPresenter.checkAvailableCities(address.getCountryCode(), address.getLocality());
                         Timber.d("address " + address);
                     }
                 }, new ErrorHandler());
@@ -783,7 +782,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                 .backgroundColor(getResources().getColor(R.color.primary_dark))
                 .contentColor(getResources().getColor(R.color.white))
                 .positiveText(R.string.let_us_know)
-                .onPositive((MaterialDialog dialog, DialogAction which) ->  {
+                .onPositive((MaterialDialog dialog, DialogAction which) -> {
                     mHotspotPresenter.sendMessageWhenCityNotAvailable(city);
                 })
                 .build();
@@ -798,9 +797,9 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     @Override
     public void onKeyEntered(String key, GeoLocation location) {
         Timber.i(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
-        if(key.contains(FirebasePaths.USER_LOCATION) && !key.contains(mHotspotPresenter.getUid())) {
+        if (key.contains(FirebasePaths.USER_LOCATION) && !key.contains(mHotspotPresenter.getUid())) {
             Timber.i("USER LOCATION");
-            if(!usersMarkers.containsKey(key)) {
+            if (!usersMarkers.containsKey(key)) {
                 MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude));
                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_directions_car_black_24dp));
                 Marker marker = googleMap.addMarker(markerOptions);
@@ -817,7 +816,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         if (eventsOnMap.containsKey(key)) {
             mClusterManager.removeItem((ClusterItemGoogleMap) eventsOnMap.get(key));
             eventsOnMap.remove(key);
-        } else if(key.contains(FirebasePaths.USER_LOCATION)) {
+        } else if (key.contains(FirebasePaths.USER_LOCATION)) {
             usersMarkers.remove(key);
         }
 
@@ -832,9 +831,9 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
             mClusterManager.removeItem(eventsOnMap.get(key));
             eventsOnMap.get(key).setPosition(new LatLng(location.latitude, location.longitude));
             mClusterManager.addItem(eventsOnMap.get(key));
-        }  else if(key.contains(FirebasePaths.USER_LOCATION) && !key.contains(mHotspotPresenter.getUid())) {
+        } else if (key.contains(FirebasePaths.USER_LOCATION) && !key.contains(mHotspotPresenter.getUid())) {
             Timber.i("USER LOCATION");
-            if(usersMarkers.containsKey(key)) {
+            if (usersMarkers.containsKey(key)) {
                 animateMarker(usersMarkers.get(key), new LatLng(location.latitude, location.longitude), false);
             }
         }
@@ -843,8 +842,8 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     @Override
     public void onGeoQueryReady() {
         Timber.i("All initial data has been loaded and events have been fired!");
-        if(mClusterManager != null) {
-            Timber.i("Cluster size" +mClusterManager.getAlgorithm().getItems().size());
+        if (mClusterManager != null) {
+            Timber.i("Cluster size" + mClusterManager.getAlgorithm().getItems().size());
             mClusterManager.cluster();
         }
     }

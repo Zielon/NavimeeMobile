@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -35,8 +34,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-
-import static org.pl.android.drively.util.BitmapUtils.getCircular;
 
 interface MessageHolder {
     TextView getTextContent();
@@ -104,7 +101,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
             recyclerChat.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
                 if (bottom < oldBottom) {
                     recyclerChat.postDelayed(() -> {
-                        if(recyclerChat.getAdapter().getItemCount() > 0)
+                        if (recyclerChat.getAdapter().getItemCount() > 0)
                             recyclerChat.smoothScrollToPosition(
                                     recyclerChat.getAdapter().getItemCount() - 1);
                     }, 100);
@@ -285,7 +282,7 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((TextView) view.findViewById(R.id.message_time)).setText(time);
             ((TextView) view.findViewById(R.id.name)).setText(message.nameSender);
 
-            if(message instanceof GroupMessage)
+            if (message instanceof GroupMessage)
                 view.findViewById(R.id.sendMessage).setOnClickListener((onClick) -> {
                     Intent intent = new Intent(context, ChatViewActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -298,7 +295,7 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     context.startActivity(intent);
                 });
 
-            if(message instanceof PrivateMessage)
+            if (message instanceof PrivateMessage)
                 view.findViewById(R.id.sendMessage).setVisibility(View.GONE);
 
             messageHolder.timeStamp.setText(new SimpleDateFormat("EEE 'AT' HH:mm").format(message.timestamp).toUpperCase());

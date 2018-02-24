@@ -1,6 +1,5 @@
 package org.pl.android.drively.ui.chat.friends;
 
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +11,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -30,7 +28,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.yarolegovich.lovelydialog.LovelyInfoDialog;
@@ -82,7 +79,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private ListFriendsAdapter adapter;
     private ListFriend dataListFriend = null;
     private ArrayList<String> listFriendID = null;
-    private LovelyProgressDialog dialogFindAllFriend;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private CountDownTimer detectFriendOnline;
     private LovelyProgressDialog dialogWait;
@@ -132,7 +128,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         recyclerListFrends.setLayoutManager(linearLayoutManager);
         mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        dialogFindAllFriend = new LovelyProgressDialog(getContext());
         dialogWait = new LovelyProgressDialog((getContext()));
         dialogWaitDeleting = new LovelyProgressDialog((getContext()));
         adapter = new ListFriendsAdapter(getContext(), dataListFriend, this, dialogWaitDeleting, mFriendsPresenter.getId());
@@ -140,11 +135,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
         if (listFriendID == null) {
             listFriendID = new ArrayList<>();
-            dialogFindAllFriend.setCancelable(false)
-                    .setIcon(R.drawable.ic_add_friend)
-                    .setTitle(getResources().getString(R.string.get_all_friend))
-                    .setTopColorRes(R.color.primary)
-                    .show();
+            mSwipeRefreshLayout.setRefreshing(true);
             getListFriendUId();
         }
 
@@ -316,7 +307,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     @Override
     public void listFriendNotFound() {
-        dialogFindAllFriend.dismiss();
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
@@ -325,7 +315,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         Collections.sort(dataListFriend.getListFriend());
         FriendDB.getInstance(getContext()).addListFriend(dataListFriend);
         adapter.notifyDataSetChanged();
-        dialogFindAllFriend.dismiss();
         mSwipeRefreshLayout.setRefreshing(false);
         detectFriendOnline.start();
     }
@@ -335,7 +324,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         if (!dataListFriend.getListFriend().contains(friend)) {
             dataListFriend.getListFriend().add(friend);
         } else {
-            dialogFindAllFriend.dismiss();
             mSwipeRefreshLayout.setRefreshing(false);
         }
     }
@@ -515,7 +503,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             ((ItemFriendViewHolder) holder).txtMessage.setText(listFriend.getListFriend().get(position).message.text);
 
-            if(!listFriend.getListFriend().get(position).message.idSender.equals(currentUser)){
+            if (!listFriend.getListFriend().get(position).message.idSender.equals(currentUser)) {
                 ((ItemFriendViewHolder) holder).txtMessage.setTypeface(Typeface.DEFAULT_BOLD);
             }
 

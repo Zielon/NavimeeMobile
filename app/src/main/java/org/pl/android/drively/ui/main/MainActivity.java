@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.firebase.auth.FirebaseUser;
 import com.roughike.bottombar.BottomBar;
@@ -132,17 +131,17 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     }
 
     private void checkInternetConnectivity() {
-        if(!NetworkUtil.isNetworkConnected(this)) {
+        if (!NetworkUtil.isNetworkConnected(this)) {
             MaterialDialog dialogAlert = new MaterialDialog.Builder(this)
                     .title(R.string.network_lack)
                     .backgroundColor(getResources().getColor(R.color.primary_dark))
                     .contentColor(getResources().getColor(R.color.white))
                     .positiveText(R.string.close)
                     .negativeText(R.string.check_internet)
-                    .onPositive((dialog, which) ->  {
+                    .onPositive((dialog, which) -> {
                         finish();
                     })
-                    .onNegative((dialog, which) ->  {
+                    .onNegative((dialog, which) -> {
                         startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
                     })
                     .build();

@@ -120,4 +120,11 @@
     <string name="notifications_chat_private">Prywatny czat</string>
     <string name="notifications_chat_private_description">Wyłącz notyfikacje dla prywatnych wiadomości</string>
 
+    <!--Network connection-->
+    <string name="network_lack">Brak internetu</string>
+    <string name="check_internet">Ustawienia Wi-fi</string>
+    <string name="close">Zamknij</string>
+    <string name="let_us_know">Daj nam znać</string>
+    <string name="not_available_in_city">Nie jesteśmy dostępni w Twoim mieście</string>
+
 </resources>

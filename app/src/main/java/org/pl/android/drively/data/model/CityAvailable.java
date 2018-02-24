@@ -1,6 +1,5 @@
 package org.pl.android.drively.data.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 

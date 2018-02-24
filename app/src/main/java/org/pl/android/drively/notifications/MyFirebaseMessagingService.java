@@ -24,6 +24,7 @@ import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.notifications.EventNotificationFCM;
 import org.pl.android.drively.data.model.notifications.FeedbackNotificationFCM;
 import org.pl.android.drively.data.model.notifications.MessageNotificationFCM;
+import org.pl.android.drively.data.model.notifications.MessageNotificationGroupFCM;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.ui.main.MainActivity;
 import org.pl.android.drively.util.Const;
@@ -86,7 +87,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         final ObjectMapper mapper = new ObjectMapper();
         switch (type) {
             case FEEDBACK:
-               // jackson's objectmapper
+                // jackson's objectmapper
                 final FeedbackNotificationFCM feedbackNotification = mapper.convertValue(remoteMessage.getData(), FeedbackNotificationFCM.class);
                 dataManager.getPreferencesHelper().setValue(Const.IS_FEEDBACK, true);
                 dataManager.getPreferencesHelper().setValue(Const.LOCATION_NAME, feedbackNotification.getLocationName());
@@ -105,12 +106,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             case MESSAGE_PRIVATE:
                 final MessageNotificationFCM messageNotificationPrivate = mapper.convertValue(remoteMessage.getData(), MessageNotificationFCM.class);
                 sendNotificationFromChat(messageNotificationPrivate.getNameSender(), messageNotificationPrivate.getIdSender(), messageNotificationPrivate.getText(),
-                        messageNotificationPrivate.getAvatar(), messageNotificationPrivate.getIdRoom());
+                        messageNotificationPrivate.getAvatar(), messageNotificationPrivate.getIdRoom(), false);
                 break;
             case MESSAGE_GROUP:
-                final MessageNotificationFCM messageNotificationGroup = mapper.convertValue(remoteMessage.getData(), MessageNotificationFCM.class);
-                sendNotificationFromChat(messageNotificationGroup.getNameSender(), messageNotificationGroup.getIdSender(), messageNotificationGroup.getText(),
-                        messageNotificationGroup.getAvatar(), messageNotificationGroup.getIdRoom());
+                final MessageNotificationGroupFCM messageNotificationGroup = mapper.convertValue(remoteMessage.getData(), MessageNotificationGroupFCM.class);
+                sendNotificationFromChat(messageNotificationGroup.getRoomName(), messageNotificationGroup.getIdSender(), messageNotificationGroup.getText(),
+                        messageNotificationGroup.getAvatar(), messageNotificationGroup.getIdRoom(), true);
                 break;
         }
     }
@@ -127,22 +128,22 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "Short lived task is done.");
     }
 
-    private void sendNotificationFromChat(String name, String uderId, String text, String avatarPath, String roomId) {
+    private void sendNotificationFromChat(String name, String uderId, String text, String avatarPath, String roomId, boolean isGroup) {
         if (!ChatViewActivity.active) {
             dataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + avatarPath)
                     .getBytes(Const.FIVE_MEGABYTE)
                     .addOnSuccessListener(bytes -> {
                         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        sendNotificationFromChatWithIcon(name, text, uderId, bitmap, roomId);
+                        sendNotificationFromChatWithIcon(name, text, uderId, bitmap, roomId, isGroup);
 
                     }).addOnFailureListener(exception -> {
                 Bitmap bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.default_avatar);
-                sendNotificationFromChatWithIcon(name, text, uderId, bitmap, roomId);
+                sendNotificationFromChatWithIcon(name, text, uderId, bitmap, roomId, isGroup);
             });
         }
     }
 
-    private void sendNotificationFromChatWithIcon(String name, String text, String userId, Bitmap bitmap, String roomId) {
+    private void sendNotificationFromChatWithIcon(String name, String text, String userId, Bitmap bitmap, String roomId, boolean isGroup) {
         Intent intent = new Intent(this, ChatViewActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, name);
@@ -151,6 +152,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         idFriend.add(userId);
         intent.putCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID, idFriend);
         intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, roomId);
+        intent.putExtra(Const.INTENT_KEY_IS_GROUP_CHAT, isGroup);
         ChatViewActivity.bitmapAvataFriend = new HashMap<>();
         ChatViewActivity.bitmapAvataFriend.put(userId, avatar);
 
