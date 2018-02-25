@@ -185,7 +185,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
         if (actionBar != null && actionBar.getCustomView() != null) {
             TextView text = (TextView) actionBar.getCustomView().findViewById(R.id.app_bar_text);
-            text.setText(getResources().getString(R.string.hotspot));
+            text.setText("");
         }
         if (mHotspotPresenter.checkLogin() != null) {
             getActivity().startService(new Intent(getActivity(), GeolocationUpdateService.class));

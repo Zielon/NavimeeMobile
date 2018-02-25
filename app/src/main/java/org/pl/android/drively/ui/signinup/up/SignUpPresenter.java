@@ -7,11 +7,8 @@ import com.kelvinapps.rxfirebase.RxFirebaseUser;
 
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.ui.signinup.BaseSignPresenter;
-import org.pl.android.drively.util.Const;
 
 import javax.inject.Inject;
-
-import timber.log.Timber;
 
 public class SignUpPresenter extends BaseSignPresenter {
 

@@ -3,8 +3,6 @@ package org.pl.android.drively.ui.signinup;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.firestore.DocumentListenOptions;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.kelvinapps.rxfirebase.RxFirebaseAuth;
 import com.kelvinapps.rxfirebase.RxFirebaseUser;

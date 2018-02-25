@@ -3,7 +3,6 @@ package org.pl.android.drively.data.local;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.ListenerRegistration;
 
 import org.pl.android.drively.data.model.User;
@@ -53,7 +52,7 @@ public class PreferencesHelper {
     public void clear() {
         String messagingToken = sharedPreferences.getString(Const.MESSAGING_TOKEN, "");
 
-        if(userListenerRegistration != null)
+        if (userListenerRegistration != null)
             userListenerRegistration.remove();
 
         sharedPreferences.edit().clear().apply();
@@ -95,7 +94,7 @@ public class PreferencesHelper {
         e.apply();
     }
 
-    public void setUserListenerRegistration(ListenerRegistration registration){
+    public void setUserListenerRegistration(ListenerRegistration registration) {
         userListenerRegistration = registration;
     }
 
