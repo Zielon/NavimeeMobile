@@ -221,10 +221,11 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
 
             Tasks.whenAll(friendsTasks).addOnSuccessListener(avatars -> {
                 for (Task<Friend> task : friendsTasks)
-                    if (task.isSuccessful() && task.getResult() != null)
+                    if (task.isSuccessful() && task.getResult() != null && getMvpView() != null)
                         getMvpView().addFriendInfo(task.getResult());
 
-                getMvpView().allFriendsFound();
+                if(getMvpView() != null)
+                    getMvpView().allFriendsFound();
             });
         });
     }
