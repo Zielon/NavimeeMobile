@@ -131,4 +131,8 @@
     <string name="let_us_know">Дайте нам інформацію</string>
     <string name="not_available_in_city">Ми не доступні у вашому місті</string>
 
+    <string name="your_plan">Ваш план</string>
+    <string name="remember_me">нагадаю мені</string>
+    <string name="cancel">скасувати</string>
+    <string name="navigate">проводити</string>
 </resources>

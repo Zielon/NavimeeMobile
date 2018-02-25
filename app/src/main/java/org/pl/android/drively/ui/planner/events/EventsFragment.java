@@ -1,4 +1,4 @@
-package org.pl.android.drively.ui.events;
+package org.pl.android.drively.ui.planner.events;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,14 +21,17 @@ import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.google.firebase.database.DatabaseError;
 
+import org.joda.time.DateTime;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.main.MainActivity;
+import org.pl.android.drively.ui.planner.PlannerFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -36,8 +40,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
-import devs.mulham.horizontalcalendar.HorizontalCalendarListener;
 import devs.mulham.horizontalcalendar.HorizontalCalendarView;
+import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
 import timber.log.Timber;
 
 public class EventsFragment extends Fragment implements EventsMvpView {
@@ -54,7 +58,7 @@ public class EventsFragment extends Fragment implements EventsMvpView {
     @BindView(R.id.events_empty)
     RelativeLayout mEventsEmptyLayout;
 
-    Date today;
+    Calendar selectedDate;
     SkeletonScreen skeletonScreen;
     HorizontalCalendar horizontalCalendar;
 
@@ -71,11 +75,6 @@ public class EventsFragment extends Fragment implements EventsMvpView {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((BaseActivity) getActivity()).activityComponent().inject(this);
-        ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
-        if (actionBar != null && actionBar.getCustomView() != null) {
-            TextView text = (TextView) actionBar.getCustomView().findViewById(R.id.app_bar_text);
-            text.setText(getResources().getString(R.string.events));
-        }
     }
 
     @SuppressLint("WrongConstant")
@@ -89,72 +88,52 @@ public class EventsFragment extends Fragment implements EventsMvpView {
         Calendar startDate = Calendar.getInstance();
         startDate.add(Calendar.DAY_OF_WEEK, 0);
 
-        today = Calendar.getInstance().getTime();
-
-        horizontalCalendar = new HorizontalCalendar.Builder(fragmentView, R.id.calendarView)
-                .startDate(startDate.getTime())
-                .endDate(endDate.getTime())
-                .datesNumberOnScreen(5)   // Number of Dates cells shown on screen (Recommended 5)
-                .dayNameFormat("EEE")      // WeekDay text format
-                .dayNumberFormat("dd")// Date format
-                .monthFormat("MMM")      // Month format
-                .showDayName(true)      // Show or Hide dayName text
-                .showMonthName(false)      // Show or Hide month text
-                .defaultSelectedDate(today)  // Date to be seleceted at start (default to Today)
-                .build();
+        if(PlannerFragment.selectedDate != null) {
+            horizontalCalendar = new HorizontalCalendar.Builder(fragmentView, R.id.calendarView)
+                    .range(startDate, endDate)
+                    .datesNumberOnScreen(5)
+                    .configure()// Number of Dates cells shown on screen (Recommended 5)
+                        .textSize(15,15,15)
+                        .formatMiddleText("EEE")      // WeekDay text format
+                        .formatBottomText("dd")// Date format
+                        .showTopText(false)
+                        .showBottomText(true)
+                        // Show or Hide month text
+                        .end()
+                    .defaultSelectedDate(PlannerFragment.selectedDate)  // Date to be seleceted at start (default to Today)
+                    .build();
+            selectedDate  = PlannerFragment.selectedDate;
+        } else {
+            horizontalCalendar = new HorizontalCalendar.Builder(fragmentView, R.id.calendarView)
+                    .range(startDate, endDate)
+                    .datesNumberOnScreen(5)
+                    .configure()// Number of Dates cells shown on screen (Recommended 5)
+                        .textSize(15,15,15)
+                        .formatMiddleText("EEE")      // WeekDay text format
+                        .formatBottomText("dd")// Date format
+                        .showTopText(false)
+                        .showBottomText(true)
+                    // Show or Hide month text
+                    .end()
+                    .defaultSelectedDate(Calendar.getInstance())  // Date to be seleceted at start (default to Today)
+                    .build();
+            selectedDate  = Calendar.getInstance();
+        }
 
 
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
-            public void onDateSelected(Date date, int position) {
-                mEventsRecycler.setVisibility(View.VISIBLE);
-                mEventsEmptyLayout.setVisibility(View.GONE);
-                skeletonScreen.show();
-                mEventsAdapter.clearEvents();
-                mEventsPresenter.clearEvents();
-                double latitude = mEventsPresenter.getLastLat();
-                double longitude = mEventsPresenter.getLastLng();
-                keys.clear();
-                geoFire.queryAtLocation(new GeoLocation(latitude, longitude), 16).addGeoQueryEventListener(new GeoQueryEventListener() {
-                    @Override
-                    public void onKeyEntered(String key, GeoLocation location) {
-                        Timber.i(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
-                        keys.add(key);
-                    }
-
-                    @Override
-                    public void onKeyExited(String key) {
-                        Timber.i(String.format("Key %s is no longer in the search area", key));
-                    }
-
-                    @Override
-                    public void onKeyMoved(String key, GeoLocation location) {
-                        Timber.i(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
-                    }
-
-                    @Override
-                    public void onGeoQueryReady() {
-                        mEventsPresenter.loadEvents(date, keys);
-                        Timber.i("All initial data has been loaded and events have been fired!");
-                    }
-
-                    @Override
-                    public void onGeoQueryError(DatabaseError error) {
-                        Timber.e("There was an error with this query: " + error);
-
-                    }
-                });
-                //   mEventsPresenter.loadEvents(date);
+            public void onDateSelected(Calendar date, int position) {
+                queryOnDate(date);
             }
 
             @Override
             public void onCalendarScroll(HorizontalCalendarView calendarView,
                                          int dx, int dy) {
-
             }
 
             @Override
-            public boolean onDateLongClicked(Date date, int position) {
+            public boolean onDateLongClicked(Calendar date, int position) {
                 return true;
             }
         });
@@ -177,6 +156,8 @@ public class EventsFragment extends Fragment implements EventsMvpView {
                 .duration(1200)
                 .count(1).show();
 
+        queryOnDate(selectedDate);
+
         return fragmentView;
     }
 
@@ -184,6 +165,47 @@ public class EventsFragment extends Fragment implements EventsMvpView {
     @Override
     public void onStart() {
         super.onStart();
+    }
+
+    private void queryOnDate(Calendar date) {
+        mEventsRecycler.setVisibility(View.VISIBLE);
+        mEventsEmptyLayout.setVisibility(View.GONE);
+        skeletonScreen.show();
+        mEventsAdapter.clearEvents();
+        mEventsPresenter.clearEvents();
+        PlannerFragment.selectedDate = date;
+        double latitude = mEventsPresenter.getLastLat();
+        double longitude = mEventsPresenter.getLastLng();
+        keys.clear();
+        geoFire.queryAtLocation(new GeoLocation(latitude, longitude), 16).addGeoQueryEventListener(new GeoQueryEventListener() {
+            @Override
+            public void onKeyEntered(String key, GeoLocation location) {
+                Timber.i(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
+                keys.add(key);
+            }
+
+            @Override
+            public void onKeyExited(String key) {
+                Timber.i(String.format("Key %s is no longer in the search area", key));
+            }
+
+            @Override
+            public void onKeyMoved(String key, GeoLocation location) {
+                Timber.i(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+                mEventsPresenter.loadEvents(date.getTime(), keys);
+                Timber.i("All initial data has been loaded and events have been fired!");
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+                Timber.e("There was an error with this query: " + error);
+
+            }
+        });
     }
 
 
@@ -205,11 +227,10 @@ public class EventsFragment extends Fragment implements EventsMvpView {
 
     private void moveToNextDay() {
         Date dt;
-        Calendar c = Calendar.getInstance();
-        c.setTime(horizontalCalendar.getSelectedDate());
+        Calendar c = horizontalCalendar.getSelectedDate();
         c.add(Calendar.DATE, 1);
         dt = c.getTime();
-        horizontalCalendar.selectDate(dt, true);
+        horizontalCalendar.selectDate(c, true);
     }
 
     @Override
@@ -232,15 +253,21 @@ public class EventsFragment extends Fragment implements EventsMvpView {
     }
 
     @Override
-    public void showEvents(List<Event> eventsList) {
+    public void showEvents(List<Event> eventsList, DateTime dateTime) {
         if (eventsList.size() == 0) {
             showEventsEmpty();
         } else {
             mEventsRecycler.setVisibility(View.VISIBLE);
             mEventsEmptyLayout.setVisibility(View.GONE);
             mEventsAdapter.addEvents(eventsList);
+            mEventsAdapter.setDateTime(dateTime);
             mEventsAdapter.notifyDataSetChanged();
             skeletonScreen.hide();
         }
+    }
+
+    @Override
+    public void onSuccessDelete() {
+        Toast.makeText(getActivity(), getResources().getString(R.string.delete_day_schedule), Toast.LENGTH_SHORT).show();
     }
 }

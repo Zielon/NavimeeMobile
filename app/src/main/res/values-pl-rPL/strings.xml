@@ -132,4 +132,8 @@
     <string name="let_us_know">Daj nam znać</string>
     <string name="not_available_in_city">Nie jesteśmy dostępni w Twoim mieście</string>
 
+    <string name="your_plan">Twój plan</string>
+    <string name="remember_me">Przypomnij mi</string>
+    <string name="cancel">Anuluj</string>
+    <string name="navigate">Nawiguj</string>
 </resources>

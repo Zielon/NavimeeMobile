@@ -1,4 +1,4 @@
-package org.pl.android.drively.ui.dayschedule;
+package org.pl.android.drively.ui.planner.dayschedule;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.ListenerRegistration;

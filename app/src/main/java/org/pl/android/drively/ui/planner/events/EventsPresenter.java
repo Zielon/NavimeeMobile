@@ -1,4 +1,4 @@
-package org.pl.android.drively.ui.events;
+package org.pl.android.drively.ui.planner.events;
 
 import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
@@ -77,6 +77,7 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
 
         // next day
         dt.add(Calendar.DAY_OF_MONTH, 1);
+        dt.add(Calendar.HOUR,5);
         DateTime dateTime = new DateTime(date);
         Date dateFinal = date;
         if (!DateUtils.isToday(dateTime)) {
@@ -105,6 +106,7 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
                             if (snapshot != null && snapshot.exists() && snapshot.get(hotspotTypeFilter).equals(Const.HotSpotType.EVENT.name())) {
                                 Event event = snapshot.toObject(Event.class);
                                 if (event.getEndTime() != null && event.getEndTime().after(finalDateFinal) && event.getEndTime().before(dt.getTime())) {
+                                    event.setFirestoreId(snapshot.getId());
                                     eventList.add(event);
                                 }
                             }
@@ -114,7 +116,7 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
                                         getMvpView().showEventsEmpty();
                                     } else {
                                         Collections.sort(eventList);
-                                        getMvpView().showEvents(eventList);
+                                        getMvpView().showEvents(eventList,dateTime);
                                     }
                                 }
                             }
@@ -208,4 +210,14 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
     }
 
 
+    public void deleteEvent(Event event) {
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.NOTIFICATIONS).document(event.getFirestoreId()).delete()
+                .addOnSuccessListener(aVoid -> {
+                    if (getMvpView() != null) {
+                        getMvpView().onSuccessDelete();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                });
+    }
 }
