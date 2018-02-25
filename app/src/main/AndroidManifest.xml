@@ -94,7 +94,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="org.pl.android.drively.ui.settings.personalsettings.PersonalSettingsActivity"
+            android:name="org.pl.android.drively.ui.settings.personalsettings.SettingsPreferencesActivity"
             android:label="@string/settings"
             android:parentActivityName="org.pl.android.drively.ui.settings.SettingsActivity"
             android:screenOrientation="portrait"

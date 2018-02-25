@@ -23,6 +23,7 @@ import org.pl.android.drively.data.model.chat.GroupMessage;
 import org.pl.android.drively.data.model.chat.Message;
 import org.pl.android.drively.data.model.chat.PrivateMessage;
 import org.pl.android.drively.ui.base.BaseActivity;
+import org.pl.android.drively.util.ChatUtils;
 import org.pl.android.drively.util.Const;
 
 import java.text.SimpleDateFormat;
@@ -93,24 +94,17 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
                     new RecyclerViewPositionHelper(recyclerChat),
                     bitmapAvataFriend,
                     bitmapAvatarUser,
-                    mChatViewPresenter.getId());
+                    mChatViewPresenter);
 
             mChatViewPresenter.setMessageListener(roomId, isGroupChat);
             recyclerChat.setAdapter(adapter);
-            recyclerChat.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                @Override
-                public void onLayoutChange(View v,
-                                           int left, int top, int right, int bottom,
-                                           int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                    if (bottom < oldBottom) {
-                        recyclerChat.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                recyclerChat.smoothScrollToPosition(
-                                        recyclerChat.getAdapter().getItemCount() - 1);
-                            }
-                        }, 100);
-                    }
+            recyclerChat.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+                if (bottom < oldBottom) {
+                    recyclerChat.postDelayed(() -> {
+                        if (recyclerChat.getAdapter().getItemCount() > 0)
+                            recyclerChat.smoothScrollToPosition(
+                                    recyclerChat.getAdapter().getItemCount() - 1);
+                    }, 100);
                 }
             });
         }
@@ -168,14 +162,15 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
             String content = editWriteMessage.getText().toString().trim();
             if (content.length() > 0) {
                 editWriteMessage.setText("");
-                Message newMessage = isGroupChat ? new GroupMessage() : new PrivateMessage();
+                Message newMessage = isGroupChat ? new GroupMessage() : new PrivateMessage(idFriend.get(0).toString());
+
                 newMessage.text = content;
                 newMessage.idSender = mChatViewPresenter.getId();
-                newMessage.idReceiver = idFriend.get(0).toString();
                 newMessage.idRoom = roomId;
                 newMessage.nameSender = mChatViewPresenter.getUserInfo().getName();
                 newMessage.emailSender = mChatViewPresenter.getUserInfo().getEmail();
                 newMessage.timestamp = System.currentTimeMillis();
+
                 mChatViewPresenter.addMessage(roomId, newMessage);
             }
         }
@@ -188,15 +183,19 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Conversation conversation;
     private HashMap<String, Bitmap> bitmapAvatars;
     private Bitmap bitmapAvataUser;
-    private String mUID;
+    private ChatViewPresenter chatViewPresenter;
     private RecyclerViewPositionHelper positionHelper;
 
-    public ListMessageAdapter(Context context, Conversation conversation, RecyclerViewPositionHelper positionHelper, HashMap<String, Bitmap> bitmapAvata, Bitmap bitmapAvataUser, String UID) {
+    public ListMessageAdapter(Context context,
+                              Conversation conversation,
+                              RecyclerViewPositionHelper positionHelper,
+                              HashMap<String, Bitmap> bitmapAvata,
+                              Bitmap bitmapAvataUser, ChatViewPresenter chatViewPresenter) {
         this.context = context;
         this.conversation = conversation;
         this.bitmapAvatars = bitmapAvata;
         this.bitmapAvataUser = bitmapAvataUser;
-        this.mUID = UID;
+        this.chatViewPresenter = chatViewPresenter;
         this.positionHelper = positionHelper;
     }
 
@@ -283,6 +282,22 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((TextView) view.findViewById(R.id.message_time)).setText(time);
             ((TextView) view.findViewById(R.id.name)).setText(message.nameSender);
 
+            if (message instanceof GroupMessage)
+                view.findViewById(R.id.sendMessage).setOnClickListener((onClick) -> {
+                    Intent intent = new Intent(context, ChatViewActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, message.nameSender);
+                    ArrayList<CharSequence> idFriend = new ArrayList<>();
+                    idFriend.add(message.idSender);
+                    intent.putCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID, idFriend);
+                    intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, ChatUtils.getRoomId(message.idSender, chatViewPresenter.getId()));
+                    chatViewPresenter.addFriend(message.idSender);
+                    context.startActivity(intent);
+                });
+
+            if (message instanceof PrivateMessage)
+                view.findViewById(R.id.sendMessage).setVisibility(View.GONE);
+
             messageHolder.timeStamp.setText(new SimpleDateFormat("EEE 'AT' HH:mm").format(message.timestamp).toUpperCase());
 
             if (currentAvatar != null) {
@@ -310,7 +325,7 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        return conversation.getListMessageData().get(position).idSender.equals(mUID) ? ChatViewActivity.VIEW_TYPE_USER_MESSAGE : ChatViewActivity.VIEW_TYPE_FRIEND_MESSAGE;
+        return conversation.getListMessageData().get(position).idSender.equals(chatViewPresenter.getId()) ? ChatViewActivity.VIEW_TYPE_USER_MESSAGE : ChatViewActivity.VIEW_TYPE_FRIEND_MESSAGE;
     }
 
     @Override

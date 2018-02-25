@@ -5,6 +5,8 @@ import android.content.Context;
 import org.pl.android.drively.injection.ActivityContext;
 import org.pl.android.drively.injection.PerActivity;
 import org.pl.android.drively.injection.module.ActivityModule;
+import org.pl.android.drively.injection.module.RepositoriesModule;
+import org.pl.android.drively.injection.module.ServicesModule;
 import org.pl.android.drively.ui.chat.ChatFragment;
 import org.pl.android.drively.ui.chat.addgroup.AddGroupActivity;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
@@ -15,7 +17,6 @@ import org.pl.android.drively.ui.planner.events.EventsFragment;
 import org.pl.android.drively.ui.hotspot.HotSpotFragment;
 import org.pl.android.drively.ui.main.MainActivity;
 import org.pl.android.drively.ui.settings.SettingsActivity;
-import org.pl.android.drively.ui.settings.personalsettings.PersonalSettingsActivity;
 import org.pl.android.drively.ui.settings.user.UserSettingsActivity;
 import org.pl.android.drively.ui.settings.user.email.UserEmailChangeActivity;
 import org.pl.android.drively.ui.settings.user.name.UserNameChangeActivity;
@@ -28,12 +29,10 @@ import org.pl.android.drively.ui.welcome.WelcomeActivity;
 import dagger.Subcomponent;
 
 @PerActivity
-@Subcomponent(modules = ActivityModule.class)
+@Subcomponent(modules = {ActivityModule.class, RepositoriesModule.class, ServicesModule.class})
 public interface ActivityComponent {
 
     void inject(MainActivity mainActivity);
-
-    void inject(PersonalSettingsActivity notificationActivity);
 
     void inject(EventsFragment eventsFragment);
 

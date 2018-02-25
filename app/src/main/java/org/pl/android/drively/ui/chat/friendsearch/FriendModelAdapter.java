@@ -100,6 +100,7 @@ public class FriendModelAdapter extends RecyclerView.Adapter<FriendModelAdapter.
 
         LinearLayout root = holder.getViewById(R.id.root);
         TextView nameText = holder.getViewById(R.id.name);
+        TextView emailText = holder.getViewById(R.id.email);
 
         CircleImageView avatar = holder.getViewById(R.id.image);
 
@@ -115,6 +116,7 @@ public class FriendModelAdapter extends RecyclerView.Adapter<FriendModelAdapter.
         }
 
         nameText.setText(object.getName());
+        emailText.setText(object.getEmail());
 
         if (mSearchResultListener != null)
             holder.getBaseView().setOnClickListener(view -> mSearchResultListener.onSelected(mSearchDialog, object, position));

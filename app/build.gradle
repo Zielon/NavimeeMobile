@@ -39,6 +39,7 @@ android {
 
     packagingOptions {
         exclude 'META-INF/rxjava.properties'
+        exclude 'META-INF/LICENSE'
     }
 
     signingConfigs {
@@ -185,6 +186,7 @@ dependencies {
 
     // utils
     compile 'com.github.barteksc:android-pdf-viewer:2.8.2'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.3'
 
     //gui
     compile 'agency.tango.android:avatar-view:0.0.2'

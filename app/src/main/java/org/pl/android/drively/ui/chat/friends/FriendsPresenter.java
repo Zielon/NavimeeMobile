@@ -24,6 +24,7 @@ import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.ui.chat.friendsearch.FriendModel;
 import org.pl.android.drively.ui.chat.friendsearch.FriendSearchDialogCompat;
+import org.pl.android.drively.util.ChatUtils;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
 import org.pl.android.drively.util.NetworkUtil;
@@ -65,7 +66,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
     public void updateUserStatus() {
         if (NetworkUtil.isNetworkConnected(mContext)) {
             try {
-                String isOnlineField = nameof(User.class, "isOnline");
+                String isOnlineField = nameof(User.class, "online");
                 String timestampField = nameof(User.class, "timestamp");
                 if (mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() != null) {
                     String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
@@ -86,7 +87,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
     public void updateFriendStatus(ListFriend listFriend) {
         if (NetworkUtil.isNetworkConnected(mContext)) {
             try {
-                String isOnlineField = nameof(User.class, "isOnline");
+                String isOnlineField = nameof(User.class, "online");
                 for (Friend friend : listFriend.getListFriend()) {
                     final String fid = friend.id;
                     mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(fid).get().addOnCompleteListener(task -> {
@@ -200,7 +201,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                         DocumentSnapshot snapshot = task.getResult();
                         if (snapshot != null && snapshot.exists()) {
                             Friend friend = snapshot.toObject(Friend.class);
-                            friend.idRoom = friend.id.compareTo(getId()) > 0 ? (getId() + friend.id).hashCode() + "" : "" + (friend.id + getId()).hashCode();
+                            friend.idRoom = ChatUtils.getRoomId(friend.id, getId());
                             return getStorageReference(friend.avatar).getBytes(Const.FIVE_MEGABYTE).continueWith(avatar -> {
                                 if (avatar.isSuccessful())
                                     friend.avatarBytes = avatar.getResult();
@@ -297,8 +298,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                 if (getMvpView() != null) {
                     getMvpView().addFriendIsNotIdFriend();
                 }
-            })
-                    .addOnFailureListener(e -> getMvpView().addFriendFailure());
+            }).addOnFailureListener(e -> getMvpView().addFriendFailure());
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
@@ -308,8 +308,9 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
     public Query getLastMessage(String idRoom) {
         try {
             String timestampField = nameof(Message.class, "timestamp");
-            return mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.MESSAGES_PRIVATE).document(idRoom)
-                    .collection(FirebasePaths.MESSAGES_PRIVATE)
+            return mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.MESSAGES_PRIVATE)
+                    .document(mDataManager.getPreferencesHelper().getCountry())
+                    .collection(idRoom)
                     .orderBy(timestampField, Query.Direction.DESCENDING).limit(1);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();

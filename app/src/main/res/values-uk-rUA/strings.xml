@@ -29,10 +29,6 @@
     <string name="already_member_login">Вже є аккаунт? Увійдіть</string>
     <string name="login">Увійдіть</string>
     <string name="logout">вийти</string>
-    <string name="settings">налаштування</string>
-    <string name="notifications_day_schedule">План Дня</string>
-    <string name="notifications_day_schedule_description">Повідомте про завершальні події з Денного плану</string>
-    <string name="notifications">сповіщення</string>
     <string name="change_email">змінити електронну пошту</string>
     <string name="change_email_failed">Зміна пароля не вдалося!</string>
     <string name="change_email_succeed">Зміна електронної пошти була успішною!</string>
@@ -111,6 +107,30 @@
     <string name="delete_group">Видалити групу</string>
     <string name="leave_group">покинути групу</string>
     <string name="accept_regulation">Під час входу до програми ви приймаєте <u>правила</u></string>
+    <string name="send_private_message">Надіслати приватне повідомлення</string>
+
+    <!--Setting-->
+    <string name="settings">налаштування</string>
+
+    <string name="general">Генерал</string>
+    <string name="shareLocalization">Локалізація</string>
+    <string name="shareLocalization_description">Поділіться своїм місцезнаходженням з іншими драйверами</string>
+
+    <string name="notifications">сповіщення</string>
+    <string name="notifications_day_schedule">План Дня</string>
+    <string name="notifications_day_schedule_description">Повідомте про завершальні події з Денного плану</string>
+    <string name="notifications_chat_group">Груповий чат</string>
+    <string name="notifications_chat_group_description">Вимкнути сповіщення для групового чату</string>
+    <string name="notifications_chat_private">Приватний чат</string>
+    <string name="notifications_chat_private_description">Вимкніть сповіщення для приватних повідомлень</string>
+
+    <!--Network connection-->
+    <string name="network_lack">немає інтернету</string>
+    <string name="check_internet">Wi-Fi налаштування</string>
+    <string name="close">близько</string>
+    <string name="let_us_know">Дайте нам інформацію</string>
+    <string name="not_available_in_city">Ми не доступні у вашому місті</string>
+
     <string name="your_plan">Ваш план</string>
     <string name="remember_me">нагадаю мені</string>
     <string name="cancel">скасувати</string>

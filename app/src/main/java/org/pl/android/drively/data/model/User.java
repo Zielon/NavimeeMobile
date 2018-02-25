@@ -5,7 +5,7 @@ public class User {
     public static final String DEFAULT_AVATAR = "DEFAULT";
     private String email;
     private String id;
-    private boolean isOnline;
+    private boolean online;
     private String name;
     private Long timestamp;
     private String avatar;
@@ -16,6 +16,7 @@ public class User {
     private boolean bigEventsNotification;
     private boolean chatPrivateNotification;
     private boolean chatGroupNotification;
+    private boolean shareLocalization;
 
     public User() {
         this.avatar = DEFAULT_AVATAR;
@@ -23,6 +24,7 @@ public class User {
         this.bigEventsNotification = true;
         this.chatGroupNotification = true;
         this.chatPrivateNotification = true;
+        this.shareLocalization = false;
     }
 
     public boolean isDayScheduleNotification() {
@@ -50,11 +52,11 @@ public class User {
     }
 
     public boolean isOnline() {
-        return isOnline;
+        return online;
     }
 
     public void setOnline(boolean online) {
-        isOnline = online;
+        this.online = online;
     }
 
     public String getName() {
@@ -97,10 +99,6 @@ public class User {
         this.bigEventsNotification = bigEventsNotification;
     }
 
-    public boolean isDefaultAvatar() {
-        return this.avatar.equals(DEFAULT_AVATAR);
-    }
-
     public boolean isChatPrivateNotification() {
         return chatPrivateNotification;
     }
@@ -115,5 +113,13 @@ public class User {
 
     public void setChatGroupNotification(boolean chatGroupNotification) {
         this.chatGroupNotification = chatGroupNotification;
+    }
+
+    public boolean isShareLocalization() {
+        return shareLocalization;
+    }
+
+    public void setShareLocalization(boolean shareLocalization) {
+        this.shareLocalization = shareLocalization;
     }
 }

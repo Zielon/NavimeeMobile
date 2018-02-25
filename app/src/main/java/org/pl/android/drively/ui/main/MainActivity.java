@@ -3,11 +3,13 @@ package org.pl.android.drively.ui.main;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.firebase.auth.FirebaseUser;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
@@ -23,6 +25,7 @@ import org.pl.android.drively.ui.planner.events.EventsFragment;
 import org.pl.android.drively.ui.hotspot.HotSpotFragment;
 import org.pl.android.drively.ui.intro.IntroActivity;
 import org.pl.android.drively.ui.welcome.WelcomeActivity;
+import org.pl.android.drively.util.NetworkUtil;
 
 import javax.inject.Inject;
 
@@ -75,37 +78,16 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         getSupportActionBar().setCustomView(R.layout.app_bar);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
-
-
-     /*   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!hasPermission(Manifest.permission.ACCESS_FINE_LOCATION) || !hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                requestPermissions(LOCATION_PERMS, Const.LOCATION_REQUEST);
-            }
-        }*/
-
         if (getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().get("lat") != null && getIntent().getExtras().get("lng") != null) {
-      /*      Uri gmmIntentUri = Uri.parse("google.navigation:q=" + getIntent().getExtras().get("lat") + "," +
-                    getIntent().getExtras().get("lng"));
-            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-            mapIntent.setPackage("com.google.android.apps.maps");
-            if (mapIntent.resolveActivity(getPackageManager()) != null) {
-                startActivity(mapIntent);
-            }*/
             isFromNotification = true;
             lat = Double.valueOf(getIntent().getExtras().getString("lat"));
             lng = Double.valueOf(getIntent().getExtras().getString("lng"));
             name = getIntent().getExtras().getString("name");
             count = getIntent().getExtras().getString("count");
         }
-
         checkAppIntro();
-
-
         checkLogin();
         mMainPresenter.attachView(this);
-
-
         bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
@@ -138,8 +120,31 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
                 transaction.commitAllowingStateLoss();
             }
         });
+    }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        checkInternetConnectivity();
+    }
 
+    private void checkInternetConnectivity() {
+        if (!NetworkUtil.isNetworkConnected(this)) {
+            MaterialDialog dialogAlert = new MaterialDialog.Builder(this)
+                    .title(R.string.network_lack)
+                    .backgroundColor(getResources().getColor(R.color.primary_dark))
+                    .contentColor(getResources().getColor(R.color.white))
+                    .positiveText(R.string.close)
+                    .negativeText(R.string.check_internet)
+                    .onPositive((dialog, which) -> {
+                        finish();
+                    })
+                    .onNegative((dialog, which) -> {
+                        startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                    })
+                    .build();
+            dialogAlert.show();
+        }
     }
 
     @Override

@@ -11,7 +11,6 @@ import android.os.IBinder;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
-import com.firebase.geofire.GeoQuery;
 import com.google.firebase.database.DatabaseReference;
 
 import org.pl.android.drively.BoilerplateApplication;
@@ -27,69 +26,26 @@ import timber.log.Timber;
  * Created by Wojtek on 2018-02-18.
  */
 
-public class GeolocationUpdateService extends Service
-{
+public class GeolocationUpdateService extends Service {
     private static final String TAG = "BOOMBOOMTESTGPS";
-    private LocationManager mLocationManager = null;
     private static final int LOCATION_INTERVAL = 10000;
     private static final float LOCATION_DISTANCE = 10f;
-
     GeoFire geoFire;
-
     @Inject
     DataManager dataManager;
-
-    private class LocationListener implements android.location.LocationListener
-    {
-        Location mLastLocation;
-
-        public LocationListener(String provider)
-        {
-            Timber.e("LocationListener " + provider);
-            mLastLocation = new Location(provider);
-        }
-
-        @Override
-        public void onLocationChanged(Location location)
-        {
-            Timber.e("onLocationChanged: " + location);
-            mLastLocation.set(location);
-            geoFire.setLocation(FirebasePaths.USER_LOCATION+dataManager.getFirebaseService().getFirebaseAuth().getUid(),new GeoLocation(location.getLatitude(), location.getLongitude()));
-        }
-
-        @Override
-        public void onProviderDisabled(String provider)
-        {
-            Timber.e("onProviderDisabled: " + provider);
-        }
-
-        @Override
-        public void onProviderEnabled(String provider)
-        {
-            Timber.e("onProviderEnabled: " + provider);
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras)
-        {
-            Timber.e("onStatusChanged: " + provider);
-        }
-    }
-
-    LocationListener[] mLocationListeners = new LocationListener[] {
+    LocationListener[] mLocationListeners = new LocationListener[]{
             new LocationListener(LocationManager.GPS_PROVIDER),
             new LocationListener(LocationManager.NETWORK_PROVIDER)
     };
+    private LocationManager mLocationManager = null;
 
     @Override
-    public IBinder onBind(Intent arg0)
-    {
+    public IBinder onBind(Intent arg0) {
         return null;
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId)
-    {
+    public int onStartCommand(Intent intent, int flags, int startId) {
         Timber.e("onStartCommand");
         super.onStartCommand(intent, flags, startId);
         return START_STICKY;
@@ -97,8 +53,7 @@ public class GeolocationUpdateService extends Service
 
     @SuppressLint("TimberArgCount")
     @Override
-    public void onCreate()
-    {
+    public void onCreate() {
         Timber.e("onCreate");
         super.onCreate();
         BoilerplateApplication.get(this).getComponent().inject(this);
@@ -111,7 +66,7 @@ public class GeolocationUpdateService extends Service
                     LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
                     mLocationListeners[1]);
         } catch (java.lang.SecurityException ex) {
-            Timber.e( "fail to request location update, ignore", ex);
+            Timber.e("fail to request location update, ignore", ex);
         } catch (IllegalArgumentException ex) {
             Timber.d("network provider does not exist, " + ex.getMessage());
         }
@@ -128,8 +83,7 @@ public class GeolocationUpdateService extends Service
 
     @SuppressLint("TimberArgCount")
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
         Timber.e("onDestroy");
         super.onDestroy();
         if (mLocationManager != null) {
@@ -147,6 +101,37 @@ public class GeolocationUpdateService extends Service
         Timber.e("initializeLocationManager");
         if (mLocationManager == null) {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        }
+    }
+
+    private class LocationListener implements android.location.LocationListener {
+        Location mLastLocation;
+
+        public LocationListener(String provider) {
+            Timber.e("LocationListener " + provider);
+            mLastLocation = new Location(provider);
+        }
+
+        @Override
+        public void onLocationChanged(Location location) {
+            Timber.e("onLocationChanged: " + location);
+            mLastLocation.set(location);
+            geoFire.setLocation(FirebasePaths.USER_LOCATION + dataManager.getFirebaseService().getFirebaseAuth().getUid(), new GeoLocation(location.getLatitude(), location.getLongitude()));
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            Timber.e("onProviderDisabled: " + provider);
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            Timber.e("onProviderEnabled: " + provider);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+            Timber.e("onStatusChanged: " + provider);
         }
     }
 }

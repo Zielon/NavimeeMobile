@@ -121,11 +121,11 @@ public class SignUpActivity extends BaseSignActivity implements BaseSignMvpView 
     @Override
     public void onSuccess() {
         signupButton.setEnabled(true);
-        signUpPresenter.registerMessagingToken();
-        signUpPresenter.saveUserInfo();
-        progressDialog.dismiss();
-        setResult(RESULT_OK, null);
-        finish();
+        signUpPresenter.registerUser().addOnCompleteListener(user -> {
+            progressDialog.dismiss();
+            setResult(RESULT_OK, null);
+            finish();
+        });
     }
 
     @Override

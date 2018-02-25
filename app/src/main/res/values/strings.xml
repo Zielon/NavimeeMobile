@@ -35,11 +35,6 @@
     <string name="already_member_login">Already have an account? Login in</string>
     <string name="login">Log in</string>
     <string name="logout">Sign out</string>
-    <string name="settings">Settings</string>
-    <string name="notifications">Notifications</string>
-    <string name="notifications_day_schedule">Notifications from the Schedule</string>
-    <string name="notifications_day_schedule_description">Notify me before events from the Schedule end up</string>
-    <string name="notifications_big_events">Notifications on Big Events</string>
     <string name="change_email">Change email</string>
     <string name="change_email_failed">Failed to change your email!</string>
     <string name="change_email_succeed">Your email was changed successfully!</string>
@@ -125,4 +120,28 @@
     <string name="remember_me">Remind me</string>
     <string name="cancel">Cancel</string>
     <string name="navigate">Navigate</string>
+    <string name="send_private_message">Send a private message</string>
+
+    <!--Settings-->
+    <string name="settings">Settings</string>
+
+    <string name="general">General</string>
+    <string name="shareLocalization">Localization</string>
+    <string name="shareLocalization_description">Share your localization with other drivers</string>
+
+    <string name="notifications">Notifications</string>
+    <string name="notifications_day_schedule">Schedule</string>
+    <string name="notifications_day_schedule_description">Notify me before events from the Schedule end up</string>
+    <string name="notifications_chat_group">Chat group</string>
+    <string name="notifications_chat_group_description">Disable notifications for the group chat</string>
+    <string name="notifications_chat_private">Chat private</string>
+    <string name="notifications_chat_private_description">Disable notifications for private conversations</string>
+
+    <!--Network connection-->
+    <string name="network_lack">No network</string>
+    <string name="check_internet">Check Internet</string>
+    <string name="close">Close</string>
+    <string name="let_us_know">Give us info</string>
+    <string name="not_available_in_city">We are not available in your city</string>
+
 </resources>

@@ -90,16 +90,16 @@ public class ChatFragment extends Fragment implements ChatMvpView {
 
     private void setupViewPager(ViewPager viewPager) {
         adapter = new ViewPagerAdapter(this.getFragmentManager());
-        adapter.addFrag(new FriendsFragment(), STR_FRIEND_FRAGMENT);
         adapter.addFrag(new GroupFragment(), STR_GROUP_FRAGMENT);
+        adapter.addFrag(new FriendsFragment(), STR_FRIEND_FRAGMENT);
         viewPager.setAdapter(adapter);
         //  viewPager.setOffscreenPageLimit(2);
     }
 
     private void setupTabIcons() {
         int[] tabIcons = {
-                R.drawable.ic_tab_person,
-                R.drawable.ic_tab_group
+                R.drawable.ic_tab_group,
+                R.drawable.ic_tab_person
         };
 
         tabLayout.getTabAt(0).setIcon(tabIcons[0]);

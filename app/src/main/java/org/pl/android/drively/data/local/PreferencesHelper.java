@@ -10,6 +10,8 @@ import org.pl.android.drively.util.Const;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import static org.pl.android.drively.util.ReflectionUtil.nameof;
+
 @Singleton
 public class PreferencesHelper {
 
@@ -19,41 +21,57 @@ public class PreferencesHelper {
     private static String SHARE_KEY_EMAIL = "email";
     private static String SHARE_KEY_AVATA = "avatar";
     private static String SHARE_KEY_USER_ID = "id";
-    private static String SHARE_KEY_UID = "uid";
-    private final SharedPreferences mPref;
+
+    private static String DAY_SCHEDULE_NOTIFICATION;
+    private static String BIG_EVENTS_NOTIFICATION;
+    private static String CHAT_PRIVATE_NOTIFICATION;
+    private static String CHAT_GROUP_NOTIFICATION;
+    private static String SHARE_LOCALIZATION;
+
+    private final SharedPreferences sharedPreferences;
 
     @Inject
     public PreferencesHelper(@ApplicationContext Context context) {
-        mPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
+        sharedPreferences = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
+
+        try {
+            DAY_SCHEDULE_NOTIFICATION = nameof(User.class, "dayScheduleNotification");
+            BIG_EVENTS_NOTIFICATION = nameof(User.class, "bigEventsNotification");
+            CHAT_PRIVATE_NOTIFICATION = nameof(User.class, "chatPrivateNotification");
+            CHAT_GROUP_NOTIFICATION = nameof(User.class, "chatGroupNotification");
+            SHARE_LOCALIZATION = nameof(User.class, "shareLocalization");
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 
     public void clear() {
-        String messagingToken = mPref.getString(Const.MESSAGING_TOKEN, "");
-        mPref.edit().clear().apply();
-        mPref.edit().putBoolean(Const.FIRST_START, false).apply();
-        mPref.edit().putString(Const.MESSAGING_TOKEN, messagingToken).apply();
+        String messagingToken = sharedPreferences.getString(Const.MESSAGING_TOKEN, "");
+        sharedPreferences.edit().clear().apply();
+        sharedPreferences.edit().putBoolean(Const.FIRST_START, false).apply();
+        sharedPreferences.edit().putString(Const.MESSAGING_TOKEN, messagingToken).apply();
     }
 
     public boolean getValue(String name) {
-        return mPref.getBoolean(name, true);
+        return sharedPreferences.getBoolean(name, true);
     }
 
     public boolean getValueWithDefaultFalse(String name) {
-        return mPref.getBoolean(name, false);
+        return sharedPreferences.getBoolean(name, false);
     }
 
     public float getValueFloat(String name) {
-        return mPref.getFloat(name, (float) 0.0);
+        return sharedPreferences.getFloat(name, (float) 0.0);
     }
 
     public String getValueString(String name) {
-        return mPref.getString(name, "");
+        return sharedPreferences.getString(name, "");
     }
 
 
     public void setValue(String name, boolean value) {
         //  Make a new preferences editor
-        SharedPreferences.Editor e = mPref.edit();
+        SharedPreferences.Editor e = sharedPreferences.edit();
 
         //  Edit preference to make it false because we don't want this to run again
         e.putBoolean(name, value);
@@ -64,7 +82,7 @@ public class PreferencesHelper {
 
     public void setValue(String name, String value) {
         //  Make a new preferences editor
-        SharedPreferences.Editor e = mPref.edit();
+        SharedPreferences.Editor e = sharedPreferences.edit();
 
         //  Edit preference to make it false because we don't want this to run again
         e.putString(name, value);
@@ -75,7 +93,7 @@ public class PreferencesHelper {
 
     public void setValueFloat(String name, float value) {
         //  Make a new preferences editor
-        SharedPreferences.Editor e = mPref.edit();
+        SharedPreferences.Editor e = sharedPreferences.edit();
 
         //  Edit preference to make it false because we don't want this to run again
         e.putFloat(name, value);
@@ -89,33 +107,42 @@ public class PreferencesHelper {
     }
 
     public void saveUserInfo(User user) {
-        SharedPreferences.Editor e = mPref.edit();
+        SharedPreferences.Editor e = sharedPreferences.edit();
+
         e.putString(SHARE_KEY_NAME, user.getName());
         e.putString(SHARE_KEY_EMAIL, user.getEmail());
         e.putString(SHARE_KEY_AVATA, user.getAvatar());
         e.putString(SHARE_KEY_USER_ID, user.getId());
-        e.putString(SHARE_KEY_UID, Const.UID);
+        e.putBoolean(DAY_SCHEDULE_NOTIFICATION, user.isDayScheduleNotification());
+        e.putBoolean(BIG_EVENTS_NOTIFICATION, user.isBigEventsNotification());
+        e.putBoolean(CHAT_GROUP_NOTIFICATION, user.isChatGroupNotification());
+        e.putBoolean(CHAT_PRIVATE_NOTIFICATION, user.isChatPrivateNotification());
+        e.putBoolean(SHARE_LOCALIZATION, user.isShareLocalization());
+
         e.apply();
     }
 
     public User getUserInfo() {
 
-        String userName = mPref.getString(SHARE_KEY_NAME, "");
-        String email = mPref.getString(SHARE_KEY_EMAIL, "");
-        String avatar = mPref.getString(SHARE_KEY_AVATA, "DEFAULT");
-        String id = mPref.getString(SHARE_KEY_USER_ID, "");
-
         User user = new User();
 
-        user.setName(userName);
-        user.setEmail(email);
-        user.setAvatar(avatar);
-        user.setId(id);
+        // SETTINGS
+        user.setDayScheduleNotification(getValue(DAY_SCHEDULE_NOTIFICATION));
+        user.setBigEventsNotification(getValue(BIG_EVENTS_NOTIFICATION));
+        user.setChatPrivateNotification(getValue(CHAT_PRIVATE_NOTIFICATION));
+        user.setChatGroupNotification(getValue(CHAT_GROUP_NOTIFICATION));
+        user.setShareLocalization(getValue(SHARE_LOCALIZATION));
+
+        user.setName(sharedPreferences.getString(SHARE_KEY_NAME, ""));
+        user.setEmail(sharedPreferences.getString(SHARE_KEY_EMAIL, ""));
+        user.setAvatar(sharedPreferences.getString(SHARE_KEY_AVATA, "DEFAULT"));
+        user.setId(sharedPreferences.getString(SHARE_KEY_USER_ID, ""));
+        user.setToken(sharedPreferences.getString(Const.MESSAGING_TOKEN, ""));
 
         return user;
     }
 
-    public String getUID() {
-        return mPref.getString(SHARE_KEY_UID, "");
+    public String getUserId() {
+        return sharedPreferences.getString(SHARE_KEY_USER_ID, "");
     }
 }

@@ -17,7 +17,7 @@ import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 import org.pl.android.drively.R;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.regulations.RegulationsActivity;
-import org.pl.android.drively.ui.settings.personalsettings.PersonalSettingsActivity;
+import org.pl.android.drively.ui.settings.personalsettings.SettingsPreferencesActivity;
 import org.pl.android.drively.ui.settings.user.UserSettingsActivity;
 
 import java.util.ArrayList;
@@ -62,17 +62,18 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
                 .withIdentifier(1)
                 .withTextColor(getResources().getColor(R.color.white)));*/
 
+        drawerItems.add(new PrimaryDrawerItem().withName(R.string.privacy_conditions)
+                .withIcon(R.drawable.legal_privacy_24dp)
+                .withIdentifier(4)
+                .withTextColor(getResources().getColor(R.color.white)));
+
+        drawerItems.add(new DividerDrawerItem().withEnabled(true));
+
         drawerItems.add(new PrimaryDrawerItem().withName(R.string.logout)
                 .withIcon(R.drawable.logout_24dp)
                 .withIdentifier(3)
                 .withTextColor(getResources().getColor(R.color.white)));
 
-        drawerItems.add(new DividerDrawerItem().withEnabled(true));
-
-        drawerItems.add(new PrimaryDrawerItem().withName(R.string.privacy_conditions)
-                .withIcon(R.drawable.legal_privacy_24dp)
-                .withIdentifier(4)
-                .withTextColor(getResources().getColor(R.color.white)));
 /*
         drawerItems.add(new PrimaryDrawerItem().withName(R.string.help)
                 .withIcon(R.drawable.help_circle_24dp)
@@ -95,7 +96,7 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
                         position = (int) drawerItem.getIdentifier();
                         if (position == 0) {
                             Timber.d(String.valueOf(position));
-                            intent = new Intent(SettingsActivity.this, PersonalSettingsActivity.class);
+                            intent = new Intent(SettingsActivity.this, SettingsPreferencesActivity.class);
                         } else if (position == 1) {
                             Timber.d(String.valueOf(position));
                         } else if (position == 2) {

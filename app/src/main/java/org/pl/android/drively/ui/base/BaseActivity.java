@@ -29,8 +29,7 @@ public class BaseActivity extends AppCompatActivity {
     static final int SETTINGS_REQUEST = 1;  // The request code
     private static final String KEY_ACTIVITY_ID = "KEY_ACTIVITY_ID";
     private static final AtomicLong NEXT_ID = new AtomicLong(0);
-    private static final LongSparseArray<ConfigPersistentComponent>
-            sComponentsMap = new LongSparseArray<>();
+    private static final LongSparseArray<ConfigPersistentComponent> sComponentsMap = new LongSparseArray<>();
 
     private ActivityComponent mActivityComponent;
     private long mActivityId;
