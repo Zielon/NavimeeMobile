@@ -1,12 +1,11 @@
 package org.pl.android.drively.data.model.notifications;
 
 
-public class EventNotificationFCM {
+public class EventNotificationFCM extends NotificationFCM {
     private String title;
     private String endTime;
     private String lat;
     private String lng;
-    private String type;
 
     public EventNotificationFCM() {
     }
@@ -41,13 +40,5 @@ public class EventNotificationFCM {
 
     public void setLng(String lng) {
         this.lng = lng;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 }

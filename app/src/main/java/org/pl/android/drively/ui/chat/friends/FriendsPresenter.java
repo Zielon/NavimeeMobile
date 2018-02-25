@@ -66,7 +66,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
     public void updateUserStatus() {
         if (NetworkUtil.isNetworkConnected(mContext)) {
             try {
-                String isOnlineField = nameof(User.class, "isOnline");
+                String isOnlineField = nameof(User.class, "online");
                 String timestampField = nameof(User.class, "timestamp");
                 if (mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() != null) {
                     String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
@@ -87,7 +87,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
     public void updateFriendStatus(ListFriend listFriend) {
         if (NetworkUtil.isNetworkConnected(mContext)) {
             try {
-                String isOnlineField = nameof(User.class, "isOnline");
+                String isOnlineField = nameof(User.class, "online");
                 for (Friend friend : listFriend.getListFriend()) {
                     final String fid = friend.id;
                     mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(fid).get().addOnCompleteListener(task -> {

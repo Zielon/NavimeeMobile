@@ -561,9 +561,9 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     Timber.w("Listen failed.", e);
                     return;
                 }
-                if (documentSnapshot != null && documentSnapshot.exists() && documentSnapshot.get("isOnline") != null && listFriend.getListFriend().size() >= position) {
+                if (documentSnapshot != null && documentSnapshot.exists() && documentSnapshot.get("online") != null && listFriend.getListFriend().size() >= position) {
                     try {
-                        listFriend.getListFriend().get(position).status.isOnline = (boolean) documentSnapshot.get("isOnline");
+                        listFriend.getListFriend().get(position).status.online = (boolean) documentSnapshot.get("online");
                         notifyDataSetChanged();
                     } catch (IndexOutOfBoundsException ex) {
                         Timber.w("Exception occured.", ex);
@@ -575,7 +575,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             mapQueryOnline.get(id).addSnapshotListener(mapChildListenerOnline.get(id));
         }
 
-        if (listFriend.getListFriend().get(position).status.isOnline) {
+        if (listFriend.getListFriend().get(position).status.online) {
             ((ItemFriendViewHolder) holder).avata.setBorderWidth(7);
             ((ItemFriendViewHolder) holder).avata.setBorderColor(context.getResources().getColor(R.color.button_background));
         } else {

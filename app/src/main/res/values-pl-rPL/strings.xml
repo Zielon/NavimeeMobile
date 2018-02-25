@@ -112,6 +112,11 @@
 
     <!--Settings-->
     <string name="settings">Ustawienia</string>
+
+    <string name="general">Ogólne</string>
+    <string name="shareLocalization">Lokalizacja</string>
+    <string name="shareLocalization_description">Udostępnij swoją lokalizację innym kierowcom</string>
+
     <string name="notifications">Powiadomienia</string>
     <string name="notifications_day_schedule">Plan Dnia</string>
     <string name="notifications_day_schedule_description">Powiadom o kończących się wydarzeniach z Planu Dnia</string>

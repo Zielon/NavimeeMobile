@@ -62,17 +62,18 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
                 .withIdentifier(1)
                 .withTextColor(getResources().getColor(R.color.white)));*/
 
+        drawerItems.add(new PrimaryDrawerItem().withName(R.string.privacy_conditions)
+                .withIcon(R.drawable.legal_privacy_24dp)
+                .withIdentifier(4)
+                .withTextColor(getResources().getColor(R.color.white)));
+
+        drawerItems.add(new DividerDrawerItem().withEnabled(true));
+
         drawerItems.add(new PrimaryDrawerItem().withName(R.string.logout)
                 .withIcon(R.drawable.logout_24dp)
                 .withIdentifier(3)
                 .withTextColor(getResources().getColor(R.color.white)));
 
-        drawerItems.add(new DividerDrawerItem().withEnabled(true));
-
-        drawerItems.add(new PrimaryDrawerItem().withName(R.string.privacy_conditions)
-                .withIcon(R.drawable.legal_privacy_24dp)
-                .withIdentifier(4)
-                .withTextColor(getResources().getColor(R.color.white)));
 /*
         drawerItems.add(new PrimaryDrawerItem().withName(R.string.help)
                 .withIcon(R.drawable.help_circle_24dp)
