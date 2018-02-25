@@ -3,6 +3,9 @@ package org.pl.android.drively.data.local;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.ListenerRegistration;
+
 import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.injection.ApplicationContext;
 import org.pl.android.drively.util.Const;
@@ -28,6 +31,8 @@ public class PreferencesHelper {
     private static String CHAT_GROUP_NOTIFICATION;
     private static String SHARE_LOCALIZATION;
 
+    private static ListenerRegistration userListenerRegistration;
+
     private final SharedPreferences sharedPreferences;
 
     @Inject
@@ -47,6 +52,10 @@ public class PreferencesHelper {
 
     public void clear() {
         String messagingToken = sharedPreferences.getString(Const.MESSAGING_TOKEN, "");
+
+        if(userListenerRegistration != null)
+            userListenerRegistration.remove();
+
         sharedPreferences.edit().clear().apply();
         sharedPreferences.edit().putBoolean(Const.FIRST_START, false).apply();
         sharedPreferences.edit().putString(Const.MESSAGING_TOKEN, messagingToken).apply();
@@ -68,38 +77,26 @@ public class PreferencesHelper {
         return sharedPreferences.getString(name, "");
     }
 
-
     public void setValue(String name, boolean value) {
-        //  Make a new preferences editor
         SharedPreferences.Editor e = sharedPreferences.edit();
-
-        //  Edit preference to make it false because we don't want this to run again
         e.putBoolean(name, value);
-        //  Apply changes
         e.apply();
     }
 
-
     public void setValue(String name, String value) {
-        //  Make a new preferences editor
         SharedPreferences.Editor e = sharedPreferences.edit();
-
-        //  Edit preference to make it false because we don't want this to run again
         e.putString(name, value);
-
-        //  Apply changes
         e.apply();
     }
 
     public void setValueFloat(String name, float value) {
-        //  Make a new preferences editor
         SharedPreferences.Editor e = sharedPreferences.edit();
-
-        //  Edit preference to make it false because we don't want this to run again
         e.putFloat(name, value);
-
-        //  Apply changes
         e.apply();
+    }
+
+    public void setUserListenerRegistration(ListenerRegistration registration){
+        userListenerRegistration = registration;
     }
 
     public String getCountry() {
