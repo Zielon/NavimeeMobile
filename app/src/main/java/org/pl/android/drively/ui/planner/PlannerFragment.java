@@ -6,7 +6,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
@@ -20,10 +19,13 @@ import org.pl.android.drively.ui.planner.dayschedule.DayScheduleFragment;
 import org.pl.android.drively.ui.planner.events.EventsFragment;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 /**
  * Created by Wojtek on 2018-02-19.
@@ -40,6 +42,7 @@ public class PlannerFragment  extends Fragment {
     @BindView(R.id.viewpager_planner)
     ViewPager viewPager;
     ViewPagerAdapter adapter;
+    public static Calendar selectedDate;
 
     public static PlannerFragment newInstance() {
         PlannerFragment fragment = new PlannerFragment();
@@ -87,7 +90,25 @@ public class PlannerFragment  extends Fragment {
         adapter.addFrag(new EventsFragment(),STR_CALENDAR_FRAGMENT);
         adapter.addFrag(new DayScheduleFragment(), STR_YOUR_PLAN_FRAGMENT);
         viewPager.setAdapter(adapter);
-        //  viewPager.setOffscreenPageLimit(2);
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (!(adapter == null)) {
+                    adapter.notifyDataSetChanged();
+                    tabLayout.getTabAt(0).setText(getResources().getString(R.string.events));
+                    tabLayout.getTabAt(1).setText(getResources().getString(R.string.your_plan));
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     private void setupTabIcons() {
@@ -131,7 +152,7 @@ public class PlannerFragment  extends Fragment {
         @Override
         public int getItemPosition(Object object) {
             // refresh all fragments when data set changed
-            return PagerAdapter.POSITION_NONE;
+            return POSITION_NONE;
         }
     }
 }

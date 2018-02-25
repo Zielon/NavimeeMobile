@@ -87,8 +87,8 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
         holder.driveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + String.valueOf(event.getPlace().getGeoPoint().getLatitude()) + "," +
-                        String.valueOf(event.getPlace().getGeoPoint().getLongitude()));
+                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + String.valueOf(event.getPlace().getLat()) + "," +
+                        String.valueOf(event.getPlace().getLon()));
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
                 if (mapIntent.resolveActivity(mContext.getPackageManager()) != null) {

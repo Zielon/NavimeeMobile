@@ -113,4 +113,7 @@
     <string name="leave_group">Opuść grupę</string>
     <string name="accept_regulation">Logując się do aplikacji akceptujesz <u>regulamin</u></string>
     <string name="your_plan">Twój plan</string>
+    <string name="remember_me">Przypomnij mi</string>
+    <string name="cancel">Anuluj</string>
+    <string name="navigate">Nawiguj</string>
 </resources>

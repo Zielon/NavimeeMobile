@@ -106,6 +106,7 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
                             if (snapshot != null && snapshot.exists() && snapshot.get(hotspotTypeFilter).equals(Const.HotSpotType.EVENT.name())) {
                                 Event event = snapshot.toObject(Event.class);
                                 if (event.getEndTime() != null && event.getEndTime().after(finalDateFinal) && event.getEndTime().before(dt.getTime())) {
+                                    event.setFirestoreId(snapshot.getId());
                                     eventList.add(event);
                                 }
                             }
@@ -209,4 +210,14 @@ public class EventsPresenter extends BasePresenter<EventsMvpView> {
     }
 
 
+    public void deleteEvent(Event event) {
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.NOTIFICATIONS).document(event.getFirestoreId()).delete()
+                .addOnSuccessListener(aVoid -> {
+                    if (getMvpView() != null) {
+                        getMvpView().onSuccessDelete();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                });
+    }
 }

@@ -15,4 +15,6 @@ public interface EventsMvpView extends MvpView {
     void onSuccessSave();
 
     void showEvents(List<Event> eventsList, DateTime dateTime);
+
+    void onSuccessDelete();
 }

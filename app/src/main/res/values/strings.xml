@@ -122,4 +122,7 @@
     <string name="delete_group">Delete group</string>
     <string name="leave_group">Leave group</string>
     <string name="your_plan">Your plan</string>
+    <string name="remember_me">Remind me</string>
+    <string name="cancel">Cancel</string>
+    <string name="navigate">Navigate</string>
 </resources>

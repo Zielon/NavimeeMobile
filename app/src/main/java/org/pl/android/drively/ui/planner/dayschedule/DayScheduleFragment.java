@@ -16,10 +16,12 @@ import android.widget.Toast;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
 
+import org.joda.time.DateTime;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.main.MainActivity;
+import org.pl.android.drively.ui.planner.PlannerFragment;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -31,8 +33,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
-import devs.mulham.horizontalcalendar.HorizontalCalendarListener;
 import devs.mulham.horizontalcalendar.HorizontalCalendarView;
+import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
 
 public class DayScheduleFragment extends Fragment implements DayScheduleMvpView {
 
@@ -64,11 +66,6 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((BaseActivity) getActivity()).activityComponent().inject(this);
-        ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
-        if (actionBar != null && actionBar.getCustomView() != null) {
-            TextView text = (TextView) actionBar.getCustomView().findViewById(R.id.app_bar_text);
-            text.setText(getResources().getString(R.string.day_schedule));
-        }
     }
 
     @Override
@@ -80,29 +77,47 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
         endDate.add(Calendar.DAY_OF_WEEK, 6);
         Calendar startDate = Calendar.getInstance();
         startDate.add(Calendar.DAY_OF_WEEK, 0);
-
         today = Calendar.getInstance().getTime();
 
-        horizontalCalendar = new HorizontalCalendar.Builder(fragmentView, R.id.calendarView)
-                .startDate(startDate.getTime())
-                .endDate(endDate.getTime())
-                .datesNumberOnScreen(5)   // Number of Dates cells shown on screen (Recommended 5)
-                .textSize(15,15,15)
-                .dayNameFormat("EEE")      // WeekDay text format
-                .dayNumberFormat("dd")// Date format
-                .monthFormat("MMM")      // Month format
-                .showDayName(true)      // Show or Hide dayName text
-                .showMonthName(false)      // Show or Hide month text
-                .defaultSelectedDate(today)  // Date to be seleceted at start (default to Today)
-                .build();
+        if(PlannerFragment.selectedDate != null) {
+            horizontalCalendar = new HorizontalCalendar.Builder(fragmentView, R.id.calendarView)
+                    .range(startDate, endDate)
+                    .datesNumberOnScreen(5)
+                    .configure()// Number of Dates cells shown on screen (Recommended 5)
+                        .textSize(15,15,15)
+                        .formatMiddleText("EEE")      // WeekDay text format
+                        .formatBottomText("dd")// Date format
+                        .showTopText(false)
+                        .showBottomText(true)
+                    // Show or Hide month text
+                    .end()
+                    .defaultSelectedDate(PlannerFragment.selectedDate)  // Date to be seleceted at start (default to Today)
+                    .build();
+        } else {
+            horizontalCalendar = new HorizontalCalendar.Builder(fragmentView, R.id.calendarView)
+                    .range(startDate, endDate)
+                    .datesNumberOnScreen(5)
+                    .configure()// Number of Dates cells shown on screen (Recommended 5)
+                        .textSize(15,15,15)
+                        .formatMiddleText("EEE")      // WeekDay text format
+                        .formatBottomText("dd")// Date format
+                        .showTopText(false)
+                        .showBottomText(true)
+                    // Show or Hide month text
+                    .end()
+                    .defaultSelectedDate(Calendar.getInstance())  // Date to be seleceted at start (default to Today)
+                    .build();
+        }
+        horizontalCalendar.refresh();
 
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
-            public void onDateSelected(Date date, int position) {
+            public void onDateSelected(Calendar date, int position) {
+                PlannerFragment.selectedDate = date;
                 mDayScheduleRecycler.setVisibility(View.VISIBLE);
                 mDayScheduleEmptyLayout.setVisibility(View.GONE);
                 skeletonScreen.show();
-                mDaySchedulePresenter.loadEvents(date);
+                mDaySchedulePresenter.loadEvents(date.getTime());
             }
 
             @Override
@@ -112,7 +127,7 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
             }
 
             @Override
-            public boolean onDateLongClicked(Date date, int position) {
+            public boolean onDateLongClicked(Calendar date, int position) {
                 return true;
             }
         });
@@ -137,6 +152,11 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
     @Override
     public void onStart() {
         super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
 
