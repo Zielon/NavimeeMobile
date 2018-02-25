@@ -80,7 +80,7 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
 
 
     public String getUid() {
-        return mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+        return mDataManager.getPreferencesHelper().getUserId();
     }
 
     public void loadHotSpotPlace(String key) {
