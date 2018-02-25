@@ -84,7 +84,7 @@ public class EventsFragment extends Fragment implements EventsMvpView {
 
         View fragmentView = inflater.inflate(R.layout.events_fragment, container, false);
         Calendar endDate = Calendar.getInstance();
-        endDate.add(Calendar.DAY_OF_WEEK, 6);
+        endDate.add(Calendar.DAY_OF_WEEK, 30);
         Calendar startDate = Calendar.getInstance();
         startDate.add(Calendar.DAY_OF_WEEK, 0);
 
@@ -96,7 +96,7 @@ public class EventsFragment extends Fragment implements EventsMvpView {
                         .textSize(15,15,15)
                         .formatMiddleText("EEE")      // WeekDay text format
                         .formatBottomText("dd")// Date format
-                        .showTopText(false)
+                        .showTopText(true)
                         .showBottomText(true)
                         // Show or Hide month text
                         .end()
@@ -111,7 +111,7 @@ public class EventsFragment extends Fragment implements EventsMvpView {
                         .textSize(15,15,15)
                         .formatMiddleText("EEE")      // WeekDay text format
                         .formatBottomText("dd")// Date format
-                        .showTopText(false)
+                        .showTopText(true)
                         .showBottomText(true)
                     // Show or Hide month text
                     .end()
