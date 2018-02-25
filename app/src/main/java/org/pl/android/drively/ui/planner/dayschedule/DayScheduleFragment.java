@@ -174,10 +174,15 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
     }
 
     @Override
-    public void showEvents(List<Event> events) {
-        mDayScheduleAdapter.setEvents(events);
-        mDayScheduleAdapter.notifyDataSetChanged();
-        skeletonScreen.hide();
+    public void showEvents(List<Event> events, DateTime dateTime) {
+        if (events.size() == 0) {
+            showEventsEmpty();
+        } else {
+            mDayScheduleAdapter.setEvents(events);
+            mDayScheduleAdapter.setDateTime(dateTime);
+            mDayScheduleAdapter.notifyDataSetChanged();
+            skeletonScreen.hide();
+        }
     }
 
 
