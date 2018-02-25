@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -77,30 +78,27 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
         }
 
         if (Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() < 30) {
-            holder.driveButton.setImageResource(R.drawable.go_now_24dp);
-            holder.driveButton.setTag(1);
-        } else {
-            holder.driveButton.setImageResource(R.drawable.ringing_bell_24dp);
-            holder.driveButton.setEnabled(false);
+            holder.deleteButton.setTag(2);
+            holder.deleteButton.setText(R.string.navigate);
+        } else  {
+            holder.deleteButton.setTag(1);
+            holder.deleteButton.setBackgroundColor(mContext.getResources().getColor(R.color.colorLine));
+            holder.deleteButton.setText(R.string.cancel);
         }
-
-        holder.driveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + String.valueOf(event.getPlace().getLat()) + "," +
-                        String.valueOf(event.getPlace().getLon()));
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                mapIntent.setPackage("com.google.android.apps.maps");
-                if (mapIntent.resolveActivity(mContext.getPackageManager()) != null) {
-                    mContext.startActivity(mapIntent);
-                }
-            }
-        });
-
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mDaySchedulePresenter.deleteEvent(event);
+                if ((int) view.getTag() == 1) {
+                    mDaySchedulePresenter.deleteEvent(event);
+                } else if((int) view.getTag() == 2) {
+                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + String.valueOf(event.getPlace().getLat()) + "," +
+                            String.valueOf(event.getPlace().getLon()));
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                    mapIntent.setPackage("com.google.android.apps.maps");
+                    if (mapIntent.resolveActivity(mContext.getPackageManager()) != null) {
+                        mContext.startActivity(mapIntent);
+                    }
+                }
             }
         });
 
@@ -133,10 +131,8 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
         TextView addressTextView;
         @BindView(R.id.viewTextTime)
         TextView timeTextView;
-        @BindView(R.id.driveButton)
-        FloatingActionButton driveButton;
         @BindView(R.id.deleteButton)
-        ImageButton deleteButton;
+        Button deleteButton;
 
         public DayScheduleHolder(View itemView) {
             super(itemView);

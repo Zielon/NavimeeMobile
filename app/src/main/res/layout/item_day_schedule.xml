@@ -60,7 +60,8 @@
                 android:paddingTop="5dp"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_small_body"
-                tools:text="developer" />
+                tools:text="developer"
+                android:layout_toLeftOf="@+id/deleteButton" />
 
 
             <TextView
@@ -73,25 +74,24 @@
                 android:layout_toRightOf="@+id/image_address_name"
                 android:paddingLeft="25dp"
                 android:paddingStart="10dp"
+                android:layout_toStartOf="@+id/deleteButton"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_small_body"
-                tools:text="developer" />
-
-            <ImageButton
+                tools:text="developer"
+                android:layout_toLeftOf="@+id/deleteButton" />
+            <Button
                 android:id="@+id/deleteButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="false"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:background="@android:color/transparent"
-                android:paddingBottom="7dp"
-                android:paddingLeft="7dp"
-                android:paddingRight="7dp"
-                android:paddingTop="4dp"
-                android:src="@drawable/close_x_24dp" />
+                android:layout_below="@+id/text_name"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="10dp"
+                android:background="@color/button_background"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/cancel" />
 
 
         </RelativeLayout>
@@ -101,27 +101,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/content"
-            android:layout_marginTop="10dp">
-
-            <ImageView
-                android:id="@+id/imageCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"
-                android:src="@mipmap/ranking_1" />
-
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="0dp">
 
             <ImageView
                 android:id="@+id/imageTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/imageCount"
-                android:paddingLeft="30dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_alignParentStart="true"
                 android:src="@drawable/end_time_24dp" />
 
             <TextView
@@ -134,19 +126,16 @@
                 android:text="18:30"
                 android:textColor="@color/white" />
 
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/driveButton"
+            <ImageView
+                android:id="@+id/imageCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginBottom="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/ringing_bell_24dp"
-                app:backgroundTint="@color/button_background"
-                app:borderWidth="0dp" />
+                android:layout_toRightOf="@+id/viewTextTime"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:src="@mipmap/ranking_1" />
         </RelativeLayout>
+
 
 
     </RelativeLayout>

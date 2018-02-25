@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +54,7 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
     @BindView(R.id.day_schedule_empty)
     RelativeLayout mDayScheduleEmptyLayout;
 
-    Date today;
+    Calendar selectedDate;
     SkeletonScreen skeletonScreen;
     HorizontalCalendar horizontalCalendar;
 
@@ -77,7 +78,6 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
         endDate.add(Calendar.DAY_OF_WEEK, 6);
         Calendar startDate = Calendar.getInstance();
         startDate.add(Calendar.DAY_OF_WEEK, 0);
-        today = Calendar.getInstance().getTime();
 
         if(PlannerFragment.selectedDate != null) {
             horizontalCalendar = new HorizontalCalendar.Builder(fragmentView, R.id.calendarView)
@@ -93,6 +93,7 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
                     .end()
                     .defaultSelectedDate(PlannerFragment.selectedDate)  // Date to be seleceted at start (default to Today)
                     .build();
+            selectedDate  = PlannerFragment.selectedDate;
         } else {
             horizontalCalendar = new HorizontalCalendar.Builder(fragmentView, R.id.calendarView)
                     .range(startDate, endDate)
@@ -107,23 +108,19 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
                     .end()
                     .defaultSelectedDate(Calendar.getInstance())  // Date to be seleceted at start (default to Today)
                     .build();
+            selectedDate  = Calendar.getInstance();
         }
-        horizontalCalendar.refresh();
+
 
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Calendar date, int position) {
-                PlannerFragment.selectedDate = date;
-                mDayScheduleRecycler.setVisibility(View.VISIBLE);
-                mDayScheduleEmptyLayout.setVisibility(View.GONE);
-                skeletonScreen.show();
-                mDaySchedulePresenter.loadEvents(date.getTime());
+                queryOnDate(date);
             }
 
             @Override
             public void onCalendarScroll(HorizontalCalendarView calendarView,
                                          int dx, int dy) {
-
             }
 
             @Override
@@ -146,6 +143,8 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
                 .duration(1200)
                 .count(1).show();
 
+        queryOnDate(selectedDate);
+
         return fragmentView;
     }
 
@@ -164,6 +163,14 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
     public void onDestroyView() {
         super.onDestroyView();
         mDaySchedulePresenter.detachView();
+    }
+
+    private void queryOnDate(Calendar date) {
+        PlannerFragment.selectedDate = date;
+        mDayScheduleRecycler.setVisibility(View.VISIBLE);
+        mDayScheduleEmptyLayout.setVisibility(View.GONE);
+        skeletonScreen.show();
+        mDaySchedulePresenter.loadEvents(date.getTime());
     }
 
     @Override
