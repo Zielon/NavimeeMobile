@@ -3,6 +3,7 @@ package org.pl.android.drively.ui.signinup;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.kelvinapps.rxfirebase.RxFirebaseAuth;
 import com.kelvinapps.rxfirebase.RxFirebaseUser;
 
@@ -14,7 +15,7 @@ import org.pl.android.drively.util.Const;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
+import static org.pl.android.drively.util.FirebasePaths.USERS;
 
 public class BaseSignPresenter extends BasePresenter<BaseSignMvpView> {
     protected DataManager mDataManager;
@@ -41,10 +42,21 @@ public class BaseSignPresenter extends BasePresenter<BaseSignMvpView> {
     public void saveUserInfo() {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
         usersRepository.getUser(userId).addOnSuccessListener(user -> mDataManager.getPreferencesHelper().saveUserInfo(user));
+
+        // Mainly for a remote update of a user entity.
+        ListenerRegistration registration = mDataManager.getFirebaseService().getFirebaseFirestore()
+                .collection(USERS).document(userId)
+                .addSnapshotListener((snapshot, e) -> {
+                    User user = snapshot.toObject(User.class);
+                    mDataManager.getPreferencesHelper().saveUserInfo(user);
+                });
+
+        mDataManager.getPreferencesHelper().setUserListenerRegistration(registration);
     }
 
     public Task<User> registerUser() {
-        if (mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() == null) return Tasks.forResult(null);
+        if (mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() == null)
+            return Tasks.forResult(null);
 
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
         String name = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getDisplayName();

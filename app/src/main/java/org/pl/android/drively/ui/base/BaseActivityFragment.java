@@ -7,16 +7,11 @@ import android.view.MenuItem;
 import org.pl.android.drively.R;
 import org.pl.android.drively.ui.settings.SettingsActivity;
 
-/**
- * Created by Wojtek on 2017-11-29.
- */
-
 public class BaseActivityFragment extends BaseActivity {
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
