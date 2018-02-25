@@ -45,6 +45,7 @@ public class BaseSignPresenter extends BasePresenter<BaseSignMvpView> {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
         usersRepository.getUser(userId).addOnSuccessListener(user -> mDataManager.getPreferencesHelper().saveUserInfo(user));
 
+        // Mainly for a remote update of a user entity.
         ListenerRegistration registration = mDataManager.getFirebaseService().getFirebaseFirestore()
                 .collection(USERS).document(userId)
                 .addSnapshotListener((snapshot, e) -> {
