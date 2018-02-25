@@ -21,9 +21,6 @@ public class SignInPresenter extends BaseSignPresenter {
     public void loginIn(String email, String password) {
         RxFirebaseAuth.signInWithEmailAndPassword(mDataManager.getFirebaseService().getFirebaseAuth(), email, password)
                 .flatMap(x -> RxFirebaseUser.getToken(mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser(), false))
-                .subscribe(token -> {
-                    mDataManager.getPreferencesHelper().setValue(Const.MESSAGING_TOKEN, token.getToken());
-                    mMvpView.onSuccess();
-                }, throwable -> mMvpView.onError(throwable));
+                .subscribe(token -> mMvpView.onSuccess(), throwable -> mMvpView.onError(throwable));
     }
 }

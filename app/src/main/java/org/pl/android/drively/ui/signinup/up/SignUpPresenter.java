@@ -25,7 +25,6 @@ public class SignUpPresenter extends BaseSignPresenter {
                 .flatMap(x -> RxFirebaseUser.getToken(mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser(), false))
                 .subscribe(token -> {
                     FirebaseUser user = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
-                    mDataManager.getPreferencesHelper().setValue(Const.MESSAGING_TOKEN, token.getToken());
                     UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
                     RxFirebaseUser.updateProfile(user, profile).subscribe(sub -> mMvpView.onSuccess());
                 }, throwable -> mMvpView.onError(throwable));
