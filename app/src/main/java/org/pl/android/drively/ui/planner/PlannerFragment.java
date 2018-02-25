@@ -43,6 +43,10 @@ public class PlannerFragment  extends Fragment {
     ViewPager viewPager;
     ViewPagerAdapter adapter;
     public static Calendar selectedDate;
+    int[] tabIcons = {
+            R.drawable.ic_action_today,
+            R.drawable.ic_action_today
+    };
 
     public static PlannerFragment newInstance() {
         PlannerFragment fragment = new PlannerFragment();
@@ -99,11 +103,9 @@ public class PlannerFragment  extends Fragment {
             public void onPageSelected(int position) {
                 if (!(adapter == null)) {
                     adapter.notifyDataSetChanged();
-                    tabLayout.getTabAt(0).setText(getResources().getString(R.string.events));
-                    tabLayout.getTabAt(1).setText(getResources().getString(R.string.your_plan));
+                    setupTabIcons();
                 }
             }
-
             @Override
             public void onPageScrollStateChanged(int state) {
 
@@ -113,8 +115,8 @@ public class PlannerFragment  extends Fragment {
 
     private void setupTabIcons() {
 
-        tabLayout.getTabAt(0).setText(getResources().getString(R.string.events));
-        tabLayout.getTabAt(1).setText(getResources().getString(R.string.your_plan));
+        tabLayout.getTabAt(0).setIcon(tabIcons[0]);
+        tabLayout.getTabAt(1).setIcon(tabIcons[1]);
     }
 
     class ViewPagerAdapter extends FragmentStatePagerAdapter {
