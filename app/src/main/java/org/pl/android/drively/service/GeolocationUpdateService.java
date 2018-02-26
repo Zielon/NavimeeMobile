@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 
 import com.firebase.geofire.GeoFire;
@@ -30,6 +31,8 @@ public class GeolocationUpdateService extends Service {
     private static final String TAG = "BOOMBOOMTESTGPS";
     private static final int LOCATION_INTERVAL = 10000;
     private static final float LOCATION_DISTANCE = 10f;
+    private static final long TIME_FOR_SERVICE = 10000;//1800000;
+
     GeoFire geoFire;
     @Inject
     DataManager dataManager;
@@ -60,7 +63,14 @@ public class GeolocationUpdateService extends Service {
         DatabaseReference databaseReference = dataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.USER_LOCATION);
         geoFire = new GeoFire(databaseReference);
         initializeLocationManager();
-
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+               Timber.i("stoping service");
+               stopSelf();
+            }
+        }, TIME_FOR_SERVICE);
         try {
             mLocationManager.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
@@ -116,7 +126,8 @@ public class GeolocationUpdateService extends Service {
         public void onLocationChanged(Location location) {
             Timber.e("onLocationChanged: " + location);
             mLastLocation.set(location);
-            geoFire.setLocation(FirebasePaths.USER_LOCATION + dataManager.getFirebaseService().getFirebaseAuth().getUid(), new GeoLocation(location.getLatitude(), location.getLongitude()));
+            geoFire.setLocation("UBER_"+FirebasePaths.USER_LOCATION + "_" + dataManager.getFirebaseService().getFirebaseAuth().getUid(),
+                    new GeoLocation(location.getLatitude(), location.getLongitude()));
         }
 
         @Override

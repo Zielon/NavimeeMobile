@@ -799,7 +799,11 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
             Timber.i("USER LOCATION");
             if (!usersMarkers.containsKey(key)) {
                 MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude));
-                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_directions_car_black_24dp));
+                if(key.contains(FirebasePaths.UBER)) {
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_directions_car_black_24dp));
+                } else {
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_directions_car_black_24dp));
+                }
                 Marker marker = googleMap.addMarker(markerOptions);
                 usersMarkers.put(key, marker);
             }
