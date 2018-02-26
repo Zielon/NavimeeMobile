@@ -130,9 +130,13 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
             name = getIntent().getExtras().getString("name");
             count = getIntent().getExtras().getString("count");
         }
+
+        mMainPresenter.attachView(this);
+        mMainPresenter.checkVersion();
+
         checkAppIntro();
         checkLogin();
-        mMainPresenter.attachView(this);
+
         bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
@@ -246,9 +250,6 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
             startActivity(intent);
         }
     }
-
-    /***** MVP View methods implementation *****/
-
 
     @Override
     public void showError() {

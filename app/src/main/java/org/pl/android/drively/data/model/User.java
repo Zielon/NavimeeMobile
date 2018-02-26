@@ -10,6 +10,8 @@ public class User {
     private Long timestamp;
     private String avatar;
     private String token;
+    private String city;
+    private String country;
 
     //Settings
     private boolean dayScheduleNotification;
@@ -121,5 +123,21 @@ public class User {
 
     public void setShareLocalization(boolean shareLocalization) {
         this.shareLocalization = shareLocalization;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }
