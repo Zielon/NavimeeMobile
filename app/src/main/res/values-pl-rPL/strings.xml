@@ -136,4 +136,13 @@
     <string name="remember_me">Przypomnij mi</string>
     <string name="cancel">Anuluj</string>
     <string name="navigate">Nawiguj</string>
+
+    <!--POPUPS-->
+    <string name="popup_hotspot_title">Na Hotspot zobaczysz gdzie znajdują się inni kierowcy w czasie rzeczywistym.</string>
+    <string name="popup_hotspot_agreement">Dobrowolnie wyrażam zgodę na anonimowe podzielenei się swoją
+        lokalizacją wyłącznie wewnątrz aplikacji Drively. Lokalizacja nie jest używana poza aplikacją. Tylko osoby,
+        które wyraziły zgoe mogą zobaczyć położenie innych użytkowników</string>
+    <string name="popup_hotspot_brand_question">Której aplikacji używasz najczęściej do pracy?</string>
+    <string name="popup_hotspot_button_agreement">ZGADZAM SIĘ</string>
+
 </resources>

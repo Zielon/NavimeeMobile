@@ -144,4 +144,11 @@
     <string name="let_us_know">Give us info</string>
     <string name="not_available_in_city">We are not available in your city</string>
 
+    <!--POPUPS-->
+    <string name="popup_hotspot_title">Hotspot - here you can see other drivers live.</string>
+    <string name="popup_hotspot_agreement">I voluntarily agree to anonymous sharing my own 
+        location exclusive within the Drively application. The location is not used outside of the application. Only people 
+        which agreed to the terms may see the location of other users.</string>
+    <string name="popup_hotspot_brand_question">Which application do you use most often?</string>
+    <string name="popup_hotspot_button_agreement">I AGREE</string>
 </resources>

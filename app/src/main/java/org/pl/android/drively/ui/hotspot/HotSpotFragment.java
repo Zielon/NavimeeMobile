@@ -17,6 +17,7 @@ import android.os.SystemClock;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
@@ -172,6 +173,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     private HashMap<String, ClusterItemGoogleMap> eventsOnMap = new HashMap<>();
     private HashMap<String, Marker> usersMarkers = new HashMap<>();
     private Context context;
+    private Const.DriverType selectedDriverType;
 
     public static HotSpotFragment newInstance() {
         HotSpotFragment fragment = new HotSpotFragment();
@@ -959,8 +961,30 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                     .build();
             routing.execute();
         }
+    }
 
+    @Override
+    public void showInstructionPopup() {
+        View view = LayoutInflater.from(context).inflate(R.layout.rc_item_friend, null);
+        preparePopupLayout(view);
+        new MaterialDialog.Builder(context)
+                .customView(view, true)
+                .show();
+    }
 
+    private void preparePopupLayout(View rootView) {
+        for (Const.DriverType driverType : Const.DriverType.values()) {
+            rootView.findViewById(driverType.getButtonResId()).setOnClickListener(view -> {
+                for (Const.DriverType driverTypeDeselect : Const.DriverType.values()) {
+                    rootView.findViewById(driverTypeDeselect.getButtonResId()).setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+                }
+                view.setBackgroundColor(ContextCompat.getColor(context, R.color.filters_buttons));
+                selectedDriverType = driverType;
+            });
+        }
+        rootView.findViewById(R.id.agree_button)
+                .setOnClickListener(view ->
+                        Log.d(context.getClass().getSimpleName(), "User agreed to the terms and is using " + selectedDriverType.getName() + "."));
     }
 
     private class ErrorHandler implements Consumer<Throwable> {
