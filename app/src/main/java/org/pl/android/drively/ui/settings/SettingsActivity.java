@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -103,7 +105,7 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
                             Timber.d(String.valueOf(position));
                             intent = new Intent(SettingsActivity.this, UserSettingsActivity.class);
                         } else if (position == 3) {
-                            settingsPresenter.logout();
+                            showLogoutPopup();
                         } else if (position == 4) {
                             Timber.d(String.valueOf(position));
                             intent = new Intent(SettingsActivity.this, RegulationsActivity.class);
@@ -121,6 +123,20 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
         drawer.getSlider().setBackground(grayBackground);
 
         ((ViewGroup) findViewById(R.id.frame_container)).addView(drawer.getSlider());
+    }
+
+    private void showLogoutPopup() {
+        new MaterialDialog.Builder(this)
+                .backgroundColor(ContextCompat.getColor(this, R.color.white))
+                .positiveColor(ContextCompat.getColor(this, R.color.md_black_1000))
+                .negativeColor(ContextCompat.getColor(this, R.color.md_black_1000))
+                .contentColor(ContextCompat.getColor(this, R.color.md_black_1000))
+                .positiveText(R.string.logout_popup_positive)
+                .negativeText(R.string.logout_popup_negative)
+                .content(R.string.logout_popup_content)
+                .onPositive((dialog, which) -> settingsPresenter.logout())
+                .onNegative((dialog, which) -> dialog.dismiss())
+                .show();
     }
 
     @Override

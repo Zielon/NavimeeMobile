@@ -5,6 +5,7 @@
     <string name="events">Kalendarz</string>
     <string name="day_schedule">Plan Dnia</string>
     <string name="hotspot">Hotspot</string>
+    <string name="finance">Wydatki</string>
     <string name="save">Zapisz</string>
     <string name="user">Użytkownik</string>
     <string name="user_exists">Taki użytkownik już istnieje</string>
@@ -138,11 +139,48 @@
     <string name="navigate">Nawiguj</string>
 
     <!--POPUPS-->
+    <!--HOTSPOT-->
     <string name="popup_hotspot_title">Na Hotspot zobaczysz gdzie znajdują się inni kierowcy w czasie rzeczywistym.</string>
     <string name="popup_hotspot_agreement">Dobrowolnie wyrażam zgodę na anonimowe podzielenei się swoją
         lokalizacją wyłącznie wewnątrz aplikacji Drively. Lokalizacja nie jest używana poza aplikacją. Tylko osoby,
-        które wyraziły zgoe mogą zobaczyć położenie innych użytkowników</string>
+        które wyraziły zgodę mogą zobaczyć położenie innych użytkowników</string>
     <string name="popup_hotspot_brand_question">Której aplikacji używasz najczęściej do pracy?</string>
     <string name="popup_hotspot_button_agreement">ZGADZAM SIĘ</string>
+    <string name="popup_hotspot_preference_info">Swoje preferencje możesz zmienić w Ustawieniach</string>
+    <string name="popup_hotspot_localisation_info">DZIELENIE SIĘ LOKALIZACJĄ ZOSTANIE ZATRZYMANE PO 30MIN OD WYŁĄCZENIA APLIKACJI</string>
 
+    <!--CALENDAR-->
+    <string name="popup_events_title">WSZYSTKO W JEDNYM MIEJSCU</string>
+    <string name="popup_events_info">Po otwarciu zobaczysz listę miejsc w których odbywają się duże wydarzenia:
+        imprezy, koncerty, konferencje itd. Poniżej, wyświetlają się nadchodzące wydarzenia.</string>
+    <string name="popup_events_info1">Lista miejsc i wydarzeń w twoim mieście</string>
+    <string name="popup_events_info2">Plan Dnia: wydarzeń o których wyślemy przypomnienie kiedy będą się kończyć</string>
+    <string name="popup_events_info3">Dodaj wydarzenie do Planu Dnia</string>
+    <string name="popup_events_info3_button">Przypomnij mi</string>
+    <string name="popup_events_info4">Przejdź do nawigacji GPS</string>
+    <string name="popup_events_info4_button">Jedź teraz</string>
+    <string name="popup_events_info5">Duuuuże wydarzenie</string>
+    <string name="popup_events_info6">Impreza na ok. 150 osób</string>
+    <string name="popup_events_understood">ROZUMIEM</string>
+    <string name="popup_events_preference_info">Przypomnienia możesz wyłączyć w Ustawieniach</string>
+
+    <!--CHAT-->
+    <string name="popup_chat_title">Pytaj, odpisuj, dziel się!</string>
+    <string name="popup_chat_info">Dostępne grupy:</string>
+    <string name="popup_chat_info1">Cały kraj w jednym miejscu</string>
+    <string name="popup_chat_info1_button">Wszyscy</string>
+    <string name="popup_chat_info2">Po sąsiędzku</string>
+    <string name="popup_chat_info2_button">Warszawa</string>
+    <string name="popup_chat_info3">Kupię, sprzedam, zamienię</string>
+    <string name="popup_chat_info3_button">Ogłoszenia</string>
+    <string name="popup_chat_info4">Znajdź więcej grup</string>
+    <string name="popup_chat_question">Chcesz być na bieżąco?</string>
+    <string name="popup_chat_question_explanation">Nowa wiadomość wpadnie jako powiadomienie!</string>
+    <string name="popup_chat_understood">ROZUMIEM</string>
+    <string name="popup_chat_preference_info">Swoje preferencje możesz zmienić w Ustawieniach</string>
+
+    <!--LOGOUT-->
+    <string name="logout_popup_positive">Wyloguj się</string>
+    <string name="logout_popup_negative">Zostań</string>
+    <string name="logout_popup_content">Na pewno chcesz się wylogować?</string>
 </resources>

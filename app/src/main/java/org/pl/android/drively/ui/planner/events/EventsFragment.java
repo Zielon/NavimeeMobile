@@ -1,19 +1,19 @@
 package org.pl.android.drively.ui.planner.events;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
 import com.firebase.geofire.GeoFire;
@@ -25,13 +25,11 @@ import org.joda.time.DateTime;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.ui.base.BaseActivity;
-import org.pl.android.drively.ui.main.MainActivity;
 import org.pl.android.drively.ui.planner.PlannerFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -43,6 +41,8 @@ import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.HorizontalCalendarView;
 import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
 import timber.log.Timber;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class EventsFragment extends Fragment implements EventsMvpView {
 
@@ -65,6 +65,8 @@ public class EventsFragment extends Fragment implements EventsMvpView {
     GeoFire geoFire;
 
     List<String> keys = new ArrayList<>();
+
+    private MaterialDialog popup;
 
     public static EventsFragment newInstance() {
         EventsFragment fragment = new EventsFragment();
@@ -269,5 +271,20 @@ public class EventsFragment extends Fragment implements EventsMvpView {
     @Override
     public void onSuccessDelete() {
         Toast.makeText(getActivity(), getResources().getString(R.string.delete_day_schedule), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showInstructionPopup() {
+        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.events_popup_instruction, null);
+        preparePopupLayout(view);
+        popup = new MaterialDialog.Builder(getActivity())
+                .customView(view, false)
+                .backgroundColor(ContextCompat.getColor(getActivity(), R.color.transparent))
+                .show();
+    }
+
+    private void preparePopupLayout(View rootView) {
+        rootView.findViewById(R.id.understood_button).setOnClickListener(view -> popup.dismiss());
     }
 }

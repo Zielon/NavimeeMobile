@@ -22,4 +22,5 @@
     <color name="settings_switch_color">#e6e40455</color>
     <color name="colorCardView">#f7f7f7</color>
     <color name="gray_font">#575757</color>
+    <color name="transparent">#00ffffff</color>
 </resources>

@@ -31,11 +31,9 @@ import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.eventbus.NotificationEvent;
 import org.pl.android.drively.ui.base.BaseActivityFragment;
 import org.pl.android.drively.ui.chat.ChatFragment;
-import org.pl.android.drively.ui.planner.PlannerFragment;
-import org.pl.android.drively.ui.planner.dayschedule.DayScheduleFragment;
-import org.pl.android.drively.ui.planner.events.EventsFragment;
 import org.pl.android.drively.ui.hotspot.HotSpotFragment;
 import org.pl.android.drively.ui.intro.IntroActivity;
+import org.pl.android.drively.ui.planner.PlannerFragment;
 import org.pl.android.drively.ui.welcome.WelcomeActivity;
 import org.pl.android.drively.util.NetworkUtil;
 
@@ -160,6 +158,9 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
                         }
                         break;
                     case R.id.tab_chat:
+                        selectedFragment = ChatFragment.newInstance();
+                        break;
+                    case R.id.tab_finance:
                         selectedFragment = ChatFragment.newInstance();
                         break;
 

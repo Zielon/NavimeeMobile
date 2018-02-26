@@ -966,7 +966,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     @Override
     public void showInstructionPopup() {
         LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.hotspot_popup_first_start, null);
+        View view = inflater.inflate(R.layout.hotspot_popup_instruction, null);
         preparePopupLayout(view);
         popup = new MaterialDialog.Builder(context)
                 .customView(view, false)
