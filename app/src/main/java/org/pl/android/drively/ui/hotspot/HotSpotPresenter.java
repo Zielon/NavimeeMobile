@@ -11,7 +11,7 @@ import org.pl.android.drively.data.model.CityNotAvailable;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.Feedback;
 import org.pl.android.drively.data.model.FourSquarePlace;
-import org.pl.android.drively.ui.base.BasePresenter;
+import org.pl.android.drively.ui.base.BaseTabPresenter;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
 import org.pl.android.drively.util.ViewUtil;
@@ -30,10 +30,7 @@ import timber.log.Timber;
 
 import static org.pl.android.drively.util.ReflectionUtil.nameof;
 
-public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
-
-
-    private final DataManager mDataManager;
+public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
 
     private ListenerRegistration mListener;
 

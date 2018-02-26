@@ -63,6 +63,10 @@ public class PreferencesHelper {
 
         sharedPreferences.edit().clear().apply();
         sharedPreferences.edit().putBoolean(Const.FIRST_START, false).apply();
+        for (String tabFragment : Const.TAB_FRAGMENTS) {
+            sharedPreferences.edit()
+                    .putBoolean(tabFragment + Const.FIRST_START_POPUP_SUFFIX, false).apply();
+        }
         sharedPreferences.edit().putString(Const.MESSAGING_TOKEN, messagingToken).apply();
         sharedPreferences.edit().putInt(APP_VERSION, appVersion).apply();
     }
