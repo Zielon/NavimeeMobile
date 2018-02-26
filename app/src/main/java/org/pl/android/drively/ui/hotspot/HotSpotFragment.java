@@ -69,6 +69,7 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
+import com.rilixtech.materialfancybutton.MaterialFancyButton;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
 import org.greenrobot.eventbus.EventBus;
@@ -174,6 +175,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     private HashMap<String, Marker> usersMarkers = new HashMap<>();
     private Context context;
     private Const.DriverType selectedDriverType;
+    private MaterialDialog popup;
 
     public static HotSpotFragment newInstance() {
         HotSpotFragment fragment = new HotSpotFragment();
@@ -965,9 +967,10 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
 
     @Override
     public void showInstructionPopup() {
-        View view = LayoutInflater.from(context).inflate(R.layout.rc_item_friend, null);
+        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.hotspot_popup_first_start, null);
         preparePopupLayout(view);
-        new MaterialDialog.Builder(context)
+        popup = new MaterialDialog.Builder(context)
                 .customView(view, true)
                 .show();
     }
@@ -977,14 +980,18 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
             rootView.findViewById(driverType.getButtonResId()).setOnClickListener(view -> {
                 for (Const.DriverType driverTypeDeselect : Const.DriverType.values()) {
                     rootView.findViewById(driverTypeDeselect.getButtonResId()).setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+                    ((MaterialFancyButton)rootView.findViewById(driverTypeDeselect.getButtonResId())).setTextColor(ContextCompat.getColor(context, R.color.filters_buttons));
                 }
                 view.setBackgroundColor(ContextCompat.getColor(context, R.color.filters_buttons));
+                ((MaterialFancyButton)view).setTextColor(ContextCompat.getColor(context, R.color.white));
                 selectedDriverType = driverType;
             });
         }
         rootView.findViewById(R.id.agree_button)
-                .setOnClickListener(view ->
-                        Log.d(context.getClass().getSimpleName(), "User agreed to the terms and is using " + selectedDriverType.getName() + "."));
+                .setOnClickListener(view -> {
+                    popup.dismiss();
+                    Log.d(context.getClass().getSimpleName(), "User agreed to the terms and is using " + selectedDriverType.getName() + ".");
+                });
     }
 
     private class ErrorHandler implements Consumer<Throwable> {
