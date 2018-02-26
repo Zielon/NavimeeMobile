@@ -598,7 +598,6 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         route(latLngCurrent, new LatLng(notificationEvent.getLat(), notificationEvent.getLng()), notificationEvent.getName(), notificationEvent.getCount());
     }
 
-
     @Override
     public void onPause() {
         super.onPause();
@@ -971,7 +970,8 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         View view = inflater.inflate(R.layout.hotspot_popup_first_start, null);
         preparePopupLayout(view);
         popup = new MaterialDialog.Builder(context)
-                .customView(view, true)
+                .customView(view, false)
+                .backgroundColor(ContextCompat.getColor(context, R.color.transparent))
                 .show();
     }
 
@@ -991,7 +991,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                 .setOnClickListener(view -> {
                     popup.dismiss();
                     mHotspotPresenter.saveUserCompany(selectedDriverType.getName());
-                    Log.d(context.getClass().getSimpleName(), "User agreed to the terms and is using " + selectedDriverType.getName() + ".");
+                    Log.d(context.getClass().getSimpleName(), "User agreed to the terms and is using " + selectedDriverType != null ? selectedDriverType.getName() : "no one" + ".");
                 });
     }
 

@@ -1,5 +1,7 @@
 package org.pl.android.drively.ui.base;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.util.Const;
 
@@ -14,7 +16,6 @@ public class BaseTabPresenter<T extends TabMvpView> extends BasePresenter<T>  {
     }
 
     private void verifyFirstStartPopupNecessity() {
-        //mDataManager.getPreferencesHelper().clear();
         String sharedPreferenceConst = getMvpView().getClass().getSimpleName() + Const.FIRST_START_POPUP_SUFFIX;
         boolean wasFirstStartPopup = mDataManager.getPreferencesHelper()
                 .getValue(sharedPreferenceConst);
