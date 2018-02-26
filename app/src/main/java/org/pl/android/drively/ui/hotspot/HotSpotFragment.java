@@ -969,7 +969,8 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         View view = inflater.inflate(R.layout.hotspot_popup_first_start, null);
         preparePopupLayout(view);
         popup = new MaterialDialog.Builder(context)
-                .customView(view, true)
+                .customView(view, false)
+                .backgroundColor(ContextCompat.getColor(context, R.color.transparent))
                 .show();
     }
 
@@ -988,7 +989,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         rootView.findViewById(R.id.agree_button)
                 .setOnClickListener(view -> {
                     popup.dismiss();
-                    Log.d(context.getClass().getSimpleName(), "User agreed to the terms and is using " + selectedDriverType.getName() + ".");
+                    Log.d(context.getClass().getSimpleName(), "User agreed to the terms and is using " + selectedDriverType != null ? selectedDriverType.getName() : "no one" + ".");
                 });
     }
 
