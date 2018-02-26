@@ -1,5 +1,9 @@
 package org.pl.android.drively.ui.main;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+
 import com.google.firebase.auth.FirebaseUser;
 
 import org.pl.android.drively.data.DataManager;
@@ -42,10 +46,21 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
         return mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
     }
 
+    public void checkVersion(){
+        try {
+            PackageInfo packageInfo = ((Context)getMvpView()).getPackageManager().getPackageInfo(((Context)getMvpView()).getPackageName(), 0);
+            int currentVersion = packageInfo.versionCode;
+            int oldVersion = mDataManager.getPreferencesHelper().getAppVersion();
+            if(oldVersion == -1 || currentVersion != oldVersion) {
+                mDataManager.getFirebaseService().getFirebaseAuth().signOut();
+                mDataManager.getPreferencesHelper().clear();
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void setAppIntroShowed() {
         mDataManager.getPreferencesHelper().setValue(Const.FIRST_START, false);
     }
-
-
 }
