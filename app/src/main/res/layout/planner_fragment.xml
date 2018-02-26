@@ -33,7 +33,7 @@
         </LinearLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
+    <org.pl.android.drively.ui.planner.CustomViewPager
         android:id="@+id/viewpager_planner"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

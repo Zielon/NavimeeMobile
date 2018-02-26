@@ -594,8 +594,6 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         route(latLngCurrent, new LatLng(notificationEvent.getLat(), notificationEvent.getLng()), notificationEvent.getName(), notificationEvent.getCount());
     }
 
-    ;
-
 
     @Override
     public void onPause() {
