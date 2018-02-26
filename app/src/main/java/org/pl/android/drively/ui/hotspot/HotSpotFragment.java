@@ -990,6 +990,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         rootView.findViewById(R.id.agree_button)
                 .setOnClickListener(view -> {
                     popup.dismiss();
+                    mHotspotPresenter.saveUserCompany(selectedDriverType.getName());
                     Log.d(context.getClass().getSimpleName(), "User agreed to the terms and is using " + selectedDriverType.getName() + ".");
                 });
     }

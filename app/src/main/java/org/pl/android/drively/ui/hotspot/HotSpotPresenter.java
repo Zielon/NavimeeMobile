@@ -201,4 +201,8 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
             e.printStackTrace();
         }
     }
+
+    public void saveUserCompany(String name) {
+        mDataManager.getPreferencesHelper().setValue(Const.USER_COMPANY, name);
+    }
 }

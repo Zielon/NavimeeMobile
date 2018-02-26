@@ -14,7 +14,7 @@ public class BaseTabPresenter<T extends TabMvpView> extends BasePresenter<T>  {
     }
 
     private void verifyFirstStartPopupNecessity() {
-        mDataManager.getPreferencesHelper().clear();
+        //mDataManager.getPreferencesHelper().clear();
         String sharedPreferenceConst = getMvpView().getClass().getSimpleName() + Const.FIRST_START_POPUP_SUFFIX;
         boolean wasFirstStartPopup = mDataManager.getPreferencesHelper()
                 .getValue(sharedPreferenceConst);
