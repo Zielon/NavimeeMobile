@@ -28,7 +28,7 @@ android {
 
     defaultConfig {
         applicationId 'org.pl.android.drively'
-        minSdkVersion 16
+        minSdkVersion 18
         targetSdkVersion 25
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         versionCode 1007
@@ -39,6 +39,7 @@ android {
 
     packagingOptions {
         exclude 'META-INF/rxjava.properties'
+        exclude 'META-INF/LICENSE'
     }
 
     signingConfigs {
@@ -113,7 +114,7 @@ play {
 }
 
 dependencies {
-    final PLAY_SERVICES_VERSION = '11.6.0'
+    final PLAY_SERVICES_VERSION = '11.8.0'
     final SUPPORT_LIBRARY_VERSION = '25.3.1'
     final RETROFIT_VERSION = '2.3.0'
     final DAGGER_VERSION = '2.5'
@@ -122,11 +123,9 @@ dependencies {
     final ESPRESSO_VERSION = '3.0.0'
     final RUNNER_VERSION = '1.0.0'
     final BUTTERKNIFE_VERSION = '8.4.0'
-    final AUTO_VALUE_VERSION = '1.3'
-    final AUTO_VALUE_GSON_VERSION = '0.4.2'
     final APP_INTRO_VERSION = 'v4.2.2'
     final BOTTOM_BAR_VERSION = '2.3.1'
-    final FIREBASE_VERSION = '11.6.0'
+    final FIREBASE_VERSION = '11.8.0'
     final EVENT_BUS_VERSION = '3.1.1'
 
     def daggerCompiler = "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
@@ -187,6 +186,8 @@ dependencies {
 
     // utils
     compile 'com.github.barteksc:android-pdf-viewer:2.8.2'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.3'
+    compile 'net.sourceforge.streamsupport:streamsupport:1.6.0'
 
     //gui
     compile 'agency.tango.android:avatar-view:0.0.2'
@@ -194,7 +195,7 @@ dependencies {
     compile "com.github.apl-devs:appintro:$APP_INTRO_VERSION"
     compile "com.roughike:bottom-bar:$BOTTOM_BAR_VERSION"
     compile 'com.fnp:material-preferences:0.1.4'
-    compile 'devs.mulham.horizontalcalendar:horizontalcalendar:1.2.0'
+    compile 'devs.mulham.horizontalcalendar:horizontalcalendar:1.3.4'
     compile 'com.ethanhua:skeleton:1.0.0'
     compile 'com.allattentionhere:fabulousfilter:0.0.4'
     compile 'com.afollestad.material-dialogs:core:0.9.6.0'
@@ -206,6 +207,7 @@ dependencies {
     }
     compile 'com.yarolegovich:lovely-dialog:1.0.7'
     compile 'de.hdodenhof:circleimageview:2.2.0'
+    compile 'com.rilixtech:materialfancybuttons:1.8.7'
 
     //google map
     compile 'com.github.jd-alexander:library:1.1.0'

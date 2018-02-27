@@ -16,6 +16,7 @@
         android:paddingTop="6dp"
         android:layout_above="@+id/bottomBar"
         android:scrollbars="vertical" /> -->
+
     <FrameLayout
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"

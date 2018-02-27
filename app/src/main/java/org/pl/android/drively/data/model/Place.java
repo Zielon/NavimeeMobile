@@ -6,26 +6,24 @@ import com.google.firebase.firestore.IgnoreExtraProperties;
 
 import java.io.Serializable;
 
-/**
- * Created by Wojtek on 2017-10-22.
- */
-
 @IgnoreExtraProperties
 public class Place implements Serializable {
-    GeoPoint geoPoint;
     private String id;
     private String address;
     private String name;
     private String category;
     private String city;
+    double lat;
+    double lon;
 
-    public Place(String id, String address, String name, GeoPoint geoPoint, String city, String category) {
+    public Place(String id, String address, String name, String category, String city, double lat, double lon) {
         this.id = id;
         this.address = address;
         this.name = name;
-        this.geoPoint = geoPoint;
-        this.city = city;
         this.category = category;
+        this.city = city;
+        this.lat = lat;
+        this.lon = lon;
     }
 
     public Place() {
@@ -63,12 +61,20 @@ public class Place implements Serializable {
         this.address = address;
     }
 
-    public GeoPoint getGeoPoint() {
-        return geoPoint;
+    public double getLat() {
+        return lat;
     }
 
-    public void setGeoPoint(GeoPoint geoPoint) {
-        this.geoPoint = geoPoint;
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLon() {
+        return lon;
+    }
+
+    public void setLon(double lon) {
+        this.lon = lon;
     }
 
     public String getCategory() {

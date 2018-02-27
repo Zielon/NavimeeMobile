@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="?attr/actionBarSize"
+    android:paddingTop="5dp"
+    tools:context="org.pl.android.drively.ui.chat.ChatFragment">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar_layout_planner"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:elevation="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tab_layout_planner"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/primary_dark"
+                android:minHeight="?attr/actionBarSize"
+                app:tabGravity="fill"
+                app:tabIndicatorColor="@color/white"
+                app:tabIndicatorHeight="3dp"
+                app:tabMode="fixed" />
+
+        </LinearLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <org.pl.android.drively.ui.planner.CustomViewPager
+        android:id="@+id/viewpager_planner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:tabIndicatorColor="@color/colorAccent" />
+
+</android.support.design.widget.CoordinatorLayout>

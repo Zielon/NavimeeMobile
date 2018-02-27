@@ -6,20 +6,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -27,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.allattentionhere.fabulousfilter.AAH_FabulousFragment;
 import com.directions.route.Route;
@@ -49,6 +55,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -61,6 +68,7 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
+import com.rilixtech.materialfancybutton.MaterialFancyButton;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
 import org.greenrobot.eventbus.EventBus;
@@ -68,22 +76,27 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.pl.android.drively.BuildConfig;
 import org.pl.android.drively.R;
+import org.pl.android.drively.data.model.CityNotAvailable;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.FourSquarePlace;
+import org.pl.android.drively.data.model.eventbus.CompanySelectedEvent;
 import org.pl.android.drively.data.model.eventbus.NotificationEvent;
 import org.pl.android.drively.data.model.maps.ClusterItemGoogleMap;
+import org.pl.android.drively.service.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BaseActivity;
+import org.pl.android.drively.ui.base.tab.BaseTabFragment;
 import org.pl.android.drively.ui.main.MainActivity;
-import org.pl.android.drively.util.AddressToStringFunc;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.DetectedActivityToString;
 import org.pl.android.drively.util.DisplayTextOnViewAction;
+import org.pl.android.drively.util.FirebasePaths;
 import org.pl.android.drively.util.MultiDrawable;
 import org.pl.android.drively.util.ToMostProbableActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -103,7 +116,7 @@ import timber.log.Timber;
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static org.pl.android.drively.util.RxUtil.dispose;
 
-public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapLongClickListener,
+public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapLongClickListener,
         AdapterView.OnItemSelectedListener, RoutingListener, GeoQueryEventListener, AAH_FabulousFragment.Callbacks {
 
     private static final int[] COLORS = new int[]{R.color.primary_dark, R.color.primary, R.color.primary_light, R.color.accent, R.color.primary_dark_material_light};
@@ -134,8 +147,8 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     RxPermissions rxPermissions;
     LatLng latLngCurrent, latLngEnd;
     String sEventName, sEventCount;
-    GeoFire geoFire;
-    GeoQuery geoQuery;
+    GeoFire geoFire, geoFireUsersLocation;
+    GeoQuery geoQuery, geoQueryUsersLocation;
     MyFabFragment dialogFrag;
     boolean isFirstAfterPermissionGranted = true;
     int durationInSec, distanceValue;
@@ -145,6 +158,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     double lngNotification;
     boolean isFromNotification = false;
     String notificationName, notificationCount;
+    boolean isCityChecked = false;
     @Inject
     HotSpotPresenter mHotspotPresenter;
     private GoogleMap googleMap;
@@ -152,7 +166,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     private Observable<Location> locationUpdatesObservable;
     private Observable<Location> lastKnownLocationObservable;
     private Observable<ActivityRecognitionResult> activityObservable;
-    private Observable<String> addressObservable;
+    private Observable<Address> addressObservable;
     private Disposable lastKnownLocationDisposable;
     private Disposable updatableLocationDisposable;
     private Disposable activityDisposable;
@@ -160,7 +174,10 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     private List<Polyline> polylines;
     private ClusterManager<ClusterItemGoogleMap> mClusterManager;
     private HashMap<String, ClusterItemGoogleMap> eventsOnMap = new HashMap<>();
+    private HashMap<String, Marker> usersMarkers = new HashMap<>();
     private Context context;
+    private Const.DriverType selectedDriverType;
+    private MaterialDialog popup;
 
     public static HotSpotFragment newInstance() {
         HotSpotFragment fragment = new HotSpotFragment();
@@ -174,7 +191,10 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
         if (actionBar != null && actionBar.getCustomView() != null) {
             TextView text = (TextView) actionBar.getCustomView().findViewById(R.id.app_bar_text);
-            text.setText(getResources().getString(R.string.hotspot));
+            text.setText("");
+        }
+        if (mHotspotPresenter.checkLogin() != null) {
+            getActivity().startService(new Intent(getActivity(), GeolocationUpdateService.class));
         }
 
         initGeolocation();
@@ -377,7 +397,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                 .flatMap(new Function<Location, Observable<List<Address>>>() {
                     @Override
                     public Observable<List<Address>> apply(Location location) {
-                        return locationProvider.getReverseGeocodeObservable(location.getLatitude(), location.getLongitude(), 1);
+                        return locationProvider.getReverseGeocodeObservable(Locale.ENGLISH, location.getLatitude(), location.getLongitude(), 1);
                     }
                 })
                 .map(new Function<List<Address>, Address>() {
@@ -386,11 +406,12 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                         return addresses != null && !addresses.isEmpty() ? addresses.get(0) : null;
                     }
                 })
-                .map(new AddressToStringFunc())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
         geoFire = new GeoFire(mHotspotPresenter.getHotSpotDatabaseRefernce());
+        geoFireUsersLocation = new GeoFire(mHotspotPresenter.getUsersLocationDatabaseRefernce());
         this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radius);
+        this.geoQueryUsersLocation = this.geoFireUsersLocation.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radius);
     }
 
     protected void onLocationPermissionGranted() {
@@ -422,7 +443,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                         Timber.d("ON LOCATION UPDATE");
                         mHotspotPresenter.setLastLocationLatLng(latLng);
                         if (isFirstAfterPermissionGranted) {
-                            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 14);
+                            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 12);
                             googleMap.moveCamera(yourLocation);
                             isFirstAfterPermissionGranted = false;
                         } else {
@@ -436,6 +457,8 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                         }
                         geoQuery = geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
                         geoQuery.addGeoQueryEventListener(HotSpotFragment.this);
+                        geoQueryUsersLocation = geoFireUsersLocation.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
+                        geoQueryUsersLocation.addGeoQueryEventListener(HotSpotFragment.this);
                         eventsOnMap.clear();
                         mClusterManager.clearItems();
 
@@ -448,12 +471,13 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                 .subscribe(new DisplayTextOnViewAction(), new ErrorHandler());
 
         addressDisposable = addressObservable
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(String address) throws Exception {
-                        mHotspotPresenter.setLastLocation(address);
-                        Timber.d("address " + address);
-                    }
+                .subscribe(address -> {
+                    mHotspotPresenter.setLastLocation(address.getLocality());
+                        if(!isCityChecked) {
+                            mHotspotPresenter.checkAvailableCities(address.getCountryName(), address.getLocality());
+                            isCityChecked = true;
+                        }
+                    Timber.d("address " + address);
                 }, new ErrorHandler());
 
     }
@@ -466,11 +490,11 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         mMapView.onResume();
         try {
             this.geoQuery.addGeoQueryEventListener(this);
+            this.geoQueryUsersLocation.addGeoQueryEventListener(this);
         } catch (Exception e) {
 
         }
     }
-
 
 
     @Override
@@ -487,10 +511,9 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                                 @Override
                                 public void onMapReady(GoogleMap mMap) {
                                     googleMap = mMap;
-                                   /* boolean success = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style));
 
-                                    if (!success)
-                                        Timber.i("Map style was not loaded");*/
+                                    // MAP STYLES
+                                    googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style));
 
                                     // For showing a move to my location button
                                     googleMap.setMyLocationEnabled(true);
@@ -575,8 +598,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(NotificationEvent notificationEvent) {
         route(latLngCurrent, new LatLng(notificationEvent.getLat(), notificationEvent.getLng()), notificationEvent.getName(), notificationEvent.getCount());
-    };
-
+    }
 
     @Override
     public void onPause() {
@@ -602,6 +624,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         dispose(activityDisposable);
         dispose(addressDisposable);
         this.geoQuery.removeAllListeners();
+        this.geoQueryUsersLocation.removeAllListeners();
     }
 
     @Override
@@ -708,8 +731,8 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     @Override
     public void showEventOnMap(Event event) {
         Timber.d(event.getTitle());
-        if (!eventsOnMap.containsKey(event.getId()) && event.getPlace() != null && event.getPlace().getGeoPoint() != null) {
-            ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(), new LatLng(event.getPlace().getGeoPoint().getLatitude(), event.getPlace().getGeoPoint().getLongitude()), event.getTitle(), String.valueOf(event.getRank()), event.getHotspotType(), R.drawable.hotspot_24dp);
+        if (!eventsOnMap.containsKey(event.getId()) && event.getPlace() != null) {
+            ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(), new LatLng(event.getPlace().getLat(), event.getPlace().getLon()), event.getTitle(), String.valueOf(event.getRank()), event.getHotspotType(), R.drawable.hotspot_24dp);
             eventsOnMap.put(event.getId(), clusterItemGoogleMap);
             if (mClusterManager != null)
                 mClusterManager.addItem(clusterItemGoogleMap);
@@ -755,6 +778,20 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         }
     }
 
+    @Override
+    public void showNotAvailableCity(CityNotAvailable city) {
+        MaterialDialog dialogAlert = new MaterialDialog.Builder(getActivity())
+                .title(R.string.not_available_in_city)
+                .backgroundColor(getResources().getColor(R.color.primary_dark))
+                .contentColor(getResources().getColor(R.color.white))
+                .positiveText(R.string.let_us_know)
+                .onPositive((MaterialDialog dialog, DialogAction which) -> {
+                    mHotspotPresenter.sendMessageWhenCityNotAvailable(city);
+                })
+                .build();
+        dialogAlert.show();
+    }
+
 
     protected GoogleMap getMap() {
         return googleMap;
@@ -763,7 +800,27 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     @Override
     public void onKeyEntered(String key, GeoLocation location) {
         Timber.i(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
-        mHotspotPresenter.loadHotSpotPlace(key);
+        if (key.contains(FirebasePaths.USER_LOCATION) && !key.contains(mHotspotPresenter.getUid())) {
+            Timber.i("USER LOCATION");
+            if (!usersMarkers.containsKey(key)) {
+                MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude));
+                if(key.contains(Const.DriverType.UBER.getName())) {
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_directions_car_black_24dp));
+                } else if(key.contains(Const.DriverType.ITAXI.getName())) {
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_float_add_group));
+                } else if(key.contains(Const.DriverType.MY_TAXI.getName())) {
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_add_friend));
+                } else if(key.contains(Const.DriverType.TAXI.getName())) {
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_add_circle_outline_white_24dp));
+                } else {
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_float_add_group));
+                }
+                Marker marker = googleMap.addMarker(markerOptions);
+                usersMarkers.put(key, marker);
+            }
+        } else {
+            mHotspotPresenter.loadHotSpotPlace(key);
+        }
     }
 
     @Override
@@ -772,7 +829,10 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         if (eventsOnMap.containsKey(key)) {
             mClusterManager.removeItem((ClusterItemGoogleMap) eventsOnMap.get(key));
             eventsOnMap.remove(key);
+        } else if (key.contains(FirebasePaths.USER_LOCATION)) {
+            usersMarkers.remove(key);
         }
+
     }
 
     @Override
@@ -784,21 +844,63 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
             mClusterManager.removeItem(eventsOnMap.get(key));
             eventsOnMap.get(key).setPosition(new LatLng(location.latitude, location.longitude));
             mClusterManager.addItem(eventsOnMap.get(key));
+        } else if (key.contains(FirebasePaths.USER_LOCATION) && !key.contains(mHotspotPresenter.getUid())) {
+            Timber.i("USER LOCATION");
+            if (usersMarkers.containsKey(key)) {
+                animateMarker(usersMarkers.get(key), new LatLng(location.latitude, location.longitude), false);
+            }
         }
     }
 
     @Override
     public void onGeoQueryReady() {
         Timber.i("All initial data has been loaded and events have been fired!");
-      /*  if(mClusterManager != null) {
-            Timber.i("Cluster size" +mClusterManager.getAlgorithm().getItems().size());
+        if (mClusterManager != null) {
+            Timber.i("Cluster size" + mClusterManager.getAlgorithm().getItems().size());
             mClusterManager.cluster();
-        }*/
+        }
     }
 
     @Override
     public void onGeoQueryError(DatabaseError error) {
         Timber.e("There was an error with this query: " + error);
+    }
+
+    public void animateMarker(final Marker marker, final LatLng toPosition,
+                              final boolean hideMarker) {
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        Projection proj = googleMap.getProjection();
+        Point startPoint = proj.toScreenLocation(marker.getPosition());
+        final LatLng startLatLng = proj.fromScreenLocation(startPoint);
+        final long duration = 500;
+
+        final Interpolator interpolator = new LinearInterpolator();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                float t = interpolator.getInterpolation((float) elapsed
+                        / duration);
+                double lng = t * toPosition.longitude + (1 - t)
+                        * startLatLng.longitude;
+                double lat = t * toPosition.latitude + (1 - t)
+                        * startLatLng.latitude;
+                marker.setPosition(new LatLng(lat, lng));
+
+                if (t < 1.0) {
+                    // Post again 16ms later.
+                    handler.postDelayed(this, 16);
+                } else {
+                    if (hideMarker) {
+                        marker.setVisible(false);
+                    } else {
+                        marker.setVisible(true);
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -868,14 +970,60 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                     .build();
             routing.execute();
         }
+    }
 
+    @Override
+    public void showInstructionPopup() {
+        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.hotspot_popup_instruction, null);
+        preparePopupLayout(view);
+        popup = new MaterialDialog.Builder(context)
+                .customView(view, false)
+                .backgroundColor(ContextCompat.getColor(context, R.color.dark_transparent))
+                .show();
+    }
 
+    private void preparePopupLayout(View rootView) {
+        for (Const.DriverType driverType : Const.DriverType.values()) {
+            rootView.findViewById(driverType.getButtonResId()).setOnClickListener(view -> {
+                for (Const.DriverType driverTypeDeselect : Const.DriverType.values()) {
+                    rootView.findViewById(driverTypeDeselect.getButtonResId()).setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+                    ((MaterialFancyButton) rootView.findViewById(driverTypeDeselect.getButtonResId())).setTextColor(ContextCompat.getColor(context, R.color.filters_buttons));
+                }
+                view.setBackgroundColor(ContextCompat.getColor(context, R.color.filters_buttons));
+                ((MaterialFancyButton) view).setTextColor(ContextCompat.getColor(context, R.color.white));
+                selectedDriverType = driverType;
+                rootView.findViewById(R.id.brand_error).setVisibility(View.GONE);
+            });
+        }
+        rootView.findViewById(R.id.agree_button)
+                .setOnClickListener(view -> {
+                    if (selectedDriverType == null) {
+                        rootView.findViewById(R.id.brand_error).setVisibility(View.VISIBLE);
+                    } else {
+                        popup.dismiss();
+                        mHotspotPresenter.saveUserCompany(selectedDriverType.getName());
+                        EventBus.getDefault().post(new CompanySelectedEvent());
+                        Log.d(context.getClass().getSimpleName(), "User agreed to the terms and is using " + selectedDriverType != null ? selectedDriverType.getName() : "no one" + ".");
+                        showSecondPopup();
+                    }
+                });
+        rootView.findViewById(R.id.dismiss_dialog).setOnClickListener(view -> popup.dismiss());
+    }
+
+    private void showSecondPopup() {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.hotspot_popup_instruction_second, null);
+        view.findViewById(R.id.popup_hotspot_second_agree_button).setOnClickListener(s -> popup.dismiss());
+        popup = new MaterialDialog.Builder(context)
+                .customView(view, false)
+                .backgroundColor(ContextCompat.getColor(context, R.color.transparent))
+                .show();
     }
 
     private class ErrorHandler implements Consumer<Throwable> {
         @Override
         public void accept(Throwable throwable) {
-            Toast.makeText(getApplicationContext(), "Error occurred.", Toast.LENGTH_SHORT).show();
             Log.d("MainActivity", "Error occurred", throwable);
         }
     }
@@ -906,7 +1054,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         protected void onBeforeClusterItemRendered(ClusterItemGoogleMap clusterItemGoogleMap, MarkerOptions markerOptions) {
             // Draw a single person.
             // Set the info window to show their name.
-            mImageView.setImageResource(clusterItemGoogleMap.profilePhoto);
+            mImageView.setImageResource(clusterItemGoogleMap.getProfilePhoto());
             Bitmap icon = mIconGenerator.makeIcon();
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
         }
@@ -924,7 +1072,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                 for (ClusterItemGoogleMap p : cluster.getItems()) {
                     // Draw 4 at most.
                     if (profilePhotos.size() == 4) break;
-                    Drawable drawable = getResources().getDrawable(p.profilePhoto);
+                    Drawable drawable = getResources().getDrawable(p.getProfilePhoto());
                     drawable.setBounds(0, 0, width, height);
                     profilePhotos.add(drawable);
                 }

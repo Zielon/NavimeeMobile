@@ -10,12 +10,12 @@ import org.pl.android.drively.util.Const;
  */
 
 public class ClusterItemGoogleMap implements ClusterItem {
-    public LatLng mPosition;
-    public int profilePhoto;
-    public String name;
-    public String count;
-    public Const.HotSpotType type;
-    String id;
+    private LatLng mPosition;
+    private int profilePhoto;
+    private String name;
+    private String count;
+    private Const.HotSpotType type;
+    private String id;
 
     public ClusterItemGoogleMap(String id, LatLng position, String name, String count, Const.HotSpotType type, int pictureResource) {
         this.id = id;

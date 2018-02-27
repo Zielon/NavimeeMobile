@@ -3,15 +3,24 @@ package org.pl.android.drively.ui.hotspot;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.ListenerRegistration;
 
+import org.pl.android.drively.contracts.repositories.UsersRepository;
 import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.data.model.CityAvailable;
+import org.pl.android.drively.data.model.CityNotAvailable;
 import org.pl.android.drively.data.model.Event;
+import org.pl.android.drively.data.model.Feedback;
 import org.pl.android.drively.data.model.FourSquarePlace;
-import org.pl.android.drively.ui.base.BasePresenter;
+import org.pl.android.drively.ui.base.tab.BaseTabPresenter;
 import org.pl.android.drively.util.Const;
+import org.pl.android.drively.util.FirebasePaths;
 import org.pl.android.drively.util.ViewUtil;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -21,19 +30,20 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
+import static org.pl.android.drively.util.ReflectionUtil.nameof;
 
+public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
 
-    private final DataManager mDataManager;
-
+    private final UsersRepository usersRepository;
     private ListenerRegistration mListener;
 
     private Set<Const.HotSpotType> filterList = new HashSet<>();
     private Set<String> hotspotKeyList = new HashSet<>();
 
     @Inject
-    public HotSpotPresenter(DataManager dataManager) {
-        mDataManager = dataManager;
+    public HotSpotPresenter(DataManager dataManager, UsersRepository usersRepository) {
+        this.mDataManager = dataManager;
+        this.usersRepository = usersRepository;
     }
 
     public FirebaseUser checkLogin() {
@@ -61,53 +71,68 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
 
 
     public DatabaseReference getHotSpotDatabaseRefernce() {
-        return mDataManager.getFirebaseService().getFirebaseDatabase().getReference("HOTSPOT_CURRENT");
+        return mDataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.HOTSPOT_CURRENT);
     }
 
+
+    public DatabaseReference getUsersLocationDatabaseRefernce() {
+        return mDataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.USER_LOCATION);
+    }
+
+
     public String getUid() {
-        return mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+        return mDataManager.getPreferencesHelper().getUserId();
     }
 
     public void loadHotSpotPlace(String key) {
         hotspotKeyList.add(key);
-        mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection("HOTSPOT").document(key).addSnapshotListener((snapshot, e) -> {
-            if (e != null) {
-                Timber.e("Listen failed.", e);
-                return;
-            }
-            hotspotKeyList.remove(key);
-            if (snapshot != null && snapshot.exists()) {
-                // Timber.d("Current data: " + snapshot.getData());
-                if (snapshot.get("hotspotType").equals(Const.HotSpotType.EVENT.name()) && (filterList.contains(Const.HotSpotType.EVENT) || filterList.isEmpty())) {
-                    if (getMvpView() != null) {
-                        getMvpView().showEventOnMap(snapshot.toObject(Event.class));
+        try {
+            final String hotspotTypeFilter = nameof(Event.class, "hotspotType");
+            mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.HOTSPOT).document(key).addSnapshotListener((snapshot, e) -> {
+                if (e != null) {
+                    Timber.e("Listen failed.", e);
+                    return;
+                }
+                hotspotKeyList.remove(key);
+                if (snapshot != null && snapshot.exists()) {
+                    // Timber.d("Current data: " + snapshot.getData());
+                    if (snapshot.get(hotspotTypeFilter).equals(Const.HotSpotType.EVENT.name()) && (filterList.contains(Const.HotSpotType.EVENT) || filterList.isEmpty())) {
+                        if (getMvpView() != null) {
+                            getMvpView().showEventOnMap(snapshot.toObject(Event.class));
+                        }
+                    } else if (snapshot.get(hotspotTypeFilter).equals(Const.HotSpotType.FOURSQUARE_PLACE.name()) && (filterList.contains(Const.HotSpotType.FOURSQUARE_PLACE) || filterList.isEmpty())) {
+                        if (getMvpView() != null) {
+                            getMvpView().showFoursquareOnMap(snapshot.toObject(FourSquarePlace.class));
+                        }
                     }
-                } else if (snapshot.get("hotspotType").equals(Const.HotSpotType.FOURSQUARE_PLACE.name()) && (filterList.contains(Const.HotSpotType.FOURSQUARE_PLACE) || filterList.isEmpty())) {
-                    if (getMvpView() != null) {
-                        getMvpView().showFoursquareOnMap(snapshot.toObject(FourSquarePlace.class));
-                    }
+
                 }
 
-            }
-
-            if (hotspotKeyList.isEmpty()) {
-                if (getMvpView() != null) {
-                    getMvpView().clusterMap();
+                if (hotspotKeyList.isEmpty()) {
+                    if (getMvpView() != null) {
+                        getMvpView().clusterMap();
+                    }
                 }
-            }
-        });
+            });
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setRouteFromDriver(String locationAddress, String locationName, int durationInSec, int distanceValue, LatLng latLng) {
-        HashMap<String, Object> feedBackObject = new HashMap<>();
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        feedBackObject.put("userId", userId);
-        feedBackObject.put("locationAddress", locationAddress);
-        feedBackObject.put("locationName", locationName);
-        feedBackObject.put("durationInSec", durationInSec);
-        feedBackObject.put("distance", distanceValue);
-        feedBackObject.put("geoPoint", latLng);
-        mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child("FEEDBACK").push().setValue(feedBackObject);
+        Feedback feedback = new Feedback();
+        feedback.setUserId(userId);
+        feedback.setLocationAddress(locationAddress);
+        feedback.setLocationName(locationName);
+        feedback.setDurationInSec(durationInSec);
+        feedback.setDistanceValue(distanceValue);
+        feedback.setGeoPoint(latLng);
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+        String formattedDate = df.format(c);
+        feedback.setDate(formattedDate);
+        mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child(FirebasePaths.FEEDBACK).push().setValue(feedback);
     }
 
     public double getLastLat() {
@@ -133,7 +158,7 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
     public void sendFeedbackToServer(String feedbackId, int feedbackAnswer) {
         Map<String, Object> feedbackAnswerMap = new HashMap<>();
         feedbackAnswerMap.put("feedbackAnswer", feedbackAnswer);
-        mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child("FEEDBACK").child(feedbackId).updateChildren(feedbackAnswerMap);
+        mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child(FirebasePaths.FEEDBACK).child(feedbackId).updateChildren(feedbackAnswerMap);
     }
 
     public void addItemToFilterList(Const.HotSpotType item) {
@@ -142,5 +167,60 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
 
     public void clearFilterList() {
         filterList.clear();
+    }
+
+    public void sendMessageWhenCityNotAvailable(CityNotAvailable city) {
+        DocumentReference cityRef = mDataManager.getFirebaseService().getFirebaseFirestore()
+                .collection(FirebasePaths.NOT_AVAILABLE_CITIES)
+                .document(city.getCity());
+
+        cityRef.get().addOnSuccessListener(missingCity ->{
+            if(missingCity.exists()){
+                CityNotAvailable cityNotAvailable = missingCity.toObject(CityNotAvailable.class);
+                cityRef.update("count", cityNotAvailable.getCount() + 1);
+            }else
+                cityRef.set(city);
+        });
+    }
+
+    public void checkAvailableCities(String countryName, String city) {
+        CityNotAvailable cityNotAvailable = new CityNotAvailable();
+        try {
+            final String citiesField = nameof(CityAvailable.class, "cities");
+
+            usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "country", countryName.toUpperCase());
+            usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "city", city.toUpperCase());
+
+            mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.AVAILABLE_CITIES)
+                    .document(countryName.toUpperCase())
+                    .collection(city.toUpperCase()).get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            if(task.getResult().getDocuments().size() == 0) {
+                                if (getMvpView() != null) {
+                                    cityNotAvailable.setCity(city);
+                                    cityNotAvailable.setCountryName(countryName);
+                                    getMvpView().showNotAvailableCity(cityNotAvailable);
+                                }
+                            }
+                        } else {
+                            if (getMvpView() != null) {
+                                cityNotAvailable.setCity(city);
+                                cityNotAvailable.setCountryName(countryName);
+                                getMvpView().showNotAvailableCity(cityNotAvailable);
+                            }
+                        }
+                    });
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveUserCompany(String name) {
+        mDataManager.getPreferencesHelper().setValue(Const.USER_COMPANY, name);
+    }
+
+    public String getUserCompany() {
+        return mDataManager.getPreferencesHelper().getValueString(Const.USER_COMPANY);
     }
 }

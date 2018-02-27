@@ -4,10 +4,6 @@ import org.pl.android.drively.util.Const;
 
 import java.io.Serializable;
 
-/**
- * Created by Wojtek on 2017-12-12.
- */
-
 public class FourSquarePlace implements Serializable {
     private String id;
     private String name;

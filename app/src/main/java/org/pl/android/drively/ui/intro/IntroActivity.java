@@ -59,7 +59,6 @@ public class IntroActivity extends AppIntro2 {
         addSlide(AppIntroFragment.newInstance(fifthFragment));
 
 
-
         // OPTIONAL METHODS
         // Override bar/separator color.
         setBarColor(Color.parseColor("#242832"));

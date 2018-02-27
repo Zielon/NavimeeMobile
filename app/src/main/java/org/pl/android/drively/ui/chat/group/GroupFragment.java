@@ -28,6 +28,7 @@ import com.yarolegovich.lovelydialog.LovelyInfoDialog;
 import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 
 import org.pl.android.drively.R;
+import org.pl.android.drively.data.model.RoomMember;
 import org.pl.android.drively.data.model.chat.Group;
 import org.pl.android.drively.data.model.chat.ListFriend;
 import org.pl.android.drively.data.model.chat.Room;
@@ -84,6 +85,9 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mGroupPresenter.attachView(this);
         ButterKnife.bind(this, layout);
 
+        // TEMPORARY SOLUTION
+        fabGroupButton.setVisibility(View.INVISIBLE);
+
         listGroup = GroupDB.getInstance(getContext()).getListGroups();
         recyclerListGroups = (RecyclerView) layout.findViewById(R.id.recycleListGroup);
         mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeRefreshLayout);
@@ -131,12 +135,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void setGroupList(List<String> rooms) {
-        for (String room : rooms) {
-            Group newGroup = new Group();
-            newGroup.id = room;
-            listGroup.add(newGroup);
-        }
-        getGroupInfo(0);
+        mGroupPresenter.getGroupInfo(rooms);
     }
 
     @Override
@@ -157,29 +156,24 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         }
     }
 
-    private void getGroupInfo(final int indexGroup) {
-        Collections.sort(listGroup, (a, b) -> ((Integer) a.id.length()).compareTo(b.id.length()));
-        if (indexGroup == listGroup.size()) {
-            adapter.notifyDataSetChanged();
-            mSwipeRefreshLayout.setRefreshing(false);
-        } else {
-            mGroupPresenter.getGroupInfo(indexGroup, listGroup.get(indexGroup).id);
-        }
-    }
-
     @SuppressLint("TimberArgCount")
     @Override
-    public void setGroupInfo(int groupIndex, Room room) {
-        for (String member : room.member) {
-            listGroup.get(groupIndex).member.add(member);
-        }
-        listGroup.get(groupIndex).groupInfo.put("name", room.groupInfo.get("name"));
-        listGroup.get(groupIndex).groupInfo.put("admin", room.groupInfo.get("admin"));
-        GroupDB.getInstance(getContext()).addGroup(listGroup.get(groupIndex));
-        Timber.d("GroupFragment", listGroup.get(groupIndex).id + ": " + room.toString());
-        getGroupInfo(groupIndex + 1);
-    }
+    public void setGroupInfo(List<Room> rooms) {
+        Collections.sort(rooms, (a, b) -> a.getName().compareTo(b.getName()));
 
+        for (Room room : rooms) {
+            Group group = new Group();
+            group.id = room.getName();
+            group.setAdmin(room.getAdmin());
+            group.setName(room.getName());
+            group.setMembers(room.getMembers());
+            listGroup.add(group);
+            GroupDB.getInstance(getContext()).addGroup(group);
+        }
+
+        adapter.notifyDataSetChanged();
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
 
     @Override
     public void onRefresh() {
@@ -196,7 +190,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         switch (item.getItemId()) {
             case CONTEXT_MENU_DELETE:
                 int posGroup = item.getIntent().getIntExtra(CONTEXT_MENU_KEY_INTENT_DATA_POS, -1);
-                if (((String) listGroup.get(posGroup).groupInfo.get("admin")).equals(mGroupPresenter.getId())) {
+                if (listGroup.get(posGroup).getAdmin().equals(mGroupPresenter.getId())) {
                     Group group = listGroup.get(posGroup);
                     listGroup.remove(posGroup);
                     if (group != null) {
@@ -221,7 +215,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
             case CONTEXT_MENU_LEAVE:
                 int position = item.getIntent().getIntExtra(CONTEXT_MENU_KEY_INTENT_DATA_POS, -1);
-                if (((String) listGroup.get(position).groupInfo.get("admin")).equals(mGroupPresenter.getId())) {
+                if (listGroup.get(position).getAdmin().equals(mGroupPresenter.getId())) {
                     Toast.makeText(getActivity(), getResources().getString(R.string.admin_cannot_leave), Toast.LENGTH_LONG).show();
                 } else {
                     waitingLeavingGroup.show();
@@ -235,7 +229,7 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     public void deleteGroup(final Group group, final int index) {
-        if (index == group.member.size()) {
+        if (index == group.getMembers().size()) {
             mGroupPresenter.deleteGroup(group);
         } else {
             mGroupPresenter.deleteGroupReference(index, group);
@@ -335,8 +329,6 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
 class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final String DRIVELY_GROUP_ID = "0";
-    private static final String GENERAL_GROUP_ID = "1";
     public static ListFriend listFriend = null;
     private ArrayList<Group> listGroup;
     private Context context;
@@ -357,7 +349,7 @@ class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
         final Group group = listGroup.get(position);
-        final String groupName = group.groupInfo.get("name");
+        final String groupName = group.getName();
         ItemGroupViewHolder holder = ((ItemGroupViewHolder) viewHolder);
 
         if (groupName != null && groupName.length() > 0) {
@@ -365,7 +357,7 @@ class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             holder.iconGroup.setText((groupName.charAt(0) + "").toUpperCase());
         }
 
-        if (group.id.equals(DRIVELY_GROUP_ID) || group.id.equals(GENERAL_GROUP_ID)) {
+        if (!group.isEditable()) {
             holder.btnMore.setVisibility(View.INVISIBLE);
             Resources resource = context.getResources();
             Drawable shape = resource.getDrawable(R.drawable.circle_background);
@@ -389,7 +381,8 @@ class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, groupName);
             ArrayList<CharSequence> idFriend = new ArrayList<>();
             ChatViewActivity.bitmapAvataFriend = new HashMap<>();
-            for (String id : listGroup.get(position).member) {
+            for (RoomMember member : listGroup.get(position).getMembers()) {
+                String id = member.getMemberId();
                 idFriend.add(id);
                 String avatar = listFriend.getAvataById(id);
                 if (!avatar.equals(Const.STR_DEFAULT_AVATAR) && listFriend.getById(id) != null && listFriend.getById(id).avatarBytes != null) {

@@ -8,8 +8,6 @@ import org.pl.android.drively.ui.signinup.BaseSignPresenter;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
-
 public class SignInPresenter extends BaseSignPresenter {
 
     @Inject
@@ -20,12 +18,6 @@ public class SignInPresenter extends BaseSignPresenter {
     public void loginIn(String email, String password) {
         RxFirebaseAuth.signInWithEmailAndPassword(mDataManager.getFirebaseService().getFirebaseAuth(), email, password)
                 .flatMap(x -> RxFirebaseUser.getToken(mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser(), false))
-                .subscribe(token -> {
-                    Timber.i("RxFirebaseSample", "user token: " + token.getToken());
-                    mMvpView.onSuccess();
-                }, throwable -> {
-                    Timber.e("RxFirebaseSample", throwable.toString());
-                    mMvpView.onError(throwable);
-                });
+                .subscribe(token -> mMvpView.onSuccess(), throwable -> mMvpView.onError(throwable));
     }
 }

@@ -8,6 +8,7 @@
     <string name="dialog_action_ok">Ok</string>
     <string name="dialog_error_title">Sorry</string>
     <string name="events">Calednar</string>
+    <string name="finance">Expenses</string>
     <string name="day_schedule">Schedule</string>
     <string name="hotspot">Hotspot</string>
     <string name="user">User</string>
@@ -35,11 +36,6 @@
     <string name="already_member_login">Already have an account? Login in</string>
     <string name="login">Log in</string>
     <string name="logout">Sign out</string>
-    <string name="settings">Settings</string>
-    <string name="notifications">Notifications</string>
-    <string name="notifications_day_schedule">Notifications from the Schedule</string>
-    <string name="notifications_day_schedule_description">Notify me before events from the Schedule end up</string>
-    <string name="notifications_big_events">Notifications on Big Events</string>
     <string name="change_email">Change email</string>
     <string name="change_email_failed">Failed to change your email!</string>
     <string name="change_email_succeed">Your email was changed successfully!</string>
@@ -121,4 +117,92 @@
     <string name="success_leaveing_group">You left this group</string>
     <string name="delete_group">Delete group</string>
     <string name="leave_group">Leave group</string>
+    <string name="your_plan">Your plan</string>
+    <string name="remember_me">Remind me</string>
+    <string name="cancel">Cancel</string>
+    <string name="navigate">Navigate</string>
+    <string name="send_private_message">Send a private message</string>
+
+    <!--Settings-->
+    <string name="settings">Settings</string>
+    <string name="instruction">Instruction</string>
+
+    <string name="general">General</string>
+    <string name="shareLocalization">Localization</string>
+    <string name="shareLocalization_description">Share your localization with other drivers</string>
+
+    <string name="notifications">Notifications</string>
+    <string name="notifications_day_schedule">Schedule</string>
+    <string name="notifications_day_schedule_description">Notify me before events from the Schedule end up</string>
+    <string name="notifications_chat_group">Chat group</string>
+    <string name="notifications_chat_group_description">Disable notifications for the group chat</string>
+    <string name="notifications_chat_private">Chat private</string>
+    <string name="notifications_chat_private_description">Disable notifications for private conversations</string>
+
+    <!--Network connection-->
+    <string name="network_lack">No network</string>
+    <string name="check_internet">Check Internet</string>
+    <string name="close">Close</string>
+    <string name="let_us_know">Give us info</string>
+    <string name="not_available_in_city">We are not available in your city</string>
+
+    <!--POPUPS-->
+    <!--HOTSPOT-->
+    <string name="popup_hotspot_title">Hotspot - here you can see other drivers live.</string>
+    <string name="popup_hotspot_agreement">I voluntarily agree to anonymous sharing my own 
+        location exclusive within the Drively application. The location is not used outside of the application. Only people 
+        which agreed to the terms may see the location of other users.</string>
+    <string name="popup_hotspot_brand_question">Which application do you use most often?</string>
+    <string name="popup_hotspot_button_agreement">I AGREE</string>
+    <string name="popup_hotspot_preference_info">Your preferences can be changed in Settings</string>
+    <string name="popup_hotspot_localisation_info">Your preferences can be changed in Settings</string>
+    <string name="brand_not_chose">You did not choose brand!</string>
+
+    <!--HOTSPOT SECOND-->
+    <string name="popup_hotspot_second_title">ALL AT AGLANCE!</string>
+    <string name="popup_hotspot_second_info">Colors mean application</string>
+    <string name="popup_hotspot_second_info2">Change your view on the map!</string>
+    <string name="popup_hotspot_second_understood">UNDERSTOOD</string>
+    <string name="popup_hotspot_second_preference_info">Your preferences can be changed in Settings</string>
+
+    <!--CALENDAR-->
+    <string name="popup_events_title">ALL IN ONE PLACE</string>
+    <string name="popup_events_info">After opening the paintings in places where large events often happen:
+         parties, concerts, conferences, etc. Below, upcoming events are displayed.</string>
+    <string name="popup_events_info1">List of places and events in your city</string>
+    <string name="popup_events_info2">Plan of the Day: events about which we will send a reminder when they will end</string>
+    <string name="popup_events_info3">Add event to your Plan of the Day</string>
+    <string name="popup_events_info3_button">Remind me!</string>
+    <string name="popup_events_info4">Go to GPS navigation</string>
+    <string name="popup_events_info4_button">Go now</string>
+    <string name="popup_events_info5">Huuuuge event</string>
+    <string name="popup_events_info6">A party for about 150 people</string>
+    <string name="popup_events_understood">UNDERSTOOD</string>
+    <string name="popup_events_preference_info">Notifications can be turned off in Settings</string>
+
+    <!--CHAT-->
+    <string name="popup_chat_title">Ask, answer, share!</string>
+    <string name="popup_chat_info">Available groups:</string>
+    <string name="popup_chat_info1">Whole country in one place</string>
+    <string name="popup_chat_info1_button">All</string>
+    <string name="popup_chat_info2">Close neighbourhood</string>
+    <string name="popup_chat_info2_button">Warsaw</string>
+    <string name="popup_chat_info3">Buy, sell, exchange</string>
+    <string name="popup_chat_info3_button">Advertisements</string>
+    <string name="popup_chat_info4">Find more groups</string>
+    <string name="popup_chat_question">Want to be up to date?</string>
+    <string name="popup_chat_question_explanation">New message will show up at Notification!</string>
+    <string name="popup_chat_understood">UNDERSTOOD</string>
+    <string name="popup_chat_preference_info">Your  preferences can be changed in Settings</string>
+
+    <!--FINANCE-->
+    <string name="popup_finance_title">Expenses</string>
+    <string name="popup_finance_info">Here you will be able to store all your expenses and alayze them.
+        All costs connected to your courses in one place!</string>
+    <string name="popup_finance_contact_us">WRITE TO US ABOUT IT!</string>
+
+    <!--LOGOUT-->
+    <string name="logout_popup_positive">Log out</string>
+    <string name="logout_popup_negative">Stay</string>
+    <string name="logout_popup_content">Are you sure you want to log out?</string>
 </resources>

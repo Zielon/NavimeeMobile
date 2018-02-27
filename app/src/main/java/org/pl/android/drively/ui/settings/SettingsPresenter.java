@@ -6,8 +6,10 @@ import com.google.firebase.firestore.FieldValue;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.local.PreferencesHelper;
 import org.pl.android.drively.injection.ConfigPersistent;
+import org.pl.android.drively.service.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
+import org.pl.android.drively.util.FirebasePaths;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -65,5 +67,11 @@ public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
 
     public String getEmail() {
         return firebaseUser.getEmail();
+    }
+
+    public void deleteGeolocation() {
+        dataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.USER_LOCATION)
+                .child(GeolocationUpdateService.FIREBASE_KEY).removeValue();
+
     }
 }

@@ -2,16 +2,15 @@ package org.pl.android.drively.ui.chat;
 
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.injection.ConfigPersistent;
-import org.pl.android.drively.ui.base.BasePresenter;
+import org.pl.android.drively.ui.base.tab.BaseTabPresenter;
 
 import javax.inject.Inject;
 
 import io.reactivex.disposables.Disposable;
 
 @ConfigPersistent
-public class ChatPresenter extends BasePresenter<ChatMvpView> {
+public class ChatPresenter extends BaseTabPresenter<ChatMvpView> {
 
-    private final DataManager mDataManager;
     private Disposable mDisposable;
 
     @Inject
@@ -29,6 +28,4 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         super.detachView();
         if (mDisposable != null) mDisposable.dispose();
     }
-
-
 }

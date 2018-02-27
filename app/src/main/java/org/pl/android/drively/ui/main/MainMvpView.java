@@ -4,7 +4,7 @@ import org.pl.android.drively.ui.base.MvpView;
 
 public interface MainMvpView extends MvpView {
 
-
     void showError();
 
+    void changeTabByResId(int tabResId);
 }

@@ -23,6 +23,7 @@ import com.yarolegovich.lovelydialog.LovelyInfoDialog;
 import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 
 import org.pl.android.drively.R;
+import org.pl.android.drively.data.model.RoomMember;
 import org.pl.android.drively.data.model.chat.Group;
 import org.pl.android.drively.data.model.chat.ListFriend;
 import org.pl.android.drively.data.model.chat.Room;
@@ -115,7 +116,7 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView {
             txtActionName.setText("Save");
             btnAddGroup.setBackgroundColor(getResources().getColor(R.color.primary));
             groupEdit = GroupDB.getInstance(this).getGroup(idGroup);
-            editTextGroupName.setText(groupEdit.groupInfo.get("name"));
+            editTextGroupName.setText(groupEdit.getName());
         } else {
             isEditGroup = false;
         }
@@ -138,13 +139,12 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView {
         final String idGroup = groupEdit.id;
         Room room = new Room();
         for (String id : listIDChoose) {
-            room.member.add(id);
+            room.getMembers().add(new RoomMember(id));
         }
-        room.groupInfo.put("name", editTextGroupName.getText().toString());
-        room.groupInfo.put("admin", mAddGroupPresenter.getId());
+        room.setName(editTextGroupName.getText().toString());
+        room.setAdmin(mAddGroupPresenter.getId());
 
         mAddGroupPresenter.editGroup(idGroup, room);
-
     }
 
     private void createGroup() {
@@ -157,10 +157,10 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView {
         final String idGroup = (mAddGroupPresenter.getId() + System.currentTimeMillis()).hashCode() + "";
         Room room = new Room();
         for (String id : listIDChoose) {
-            room.member.add(id);
+            room.getMembers().add(new RoomMember(id));
         }
-        room.groupInfo.put("name", editTextGroupName.getText().toString());
-        room.groupInfo.put("admin", mAddGroupPresenter.getId());
+        room.setName(editTextGroupName.getText().toString());
+        room.setAdmin(mAddGroupPresenter.getId());
         mAddGroupPresenter.createGroup(idGroup, room);
     }
 
@@ -317,9 +317,9 @@ class ListPeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 btnAddGroup.setBackgroundColor(context.getResources().getColor(R.color.primary));
             }
         });
-        if (isEdit && editGroup.member.contains(id)) {
+        if (isEdit && editGroup.getMembers().contains(new RoomMember(id))) {
             ((ItemFriendHolder) holder).checkBox.setChecked(true);
-        } else if (editGroup != null && !editGroup.member.contains(id)) {
+        } else if (editGroup != null && !editGroup.getMembers().contains(new RoomMember(id))) {
             ((ItemFriendHolder) holder).checkBox.setChecked(false);
         }
     }

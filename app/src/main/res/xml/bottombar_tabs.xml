@@ -6,18 +6,20 @@
         id="@+id/tab_hotspot"
         inActiveColor="@color/colorLine"
         title="@string/hotspot" />
+
     <tab
         activeColor="@color/settings_switch_color"
         icon="@drawable/ic_action_today"
         id="@+id/tab_events"
         inActiveColor="@color/colorLine"
         title="@string/events" />
+
     <tab
         activeColor="@color/settings_switch_color"
-        icon="@drawable/ic_action_today"
-        id="@+id/tab_day_schedule"
+        icon="@drawable/category_professional_24dp"
+        id="@+id/tab_finance"
         inActiveColor="@color/colorLine"
-        title="@string/day_schedule" />
+        title="@string/finance" />
 
     <tab
         activeColor="@color/settings_switch_color"

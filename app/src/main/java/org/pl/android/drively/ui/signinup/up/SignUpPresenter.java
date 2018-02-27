@@ -10,10 +10,7 @@ import org.pl.android.drively.ui.signinup.BaseSignPresenter;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
-
 public class SignUpPresenter extends BaseSignPresenter {
-
 
     @Inject
     public SignUpPresenter(DataManager dataManager) {
@@ -24,13 +21,9 @@ public class SignUpPresenter extends BaseSignPresenter {
         RxFirebaseAuth.createUserWithEmailAndPassword(mDataManager.getFirebaseService().getFirebaseAuth(), email, password)
                 .flatMap(x -> RxFirebaseUser.getToken(mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser(), false))
                 .subscribe(token -> {
-                    Timber.i("RxFirebaseSample", "user token: " + token.getToken());
                     FirebaseUser user = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
                     UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
                     RxFirebaseUser.updateProfile(user, profile).subscribe(sub -> mMvpView.onSuccess());
-                }, throwable -> {
-                    Timber.e("RxFirebaseSample", throwable.toString());
-                    mMvpView.onError(throwable);
-                });
+                }, throwable -> mMvpView.onError(throwable));
     }
 }
