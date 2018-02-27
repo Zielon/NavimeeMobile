@@ -14,7 +14,7 @@ public interface GroupMvpView extends MvpView {
 
     void getGroupError();
 
-    void setGroupInfo(int groupIndex, Room room);
+    void setGroupInfo(List<Room> rooms);
 
     void deleteGroupSuccess(Group group);
 

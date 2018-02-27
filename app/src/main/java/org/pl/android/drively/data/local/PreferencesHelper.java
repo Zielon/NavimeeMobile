@@ -114,7 +114,7 @@ public class PreferencesHelper {
     }
 
     public String getCountry() {
-        return "POLAND";
+        return sharedPreferences.getString(USER_COUNTRY, "");
     }
 
     public void saveUserInfo(User user) {

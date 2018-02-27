@@ -6,16 +6,15 @@ import com.google.firebase.firestore.IgnoreExtraProperties;
 import org.pl.android.drively.data.model.RoomMember;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @IgnoreExtraProperties
 public class Room {
-    @Exclude
+
     private List<RoomMember> members;
     private String admin;
     private String name;
+    private boolean isEditable;
 
     public Room() {
         this.members = new ArrayList<>();
@@ -27,10 +26,12 @@ public class Room {
         this.name = name;
     }
 
+    @Exclude
     public List<RoomMember> getMembers() {
         return members;
     }
 
+    @Exclude
     public void setMembers(List<RoomMember> members) {
         this.members = members;
     }
@@ -51,10 +52,11 @@ public class Room {
         this.name = name;
     }
 
-    public Map<String, Object> toMap() {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("admin", this.admin);
-        map.put("name", this.name);
-        return map;
+    public boolean isEditable() {
+        return isEditable;
+    }
+
+    public void setEditable(boolean editable) {
+        isEditable = editable;
     }
 }

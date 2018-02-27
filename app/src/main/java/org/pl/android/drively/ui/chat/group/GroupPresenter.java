@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -14,6 +15,7 @@ import com.google.firebase.firestore.WriteBatch;
 
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.RoomMember;
+import org.pl.android.drively.data.model.chat.Friend;
 import org.pl.android.drively.data.model.chat.Group;
 import org.pl.android.drively.data.model.chat.Room;
 import org.pl.android.drively.injection.ActivityContext;
@@ -79,39 +81,45 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
                 });
     }
 
-    public void getGroupInfo(int groupIndex, String id) {
-        mDataManager.getFirebaseService().getFirebaseFirestore()
-                .collection(FirebasePaths.GROUP)
-                .document(mDataManager.getPreferencesHelper().getCountry())
-                .collection(id)
-                .document(ROOM_DETAILS)
-                .get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                if (document != null && document.exists()) {
-                    Room room = document.toObject(Room.class);
-                    document.getReference().collection(MEMBERS)
-                            .get().addOnCompleteListener(members -> {
-                        if (members.isSuccessful()) {
-                            for (DocumentSnapshot member : members.getResult()) {
-                                room.getMembers().add(new RoomMember(member.getId()));
-                            }
-                            if (getMvpView() != null) {
-                                getMvpView().setGroupInfo(groupIndex, room);
-                            }
-                        } else {
-                            Timber.w("Error geting document");
+    public void getGroupInfo(List<String> roomsIds) {
+        List<Task<Task<Room>>> tasks = new ArrayList<>();
+        DocumentReference groupRef = mDataManager.getFirebaseService().getFirebaseFirestore()
+                .collection(FirebasePaths.GROUP).document(mDataManager.getPreferencesHelper().getCountry());
+
+        for (String id : roomsIds) {
+            tasks.add(groupRef.collection(id).document(ROOM_DETAILS).get().continueWith(task -> {
+                        DocumentSnapshot snapshot = task.getResult();
+                        if (snapshot != null && snapshot.exists()) {
+                            Room room = snapshot.toObject(Room.class);
+                            return groupRef.collection(id).document(ROOM_DETAILS).collection(MEMBERS).get().continueWith(members -> {
+                                if(members.isSuccessful()){
+                                    for(DocumentSnapshot doc : members.getResult().getDocuments())
+                                        room.getMembers().add(doc.toObject(RoomMember.class));
+                                }
+                                return room;
+                            });
+
                         }
-                    });
-                } else {
-                    Timber.w("Error geting document");
-                }
-            } else {
-                Timber.w("Error geting document");
-            }
+                        return Tasks.forResult(null);
+                    }));
+        }
+
+        Tasks.whenAll(tasks).addOnSuccessListener(friends -> {
+            List<Task<Room>> friendsTasks = new ArrayList<>();
+            for (Task<Task<Room>> task : tasks)
+                if (task.isSuccessful() && task.getResult() != null)
+                    friendsTasks.add(task.getResult());
+
+            Tasks.whenAll(friendsTasks).addOnSuccessListener(avatars -> {
+                List<Room> rooms = new ArrayList<>();
+                for (Task<Room> task : friendsTasks)
+                    if (task.isSuccessful() && task.getResult() != null && getMvpView() != null)
+                        rooms.add(task.getResult());
+
+                getMvpView().setGroupInfo(rooms);
+            });
         });
     }
-
 
     public void deleteGroup(Group group) {
         deleteCollection(mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.GROUP)

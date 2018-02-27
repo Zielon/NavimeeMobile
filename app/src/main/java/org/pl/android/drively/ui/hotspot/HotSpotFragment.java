@@ -471,16 +471,13 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                 .subscribe(new DisplayTextOnViewAction(), new ErrorHandler());
 
         addressDisposable = addressObservable
-                .subscribe(new Consumer<Address>() {
-                    @Override
-                    public void accept(Address address) throws Exception {
-                        mHotspotPresenter.setLastLocation(address.getLocality());
+                .subscribe(address -> {
+                    mHotspotPresenter.setLastLocation(address.getLocality());
                         if(!isCityChecked) {
                             mHotspotPresenter.checkAvailableCities(address.getCountryName(), address.getLocality());
                             isCityChecked = true;
                         }
-                        Timber.d("address " + address);
-                    }
+                    Timber.d("address " + address);
                 }, new ErrorHandler());
 
     }
