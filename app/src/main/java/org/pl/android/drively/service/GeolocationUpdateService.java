@@ -14,8 +14,11 @@ import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.google.firebase.database.DatabaseReference;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.pl.android.drively.BoilerplateApplication;
 import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.data.model.eventbus.CompanySelectedEvent;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
 
@@ -32,7 +35,7 @@ public class GeolocationUpdateService extends Service {
     private static final String TAG = "BOOMBOOMTESTGPS";
     private static final int LOCATION_INTERVAL = 10000;
     private static final float LOCATION_DISTANCE = 10f;
-    private static final long TIME_FOR_SERVICE = 10000;//1800000;
+    private static final long TIME_FOR_SERVICE = 20000;//1800000;
     private static String USER_COMPANY;
 
     GeoFire geoFire;
@@ -62,18 +65,42 @@ public class GeolocationUpdateService extends Service {
         Timber.e("onCreate");
         super.onCreate();
         BoilerplateApplication.get(this).getComponent().inject(this);
+        EventBus.getDefault().register(this);
         DatabaseReference databaseReference = dataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.USER_LOCATION);
         geoFire = new GeoFire(databaseReference);
-        USER_COMPANY = dataManager.getPreferencesHelper().getValueString(Const.USER_COMPANY);
         initializeLocationManager();
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-               Timber.i("stoping service");
-               stopSelf();
+                Timber.i("stoping service");
+                stopSelf();
             }
         }, TIME_FOR_SERVICE);
+    }
+
+
+    @SuppressLint("TimberArgCount")
+    @Override
+    public void onDestroy() {
+        Timber.e("onDestroy");
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+        if (mLocationManager != null) {
+            for (int i = 0; i < mLocationListeners.length; i++) {
+                try {
+                    mLocationManager.removeUpdates(mLocationListeners[i]);
+                } catch (Exception ex) {
+                    Timber.i("fail to remove location listners, ignore", ex);
+                }
+            }
+        }
+    }
+
+    @SuppressLint("TimberArgCount")
+    @Subscribe
+    public void onEvent(CompanySelectedEvent companySelectedEvent) {
+        USER_COMPANY = dataManager.getPreferencesHelper().getValueString(Const.USER_COMPANY);
         try {
             mLocationManager.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
@@ -91,22 +118,6 @@ public class GeolocationUpdateService extends Service {
             Timber.i(TAG, "fail to request location update, ignore", ex);
         } catch (IllegalArgumentException ex) {
             Timber.d(TAG, "gps provider does not exist " + ex.getMessage());
-        }
-    }
-
-    @SuppressLint("TimberArgCount")
-    @Override
-    public void onDestroy() {
-        Timber.e("onDestroy");
-        super.onDestroy();
-        if (mLocationManager != null) {
-            for (int i = 0; i < mLocationListeners.length; i++) {
-                try {
-                    mLocationManager.removeUpdates(mLocationListeners[i]);
-                } catch (Exception ex) {
-                    Timber.i("fail to remove location listners, ignore", ex);
-                }
-            }
         }
     }
 
@@ -128,8 +139,9 @@ public class GeolocationUpdateService extends Service {
         @Override
         public void onLocationChanged(Location location) {
             Timber.e("onLocationChanged: " + location);
+            Timber.i("USER_COMPANY: " + USER_COMPANY);
             mLastLocation.set(location);
-            geoFire.setLocation(USER_COMPANY +"_"+ FirebasePaths.USER_LOCATION + "_" + dataManager.getFirebaseService().getFirebaseAuth().getUid(),
+            geoFire.setLocation(USER_COMPANY + "_" + FirebasePaths.USER_LOCATION + "_" + dataManager.getFirebaseService().getFirebaseAuth().getUid(),
                     new GeoLocation(location.getLatitude(), location.getLongitude()));
         }
 

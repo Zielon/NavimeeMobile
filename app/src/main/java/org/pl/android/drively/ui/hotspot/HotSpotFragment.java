@@ -80,6 +80,7 @@ import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.CityNotAvailable;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.FourSquarePlace;
+import org.pl.android.drively.data.model.eventbus.CompanySelectedEvent;
 import org.pl.android.drively.data.model.eventbus.NotificationEvent;
 import org.pl.android.drively.data.model.maps.ClusterItemGoogleMap;
 import org.pl.android.drively.service.GeolocationUpdateService;
@@ -193,6 +194,9 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         }
         if (mHotspotPresenter.checkLogin() != null) {
             getActivity().startService(new Intent(getActivity(), GeolocationUpdateService.class));
+            if(!mHotspotPresenter.getUserCompany().isEmpty()) {
+                EventBus.getDefault().post(new CompanySelectedEvent());
+            }
         }
 
         initGeolocation();
@@ -971,7 +975,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         preparePopupLayout(view);
         popup = new MaterialDialog.Builder(context)
                 .customView(view, false)
-                .backgroundColor(ContextCompat.getColor(context, R.color.transparent))
+                .backgroundColor(ContextCompat.getColor(context, R.color.dark_transparent))
                 .show();
     }
 
@@ -991,6 +995,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                 .setOnClickListener(view -> {
                     popup.dismiss();
                     mHotspotPresenter.saveUserCompany(selectedDriverType.getName());
+                    EventBus.getDefault().post(new CompanySelectedEvent());
                     Log.d(context.getClass().getSimpleName(), "User agreed to the terms and is using " + selectedDriverType != null ? selectedDriverType.getName() : "no one" + ".");
                 });
     }

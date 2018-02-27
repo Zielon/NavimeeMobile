@@ -12,7 +12,9 @@ public class BaseTabPresenter<T extends TabMvpView> extends BasePresenter<T>  {
     @Override
     public void attachView(T mvpView) {
         super.attachView(mvpView);
-        verifyFirstStartPopupNecessity();
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            verifyFirstStartPopupNecessity();
+        }
     }
 
     private void verifyFirstStartPopupNecessity() {
