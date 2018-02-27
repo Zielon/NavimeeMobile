@@ -1,11 +1,13 @@
 package org.pl.android.drively.ui.planner;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
@@ -13,26 +15,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import org.pl.android.drively.R;
+import org.pl.android.drively.ui.base.tab.BaseTabFragment;
 import org.pl.android.drively.ui.main.MainActivity;
 import org.pl.android.drively.ui.planner.dayschedule.DayScheduleFragment;
 import org.pl.android.drively.ui.planner.events.EventsFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by Wojtek on 2018-02-19.
  */
 
-public class PlannerFragment  extends Fragment {
-
+public class PlannerFragment extends BaseTabFragment {
 
     public static String STR_CALENDAR_FRAGMENT = "CALENDAR";
     public static String STR_YOUR_PLAN_FRAGMENT = "YOUR_PLAN";
@@ -43,6 +47,8 @@ public class PlannerFragment  extends Fragment {
     ViewPager viewPager;
     ViewPagerAdapter adapter;
     public static Calendar selectedDate;
+    private MaterialDialog popup;
+
     int[] tabIcons = {
             R.drawable.ic_action_today,
             R.drawable.ic_action_today
@@ -117,6 +123,22 @@ public class PlannerFragment  extends Fragment {
 
         tabLayout.getTabAt(0).setIcon(tabIcons[0]);
         tabLayout.getTabAt(1).setIcon(tabIcons[1]);
+    }
+
+
+    @Override
+    public void showInstructionPopup() {
+        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.events_popup_instruction, null);
+        preparePopupLayout(view);
+        popup = new MaterialDialog.Builder(getActivity())
+                .customView(view, false)
+                .backgroundColor(ContextCompat.getColor(getActivity(), R.color.transparent))
+                .show();
+    }
+
+    private void preparePopupLayout(View rootView) {
+        rootView.findViewById(R.id.understood_button).setOnClickListener(view -> popup.dismiss());
     }
 
     class ViewPagerAdapter extends FragmentStatePagerAdapter {

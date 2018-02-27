@@ -20,6 +20,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.ui.base.BaseActivity;
+import org.pl.android.drively.ui.base.tab.BaseTabFragment;
 import org.pl.android.drively.ui.chat.friends.FriendsFragment;
 import org.pl.android.drively.ui.chat.group.GroupFragment;
 import org.pl.android.drively.ui.main.MainActivity;
@@ -34,7 +35,7 @@ import butterknife.ButterKnife;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
-public class ChatFragment extends Fragment implements ChatMvpView {
+public class ChatFragment extends BaseTabFragment implements ChatMvpView {
 
 
     public static String STR_FRIEND_FRAGMENT = "FRIEND";
