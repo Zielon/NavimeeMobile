@@ -172,27 +172,27 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
     }
 
 
-    public void checkAvailableCities(String countryCode, String city) {
+    public void checkAvailableCities(String countryName, String city) {
         CityNotAvailable cityNotAvailable = new CityNotAvailable();
         try {
             final String citiesField = nameof(CityAvailable.class, "cities");
-            mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.AVAILABLE_CITIES_NATIVE)
-                    .document(countryCode)
+            mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.AVAILABLE_CITIES)
+                    .document(countryName.toUpperCase())
+                    .collection(city.toUpperCase())
                     .get()
                     .addOnCompleteListener(task -> {
-                        if (task.isSuccessful() && task.getResult().exists()) {
-                            CityAvailable citiesList = task.getResult().toObject(CityAvailable.class);
-                            if (!citiesList.getCities().contains(city.toUpperCase())) {
+                        if (task.isSuccessful()) {
+                            if(task.getResult().getDocuments().size() == 0) {
                                 if (getMvpView() != null) {
                                     cityNotAvailable.setCity(city);
-                                    cityNotAvailable.setCountryCode(countryCode);
+                                    cityNotAvailable.setCountryName(countryName);
                                     getMvpView().showNotAvailableCity(cityNotAvailable);
                                 }
                             }
                         } else {
                             if (getMvpView() != null) {
                                 cityNotAvailable.setCity(city);
-                                cityNotAvailable.setCountryCode(countryCode);
+                                cityNotAvailable.setCountryName(countryName);
                                 getMvpView().showNotAvailableCity(cityNotAvailable);
                             }
                         }

@@ -158,6 +158,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     double lngNotification;
     boolean isFromNotification = false;
     String notificationName, notificationCount;
+    boolean isCityChecked = false;
     @Inject
     HotSpotPresenter mHotspotPresenter;
     private GoogleMap googleMap;
@@ -477,7 +478,10 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                     @Override
                     public void accept(Address address) throws Exception {
                         mHotspotPresenter.setLastLocation(address.getLocality());
-                        mHotspotPresenter.checkAvailableCities(address.getCountryCode(), address.getLocality());
+                        if(!isCityChecked) {
+                            mHotspotPresenter.checkAvailableCities(address.getCountryName(), address.getLocality());
+                            isCityChecked = true;
+                        }
                         Timber.d("address " + address);
                     }
                 }, new ErrorHandler());
