@@ -48,7 +48,7 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
                 .document(mDataManager.getPreferencesHelper().getCountry())
                 .collection(idGroup).document(FirebasePaths.ROOM_DETAILS);
 
-        chat.set(room.toMap()).addOnSuccessListener(aVoid -> {
+        chat.set(room).addOnSuccessListener(aVoid -> {
             List<Task<Void>> tasks = new ArrayList<>();
             for (RoomMember member : room.getMembers()) {
                 RoomMember roomMember = new RoomMember();
@@ -90,7 +90,7 @@ public class AddGroupPresenter extends BasePresenter<AddGroupMvpView> {
                 .document(mDataManager.getPreferencesHelper().getCountry())
                 .collection(idGroup).document(FirebasePaths.ROOM_DETAILS);
 
-        chat.delete().addOnSuccessListener(group -> chat.set(room.toMap())
+        chat.delete().addOnSuccessListener(group -> chat.set(room)
                 .addOnSuccessListener(result -> {
                     List<Task<Void>> tasks = new ArrayList<>();
                     for (RoomMember member : room.getMembers()) {

@@ -139,7 +139,8 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onBackPressed() {
         Intent result = new Intent();
-        result.putExtra("idFriend", idFriend.get(0));
+        if(idFriend.size() > 0)
+            result.putExtra("idFriend", idFriend.get(0));
         setResult(RESULT_OK, result);
         this.finish();
     }
@@ -304,7 +305,6 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 messageHolder.avatar.setImageBitmap(currentAvatar);
                 ((CircleImageView) view.findViewById(R.id.avatar)).setImageBitmap(currentAvatar);
             } else {
-                // TODO A temporary solution !
                 if (message.idSender.equals("ADMIN_DRIVELY")) {
                     ((CircleImageView) view.findViewById(R.id.avatar)).setImageResource(R.drawable.drively);
                     messageHolder.avatar.setImageResource(R.drawable.drively);

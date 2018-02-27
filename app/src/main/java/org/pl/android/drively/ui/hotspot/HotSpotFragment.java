@@ -469,7 +469,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                     @Override
                     public void accept(Address address) throws Exception {
                         mHotspotPresenter.setLastLocation(address.getLocality());
-                        mHotspotPresenter.checkAvailableCities(address.getCountryCode(), address.getLocality());
+                        mHotspotPresenter.checkAvailableCities(address.getCountryName(), address.getLocality());
                         Timber.d("address " + address);
                     }
                 }, new ErrorHandler());

@@ -85,6 +85,9 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mGroupPresenter.attachView(this);
         ButterKnife.bind(this, layout);
 
+        // TEMPORARY SOLUTION
+        fabGroupButton.setVisibility(View.INVISIBLE);
+
         listGroup = GroupDB.getInstance(getContext()).getListGroups();
         recyclerListGroups = (RecyclerView) layout.findViewById(R.id.recycleListGroup);
         mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeRefreshLayout);
@@ -336,8 +339,6 @@ public class GroupFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
 class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final String DRIVELY_GROUP_ID = "0";
-    private static final String GENERAL_GROUP_ID = "1";
     public static ListFriend listFriend = null;
     private ArrayList<Group> listGroup;
     private Context context;
@@ -366,7 +367,7 @@ class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             holder.iconGroup.setText((groupName.charAt(0) + "").toUpperCase());
         }
 
-        if (group.id.equals(DRIVELY_GROUP_ID) || group.id.equals(GENERAL_GROUP_ID)) {
+        if (!group.isEditable()) {
             holder.btnMore.setVisibility(View.INVISIBLE);
             Resources resource = context.getResources();
             Drawable shape = resource.getDrawable(R.drawable.circle_background);

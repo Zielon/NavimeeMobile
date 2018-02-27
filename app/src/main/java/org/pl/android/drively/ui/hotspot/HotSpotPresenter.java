@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.ListenerRegistration;
 
+import org.pl.android.drively.contracts.repositories.UsersRepository;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.CityAvailable;
 import org.pl.android.drively.data.model.CityNotAvailable;
@@ -34,6 +35,7 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
 
 
     private final DataManager mDataManager;
+    private final UsersRepository usersRepository;
 
     private ListenerRegistration mListener;
 
@@ -41,8 +43,9 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
     private Set<String> hotspotKeyList = new HashSet<>();
 
     @Inject
-    public HotSpotPresenter(DataManager dataManager) {
-        mDataManager = dataManager;
+    public HotSpotPresenter(DataManager dataManager, UsersRepository usersRepository) {
+        this.mDataManager = dataManager;
+        this.usersRepository = usersRepository;
     }
 
     public FirebaseUser checkLogin() {
@@ -175,30 +178,34 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
     }
 
 
-    public void checkAvailableCities(String countryCode, String city) {
+    public void checkAvailableCities(String countryName, String city) {
         CityNotAvailable cityNotAvailable = new CityNotAvailable();
         try {
             final String citiesField = nameof(CityAvailable.class, "cities");
+
+            usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "country", countryName.toUpperCase());
+            usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "city", city.toUpperCase());
+
             mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.AVAILABLE_CITIES_NATIVE)
-                    .document(countryCode)
+                    .document(countryName)
                     .get()
                     .addOnCompleteListener(task -> {
-                        if (task.isSuccessful() && task.getResult().exists()) {
+                    /*    if (task.isSuccessful() && task.getResult().exists()) {
                             CityAvailable citiesList = task.getResult().toObject(CityAvailable.class);
                             if (!citiesList.getCities().contains(city.toUpperCase())) {
                                 if (getMvpView() != null) {
                                     cityNotAvailable.setCity(city);
-                                    cityNotAvailable.setCountryCode(countryCode);
+                                    cityNotAvailable.setCountryCode(countryName);
                                     getMvpView().showNotAvailableCity(cityNotAvailable);
                                 }
                             }
                         } else {
                             if (getMvpView() != null) {
                                 cityNotAvailable.setCity(city);
-                                cityNotAvailable.setCountryCode(countryCode);
+                                cityNotAvailable.setCountryCode(countryName);
                                 getMvpView().showNotAvailableCity(cityNotAvailable);
                             }
-                        }
+                        }*/
                     });
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
