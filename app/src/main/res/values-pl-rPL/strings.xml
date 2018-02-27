@@ -61,11 +61,11 @@
     <string name="onboarding_1_title">Hej!</string>
     <string name="onboarding_1_body">To pierwszy krok do większych zysków, zapnij pasy i zaczynamy!</string>
     <string name="onboarding_2_title">Kalendarz</string>
-    <string name="onboarding_2_body">Przeglądaj wydarzenia na najbliższe dni i stwórz swój własny plan na cały tydzień.</string>
+    <string name="onboarding_2_body">Przeglądaj wydarzenia na najbliższe dni i stwórz swój własny plan na kolejne 30 dni.</string>
     <string name="onboarding_3_title">Plan Dnia</string>
-    <string name="onboarding_3_body">Dobra organizacja to podstawa. Tutaj szybko sprawdzisz co masz w grafiku na dziś i kolejne dni.</string>
+    <string name="onboarding_3_body">Drively przypomni Ci o kończących się wydarzeniach.</string>
     <string name="onboarding_4_title">Hotspot</string>
-    <string name="onboarding_4_body">Na mapie zobaczysz wszystkie popularne miejsca. Dzięki temu w skuteczny sposób sprawdzisz gdzie warto podjechać.</string>
+    <string name="onboarding_4_body">Koniec z przełączaniem się między aplikacjami, w Drively zobaczysz wszystkich kierowców!</string>
     <string name="onboarding_5_title">Czat</string>
     <string name="onboarding_5_body">Dołącz do grup, zadawaj pytania i korzystaj z cennych porad innych kierowców. </string>
     <string name="or">lub</string>
@@ -144,12 +144,12 @@
     <string name="popup_hotspot_title">Na Hotspot zobaczysz gdzie znajdują się inni kierowcy w czasie rzeczywistym.</string>
     <string name="popup_hotspot_agreement">Dobrowolnie wyrażam zgodę na anonimowe podzielenie się swoją
         lokalizacją wyłącznie wewnątrz aplikacji Drively. Lokalizacja nie jest używana poza aplikacją. Tylko osoby,
-        które wyraziły zgodę mogą zobaczyć położenie innych użytkowników</string>
+        które wyraziły zgodę mogą zobaczyć położenie innych użytkowników.</string>
     <string name="popup_hotspot_brand_question">Której aplikacji używasz najczęściej do pracy?</string>
     <string name="popup_hotspot_button_agreement">ZGADZAM SIĘ</string>
-    <string name="popup_hotspot_preference_info">Swoje preferencje możesz zmienić w Ustawieniach</string>
-    <string name="popup_hotspot_localisation_info">DZIELENIE SIĘ LOKALIZACJĄ ZOSTANIE ZATRZYMANE PO 30MIN OD WYŁĄCZENIA APLIKACJI</string>
-    <string name="brand_not_chose">Nie wybrałeś branży!</string>
+    <string name="popup_hotspot_preference_info">Swoje preferencje możesz zmienić w Ustawieniach.</string>
+    <string name="popup_hotspot_localisation_info">DZIELENIE SIĘ LOKALIZACJĄ ZOSTANIE ZATRZYMANE PO 30 MIN. OD WYŁĄCZENIA APLIKACJI</string>
+    <string name="brand_not_chose">Wybierz aplikację!</string>
 
     <!--HOTSPOT SECOND-->
     <string name="popup_hotspot_second_title">WSZYSTKO JAK NA DŁONI!</string>
@@ -160,10 +160,10 @@
 
     <!--CALENDAR-->
     <string name="popup_events_title">WSZYSTKO W JEDNYM MIEJSCU</string>
-    <string name="popup_events_info">Po otwarciu zobaczysz listę miejsc w których odbywają się duże wydarzenia:
-        imprezy, koncerty, konferencje itd. Poniżej, wyświetlają się nadchodzące wydarzenia.</string>
+    <string name="popup_events_info">Tutaj sprawdzisz listę miejsc, w których aktulanie odbywają się duże wydarzenia:
+        imprezy, koncerty czy konferencje. Poniżej, wyświetlają się nadchodzące wydarzenia.</string>
     <string name="popup_events_info1">Lista miejsc i wydarzeń w twoim mieście</string>
-    <string name="popup_events_info2">Plan Dnia: wydarzeń o których wyślemy przypomnienie kiedy będą się kończyć</string>
+    <string name="popup_events_info2">Plan Dnia: wydarzeń o których dostaniesz przypomnienie kiedy będą się kończyć</string>
     <string name="popup_events_info3">Dodaj wydarzenie do Planu Dnia</string>
     <string name="popup_events_info3_button">Przypomnij mi</string>
     <string name="popup_events_info4">Przejdź do nawigacji GPS</string>
@@ -189,9 +189,11 @@
     <string name="popup_chat_preference_info">Swoje preferencje możesz zmienić w Ustawieniach</string>
 
     <!--FINANCE-->
-    <string name="popup_finance_title">Zakładka Wydatki</string>
-    <string name="popup_finance_info">Tutaj będziesz mógł zapisywać i analizować swoje wydatki.
-        Wszystkie koszty związane z Twoją jazdą w jednym miejscu!</string>
+    <string name="popup_finance_title">Wszystkie wydatki w jednym miejscu? Już niedługo!</string>
+    <string name="popup_finance_info">Już niedługo dostępny będzie nowy ekran Wydatki,
+        na którym będziesz kontrolować swoje koszty.
+        W prosty i szybki sposób dodasz nowy wydatek, zobaczysz ile i na co wydałeś,
+        a także załączysz zdjęcie rachunku lub faktury.</string>
     <string name="popup_finance_contact_us">NAPISZ, CO O TYM MYŚLISZ!</string>
 
     <!--LOGOUT-->

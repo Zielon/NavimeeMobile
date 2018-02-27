@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="12dp"
-        android:src="@drawable/category_outdoor_24dp"
+        android:src="@drawable/ic_clear_grey_24dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
@@ -37,7 +37,7 @@
         android:paddingStart="24dp"
         android:text="@string/popup_hotspot_title"
         android:textColor="@color/md_black_1000"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textStyle="bold" />
 
     <TextView
@@ -49,7 +49,7 @@
         android:paddingStart="24dp"
         android:text="@string/popup_hotspot_agreement"
         android:textColor="@color/md_black_1000"
-        android:textSize="14sp"
+        android:textSize="13sp"
         app:layout_constraintTop_toBottomOf="@id/popup_hotspot_title" />
 
     <TextView
@@ -93,7 +93,7 @@
             fancy:mfb_radius="2dp"
             fancy:mfb_text="Uber"
             fancy:mfb_textColor="@color/button_background"
-            fancy:mfb_textSize="16sp" />
+            fancy:mfb_textSize="14sp" />
 
         <com.rilixtech.materialfancybutton.MaterialFancyButton
             android:id="@+id/myTaxi"
@@ -110,7 +110,7 @@
             fancy:mfb_radius="2dp"
             fancy:mfb_text="myTaxi"
             fancy:mfb_textColor="@color/button_background"
-            fancy:mfb_textSize="16sp" />
+            fancy:mfb_textSize="14sp" />
 
         <com.rilixtech.materialfancybutton.MaterialFancyButton
             android:id="@+id/iTaxi"
@@ -127,7 +127,7 @@
             fancy:mfb_radius="2dp"
             fancy:mfb_text="iTaxi"
             fancy:mfb_textColor="@color/button_background"
-            fancy:mfb_textSize="16sp" />
+            fancy:mfb_textSize="14sp" />
 
         <com.rilixtech.materialfancybutton.MaterialFancyButton
             android:id="@+id/Taxi"
@@ -144,7 +144,7 @@
             fancy:mfb_radius="2dp"
             fancy:mfb_text="Taxi"
             fancy:mfb_textColor="@color/button_background"
-            fancy:mfb_textSize="16sp" />
+            fancy:mfb_textSize="14sp" />
 
         <TextView
             android:id="@+id/brand_error"
@@ -187,7 +187,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:textAlignment="center"
-        android:textSize="14sp"
+        android:textSize="13sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/agree_button"

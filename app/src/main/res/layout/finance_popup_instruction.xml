@@ -31,7 +31,7 @@
         android:paddingStart="24dp"
         android:text="@string/popup_finance_title"
         android:textColor="@color/md_black_1000"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />

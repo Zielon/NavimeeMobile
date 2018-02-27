@@ -21,7 +21,7 @@
         android:paddingStart="24dp"
         android:text="@string/popup_events_title"
         android:textColor="@color/md_black_1000"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
@@ -31,11 +31,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:paddingEnd="24dp"
-        android:paddingStart="24dp"
+        android:paddingEnd="0dp"
+        android:paddingStart="12dp"
         android:text="@string/popup_events_info"
         android:textColor="@color/gray_font"
-        android:textSize="14sp"
+        android:textSize="13sp"
         app:layout_constraintTop_toBottomOf="@id/popup_events_title" />
 
     <RelativeLayout
@@ -43,10 +43,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginTop="38dp"
+        android:layout_marginTop="20dp"
+
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/popup_events_info">
+        <!--36-->
 
         <ImageView
             android:id="@+id/calendar_icon1"
@@ -54,7 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="12dp"
-            android:src="@drawable/category_outdoor_24dp" />
+            android:src="@drawable/ic_action_today_black_24dp" />
 
         <TextView
             android:id="@+id/popup_events_info1"
@@ -66,7 +68,7 @@
             android:paddingStart="12dp"
             android:text="@string/popup_events_info1"
             android:textColor="@color/gray_font"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
     </RelativeLayout>
 
@@ -86,7 +88,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="12dp"
-            android:src="@drawable/category_outdoor_24dp" />
+            android:src="@drawable/ic_event_available_black_24dp" />
 
         <TextView
             android:id="@+id/popup_events_info2"
@@ -98,7 +100,7 @@
             android:paddingStart="12dp"
             android:text="@string/popup_events_info2"
             android:textColor="@color/gray_font"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
     </RelativeLayout>
 
@@ -117,7 +119,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="14dp"
             android:layout_marginEnd="12dp"
             android:layout_marginTop="8dp"
             android:elevation="8dp"
@@ -138,7 +140,7 @@
             android:paddingStart="12dp"
             android:text="@string/popup_events_info3"
             android:textColor="@color/gray_font"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
     </RelativeLayout>
 
@@ -157,7 +159,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="14dp"
             android:layout_marginEnd="12dp"
             android:layout_marginTop="8dp"
             android:elevation="8dp"
@@ -178,7 +180,7 @@
             android:paddingStart="12dp"
             android:text="@string/popup_events_info4"
             android:textColor="@color/gray_font"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
     </RelativeLayout>
 
@@ -198,7 +200,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="12dp"
-            android:src="@drawable/category_outdoor_24dp" />
+            android:src="@mipmap/ranking_5" />
 
         <TextView
             android:id="@+id/popup_events_info5"
@@ -211,7 +213,7 @@
             android:paddingStart="12dp"
             android:text="@string/popup_events_info5"
             android:textColor="@color/gray_font"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
     </RelativeLayout>
 
@@ -220,7 +222,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="6dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/popup_events_info5_layout">
@@ -231,7 +233,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="12dp"
-            android:src="@drawable/category_outdoor_24dp" />
+            android:src="@mipmap/ranking_1" />
 
         <TextView
             android:id="@+id/popup_events_info6"
@@ -244,7 +246,7 @@
             android:paddingStart="12dp"
             android:text="@string/popup_events_info6"
             android:textColor="@color/gray_font"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
     </RelativeLayout>
 
@@ -272,7 +274,7 @@
         android:layout_margin="8dp"
         android:text="@string/popup_events_preference_info"
         android:textAlignment="center"
-        android:textSize="14sp"
+        android:textSize="13sp"
         android:textColor="@color/gray_font"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

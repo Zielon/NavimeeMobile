@@ -2,21 +2,21 @@
 <tabs>
     <tab
         activeColor="@color/settings_switch_color"
-        icon="@drawable/ic_action_whatshot"
+        icon="@drawable/ic_action_whatshot_black_24dp"
         id="@+id/tab_hotspot"
         inActiveColor="@color/colorLine"
         title="@string/hotspot" />
 
     <tab
         activeColor="@color/settings_switch_color"
-        icon="@drawable/ic_action_today"
+        icon="@drawable/ic_action_today_black_24dp"
         id="@+id/tab_events"
         inActiveColor="@color/colorLine"
         title="@string/events" />
 
     <tab
         activeColor="@color/settings_switch_color"
-        icon="@drawable/category_professional_24dp"
+        icon="@drawable/finance_24dp"
         id="@+id/tab_finance"
         inActiveColor="@color/colorLine"
         title="@string/finance" />

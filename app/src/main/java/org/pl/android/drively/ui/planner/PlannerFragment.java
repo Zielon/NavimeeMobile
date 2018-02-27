@@ -48,8 +48,8 @@ public class PlannerFragment extends BaseTabFragment {
     private MaterialDialog popup;
 
     int[] tabIcons = {
-            R.drawable.ic_action_today,
-            R.drawable.ic_action_today
+            R.drawable.ic_action_today_black_24dp,
+            R.drawable.ic_event_available_black_24dp
     };
 
     public static PlannerFragment newInstance() {
