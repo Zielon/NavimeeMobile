@@ -20,6 +20,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.ui.base.BaseActivity;
+import org.pl.android.drively.ui.base.tab.BaseTabFragment;
 import org.pl.android.drively.ui.chat.friends.FriendsFragment;
 import org.pl.android.drively.ui.chat.group.GroupFragment;
 import org.pl.android.drively.ui.main.MainActivity;
@@ -32,9 +33,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
-public class ChatFragment extends Fragment implements ChatMvpView {
+public class ChatFragment extends BaseTabFragment implements ChatMvpView {
 
 
     public static String STR_FRIEND_FRAGMENT = "FRIEND";
@@ -115,7 +114,7 @@ public class ChatFragment extends Fragment implements ChatMvpView {
 
     @Override
     public void showInstructionPopup() {
-        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.chat_popup_instruction, null);
         preparePopupLayout(view);
         popup = new MaterialDialog.Builder(getActivity())

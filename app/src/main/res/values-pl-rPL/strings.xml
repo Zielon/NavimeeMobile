@@ -142,7 +142,7 @@
     <!--POPUPS-->
     <!--HOTSPOT-->
     <string name="popup_hotspot_title">Na Hotspot zobaczysz gdzie znajdują się inni kierowcy w czasie rzeczywistym.</string>
-    <string name="popup_hotspot_agreement">Dobrowolnie wyrażam zgodę na anonimowe podzielenei się swoją
+    <string name="popup_hotspot_agreement">Dobrowolnie wyrażam zgodę na anonimowe podzielenie się swoją
         lokalizacją wyłącznie wewnątrz aplikacji Drively. Lokalizacja nie jest używana poza aplikacją. Tylko osoby,
         które wyraziły zgodę mogą zobaczyć położenie innych użytkowników</string>
     <string name="popup_hotspot_brand_question">Której aplikacji używasz najczęściej do pracy?</string>
@@ -150,6 +150,13 @@
     <string name="popup_hotspot_preference_info">Swoje preferencje możesz zmienić w Ustawieniach</string>
     <string name="popup_hotspot_localisation_info">DZIELENIE SIĘ LOKALIZACJĄ ZOSTANIE ZATRZYMANE PO 30MIN OD WYŁĄCZENIA APLIKACJI</string>
     <string name="brand_not_chose">Nie wybrałeś branży!</string>
+
+    <!--HOTSPOT SECOND-->
+    <string name="popup_hotspot_second_title">WSZYSTKO JAK NA DŁONI!</string>
+    <string name="popup_hotspot_second_info">Kolory oznaczają aplikacje!</string>
+    <string name="popup_hotspot_second_info2">Zmień widok na mapie!</string>
+    <string name="popup_hotspot_second_understood">ROZUMIEM</string>
+    <string name="popup_hotspot_second_preference_info">Swoje preferencje możesz zmienić w Ustawieniach</string>
 
     <!--CALENDAR-->
     <string name="popup_events_title">WSZYSTKO W JEDNYM MIEJSCU</string>

@@ -42,8 +42,6 @@ import devs.mulham.horizontalcalendar.HorizontalCalendarView;
 import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
 import timber.log.Timber;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 public class EventsFragment extends Fragment implements EventsMvpView {
 
     @Inject
@@ -275,7 +273,7 @@ public class EventsFragment extends Fragment implements EventsMvpView {
 
     @Override
     public void showInstructionPopup() {
-        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.events_popup_instruction, null);
         preparePopupLayout(view);
         popup = new MaterialDialog.Builder(getActivity())

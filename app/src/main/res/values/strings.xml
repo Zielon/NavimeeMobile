@@ -158,6 +158,13 @@
     <string name="popup_hotspot_localisation_info">Your preferences can be changed in Settings</string>
     <string name="brand_not_chose">You did not choose brand!</string>
 
+    <!--HOTSPOT SECOND-->
+    <string name="popup_hotspot_second_title">ALL AT AGLANCE!</string>
+    <string name="popup_hotspot_second_info">Colors mean application</string>
+    <string name="popup_hotspot_second_info2">Change your view on the map!</string>
+    <string name="popup_hotspot_second_understood">UNDERSTOOD</string>
+    <string name="popup_hotspot_second_preference_info">Your preferences can be changed in Settings</string>
+
     <!--CALENDAR-->
     <string name="popup_events_title">ALL IN ONE PLACE</string>
     <string name="popup_events_info">After opening the paintings in places where large events often happen:

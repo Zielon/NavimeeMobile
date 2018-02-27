@@ -2,7 +2,7 @@ package org.pl.android.drively.ui.chat;
 
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.injection.ConfigPersistent;
-import org.pl.android.drively.ui.base.BaseTabPresenter;
+import org.pl.android.drively.ui.base.tab.BaseTabPresenter;
 
 import javax.inject.Inject;
 

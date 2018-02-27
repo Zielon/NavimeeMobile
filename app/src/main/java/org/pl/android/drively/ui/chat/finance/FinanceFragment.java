@@ -2,8 +2,8 @@ package org.pl.android.drively.ui.chat.finance;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
@@ -15,15 +15,15 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.ui.base.BaseActivity;
+import org.pl.android.drively.ui.base.tab.BaseTabFragment;
+import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.ui.main.MainActivity;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
-public class FinanceFragment extends Fragment implements FinanceMvpView {
+public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
 
     @Inject
     FinancePresenter financePresenter;
@@ -32,7 +32,7 @@ public class FinanceFragment extends Fragment implements FinanceMvpView {
 
     private MainActivity context;
 
-    public static Fragment newInstance() {
+    public static FinanceFragment newInstance() {
         return new FinanceFragment();
     }
 
@@ -57,26 +57,34 @@ public class FinanceFragment extends Fragment implements FinanceMvpView {
         return fragmentView;
     }
 
-
     @Override
     public void showInstructionPopup() {
-        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.finance_popup_instruction, null);
         preparePopupLayout(view);
         popup = new MaterialDialog.Builder(getActivity())
                 .customView(view, false)
                 .backgroundColor(ContextCompat.getColor(getActivity(), R.color.transparent))
+                .dismissListener(dialog -> changeTabToHotSpot())
                 .show();
     }
 
     private void preparePopupLayout(View rootView) {
         rootView.findViewById(R.id.popup_finance_contact_us_button).setOnClickListener(view -> {
             changeTabToChat();
+            Intent intent = new Intent(context, ChatViewActivity.class);
+            // TODO: put specific chat id into intent data
+            context.startActivity(intent);
             popup.dismiss();
         });
+        rootView.findViewById(R.id.popup_finance_dismiss_dialog).setOnClickListener(view -> popup.dismiss());
     }
 
     private void changeTabToChat() {
         context.changeTabByResId(R.id.tab_chat);
+    }
+
+    private void changeTabToHotSpot() {
+        context.changeTabByResId(R.id.tab_hotspot);
     }
 }
