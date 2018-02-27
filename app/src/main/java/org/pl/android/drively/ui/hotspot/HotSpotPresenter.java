@@ -3,6 +3,7 @@ package org.pl.android.drively.ui.hotspot;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.ListenerRegistration;
 
 import org.pl.android.drively.contracts.repositories.UsersRepository;
@@ -169,11 +170,18 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
     }
 
     public void sendMessageWhenCityNotAvailable(CityNotAvailable city) {
-        mDataManager.getFirebaseService().getFirebaseFirestore()
+        DocumentReference cityRef = mDataManager.getFirebaseService().getFirebaseFirestore()
                 .collection(FirebasePaths.NOT_AVAILABLE_CITIES)
-                .add(city);
-    }
+                .document(city.getCity());
 
+        cityRef.get().addOnSuccessListener(missingCity ->{
+            if(missingCity.exists()){
+                CityNotAvailable cityNotAvailable = missingCity.toObject(CityNotAvailable.class);
+                cityRef.update("count", cityNotAvailable.getCount() + 1);
+            }else
+                cityRef.set(city);
+        });
+    }
 
     public void checkAvailableCities(String countryName, String city) {
         CityNotAvailable cityNotAvailable = new CityNotAvailable();
@@ -182,11 +190,10 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
 
             usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "country", countryName.toUpperCase());
             usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "city", city.toUpperCase());
+
             mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.AVAILABLE_CITIES)
                     .document(countryName.toUpperCase())
-                    .collection(city.toUpperCase())
-
-                    .get()
+                    .collection(city.toUpperCase()).get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             if(task.getResult().getDocuments().size() == 0) {
@@ -202,7 +209,7 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
                                 cityNotAvailable.setCountryName(countryName);
                                 getMvpView().showNotAvailableCity(cityNotAvailable);
                             }
-                        }*/
+                        }
                     });
         } catch (NoSuchFieldException e) {
             e.printStackTrace();

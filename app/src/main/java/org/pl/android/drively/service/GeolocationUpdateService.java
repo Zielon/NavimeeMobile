@@ -26,11 +26,6 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-
-/**
- * Created by Wojtek on 2018-02-18.
- */
-
 public class GeolocationUpdateService extends Service {
     private static final String TAG = "BOOMBOOMTESTGPS";
     private static final int LOCATION_INTERVAL = 10000;
