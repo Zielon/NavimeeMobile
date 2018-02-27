@@ -16,7 +16,6 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.app.ActionBar;
@@ -85,6 +84,7 @@ import org.pl.android.drively.data.model.eventbus.NotificationEvent;
 import org.pl.android.drively.data.model.maps.ClusterItemGoogleMap;
 import org.pl.android.drively.service.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BaseActivity;
+import org.pl.android.drively.ui.base.tab.BaseTabFragment;
 import org.pl.android.drively.ui.main.MainActivity;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.DetectedActivityToString;
@@ -116,7 +116,7 @@ import timber.log.Timber;
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static org.pl.android.drively.util.RxUtil.dispose;
 
-public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapLongClickListener,
+public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapLongClickListener,
         AdapterView.OnItemSelectedListener, RoutingListener, GeoQueryEventListener, AAH_FabulousFragment.Callbacks {
 
     private static final int[] COLORS = new int[]{R.color.primary_dark, R.color.primary, R.color.primary_light, R.color.accent, R.color.primary_dark_material_light};
@@ -1005,9 +1005,20 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                         mHotspotPresenter.saveUserCompany(selectedDriverType.getName());
                         EventBus.getDefault().post(new CompanySelectedEvent());
                         Log.d(context.getClass().getSimpleName(), "User agreed to the terms and is using " + selectedDriverType != null ? selectedDriverType.getName() : "no one" + ".");
+                        showSecondPopup();
                     }
                 });
         rootView.findViewById(R.id.dismiss_dialog).setOnClickListener(view -> popup.dismiss());
+    }
+
+    private void showSecondPopup() {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.hotspot_popup_instruction_second, null);
+        view.findViewById(R.id.popup_hotspot_second_agree_button).setOnClickListener(s -> popup.dismiss());
+        popup = new MaterialDialog.Builder(context)
+                .customView(view, false)
+                .backgroundColor(ContextCompat.getColor(context, R.color.transparent))
+                .show();
     }
 
     private class ErrorHandler implements Consumer<Throwable> {

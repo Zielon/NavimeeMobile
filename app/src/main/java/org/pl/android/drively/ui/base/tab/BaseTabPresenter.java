@@ -1,9 +1,9 @@
-package org.pl.android.drively.ui.base;
+package org.pl.android.drively.ui.base.tab;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.pl.android.drively.data.DataManager;
-import org.pl.android.drively.ui.base.tab.TabMvpView;
+import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.Const;
 
 public class BaseTabPresenter<T extends TabMvpView> extends BasePresenter<T> {
