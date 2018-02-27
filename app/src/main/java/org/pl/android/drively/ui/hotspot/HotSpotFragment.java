@@ -465,13 +465,10 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                 .subscribe(new DisplayTextOnViewAction(), new ErrorHandler());
 
         addressDisposable = addressObservable
-                .subscribe(new Consumer<Address>() {
-                    @Override
-                    public void accept(Address address) throws Exception {
-                        mHotspotPresenter.setLastLocation(address.getLocality());
-                        mHotspotPresenter.checkAvailableCities(address.getCountryName(), address.getLocality());
-                        Timber.d("address " + address);
-                    }
+                .subscribe(address -> {
+                    mHotspotPresenter.setLastLocation(address.getLocality());
+                    mHotspotPresenter.checkAvailableCities(address.getCountryName(), address.getLocality());
+                    Timber.d("address " + address);
                 }, new ErrorHandler());
 
     }
