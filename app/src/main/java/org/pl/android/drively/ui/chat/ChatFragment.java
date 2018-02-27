@@ -33,8 +33,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 public class ChatFragment extends BaseTabFragment implements ChatMvpView {
 
 
@@ -116,7 +114,7 @@ public class ChatFragment extends BaseTabFragment implements ChatMvpView {
 
     @Override
     public void showInstructionPopup() {
-        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.chat_popup_instruction, null);
         preparePopupLayout(view);
         popup = new MaterialDialog.Builder(getActivity())

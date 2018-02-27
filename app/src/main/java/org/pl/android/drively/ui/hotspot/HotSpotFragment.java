@@ -1001,7 +1001,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
     }
 
     private void showSecondPopup() {
-        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.hotspot_popup_instruction_second, null);
         view.findViewById(R.id.popup_hotspot_second_agree_button).setOnClickListener(s -> popup.dismiss());
         popup = new MaterialDialog.Builder(context)

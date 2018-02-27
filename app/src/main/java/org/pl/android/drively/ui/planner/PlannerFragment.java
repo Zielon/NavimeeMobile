@@ -30,8 +30,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 /**
  * Created by Wojtek on 2018-02-19.
  */
@@ -128,7 +126,7 @@ public class PlannerFragment extends BaseTabFragment {
 
     @Override
     public void showInstructionPopup() {
-        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.events_popup_instruction, null);
         preparePopupLayout(view);
         popup = new MaterialDialog.Builder(getActivity())

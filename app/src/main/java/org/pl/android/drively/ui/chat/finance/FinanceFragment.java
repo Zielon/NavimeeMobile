@@ -23,8 +23,6 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
 
     @Inject
@@ -61,13 +59,13 @@ public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
 
     @Override
     public void showInstructionPopup() {
-        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.finance_popup_instruction, null);
         preparePopupLayout(view);
         popup = new MaterialDialog.Builder(getActivity())
                 .customView(view, false)
                 .backgroundColor(ContextCompat.getColor(getActivity(), R.color.transparent))
-                .canceledOnTouchOutside(false)
+                .dismissListener(dialog -> changeTabToHotSpot())
                 .show();
     }
 
@@ -75,13 +73,18 @@ public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
         rootView.findViewById(R.id.popup_finance_contact_us_button).setOnClickListener(view -> {
             changeTabToChat();
             Intent intent = new Intent(context, ChatViewActivity.class);
-            // TODO: put intent with chat id
+            // TODO: put specific chat id into intent data
             context.startActivity(intent);
             popup.dismiss();
         });
+        rootView.findViewById(R.id.popup_finance_dismiss_dialog).setOnClickListener(view -> popup.dismiss());
     }
 
     private void changeTabToChat() {
         context.changeTabByResId(R.id.tab_chat);
+    }
+
+    private void changeTabToHotSpot() {
+        context.changeTabByResId(R.id.tab_hotspot);
     }
 }

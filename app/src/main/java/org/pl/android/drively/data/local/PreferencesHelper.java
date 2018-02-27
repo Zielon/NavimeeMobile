@@ -14,6 +14,8 @@ import org.pl.android.drively.util.Const;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import java8.util.stream.StreamSupport;
+
 import static org.pl.android.drively.util.ReflectionUtil.nameof;
 
 @Singleton
@@ -63,10 +65,8 @@ public class PreferencesHelper {
 
         sharedPreferences.edit().clear().apply();
         sharedPreferences.edit().putBoolean(Const.FIRST_START, false).apply();
-        for (String tabFragment : Const.TAB_FRAGMENTS) {
-            sharedPreferences.edit()
-                    .putBoolean(tabFragment + Const.FIRST_START_POPUP_SUFFIX, false).apply();
-        }
+        StreamSupport.stream(Const.TAB_FRAGMENTS).forEach(tabFragment -> sharedPreferences.edit()
+                .putBoolean(tabFragment + Const.FIRST_START_POPUP_SUFFIX, false).apply());
         sharedPreferences.edit().putString(Const.MESSAGING_TOKEN, messagingToken).apply();
         sharedPreferences.edit().putInt(APP_VERSION, appVersion).apply();
     }
