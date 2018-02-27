@@ -31,6 +31,7 @@ import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.eventbus.NotificationEvent;
 import org.pl.android.drively.ui.base.BaseActivityFragment;
 import org.pl.android.drively.ui.chat.ChatFragment;
+import org.pl.android.drively.ui.chat.finance.FinanceFragment;
 import org.pl.android.drively.ui.hotspot.HotSpotFragment;
 import org.pl.android.drively.ui.intro.IntroActivity;
 import org.pl.android.drively.ui.planner.PlannerFragment;
@@ -161,7 +162,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
                         selectedFragment = ChatFragment.newInstance();
                         break;
                     case R.id.tab_finance:
-                        selectedFragment = ChatFragment.newInstance();
+                        selectedFragment = FinanceFragment.newInstance();
                         break;
 
                 }
@@ -276,6 +277,11 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
                 // Do something with the contact here (bigger example below)
             }
         }
+    }
+
+    @Override
+    public void changeTabByResId(int tabResId) {
+        bottomBar.selectTabWithId(tabResId);
     }
 
     public BottomBar getBottomBar() {

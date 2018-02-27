@@ -2,6 +2,7 @@ package org.pl.android.drively.util;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.ui.chat.ChatFragment;
+import org.pl.android.drively.ui.chat.finance.FinanceFragment;
 import org.pl.android.drively.ui.hotspot.HotSpotFragment;
 import org.pl.android.drively.ui.planner.events.EventsFragment;
 
@@ -22,7 +23,7 @@ public class Const {
 
     public final static String FIRST_START_POPUP_SUFFIX = "FIRST_START_POPUP";
     public final static List<String> TAB_FRAGMENTS = Arrays.asList(HotSpotFragment.class.getSimpleName(),
-            EventsFragment.class.getSimpleName(), ChatFragment.class.getSimpleName());
+            EventsFragment.class.getSimpleName(), ChatFragment.class.getSimpleName(), FinanceFragment.class.getSimpleName());
 
     public static int REQUEST_CODE_REGISTER = 2000;
     public static String STR_EXTRA_ACTION_LOGIN = "login";

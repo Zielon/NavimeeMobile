@@ -13,13 +13,25 @@
     android:paddingTop="16dp">
     
     <android.support.v4.widget.Space
+        android:id="@+id/top_space"
         android:layout_width="match_parent"
         android:layout_height="4dp" />
+
+    <ImageView
+        android:id="@+id/dismiss_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:src="@drawable/category_outdoor_24dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <TextView
         android:id="@+id/popup_hotspot_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/top_space"
         android:paddingEnd="24dp"
         android:layout_marginTop="16dp"
         android:paddingStart="24dp"
@@ -133,6 +145,21 @@
             fancy:mfb_text="Taxi"
             fancy:mfb_textColor="@color/button_background"
             fancy:mfb_textSize="16sp" />
+
+        <TextView
+            android:id="@+id/brand_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/Taxi"
+            android:textColor="@color/md_red_900"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:visibility="gone"
+            android:text="@string/brand_not_chose"
+            />
 
     </android.support.constraint.ConstraintLayout>
 
