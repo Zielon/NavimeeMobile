@@ -10,12 +10,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.IdRes;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -30,12 +30,13 @@ import org.greenrobot.eventbus.EventBus;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.eventbus.NotificationEvent;
 import org.pl.android.drively.ui.base.BaseActivityFragment;
+import org.pl.android.drively.ui.base.tab.BaseTabFragment;
 import org.pl.android.drively.ui.chat.ChatFragment;
-import org.pl.android.drively.ui.planner.PlannerFragment;
-import org.pl.android.drively.ui.planner.dayschedule.DayScheduleFragment;
-import org.pl.android.drively.ui.planner.events.EventsFragment;
+import org.pl.android.drively.ui.chat.finance.FinanceFragment;
 import org.pl.android.drively.ui.hotspot.HotSpotFragment;
 import org.pl.android.drively.ui.intro.IntroActivity;
+import org.pl.android.drively.ui.planner.PlannerFragment;
+import org.pl.android.drively.ui.settings.SettingsActivity;
 import org.pl.android.drively.ui.welcome.WelcomeActivity;
 import org.pl.android.drively.util.NetworkUtil;
 
@@ -54,6 +55,8 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     double lat, lng;
     String name, count;
     BottomBar bottomBar;
+
+    private BaseTabFragment selectedFragment;
 
     // @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
 
@@ -141,7 +144,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
-                Fragment selectedFragment = null;
+                selectedFragment = null;
                 switch (tabId) {
                     case R.id.tab_events:
                         selectedFragment = PlannerFragment.newInstance();
@@ -156,11 +159,14 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
                             bundle.putDouble("lng", lng);
                             bundle.putString("name", name);
                             bundle.putString("count", count);
-                            selectedFragment.setArguments(bundle);
+                            ((HotSpotFragment)selectedFragment).setArguments(bundle);
                         }
                         break;
                     case R.id.tab_chat:
                         selectedFragment = ChatFragment.newInstance();
+                        break;
+                    case R.id.tab_finance:
+                        selectedFragment = FinanceFragment.newInstance();
                         break;
 
                 }
@@ -277,7 +283,35 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         }
     }
 
+    @Override
+    public void changeTabByResId(int tabResId) {
+        bottomBar.selectTabWithId(tabResId);
+    }
+
     public BottomBar getBottomBar() {
         return bottomBar;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        switch(id) {
+            case R.id.user_settings: {
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivityForResult(intent, SETTINGS_REQUEST);
+                return true;
+            }
+            case R.id.show_instruction: {
+                selectedFragment.showInstructionPopup();
+                return true;
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

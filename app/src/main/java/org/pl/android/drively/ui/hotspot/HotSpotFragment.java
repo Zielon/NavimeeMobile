@@ -16,7 +16,7 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
@@ -68,6 +68,7 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
+import com.rilixtech.materialfancybutton.MaterialFancyButton;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
 import org.greenrobot.eventbus.EventBus;
@@ -82,6 +83,7 @@ import org.pl.android.drively.data.model.eventbus.NotificationEvent;
 import org.pl.android.drively.data.model.maps.ClusterItemGoogleMap;
 import org.pl.android.drively.service.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BaseActivity;
+import org.pl.android.drively.ui.base.tab.BaseTabFragment;
 import org.pl.android.drively.ui.main.MainActivity;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.DetectedActivityToString;
@@ -113,7 +115,7 @@ import timber.log.Timber;
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static org.pl.android.drively.util.RxUtil.dispose;
 
-public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapLongClickListener,
+public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapLongClickListener,
         AdapterView.OnItemSelectedListener, RoutingListener, GeoQueryEventListener, AAH_FabulousFragment.Callbacks {
 
     private static final int[] COLORS = new int[]{R.color.primary_dark, R.color.primary, R.color.primary_light, R.color.accent, R.color.primary_dark_material_light};
@@ -172,6 +174,8 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     private HashMap<String, ClusterItemGoogleMap> eventsOnMap = new HashMap<>();
     private HashMap<String, Marker> usersMarkers = new HashMap<>();
     private Context context;
+    private Const.DriverType selectedDriverType;
+    private MaterialDialog popup;
 
     public static HotSpotFragment newInstance() {
         HotSpotFragment fragment = new HotSpotFragment();
@@ -955,8 +959,53 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                     .build();
             routing.execute();
         }
+    }
 
+    @Override
+    public void showInstructionPopup() {
+        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.hotspot_popup_instruction, null);
+        preparePopupLayout(view);
+        popup = new MaterialDialog.Builder(context)
+                .customView(view, false)
+                .backgroundColor(ContextCompat.getColor(context, R.color.transparent))
+                .show();
+    }
 
+    private void preparePopupLayout(View rootView) {
+        for (Const.DriverType driverType : Const.DriverType.values()) {
+            rootView.findViewById(driverType.getButtonResId()).setOnClickListener(view -> {
+                for (Const.DriverType driverTypeDeselect : Const.DriverType.values()) {
+                    rootView.findViewById(driverTypeDeselect.getButtonResId()).setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+                    ((MaterialFancyButton) rootView.findViewById(driverTypeDeselect.getButtonResId())).setTextColor(ContextCompat.getColor(context, R.color.filters_buttons));
+                }
+                view.setBackgroundColor(ContextCompat.getColor(context, R.color.filters_buttons));
+                ((MaterialFancyButton) view).setTextColor(ContextCompat.getColor(context, R.color.white));
+                selectedDriverType = driverType;
+                rootView.findViewById(R.id.brand_error).setVisibility(View.GONE);
+            });
+        }
+        rootView.findViewById(R.id.agree_button)
+                .setOnClickListener(view -> {
+                    if (selectedDriverType == null) {
+                        rootView.findViewById(R.id.brand_error).setVisibility(View.VISIBLE);
+                    } else {
+                        popup.dismiss();
+                        Log.d(context.getClass().getSimpleName(), "User agreed to the terms and is using " + selectedDriverType != null ? selectedDriverType.getName() : "no one" + ".");
+                        showSecondPopup();
+                    }
+                });
+        rootView.findViewById(R.id.dismiss_dialog).setOnClickListener(view -> popup.dismiss());
+    }
+
+    private void showSecondPopup() {
+        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.hotspot_popup_instruction_second, null);
+        view.findViewById(R.id.popup_hotspot_second_agree_button).setOnClickListener(s -> popup.dismiss());
+        popup = new MaterialDialog.Builder(context)
+                .customView(view, false)
+                .backgroundColor(ContextCompat.getColor(context, R.color.transparent))
+                .show();
     }
 
     private class ErrorHandler implements Consumer<Throwable> {
