@@ -17,10 +17,12 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import org.pl.android.drively.R;
+import org.pl.android.drively.service.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.regulations.RegulationsActivity;
 import org.pl.android.drively.ui.settings.personalsettings.SettingsPreferencesActivity;
 import org.pl.android.drively.ui.settings.user.UserSettingsActivity;
+import org.pl.android.drively.util.FirebasePaths;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -152,6 +154,11 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
     public void onLogout() {
         Intent resultInt = new Intent();
         resultInt.putExtra("ACTION", "LOGOUT");
+        Intent intentGeoService = new Intent(this, GeolocationUpdateService.class);
+        stopService(intentGeoService);
+        if(GeolocationUpdateService.FIREBASE_KEY != null && !GeolocationUpdateService.FIREBASE_KEY.isEmpty()) {
+            settingsPresenter.deleteGeolocation();
+        }
         setResult(Activity.RESULT_OK, resultInt);
         finish();
     }

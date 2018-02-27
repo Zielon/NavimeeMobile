@@ -37,7 +37,7 @@ public class GeolocationUpdateService extends Service {
     private static final float LOCATION_DISTANCE = 10f;
     private static final long TIME_FOR_SERVICE = 60000;//1800000;
     private static String USER_COMPANY;
-    private static String FIREBASE_KEY;
+    public static String FIREBASE_KEY;
     private DatabaseReference databaseReference;
     GeoFire geoFire;
     @Inject
