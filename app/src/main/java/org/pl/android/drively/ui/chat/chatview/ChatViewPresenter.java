@@ -98,7 +98,7 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
         mDataManager.getFirebaseService().getFirebaseFirestore()
                 .collection(messagePath)
                 .document(mDataManager.getPreferencesHelper().getCountry())
-                .collection(roomId).add(newMessage)
+                .collection(roomId.toUpperCase()).add(newMessage)
                 .addOnSuccessListener(documentReference -> Timber.w("DocumentSnapshot successfully written!"))
                 .addOnFailureListener(e -> Timber.w("Error writing document", e));
     }

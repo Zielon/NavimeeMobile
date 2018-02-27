@@ -36,7 +36,6 @@ import javax.inject.Inject;
 
 import static org.pl.android.drively.util.BitmapUtils.getCircular;
 
-
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
@@ -50,29 +49,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         BoilerplateApplication.get(this).getComponent().inject(this);
     }
 
-    /**
-     * Called when message is received.
-     *
-     * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
-     */
-    // [START receive_message]
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        // [START_EXCLUDE]
-        // There are two types of messages data messages and notification messages. Data messages are handled
-        // here in onMessageReceived whether the app is in the foreground or background. Data messages are the type
-        // traditionally used with GCM. Notification messages are only received here in onMessageReceived when the app
-        // is in the foreground. When the app is in the background an automatically generated notification is displayed.
-        // When the user taps on the notification they are returned to the app. Messages containing both notification
-        // and data payloads are treated as notification messages. The Firebase console always sends notification
-        // messages. For more see: https://firebase.google.com/docs/cloud-messaging/concept-options
-        // [END_EXCLUDE]
 
-        // TODO(developer): Handle FCM messages here.
-        // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
-        // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
@@ -80,8 +61,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             handleNow();
         }
 
-        // Check if message contains a notification payload.
-        //if (remoteMessage.getNotification() != null) {
         Log.d(TAG, "Data manager in service: " + dataManager.toString());
         Const.NotificationsType type = Const.NotificationsType.valueOf(remoteMessage.getData().get("type"));
         final ObjectMapper mapper = new ObjectMapper();
@@ -105,56 +84,46 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 break;
             case MESSAGE_PRIVATE:
                 final MessageNotificationFCM messageNotificationPrivate = mapper.convertValue(remoteMessage.getData(), MessageNotificationFCM.class);
-                sendNotificationFromChat(messageNotificationPrivate.getNameSender(), messageNotificationPrivate.getIdSender(), messageNotificationPrivate.getText(),
-                        messageNotificationPrivate.getAvatar(), messageNotificationPrivate.getIdRoom(), false);
+                sendNotificationFromChat(messageNotificationPrivate, false);
                 break;
             case MESSAGE_GROUP:
                 final MessageNotificationGroupFCM messageNotificationGroup = mapper.convertValue(remoteMessage.getData(), MessageNotificationGroupFCM.class);
-                sendNotificationFromChat(messageNotificationGroup.getRoomName(), messageNotificationGroup.getIdSender(), messageNotificationGroup.getText(),
-                        messageNotificationGroup.getAvatar(), messageNotificationGroup.getIdRoom(), true);
+                sendNotificationFromChat(messageNotificationGroup, true);
                 break;
         }
     }
 
-
-    /**
-     * Schedule a job using FirebaseJobDispatcher.
-     */
-
-    /**
-     * Handle time allotted to BroadcastReceivers.
-     */
     private void handleNow() {
         Log.d(TAG, "Short lived task is done.");
     }
 
-    private void sendNotificationFromChat(String name, String uderId, String text, String avatarPath, String roomId, boolean isGroup) {
+    private void sendNotificationFromChat(MessageNotificationFCM fcm, boolean isGroup) {
         if (!ChatViewActivity.active) {
-            dataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + avatarPath)
+            dataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + fcm.getAvatar())
                     .getBytes(Const.FIVE_MEGABYTE)
                     .addOnSuccessListener(bytes -> {
                         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        sendNotificationFromChatWithIcon(name, text, uderId, bitmap, roomId, isGroup);
+                        sendNotificationFromChatWithIcon(fcm, bitmap, isGroup);
 
                     }).addOnFailureListener(exception -> {
                 Bitmap bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.default_avatar);
-                sendNotificationFromChatWithIcon(name, text, uderId, bitmap, roomId, isGroup);
+                sendNotificationFromChatWithIcon(fcm, bitmap, isGroup);
             });
         }
     }
 
-    private void sendNotificationFromChatWithIcon(String name, String text, String userId, Bitmap bitmap, String roomId, boolean isGroup) {
+    private void sendNotificationFromChatWithIcon(MessageNotificationFCM fcm, Bitmap bitmap, boolean isGroup) {
         Intent intent = new Intent(this, ChatViewActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, name);
+        intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, fcm.getNameSender());
         ArrayList<CharSequence> idFriend = new ArrayList<>();
         Bitmap avatar = getCircular(bitmap);
-        idFriend.add(userId);
+        idFriend.add(fcm.getIdSender());
         intent.putCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID, idFriend);
-        intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, roomId);
+        intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, fcm.getIdRoom());
         intent.putExtra(Const.INTENT_KEY_IS_GROUP_CHAT, isGroup);
         ChatViewActivity.bitmapAvataFriend = new HashMap<>();
-        ChatViewActivity.bitmapAvataFriend.put(userId, avatar);
+        ChatViewActivity.bitmapAvataFriend.put(fcm.getIdSender(), avatar);
 
         PendingIntent navigationIntent = TaskStackBuilder.create(this)
                 .addParentStack(ChatViewActivity.class)
@@ -163,30 +132,26 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
+        // TEMPORARY SOLUTION
+        String nameSender = isGroup ? fcm.getNameSender() + " napisał na " + fcm.getIdRoom() : fcm.getNameSender();
+
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.notification_d)
                 .setColor(getResources().getColor(R.color.primary_dark))
                 .setLargeIcon(avatar)
-                .setContentTitle(name)
-                .setContentText(text)
+                .setContentTitle(nameSender)
+                .setContentText(fcm.getText())
                 .setAutoCancel(true)
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setSound(defaultSoundUri)
                 .addAction(R.drawable.ic_action_whatshot, getResources().getString(R.string.check_in_app), navigationIntent)
                 .setContentIntent(navigationIntent);
 
-
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(Integer.parseInt(roomId), notificationBuilder.build());
+        notificationManager.notify(fcm.getIdRoom().hashCode(), notificationBuilder.build());
     }
 
-
-    // [END rec
-
-    /**
-     * Create and show a simple notification containing the received FCM message.
-     */
     private void sendNotification(String title, String dateTime, String lat, String lng) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -218,6 +183,4 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
-
-
 }
