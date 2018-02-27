@@ -12,7 +12,7 @@ import org.pl.android.drively.data.model.CityNotAvailable;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.Feedback;
 import org.pl.android.drively.data.model.FourSquarePlace;
-import org.pl.android.drively.ui.base.BasePresenter;
+import org.pl.android.drively.ui.base.BaseTabPresenter;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
 import org.pl.android.drively.util.ViewUtil;
@@ -31,12 +31,9 @@ import timber.log.Timber;
 
 import static org.pl.android.drively.util.ReflectionUtil.nameof;
 
-public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
+public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
 
-
-    private final DataManager mDataManager;
     private final UsersRepository usersRepository;
-
     private ListenerRegistration mListener;
 
     private Set<Const.HotSpotType> filterList = new HashSet<>();
@@ -185,24 +182,24 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
 
             usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "country", countryName.toUpperCase());
             usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "city", city.toUpperCase());
+            mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.AVAILABLE_CITIES)
+                    .document(countryName.toUpperCase())
+                    .collection(city.toUpperCase())
 
-            mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.AVAILABLE_CITIES_NATIVE)
-                    .document(countryName)
                     .get()
                     .addOnCompleteListener(task -> {
-                    /*    if (task.isSuccessful() && task.getResult().exists()) {
-                            CityAvailable citiesList = task.getResult().toObject(CityAvailable.class);
-                            if (!citiesList.getCities().contains(city.toUpperCase())) {
+                        if (task.isSuccessful()) {
+                            if(task.getResult().getDocuments().size() == 0) {
                                 if (getMvpView() != null) {
                                     cityNotAvailable.setCity(city);
-                                    cityNotAvailable.setCountryCode(countryName);
+                                    cityNotAvailable.setCountryName(countryName);
                                     getMvpView().showNotAvailableCity(cityNotAvailable);
                                 }
                             }
                         } else {
                             if (getMvpView() != null) {
                                 cityNotAvailable.setCity(city);
-                                cityNotAvailable.setCountryCode(countryName);
+                                cityNotAvailable.setCountryName(countryName);
                                 getMvpView().showNotAvailableCity(cityNotAvailable);
                             }
                         }*/
@@ -210,5 +207,13 @@ public class HotSpotPresenter extends BasePresenter<HotSpotMvpView> {
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
+    }
+
+    public void saveUserCompany(String name) {
+        mDataManager.getPreferencesHelper().setValue(Const.USER_COMPANY, name);
+    }
+
+    public String getUserCompany() {
+        return mDataManager.getPreferencesHelper().getValueString(Const.USER_COMPANY);
     }
 }

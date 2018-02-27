@@ -1,31 +1,28 @@
-package org.pl.android.drively.ui.chat;
+package org.pl.android.drively.ui.chat.finance;
 
 import org.pl.android.drively.data.DataManager;
-import org.pl.android.drively.injection.ConfigPersistent;
 import org.pl.android.drively.ui.base.BaseTabPresenter;
 
 import javax.inject.Inject;
 
 import io.reactivex.disposables.Disposable;
 
-@ConfigPersistent
-public class ChatPresenter extends BaseTabPresenter<ChatMvpView> {
+public class FinancePresenter extends BaseTabPresenter<FinanceMvpView>{
 
     private Disposable mDisposable;
 
     @Inject
-    public ChatPresenter(DataManager dataManager) {
+    public FinancePresenter(DataManager dataManager) {
         mDataManager = dataManager;
     }
 
     @Override
-    public void attachView(ChatMvpView mvpView) {
-        super.attachView(mvpView);
-    }
+    public void attachView(FinanceMvpView mvpView) {super.attachView(mvpView); }
 
     @Override
     public void detachView() {
         super.detachView();
         if (mDisposable != null) mDisposable.dispose();
     }
+
 }

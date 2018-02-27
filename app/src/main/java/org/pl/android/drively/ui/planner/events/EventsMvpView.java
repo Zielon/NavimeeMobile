@@ -2,10 +2,11 @@ package org.pl.android.drively.ui.planner.events;
 
 import org.joda.time.DateTime;
 import org.pl.android.drively.data.model.Event;
-import org.pl.android.drively.ui.base.MvpView;
+import org.pl.android.drively.ui.base.TabMvpView;
+
 import java.util.List;
 
-public interface EventsMvpView extends MvpView {
+public interface EventsMvpView extends TabMvpView {
 
 
     void showEventsEmpty();

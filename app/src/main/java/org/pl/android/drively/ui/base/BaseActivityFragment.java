@@ -24,10 +24,15 @@ public class BaseActivityFragment extends BaseActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.user_settings) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivityForResult(intent, SETTINGS_REQUEST);
-            return true;
+        switch(id) {
+            case R.id.user_settings: {
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivityForResult(intent, SETTINGS_REQUEST);
+                return true;
+            }
+            case R.id.show_instruction: {
+                return true;
+            }
         }
 
         return super.onOptionsItemSelected(item);

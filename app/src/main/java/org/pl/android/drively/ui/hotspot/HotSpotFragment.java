@@ -17,6 +17,7 @@ import android.os.SystemClock;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
@@ -68,6 +69,7 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
+import com.rilixtech.materialfancybutton.MaterialFancyButton;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
 import org.greenrobot.eventbus.EventBus;
@@ -78,6 +80,7 @@ import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.CityNotAvailable;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.FourSquarePlace;
+import org.pl.android.drively.data.model.eventbus.CompanySelectedEvent;
 import org.pl.android.drively.data.model.eventbus.NotificationEvent;
 import org.pl.android.drively.data.model.maps.ClusterItemGoogleMap;
 import org.pl.android.drively.service.GeolocationUpdateService;
@@ -155,6 +158,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     double lngNotification;
     boolean isFromNotification = false;
     String notificationName, notificationCount;
+    boolean isCityChecked = false;
     @Inject
     HotSpotPresenter mHotspotPresenter;
     private GoogleMap googleMap;
@@ -172,6 +176,8 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     private HashMap<String, ClusterItemGoogleMap> eventsOnMap = new HashMap<>();
     private HashMap<String, Marker> usersMarkers = new HashMap<>();
     private Context context;
+    private Const.DriverType selectedDriverType;
+    private MaterialDialog popup;
 
     public static HotSpotFragment newInstance() {
         HotSpotFragment fragment = new HotSpotFragment();
@@ -467,7 +473,10 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         addressDisposable = addressObservable
                 .subscribe(address -> {
                     mHotspotPresenter.setLastLocation(address.getLocality());
-                    mHotspotPresenter.checkAvailableCities(address.getCountryName(), address.getLocality());
+                        if(!isCityChecked) {
+                            mHotspotPresenter.checkAvailableCities(address.getCountryName(), address.getLocality());
+                            isCityChecked = true;
+                        }
                     Timber.d("address " + address);
                 }, new ErrorHandler());
 
@@ -590,9 +599,6 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     public void onEvent(NotificationEvent notificationEvent) {
         route(latLngCurrent, new LatLng(notificationEvent.getLat(), notificationEvent.getLng()), notificationEvent.getName(), notificationEvent.getCount());
     }
-
-    ;
-
 
     @Override
     public void onPause() {
@@ -798,7 +804,17 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
             Timber.i("USER LOCATION");
             if (!usersMarkers.containsKey(key)) {
                 MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude));
-                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_directions_car_black_24dp));
+                if(key.contains(Const.DriverType.UBER.getName())) {
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_directions_car_black_24dp));
+                } else if(key.contains(Const.DriverType.ITAXI.getName())) {
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_float_add_group));
+                } else if(key.contains(Const.DriverType.MY_TAXI.getName())) {
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_add_friend));
+                } else if(key.contains(Const.DriverType.TAXI.getName())) {
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_add_circle_outline_white_24dp));
+                } else {
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_float_add_group));
+                }
                 Marker marker = googleMap.addMarker(markerOptions);
                 usersMarkers.put(key, marker);
             }
@@ -954,8 +970,44 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
                     .build();
             routing.execute();
         }
+    }
 
+    @Override
+    public void showInstructionPopup() {
+        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.hotspot_popup_instruction, null);
+        preparePopupLayout(view);
+        popup = new MaterialDialog.Builder(context)
+                .customView(view, false)
+                .backgroundColor(ContextCompat.getColor(context, R.color.dark_transparent))
+                .show();
+    }
 
+    private void preparePopupLayout(View rootView) {
+        for (Const.DriverType driverType : Const.DriverType.values()) {
+            rootView.findViewById(driverType.getButtonResId()).setOnClickListener(view -> {
+                for (Const.DriverType driverTypeDeselect : Const.DriverType.values()) {
+                    rootView.findViewById(driverTypeDeselect.getButtonResId()).setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+                    ((MaterialFancyButton) rootView.findViewById(driverTypeDeselect.getButtonResId())).setTextColor(ContextCompat.getColor(context, R.color.filters_buttons));
+                }
+                view.setBackgroundColor(ContextCompat.getColor(context, R.color.filters_buttons));
+                ((MaterialFancyButton) view).setTextColor(ContextCompat.getColor(context, R.color.white));
+                selectedDriverType = driverType;
+                rootView.findViewById(R.id.brand_error).setVisibility(View.GONE);
+            });
+        }
+        rootView.findViewById(R.id.agree_button)
+                .setOnClickListener(view -> {
+                    if (selectedDriverType == null) {
+                        rootView.findViewById(R.id.brand_error).setVisibility(View.VISIBLE);
+                    } else {
+                        popup.dismiss();
+                        mHotspotPresenter.saveUserCompany(selectedDriverType.getName());
+                        EventBus.getDefault().post(new CompanySelectedEvent());
+                        Log.d(context.getClass().getSimpleName(), "User agreed to the terms and is using " + selectedDriverType != null ? selectedDriverType.getName() : "no one" + ".");
+                    }
+                });
+        rootView.findViewById(R.id.dismiss_dialog).setOnClickListener(view -> popup.dismiss());
     }
 
     private class ErrorHandler implements Consumer<Throwable> {

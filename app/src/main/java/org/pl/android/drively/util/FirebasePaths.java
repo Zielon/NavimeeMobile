@@ -18,4 +18,5 @@ public class FirebasePaths {
     public static final String AVAILABLE_CITIES_NATIVE = "AVAILABLE_CITIES_NATIVE";
     public static final String NOT_AVAILABLE_CITIES = "NOT_AVAILABLE_CITIES";
     public static final String BY_CITY = "BY_CITY";
+    public static final String UBER = "UBER";
 }
