@@ -3,9 +3,9 @@ package org.pl.android.drively.ui.hotspot;
 import org.pl.android.drively.data.model.CityNotAvailable;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.FourSquarePlace;
-import org.pl.android.drively.ui.base.MvpView;
+import org.pl.android.drively.ui.base.TabMvpView;
 
-public interface HotSpotMvpView extends MvpView {
+public interface HotSpotMvpView extends TabMvpView {
 
     void showEventOnMap(Event event);
 

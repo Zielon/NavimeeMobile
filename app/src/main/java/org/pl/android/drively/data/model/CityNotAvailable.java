@@ -3,7 +3,7 @@ package org.pl.android.drively.data.model;
 
 public class CityNotAvailable {
     private String city;
-    private String countryCode;
+    private String countryName;
 
     public CityNotAvailable() {
     }
@@ -16,11 +16,11 @@ public class CityNotAvailable {
         this.city = city;
     }
 
-    public String getCountryCode() {
-        return countryCode;
+    public String getCountryName() {
+        return countryName;
     }
 
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
     }
 }

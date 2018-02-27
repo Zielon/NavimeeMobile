@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -15,10 +17,12 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import org.pl.android.drively.R;
+import org.pl.android.drively.service.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.regulations.RegulationsActivity;
 import org.pl.android.drively.ui.settings.personalsettings.SettingsPreferencesActivity;
 import org.pl.android.drively.ui.settings.user.UserSettingsActivity;
+import org.pl.android.drively.util.FirebasePaths;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +107,7 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
                             Timber.d(String.valueOf(position));
                             intent = new Intent(SettingsActivity.this, UserSettingsActivity.class);
                         } else if (position == 3) {
-                            settingsPresenter.logout();
+                            showLogoutPopup();
                         } else if (position == 4) {
                             Timber.d(String.valueOf(position));
                             intent = new Intent(SettingsActivity.this, RegulationsActivity.class);
@@ -123,6 +127,20 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
         ((ViewGroup) findViewById(R.id.frame_container)).addView(drawer.getSlider());
     }
 
+    private void showLogoutPopup() {
+        new MaterialDialog.Builder(this)
+                .backgroundColor(ContextCompat.getColor(this, R.color.white))
+                .positiveColor(ContextCompat.getColor(this, R.color.md_black_1000))
+                .negativeColor(ContextCompat.getColor(this, R.color.md_black_1000))
+                .contentColor(ContextCompat.getColor(this, R.color.md_black_1000))
+                .positiveText(R.string.logout_popup_positive)
+                .negativeText(R.string.logout_popup_negative)
+                .content(R.string.logout_popup_content)
+                .onPositive((dialog, which) -> settingsPresenter.logout())
+                .onNegative((dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
     @Override
     public void onSuccess() {
     }
@@ -136,6 +154,11 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
     public void onLogout() {
         Intent resultInt = new Intent();
         resultInt.putExtra("ACTION", "LOGOUT");
+        Intent intentGeoService = new Intent(this, GeolocationUpdateService.class);
+        stopService(intentGeoService);
+        if(GeolocationUpdateService.FIREBASE_KEY != null && !GeolocationUpdateService.FIREBASE_KEY.isEmpty()) {
+            settingsPresenter.deleteGeolocation();
+        }
         setResult(Activity.RESULT_OK, resultInt);
         finish();
     }
