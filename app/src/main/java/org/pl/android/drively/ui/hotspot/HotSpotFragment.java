@@ -971,7 +971,7 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
     @Override
     public void showInstructionPopup() {
         LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.hotspot_popup_first_start, null);
+        View view = inflater.inflate(R.layout.hotspot_popup_instruction, null);
         preparePopupLayout(view);
         popup = new MaterialDialog.Builder(context)
                 .customView(view, false)
@@ -984,20 +984,26 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
             rootView.findViewById(driverType.getButtonResId()).setOnClickListener(view -> {
                 for (Const.DriverType driverTypeDeselect : Const.DriverType.values()) {
                     rootView.findViewById(driverTypeDeselect.getButtonResId()).setBackgroundColor(ContextCompat.getColor(context, R.color.white));
-                    ((MaterialFancyButton)rootView.findViewById(driverTypeDeselect.getButtonResId())).setTextColor(ContextCompat.getColor(context, R.color.filters_buttons));
+                    ((MaterialFancyButton) rootView.findViewById(driverTypeDeselect.getButtonResId())).setTextColor(ContextCompat.getColor(context, R.color.filters_buttons));
                 }
                 view.setBackgroundColor(ContextCompat.getColor(context, R.color.filters_buttons));
-                ((MaterialFancyButton)view).setTextColor(ContextCompat.getColor(context, R.color.white));
+                ((MaterialFancyButton) view).setTextColor(ContextCompat.getColor(context, R.color.white));
                 selectedDriverType = driverType;
+                rootView.findViewById(R.id.brand_error).setVisibility(View.GONE);
             });
         }
         rootView.findViewById(R.id.agree_button)
                 .setOnClickListener(view -> {
-                    popup.dismiss();
-                    mHotspotPresenter.saveUserCompany(selectedDriverType.getName());
-                    EventBus.getDefault().post(new CompanySelectedEvent());
-                    Log.d(context.getClass().getSimpleName(), "User agreed to the terms and is using " + selectedDriverType != null ? selectedDriverType.getName() : "no one" + ".");
+                    if (selectedDriverType == null) {
+                        rootView.findViewById(R.id.brand_error).setVisibility(View.VISIBLE);
+                    } else {
+                        popup.dismiss();
+                        mHotspotPresenter.saveUserCompany(selectedDriverType.getName());
+                        EventBus.getDefault().post(new CompanySelectedEvent());
+                        Log.d(context.getClass().getSimpleName(), "User agreed to the terms and is using " + selectedDriverType != null ? selectedDriverType.getName() : "no one" + ".");
+                    }
                 });
+        rootView.findViewById(R.id.dismiss_dialog).setOnClickListener(view -> popup.dismiss());
     }
 
     private class ErrorHandler implements Consumer<Throwable> {
