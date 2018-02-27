@@ -35,9 +35,10 @@ public class GeolocationUpdateService extends Service {
     private static final String TAG = "BOOMBOOMTESTGPS";
     private static final int LOCATION_INTERVAL = 10000;
     private static final float LOCATION_DISTANCE = 10f;
-    private static final long TIME_FOR_SERVICE = 20000;//1800000;
+    private static final long TIME_FOR_SERVICE = 60000;//1800000;
     private static String USER_COMPANY;
-
+    private static String FIREBASE_KEY;
+    private DatabaseReference databaseReference;
     GeoFire geoFire;
     @Inject
     DataManager dataManager;
@@ -66,7 +67,7 @@ public class GeolocationUpdateService extends Service {
         super.onCreate();
         BoilerplateApplication.get(this).getComponent().inject(this);
         EventBus.getDefault().register(this);
-        DatabaseReference databaseReference = dataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.USER_LOCATION);
+        databaseReference = dataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.USER_LOCATION);
         geoFire = new GeoFire(databaseReference);
         initializeLocationManager();
         final Handler handler = new Handler();
@@ -77,6 +78,10 @@ public class GeolocationUpdateService extends Service {
                 stopSelf();
             }
         }, TIME_FOR_SERVICE);
+        USER_COMPANY = dataManager.getPreferencesHelper().getValueString(Const.USER_COMPANY);
+        if(!USER_COMPANY.isEmpty()) {
+            startLocationUpdates();
+        }
     }
 
 
@@ -86,6 +91,7 @@ public class GeolocationUpdateService extends Service {
         Timber.e("onDestroy");
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        databaseReference.child(FIREBASE_KEY).removeValue();
         if (mLocationManager != null) {
             for (int i = 0; i < mLocationListeners.length; i++) {
                 try {
@@ -98,9 +104,7 @@ public class GeolocationUpdateService extends Service {
     }
 
     @SuppressLint("TimberArgCount")
-    @Subscribe
-    public void onEvent(CompanySelectedEvent companySelectedEvent) {
-        USER_COMPANY = dataManager.getPreferencesHelper().getValueString(Const.USER_COMPANY);
+    private void startLocationUpdates() {
         try {
             mLocationManager.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
@@ -119,6 +123,13 @@ public class GeolocationUpdateService extends Service {
         } catch (IllegalArgumentException ex) {
             Timber.d(TAG, "gps provider does not exist " + ex.getMessage());
         }
+    }
+
+
+    @Subscribe
+    public void onEvent(CompanySelectedEvent companySelectedEvent) {
+        USER_COMPANY = dataManager.getPreferencesHelper().getValueString(Const.USER_COMPANY);
+        startLocationUpdates();
     }
 
     private void initializeLocationManager() {
@@ -141,7 +152,8 @@ public class GeolocationUpdateService extends Service {
             Timber.e("onLocationChanged: " + location);
             Timber.i("USER_COMPANY: " + USER_COMPANY);
             mLastLocation.set(location);
-            geoFire.setLocation(USER_COMPANY + "_" + FirebasePaths.USER_LOCATION + "_" + dataManager.getFirebaseService().getFirebaseAuth().getUid(),
+            FIREBASE_KEY = USER_COMPANY + "_" + FirebasePaths.USER_LOCATION + "_" + dataManager.getFirebaseService().getFirebaseAuth().getUid();
+            geoFire.setLocation(FIREBASE_KEY,
                     new GeoLocation(location.getLatitude(), location.getLongitude()));
         }
 

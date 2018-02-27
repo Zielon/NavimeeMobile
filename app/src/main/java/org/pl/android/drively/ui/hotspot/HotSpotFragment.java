@@ -195,9 +195,6 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
         }
         if (mHotspotPresenter.checkLogin() != null) {
             getActivity().startService(new Intent(getActivity(), GeolocationUpdateService.class));
-            if(!mHotspotPresenter.getUserCompany().isEmpty()) {
-                EventBus.getDefault().post(new CompanySelectedEvent());
-            }
         }
 
         initGeolocation();
@@ -810,10 +807,16 @@ public class HotSpotFragment extends Fragment implements HotSpotMvpView, GoogleM
             Timber.i("USER LOCATION");
             if (!usersMarkers.containsKey(key)) {
                 MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude));
-                if(key.contains(FirebasePaths.UBER)) {
+                if(key.contains(Const.DriverType.UBER.getName())) {
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_directions_car_black_24dp));
+                } else if(key.contains(Const.DriverType.ITAXI.getName())) {
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_float_add_group));
+                } else if(key.contains(Const.DriverType.MY_TAXI.getName())) {
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_add_friend));
+                } else if(key.contains(Const.DriverType.TAXI.getName())) {
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_add_circle_outline_white_24dp));
                 } else {
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_directions_car_black_24dp));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_float_add_group));
                 }
                 Marker marker = googleMap.addMarker(markerOptions);
                 usersMarkers.put(key, marker);
