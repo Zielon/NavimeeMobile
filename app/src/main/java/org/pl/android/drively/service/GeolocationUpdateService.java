@@ -7,14 +7,19 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.google.firebase.database.DatabaseReference;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.pl.android.drively.BoilerplateApplication;
 import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.data.model.eventbus.CompanySelectedEvent;
+import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
 
 import javax.inject.Inject;
@@ -30,6 +35,10 @@ public class GeolocationUpdateService extends Service {
     private static final String TAG = "BOOMBOOMTESTGPS";
     private static final int LOCATION_INTERVAL = 10000;
     private static final float LOCATION_DISTANCE = 10f;
+    private static final long TIME_FOR_SERVICE = 60000;//1800000;
+    private static String USER_COMPANY;
+    public static String FIREBASE_KEY;
+    private DatabaseReference databaseReference;
     GeoFire geoFire;
     @Inject
     DataManager dataManager;
@@ -57,10 +66,47 @@ public class GeolocationUpdateService extends Service {
         Timber.e("onCreate");
         super.onCreate();
         BoilerplateApplication.get(this).getComponent().inject(this);
-        DatabaseReference databaseReference = dataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.USER_LOCATION);
+        EventBus.getDefault().register(this);
+        databaseReference = dataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.USER_LOCATION);
         geoFire = new GeoFire(databaseReference);
         initializeLocationManager();
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Timber.i("stoping service");
+                stopSelf();
+            }
+        }, TIME_FOR_SERVICE);
+        USER_COMPANY = dataManager.getPreferencesHelper().getValueString(Const.USER_COMPANY);
+        if(!USER_COMPANY.isEmpty()) {
+            startLocationUpdates();
+        }
+    }
 
+
+    @SuppressLint("TimberArgCount")
+    @Override
+    public void onDestroy() {
+        Timber.e("onDestroy");
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+        if(FIREBASE_KEY != null && !FIREBASE_KEY.isEmpty()) {
+            databaseReference.child(FIREBASE_KEY).removeValue();
+        }
+        if (mLocationManager != null) {
+            for (int i = 0; i < mLocationListeners.length; i++) {
+                try {
+                    mLocationManager.removeUpdates(mLocationListeners[i]);
+                } catch (Exception ex) {
+                    Timber.i("fail to remove location listners, ignore", ex);
+                }
+            }
+        }
+    }
+
+    @SuppressLint("TimberArgCount")
+    private void startLocationUpdates() {
         try {
             mLocationManager.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
@@ -81,20 +127,11 @@ public class GeolocationUpdateService extends Service {
         }
     }
 
-    @SuppressLint("TimberArgCount")
-    @Override
-    public void onDestroy() {
-        Timber.e("onDestroy");
-        super.onDestroy();
-        if (mLocationManager != null) {
-            for (int i = 0; i < mLocationListeners.length; i++) {
-                try {
-                    mLocationManager.removeUpdates(mLocationListeners[i]);
-                } catch (Exception ex) {
-                    Timber.i("fail to remove location listners, ignore", ex);
-                }
-            }
-        }
+
+    @Subscribe
+    public void onEvent(CompanySelectedEvent companySelectedEvent) {
+        USER_COMPANY = dataManager.getPreferencesHelper().getValueString(Const.USER_COMPANY);
+        startLocationUpdates();
     }
 
     private void initializeLocationManager() {
@@ -115,8 +152,11 @@ public class GeolocationUpdateService extends Service {
         @Override
         public void onLocationChanged(Location location) {
             Timber.e("onLocationChanged: " + location);
+            Timber.i("USER_COMPANY: " + USER_COMPANY);
             mLastLocation.set(location);
-            geoFire.setLocation(FirebasePaths.USER_LOCATION + dataManager.getFirebaseService().getFirebaseAuth().getUid(), new GeoLocation(location.getLatitude(), location.getLongitude()));
+            FIREBASE_KEY = USER_COMPANY + "_" + FirebasePaths.USER_LOCATION + "_" + dataManager.getFirebaseService().getFirebaseAuth().getUid();
+            geoFire.setLocation(FIREBASE_KEY,
+                    new GeoLocation(location.getLatitude(), location.getLongitude()));
         }
 
         @Override

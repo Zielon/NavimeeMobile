@@ -18,6 +18,7 @@ public class Const {
     public final static String LOCATION_NAME = "LOCATION_NAME";
     public final static String LOCATION_ADDRESS = "LOCATION_ADDRESS";
     public final static String FEEDBACK_ID = "FEEDBACK_ID";
+    public final static String USER_COMPANY = "USER_COMPANY";
     public final static String NAME = "NAME";
     public final static String FIRST_START = "firstStart";
 

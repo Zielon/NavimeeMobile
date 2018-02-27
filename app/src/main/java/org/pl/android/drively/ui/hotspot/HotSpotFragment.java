@@ -79,6 +79,7 @@ import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.CityNotAvailable;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.FourSquarePlace;
+import org.pl.android.drively.data.model.eventbus.CompanySelectedEvent;
 import org.pl.android.drively.data.model.eventbus.NotificationEvent;
 import org.pl.android.drively.data.model.maps.ClusterItemGoogleMap;
 import org.pl.android.drively.service.GeolocationUpdateService;
@@ -157,6 +158,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
     double lngNotification;
     boolean isFromNotification = false;
     String notificationName, notificationCount;
+    boolean isCityChecked = false;
     @Inject
     HotSpotPresenter mHotspotPresenter;
     private GoogleMap googleMap;
@@ -473,7 +475,10 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                     @Override
                     public void accept(Address address) throws Exception {
                         mHotspotPresenter.setLastLocation(address.getLocality());
-                        mHotspotPresenter.checkAvailableCities(address.getCountryCode(), address.getLocality());
+                        if(!isCityChecked) {
+                            mHotspotPresenter.checkAvailableCities(address.getCountryName(), address.getLocality());
+                            isCityChecked = true;
+                        }
                         Timber.d("address " + address);
                     }
                 }, new ErrorHandler());
@@ -597,9 +602,6 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
     public void onEvent(NotificationEvent notificationEvent) {
         route(latLngCurrent, new LatLng(notificationEvent.getLat(), notificationEvent.getLng()), notificationEvent.getName(), notificationEvent.getCount());
     }
-
-    ;
-
 
     @Override
     public void onPause() {
@@ -805,7 +807,17 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
             Timber.i("USER LOCATION");
             if (!usersMarkers.containsKey(key)) {
                 MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude));
-                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_directions_car_black_24dp));
+                if(key.contains(Const.DriverType.UBER.getName())) {
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_directions_car_black_24dp));
+                } else if(key.contains(Const.DriverType.ITAXI.getName())) {
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_float_add_group));
+                } else if(key.contains(Const.DriverType.MY_TAXI.getName())) {
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_add_friend));
+                } else if(key.contains(Const.DriverType.TAXI.getName())) {
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_add_circle_outline_white_24dp));
+                } else {
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_float_add_group));
+                }
                 Marker marker = googleMap.addMarker(markerOptions);
                 usersMarkers.put(key, marker);
             }
@@ -970,7 +982,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         preparePopupLayout(view);
         popup = new MaterialDialog.Builder(context)
                 .customView(view, false)
-                .backgroundColor(ContextCompat.getColor(context, R.color.transparent))
+                .backgroundColor(ContextCompat.getColor(context, R.color.dark_transparent))
                 .show();
     }
 
@@ -993,6 +1005,8 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                         rootView.findViewById(R.id.brand_error).setVisibility(View.VISIBLE);
                     } else {
                         popup.dismiss();
+                        mHotspotPresenter.saveUserCompany(selectedDriverType.getName());
+                        EventBus.getDefault().post(new CompanySelectedEvent());
                         Log.d(context.getClass().getSimpleName(), "User agreed to the terms and is using " + selectedDriverType != null ? selectedDriverType.getName() : "no one" + ".");
                         showSecondPopup();
                     }
