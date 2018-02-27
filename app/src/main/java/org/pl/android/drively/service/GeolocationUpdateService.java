@@ -91,7 +91,9 @@ public class GeolocationUpdateService extends Service {
         Timber.e("onDestroy");
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-        databaseReference.child(FIREBASE_KEY).removeValue();
+        if(FIREBASE_KEY != null && !FIREBASE_KEY.isEmpty()) {
+            databaseReference.child(FIREBASE_KEY).removeValue();
+        }
         if (mLocationManager != null) {
             for (int i = 0; i < mLocationListeners.length; i++) {
                 try {
