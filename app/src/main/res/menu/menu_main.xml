@@ -10,7 +10,7 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/show_instruction"
-        android:icon="@drawable/category_outdoor_24dp"
+        android:icon="@drawable/ic_help_outline_black_24dp"
         android:orderInCategory="1"
         android:title="@string/instruction"
         app:showAsAction="always" />
