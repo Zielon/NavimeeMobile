@@ -136,6 +136,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
 
         mMainPresenter.attachView(this);
         mMainPresenter.checkVersion();
+        mMainPresenter.updateOnlineStatus(true);
 
         checkAppIntro();
         checkLogin();
@@ -216,7 +217,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        mMainPresenter.updateOnlineStatus(false);
         mMainPresenter.detachView();
     }
 
@@ -265,7 +266,6 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     public void onResume() {
         super.onResume();
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

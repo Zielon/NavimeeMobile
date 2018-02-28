@@ -63,55 +63,6 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         super.detachView();
     }
 
-    public void updateUserStatus() {
-        if (NetworkUtil.isNetworkConnected(mContext)) {
-            try {
-                String isOnlineField = nameof(User.class, "online");
-                String timestampField = nameof(User.class, "timestamp");
-                if (mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() != null) {
-                    String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-                    if (!userId.equals("")) {
-                        Map<String, Object> data = new HashMap<>();
-                        data.put(isOnlineField, true);
-                        data.put(timestampField, System.currentTimeMillis());
-                        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).update(data);
-                    }
-                }
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-
-    public void updateFriendStatus(ListFriend listFriend) {
-        if (NetworkUtil.isNetworkConnected(mContext)) {
-            try {
-                String isOnlineField = nameof(User.class, "online");
-                for (Friend friend : listFriend.getListFriend()) {
-                    final String fid = friend.id;
-                    mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(fid).get().addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document != null && document.exists()) {
-                                User user = document.toObject(User.class);
-                                if (user.isOnline() && (System.currentTimeMillis() - user.getTimestamp()) > Const.TIME_TO_OFFLINE) {
-                                    mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(fid).update(isOnlineField, false);
-                                }
-                            } else {
-                                Timber.d("No such document");
-                            }
-                        } else {
-                            Timber.e("get failed with ", task.getException());
-                        }
-                    });
-                }
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public void findFriend(BaseFilter baseFilter, FriendSearchDialogCompat searchDialogCompat, String stringQuery, List friendList) {
         CollectionReference usersReference = mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS);
         friendList.add(getId());

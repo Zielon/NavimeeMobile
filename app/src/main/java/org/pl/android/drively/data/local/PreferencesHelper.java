@@ -30,6 +30,7 @@ public class PreferencesHelper {
     private static String APP_VERSION = "app_version";
     private static String USER_COUNTRY = "user_country";
     private static String USER_CITY = "user_city";
+    private static String IS_ONLINE = "is_online";
 
     private static String DAY_SCHEDULE_NOTIFICATION;
     private static String BIG_EVENTS_NOTIFICATION;
@@ -131,6 +132,7 @@ public class PreferencesHelper {
         e.putBoolean(CHAT_GROUP_NOTIFICATION, user.isChatGroupNotification());
         e.putBoolean(CHAT_PRIVATE_NOTIFICATION, user.isChatPrivateNotification());
         e.putBoolean(SHARE_LOCALIZATION, user.isShareLocalization());
+        e.putBoolean(IS_ONLINE, user.isOnline());
 
         try {
             PackageInfo packageInfo = appContext.getPackageManager().getPackageInfo(appContext.getPackageName(), 0);
@@ -161,6 +163,7 @@ public class PreferencesHelper {
         user.setAvatar(sharedPreferences.getString(SHARE_KEY_AVATAR, "DEFAULT"));
         user.setId(sharedPreferences.getString(SHARE_KEY_USER_ID, ""));
         user.setToken(sharedPreferences.getString(Const.MESSAGING_TOKEN, ""));
+        user.setOnline(getValue(IS_ONLINE));
 
         return user;
     }

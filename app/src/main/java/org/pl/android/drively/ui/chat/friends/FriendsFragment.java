@@ -80,7 +80,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private ListFriend dataListFriend = null;
     private ArrayList<String> listFriendID = null;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private CountDownTimer detectFriendOnline;
     private LovelyProgressDialog dialogWait;
     private View layout;
     private BroadcastReceiver deleteFriendReceiver;
@@ -99,18 +98,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        detectFriendOnline = new CountDownTimer(System.currentTimeMillis(), Const.TIME_TO_REFRESH) {
-            @Override
-            public void onTick(long l) {
-                mFriendsPresenter.updateUserStatus();
-                mFriendsPresenter.updateFriendStatus(dataListFriend);
-            }
-
-            @Override
-            public void onFinish() {
-
-            }
-        };
         if (dataListFriend == null) {
             dataListFriend = FriendDB.getInstance(getContext()).getListFriend();
             if (dataListFriend.getListFriend().size() > 0) {
@@ -118,9 +105,9 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 for (Friend friend : dataListFriend.getListFriend()) {
                     listFriendID.add(friend.id);
                 }
-                detectFriendOnline.start();
             }
         }
+
         layout = inflater.inflate(R.layout.fragment_people, container, false);
         ButterKnife.bind(this, layout);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -167,7 +154,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     public void onDestroyView() {
         super.onDestroyView();
         mFriendsPresenter.detachView();
-        detectFriendOnline.cancel();
         dataListFriend.getListFriend().clear();
         FriendDB.getInstance(getContext()).dropDB();
         listFriendID = null;
@@ -188,7 +174,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         dataListFriend.getListFriend().clear();
         adapter.notifyDataSetChanged();
         FriendDB.getInstance(getContext()).dropDB();
-        detectFriendOnline.cancel();
         ListFriendsAdapter.mapMark.clear();
         ListFriendsAdapter.mapChildListener.clear();
         ListFriendsAdapter.mapQuery.clear();
@@ -316,7 +301,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         FriendDB.getInstance(getContext()).addListFriend(dataListFriend);
         adapter.notifyDataSetChanged();
         mSwipeRefreshLayout.setRefreshing(false);
-        detectFriendOnline.start();
     }
 
     @Override
