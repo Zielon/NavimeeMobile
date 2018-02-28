@@ -178,6 +178,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
     private Context context;
     private Const.DriverType selectedDriverType;
     private MaterialDialog popup;
+    private HashMap<String, GeoLocation> directionsDelta = new HashMap<>();
 
     public static HotSpotFragment newInstance() {
         HotSpotFragment fragment = new HotSpotFragment();
@@ -803,7 +804,8 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         if (key.contains(FirebasePaths.USER_LOCATION) && !key.contains(mHotspotPresenter.getUid())) {
             Timber.i("USER LOCATION");
             if (!usersMarkers.containsKey(key)) {
-                MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude));
+                directionsDelta.put(key,location);
+                MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).flat(true);
                 if(key.contains(Const.DriverType.UBER.getName())) {
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_directions_car_black_24dp));
                 } else if(key.contains(Const.DriverType.ITAXI.getName())) {
@@ -830,6 +832,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
             mClusterManager.removeItem((ClusterItemGoogleMap) eventsOnMap.get(key));
             eventsOnMap.remove(key);
         } else if (key.contains(FirebasePaths.USER_LOCATION)) {
+            directionsDelta.remove(key);
             usersMarkers.remove(key);
         }
 
@@ -847,7 +850,10 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         } else if (key.contains(FirebasePaths.USER_LOCATION) && !key.contains(mHotspotPresenter.getUid())) {
             Timber.i("USER LOCATION");
             if (usersMarkers.containsKey(key)) {
-                animateMarker(usersMarkers.get(key), new LatLng(location.latitude, location.longitude), false);
+                GeoLocation previousLocation = directionsDelta.get(key);
+                double bearing = calculateBearing(previousLocation.latitude, previousLocation.longitude,
+                        location.latitude,location.longitude);
+                animateMarker(usersMarkers.get(key), new LatLng(location.latitude, location.longitude),bearing, false);
             }
         }
     }
@@ -866,8 +872,27 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         Timber.e("There was an error with this query: " + error);
     }
 
+    private double calculateBearing(double startLat, double startLong, double endLat,double  endLong){
+        startLat = Math.toRadians(startLat);
+        startLong = Math.toRadians(startLong);
+        endLat = Math.toRadians(endLat);
+        endLong = Math.toRadians(endLong);
+
+        double dLong = endLong - startLong;
+
+        double dPhi = Math.log(Math.tan(endLat/2.0+Math.PI/4.0)/Math.tan(startLat/2.0+Math.PI/4.0));
+        if (Math.abs(dLong) > Math.PI){
+            if (dLong > 0.0)
+                dLong = -(2.0 * Math.PI - dLong);
+            else
+                dLong = (2.0 * Math.PI + dLong);
+        }
+
+        return (Math.toDegrees((Math.atan2(dLong, dPhi)) + 360.0) % 360.0);
+    }
+
     public void animateMarker(final Marker marker, final LatLng toPosition,
-                              final boolean hideMarker) {
+                              final double bearing, final boolean hideMarker) {
         final Handler handler = new Handler();
         final long start = SystemClock.uptimeMillis();
         Projection proj = googleMap.getProjection();
@@ -888,6 +913,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                 double lat = t * toPosition.latitude + (1 - t)
                         * startLatLng.latitude;
                 marker.setPosition(new LatLng(lat, lng));
+                marker.setRotation((float) bearing);
 
                 if (t < 1.0) {
                     // Post again 16ms later.
