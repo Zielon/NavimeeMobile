@@ -23,7 +23,7 @@
 
     <tab
         activeColor="@color/settings_switch_color"
-        icon="@drawable/ic_chat"
+        icon="@drawable/ic_chat_black_24dp"
         id="@+id/tab_chat"
         inActiveColor="@color/colorLine"
         title="@string/chat" />
