@@ -175,28 +175,28 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/popup_chat_info3_layout">
 
-                <ImageView
-                    android:id="@+id/chat_popup_search_icon"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="12dp"
-                    android:background="@drawable/circle_background_pink"
-                    android:padding="10dp"
-                    android:src="@drawable/search_loop_24dp_white" />
+                <!--<ImageView-->
+                    <!--android:id="@+id/chat_popup_search_icon"-->
+                    <!--android:layout_width="44dp"-->
+                    <!--android:layout_height="44dp"-->
+                    <!--android:layout_alignParentEnd="true"-->
+                    <!--android:layout_marginEnd="12dp"-->
+                    <!--android:background="@drawable/circle_background_pink"-->
+                    <!--android:padding="10dp"-->
+                    <!--android:src="@drawable/search_loop_24dp_white" />-->
 
-                <TextView
-                    android:id="@+id/popup_chat_info4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="8dp"
-                    android:layout_toLeftOf="@id/chat_popup_search_icon"
-                    android:paddingEnd="24dp"
-                    android:paddingStart="12dp"
-                    android:text="@string/popup_chat_info4"
-                    android:textColor="@color/gray_font"
-                    android:textSize="14sp" />
+                <!--<TextView-->
+                    <!--android:id="@+id/popup_chat_info4"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:layout_marginRight="8dp"-->
+                    <!--android:layout_toLeftOf="@id/chat_popup_search_icon"-->
+                    <!--android:paddingEnd="24dp"-->
+                    <!--android:paddingStart="12dp"-->
+                    <!--android:text="@string/popup_chat_info4"-->
+                    <!--android:textColor="@color/gray_font"-->
+                    <!--android:textSize="14sp" />-->
 
             </RelativeLayout>
 

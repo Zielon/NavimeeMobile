@@ -77,7 +77,7 @@ public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
             context.startActivity(intent);
             popup.dismiss();
         });
-        rootView.findViewById(R.id.popup_finance_dismiss_dialog).setOnClickListener(view -> popup.dismiss());
+        /*rootView.findViewById(R.id.popup_finance_dismiss_dialog).setOnClickListener(view -> popup.dismiss());*/
     }
 
     private void changeTabToChat() {
