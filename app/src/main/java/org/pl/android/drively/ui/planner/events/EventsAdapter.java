@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.rilixtech.materialfancybutton.MaterialFancyButton;
 
 import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.joda.time.Minutes;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.Event;
@@ -68,17 +67,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         if (event.getEndTime() != null) {
             DateTime startTime = new DateTime(event.getStartTime());
             DateTime endTime = new DateTime(event.getEndTime());
-            if(Days.daysBetween(startTime.withTimeAtStartOfDay(), dateTime.withTimeAtStartOfDay()).getDays() == 0
-                    && Days.daysBetween(endTime.withTimeAtStartOfDay(), dateTime.withTimeAtStartOfDay()).getDays() == 0) {
-                holder.timeTextView.setText(event.getStartTime().getHours() + ":" + String.format("%02d", event.getStartTime().getMinutes()) + " - " +
-                        event.getEndTime().getHours() + ":" + String.format("%02d", event.getEndTime().getMinutes()));
-            } else {
-                SimpleDateFormat simpleDateformat = new SimpleDateFormat("E"); // the day of the week abbreviated
-                String startDay = simpleDateformat.format(event.getStartTime());
-                String endDay = simpleDateformat.format(event.getEndTime());
-                holder.timeTextView.setText(startDay+" "+event.getStartTime().getHours() + ":" + String.format("%02d", event.getStartTime().getMinutes()) + " - " +
-                       endDay+ " "+ event.getEndTime().getHours() + ":" + String.format("%02d", event.getEndTime().getMinutes()));
-            }
+            SimpleDateFormat simpleDateformat = new SimpleDateFormat("E"); // the day of the week abbreviated
+            String startDay = simpleDateformat.format(event.getStartTime());
+            String endDay = simpleDateformat.format(event.getEndTime());
+            holder.timeTextView.setText(startDay + " " + event.getStartTime().getHours() + ":" + String.format("%02d", event.getStartTime().getMinutes()) + " - " +
+                    endDay + " " + event.getEndTime().getHours() + ":" + String.format("%02d", event.getEndTime().getMinutes()));
         }
         holder.addButton.setTag(0);
         if (event.getRank() == 1) {
@@ -99,6 +92,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         } else if (mEventsPresenter.getDayScheduleList().contains(event)) {
             holder.addButton.setTag(2);
             holder.addButton.setBackgroundColor(mContext.getResources().getColor(R.color.colorLine));
+            holder.addButton.setTextColor(mContext.getResources().getColor(R.color.gray_font));
             holder.addButton.setText(R.string.cancel);
         } else {
             holder.addButton.setTag(3);
@@ -115,13 +109,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
                     if (mapIntent.resolveActivity(mContext.getPackageManager()) != null) {
                         mContext.startActivity(mapIntent);
                     }
-                } else if((int) view.getTag() == 2) {
+                } else if ((int) view.getTag() == 2) {
                     holder.addButton.setTag(3);
                     holder.addButton.setBackgroundColor(mContext.getResources().getColor(R.color.button_background));
                     holder.addButton.setTextColor(mContext.getResources().getColor(R.color.white));
                     holder.addButton.setText(R.string.remember_me);
                     mEventsPresenter.deleteEvent(event);
-                } else if((int) view.getTag() == 3) {
+                } else if ((int) view.getTag() == 3) {
                     holder.addButton.setTag(2);
                     holder.addButton.setBackgroundColor(mContext.getResources().getColor(R.color.colorLine));
                     holder.addButton.setTextColor(mContext.getResources().getColor(R.color.gray_font));
