@@ -4,14 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.rilixtech.materialfancybutton.MaterialFancyButton;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -118,11 +118,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
                 } else if((int) view.getTag() == 2) {
                     holder.addButton.setTag(3);
                     holder.addButton.setBackgroundColor(mContext.getResources().getColor(R.color.button_background));
+                    holder.addButton.setTextColor(mContext.getResources().getColor(R.color.white));
                     holder.addButton.setText(R.string.remember_me);
                     mEventsPresenter.deleteEvent(event);
                 } else if((int) view.getTag() == 3) {
                     holder.addButton.setTag(2);
                     holder.addButton.setBackgroundColor(mContext.getResources().getColor(R.color.colorLine));
+                    holder.addButton.setTextColor(mContext.getResources().getColor(R.color.gray_font));
                     holder.addButton.setText(R.string.cancel);
                     mEventsPresenter.saveEvent(event);
                 }
@@ -169,7 +171,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         @BindView(R.id.viewTextTime)
         TextView timeTextView;
         @BindView(R.id.addButton)
-        Button addButton;
+        MaterialFancyButton addButton;
 
         public EventsHolder(View itemView) {
             super(itemView);

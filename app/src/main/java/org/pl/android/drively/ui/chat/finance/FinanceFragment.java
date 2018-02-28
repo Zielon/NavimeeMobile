@@ -43,7 +43,7 @@ public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
         ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
         if (actionBar != null && actionBar.getCustomView() != null) {
             TextView text = (TextView) actionBar.getCustomView().findViewById(R.id.app_bar_text);
-            text.setText(getResources().getString(R.string.chat));
+            text.setText(getResources().getString(R.string.finance));
         }
         context = (MainActivity) this.getActivity();
     }
