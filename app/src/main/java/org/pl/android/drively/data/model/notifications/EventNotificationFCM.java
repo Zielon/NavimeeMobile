@@ -1,11 +1,10 @@
 package org.pl.android.drively.data.model.notifications;
 
-
 public class EventNotificationFCM extends NotificationFCM {
     private String title;
     private String endTime;
-    private String lat;
-    private String lng;
+    private double lat;
+    private double lon;
 
     public EventNotificationFCM() {
     }
@@ -26,19 +25,20 @@ public class EventNotificationFCM extends NotificationFCM {
         this.endTime = endTime;
     }
 
-    public String getLat() {
+
+    public double getLat() {
         return lat;
     }
 
-    public void setLat(String lat) {
+    public void setLat(double lat) {
         this.lat = lat;
     }
 
-    public String getLng() {
-        return lng;
+    public double getLon() {
+        return lon;
     }
 
-    public void setLng(String lng) {
-        this.lng = lng;
+    public void setLon(double lon) {
+        this.lon = lon;
     }
 }

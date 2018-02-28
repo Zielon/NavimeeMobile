@@ -1,9 +1,5 @@
 package org.pl.android.drively.data.model.notifications;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class MessageNotificationFCM extends NotificationFCM {
     private String nameSender;
     private String idSender;
