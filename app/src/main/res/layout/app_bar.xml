@@ -25,7 +25,7 @@
         android:layout_centerHorizontal="true"
         android:textColor="#ffffff"
         android:textStyle="bold"
-        android:textSize="24sp" />
+        android:textSize="18sp" />
 
     <ImageView
         android:id="@+id/app_bar_right_icon"
