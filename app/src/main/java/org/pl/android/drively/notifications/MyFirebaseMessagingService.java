@@ -133,7 +133,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         // TEMPORARY SOLUTION
-        String nameSender = isGroup ? fcm.getNameSender() + " napisał na " + fcm.getIdRoom() : fcm.getNameSender();
+        String nameSender = isGroup ? fcm.getNameSender() + " (" + fcm.getIdRoom() + ")" : fcm.getNameSender();
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.notification_d)
