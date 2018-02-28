@@ -146,8 +146,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .addAction(R.drawable.ic_action_whatshot, getResources().getString(R.string.check_in_app), navigationIntent)
                 .setContentIntent(navigationIntent);
 
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(fcm.getIdRoom().hashCode(), notificationBuilder.build());
     }
 
@@ -177,9 +176,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .addAction(R.drawable.ic_action_whatshot, getResources().getString(R.string.check_in_app), navigationIntent)
                 .setContentIntent(navigationIntent);
 
-
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(fcm.getId().hashCode(), notificationBuilder.build());
     }
 }

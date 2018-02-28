@@ -5,6 +5,7 @@ public class EventNotificationFCM extends NotificationFCM {
     private String endTime;
     private double lat;
     private double lon;
+    private String id;
 
     public EventNotificationFCM() {
     }
@@ -40,5 +41,13 @@ public class EventNotificationFCM extends NotificationFCM {
 
     public void setLon(double lon) {
         this.lon = lon;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
