@@ -22,7 +22,7 @@ import static org.pl.android.drively.util.ReflectionUtil.nameof;
 
 public class UsersRepositoryImpl implements UsersRepository {
 
-    DataManager dataManager;
+    private DataManager dataManager;
 
     @Inject
     public UsersRepositoryImpl(DataManager dataManager) {

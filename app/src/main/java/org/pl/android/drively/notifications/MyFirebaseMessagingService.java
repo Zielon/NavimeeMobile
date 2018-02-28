@@ -76,11 +76,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 break;
             case SCHEDULED_EVENT:
                 final EventNotificationFCM eventNotificationScheduled = mapper.convertValue(remoteMessage.getData(), EventNotificationFCM.class);
-                sendNotification(eventNotificationScheduled.getTitle(), eventNotificationScheduled.getEndTime(), eventNotificationScheduled.getLat(), eventNotificationScheduled.getLng());
+                sendNotification(eventNotificationScheduled);
                 break;
             case BIG_EVENT:
                 final EventNotificationFCM eventNotificationBig = mapper.convertValue(remoteMessage.getData(), EventNotificationFCM.class);
-                sendNotification(eventNotificationBig.getTitle(), eventNotificationBig.getEndTime(), eventNotificationBig.getLat(), eventNotificationBig.getLng());
+                sendNotification(eventNotificationBig);
                 break;
             case MESSAGE_PRIVATE:
                 final MessageNotificationFCM messageNotificationPrivate = mapper.convertValue(remoteMessage.getData(), MessageNotificationFCM.class);
@@ -132,8 +132,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-        // TEMPORARY SOLUTION
-        String nameSender = isGroup ? fcm.getNameSender() + " napisał na " + fcm.getIdRoom() : fcm.getNameSender();
+        String nameSender = isGroup ? fcm.getNameSender() + " (" + fcm.getIdRoom() + ")" : fcm.getNameSender();
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.notification_d)
@@ -147,30 +146,29 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .addAction(R.drawable.ic_action_whatshot, getResources().getString(R.string.check_in_app), navigationIntent)
                 .setContentIntent(navigationIntent);
 
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(fcm.getIdRoom().hashCode(), notificationBuilder.build());
     }
 
-    private void sendNotification(String title, String dateTime, String lat, String lng) {
+    private void sendNotification(EventNotificationFCM fcm) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("lat", lat);
-        intent.putExtra("lng", lng);
-        intent.putExtra("name", title);
+        intent.putExtra("lat", fcm.getLat());
+        intent.putExtra("lng", fcm.getLon());
+        intent.putExtra("name", fcm.getTitle());
         intent.putExtra("count", 100);
 
         PendingIntent navigationIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
-        DateTime date = new DateTime(Long.valueOf(dateTime));
+        DateTime date = new DateTime(Long.valueOf(fcm.getEndTime()));
         String time = String.format(getString(R.string.notification_time), date.getHourOfDay(), String.format("%02d", date.getMinuteOfHour()));
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.notification_d)
                 .setColor(getResources().getColor(R.color.primary_dark))
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                .setContentTitle(title)
+                .setContentTitle(fcm.getTitle())
                 .setContentText(time)
                 .setAutoCancel(true)
                 .setPriority(Notification.PRIORITY_HIGH)
@@ -178,9 +176,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .addAction(R.drawable.ic_action_whatshot, getResources().getString(R.string.check_in_app), navigationIntent)
                 .setContentIntent(navigationIntent);
 
-
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(fcm.getId().hashCode(), notificationBuilder.build());
     }
 }

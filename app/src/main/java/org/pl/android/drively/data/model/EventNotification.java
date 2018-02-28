@@ -16,9 +16,8 @@ public class EventNotification implements Comparable<EventNotification>, Seriali
     private Date startTime;
     private Date endTime;
     private Const.HotSpotType hotspotType;
-    private boolean isSent;
+    private boolean sent;
     private Place place;
-
 
     public EventNotification() {
     }
@@ -29,14 +28,6 @@ public class EventNotification implements Comparable<EventNotification>, Seriali
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    public boolean isSent() {
-        return isSent;
-    }
-
-    public void setSent(boolean sent) {
-        isSent = sent;
     }
 
     public String getId() {
@@ -125,5 +116,13 @@ public class EventNotification implements Comparable<EventNotification>, Seriali
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
+    }
+
+    public boolean isSent() {
+        return sent;
+    }
+
+    public void setSent(boolean sent) {
+        this.sent = sent;
     }
 }

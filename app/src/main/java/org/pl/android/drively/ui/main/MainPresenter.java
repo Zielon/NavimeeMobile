@@ -7,13 +7,17 @@ import android.content.pm.PackageManager;
 import com.google.firebase.auth.FirebaseUser;
 
 import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.injection.ConfigPersistent;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.Const;
+import org.pl.android.drively.util.FirebasePaths;
 
 import javax.inject.Inject;
 
 import io.reactivex.disposables.Disposable;
+
+import static org.pl.android.drively.util.ReflectionUtil.nameof;
 
 @ConfigPersistent
 public class MainPresenter extends BasePresenter<MainMvpView> {
@@ -37,6 +41,16 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
         if (mDisposable != null) mDisposable.dispose();
     }
 
+    public void updateOnlineStatus(boolean online){
+        try {
+            String isOnlineField = nameof(User.class, "online");
+            String userId = mDataManager.getPreferencesHelper().getUserId();
+            if(userId.equals("")) return;
+            mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).update(isOnlineField, online);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+    }
 
     public boolean checkAppIntro() {
         return mDataManager.getPreferencesHelper().getValue(Const.FIRST_START);

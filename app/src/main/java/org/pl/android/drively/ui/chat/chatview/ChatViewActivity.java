@@ -83,33 +83,35 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         btnSend.setOnClickListener(this);
 
         editWriteMessage = (EditText) findViewById(R.id.editWriteMessage);
-        if (idFriend != null && nameFriend != null) {
+
+        if (!isGroupChat && nameFriend != null)
             getSupportActionBar().setTitle(nameFriend);
-            linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-            recyclerChat = (RecyclerView) findViewById(R.id.recyclerChat);
-            recyclerChat.setLayoutManager(linearLayoutManager);
+        else
+            getSupportActionBar().setTitle(roomId);
 
-            adapter = new ListMessageAdapter(this,
-                    conversation,
-                    new RecyclerViewPositionHelper(recyclerChat),
-                    bitmapAvataFriend,
-                    bitmapAvatarUser,
-                    mChatViewPresenter);
+        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerChat = (RecyclerView) findViewById(R.id.recyclerChat);
+        recyclerChat.setLayoutManager(linearLayoutManager);
 
-            mChatViewPresenter.setMessageListener(roomId, isGroupChat);
-            recyclerChat.setAdapter(adapter);
-            recyclerChat.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
-                if (bottom < oldBottom) {
-                    recyclerChat.postDelayed(() -> {
-                        if (recyclerChat.getAdapter().getItemCount() > 0)
-                            recyclerChat.smoothScrollToPosition(
-                                    recyclerChat.getAdapter().getItemCount() - 1);
-                    }, 100);
-                }
-            });
-        }
+        adapter = new ListMessageAdapter(this,
+                conversation,
+                new RecyclerViewPositionHelper(recyclerChat),
+                bitmapAvataFriend,
+                bitmapAvatarUser,
+                mChatViewPresenter);
+
+        mChatViewPresenter.setMessageListener(roomId, isGroupChat);
+        recyclerChat.setAdapter(adapter);
+        recyclerChat.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+            if (bottom < oldBottom) {
+                recyclerChat.postDelayed(() -> {
+                    if (recyclerChat.getAdapter().getItemCount() > 0)
+                        recyclerChat.smoothScrollToPosition(
+                                recyclerChat.getAdapter().getItemCount() - 1);
+                }, 100);
+            }
+        });
     }
-
 
     @Override
     public void roomChangesListerSet(List<Message> message) {

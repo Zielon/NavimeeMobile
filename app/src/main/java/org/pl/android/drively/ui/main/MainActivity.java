@@ -72,8 +72,8 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         super.onNewIntent(intent);
         setIntent(intent);
         if (intent != null && intent.getExtras() != null && intent.getExtras().get("lat") != null && intent.getExtras().get("lng") != null) {
-            double lat = Double.valueOf(intent.getExtras().getString("lat"));
-            double lng = Double.valueOf(intent.getExtras().getString("lng"));
+            double lat = intent.getExtras().getDouble("lat");
+            double lng = intent.getExtras().getDouble("lng");
             String name = intent.getExtras().getString("name");
             String count = intent.getExtras().getString("count");
             EventBus.getDefault().post(new NotificationEvent(lat, lng, name, count));
@@ -134,6 +134,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
 
         mMainPresenter.attachView(this);
         mMainPresenter.checkVersion();
+        mMainPresenter.updateOnlineStatus(true);
 
         checkAppIntro();
         checkLogin();
@@ -208,7 +209,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        mMainPresenter.updateOnlineStatus(false);
         mMainPresenter.detachView();
     }
 
@@ -244,7 +245,6 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     public void onResume() {
         super.onResume();
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

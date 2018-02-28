@@ -9,6 +9,7 @@ public class FirebasePaths {
     public static final String HOTSPOT_CURRENT = "HOTSPOT_CURRENT";
     public static final String FEEDBACK = "FEEDBACK";
     public static final String NOTIFICATIONS = "NOTIFICATIONS";
+    public static final String EVENTS_NOTIFICATION = "EVENTS_NOTIFICATION";
     public static final String GROUP = "GROUP";
     public static final String ROOM_DETAILS = "ROOM_DETAILS";
     public static final String MEMBERS = "MEMBERS";

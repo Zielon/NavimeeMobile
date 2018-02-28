@@ -1,16 +1,11 @@
 package org.pl.android.drively.ui.planner.events;
 
-import android.annotation.SuppressLint;
-import android.support.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.firestore.ListenerRegistration;
 
 import net.danlew.android.joda.DateUtils;
 
 import org.joda.time.DateTime;
+import org.pl.android.drively.contracts.repositories.NotificationsRepository;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.EventNotification;
@@ -18,7 +13,6 @@ import org.pl.android.drively.injection.ConfigPersistent;
 import org.pl.android.drively.ui.base.tab.BaseTabPresenter;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
-import org.reactivestreams.Subscription;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,12 +29,7 @@ import timber.log.Timber;
 
 import static org.pl.android.drively.util.ReflectionUtil.nameof;
 
-@ConfigPersistent
 public class EventsPresenter extends BaseTabPresenter<EventsMvpView> {
-
-    public Subscription mSubscription;
-
-    private ListenerRegistration mListener;
 
     private List<Event> eventList = new ArrayList<Event>();
 
@@ -48,10 +37,12 @@ public class EventsPresenter extends BaseTabPresenter<EventsMvpView> {
 
     private List<Event> dayScheduleList = new ArrayList<>();
 
+    private NotificationsRepository notificationsRepository;
 
     @Inject
-    public EventsPresenter(DataManager dataManager) {
-        mDataManager = dataManager;
+    public EventsPresenter(DataManager dataManager, NotificationsRepository notificationsRepository) {
+        this.mDataManager = dataManager;
+        this.notificationsRepository = notificationsRepository;
     }
 
     @Override
@@ -76,7 +67,7 @@ public class EventsPresenter extends BaseTabPresenter<EventsMvpView> {
 
         // next day
         dt.add(Calendar.DAY_OF_MONTH, 1);
-        dt.add(Calendar.HOUR,5);
+        dt.add(Calendar.HOUR, 5);
         DateTime dateTime = new DateTime(date);
         Date dateFinal = date;
         if (!DateUtils.isToday(dateTime)) {
@@ -115,7 +106,7 @@ public class EventsPresenter extends BaseTabPresenter<EventsMvpView> {
                                         getMvpView().showEventsEmpty();
                                     } else {
                                         Collections.sort(eventList);
-                                        getMvpView().showEvents(eventList,dateTime);
+                                        getMvpView().showEvents(eventList, dateTime);
                                     }
                                 }
                             }
@@ -154,6 +145,7 @@ public class EventsPresenter extends BaseTabPresenter<EventsMvpView> {
 
     public void saveEvent(Event event) {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+
         EventNotification eventNotification = new EventNotification();
         eventNotification.setStartTime(event.getStartTime());
         eventNotification.setEndTime(event.getEndTime());
@@ -164,23 +156,13 @@ public class EventsPresenter extends BaseTabPresenter<EventsMvpView> {
         eventNotification.setRank(event.getRank());
         eventNotification.setSent(false);
         eventNotification.setPlace(event.getPlace());
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.NOTIFICATIONS).document(event.getId()).set(eventNotification).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Timber.i("Event saved");
-                if (getMvpView() != null) {
-                    getMvpView().onSuccessSave();
-                }
-            }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @SuppressLint("TimberArgCount")
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Timber.e("Error saving event", e);
-                    }
-                });
 
+        notificationsRepository.addEventNotification(eventNotification)
+                .addOnSuccessListener(success -> {
+                    if (getMvpView() != null) {
+                        getMvpView().onSuccessSave();
+                    }
+                }).addOnFailureListener(failure -> Timber.e("Error saving event", failure));
     }
 
 

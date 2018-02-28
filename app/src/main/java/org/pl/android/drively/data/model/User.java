@@ -7,7 +7,6 @@ public class User {
     private String id;
     private boolean online;
     private String name;
-    private Long timestamp;
     private String avatar;
     private String token;
     private String city;
@@ -67,14 +66,6 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
     }
 
     public String getAvatar() {
