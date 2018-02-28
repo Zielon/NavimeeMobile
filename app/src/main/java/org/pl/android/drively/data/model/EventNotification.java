@@ -16,7 +16,7 @@ public class EventNotification implements Comparable<EventNotification>, Seriali
     private Date startTime;
     private Date endTime;
     private Const.HotSpotType hotspotType;
-    private boolean isSent;
+    private boolean sent;
     private Place place;
 
     public EventNotification() {
@@ -119,10 +119,10 @@ public class EventNotification implements Comparable<EventNotification>, Seriali
     }
 
     public boolean isSent() {
-        return isSent;
+        return sent;
     }
 
     public void setSent(boolean sent) {
-        isSent = sent;
+        this.sent = sent;
     }
 }
