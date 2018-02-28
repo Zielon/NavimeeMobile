@@ -43,7 +43,7 @@ public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
         ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
         if (actionBar != null && actionBar.getCustomView() != null) {
             TextView text = (TextView) actionBar.getCustomView().findViewById(R.id.app_bar_text);
-            text.setText(getResources().getString(R.string.chat));
+            text.setText(getResources().getString(R.string.finance));
         }
         context = (MainActivity) this.getActivity();
     }
@@ -77,7 +77,7 @@ public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
             context.startActivity(intent);
             popup.dismiss();
         });
-        rootView.findViewById(R.id.popup_finance_dismiss_dialog).setOnClickListener(view -> popup.dismiss());
+        /*rootView.findViewById(R.id.popup_finance_dismiss_dialog).setOnClickListener(view -> popup.dismiss());*/
     }
 
     private void changeTabToChat() {
