@@ -178,6 +178,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
     private Context context;
     private Const.DriverType selectedDriverType;
     private MaterialDialog popup;
+    private HashMap<String, GeoLocation> directionsDelta = new HashMap<>();
 
     public static HotSpotFragment newInstance() {
         HotSpotFragment fragment = new HotSpotFragment();
@@ -803,17 +804,18 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         if (key.contains(FirebasePaths.USER_LOCATION) && !key.contains(mHotspotPresenter.getUid())) {
             Timber.i("USER LOCATION");
             if (!usersMarkers.containsKey(key)) {
-                MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude));
+                directionsDelta.put(key,location);
+                MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).flat(true);
                 if(key.contains(Const.DriverType.UBER.getName())) {
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_directions_car_black_24dp));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.uber));
                 } else if(key.contains(Const.DriverType.ITAXI.getName())) {
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_float_add_group));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.uber));
                 } else if(key.contains(Const.DriverType.MY_TAXI.getName())) {
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_add_friend));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi));
                 } else if(key.contains(Const.DriverType.TAXI.getName())) {
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_add_circle_outline_white_24dp));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi));
                 } else {
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_float_add_group));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi));
                 }
                 try{
                     Marker marker = googleMap.addMarker(markerOptions);
@@ -834,6 +836,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
             mClusterManager.removeItem((ClusterItemGoogleMap) eventsOnMap.get(key));
             eventsOnMap.remove(key);
         } else if (key.contains(FirebasePaths.USER_LOCATION)) {
+            directionsDelta.remove(key);
             usersMarkers.remove(key);
         }
 
@@ -851,7 +854,14 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         } else if (key.contains(FirebasePaths.USER_LOCATION) && !key.contains(mHotspotPresenter.getUid())) {
             Timber.i("USER LOCATION");
             if (usersMarkers.containsKey(key)) {
-                animateMarker(usersMarkers.get(key), new LatLng(location.latitude, location.longitude), false);
+                GeoLocation previousLocation = directionsDelta.get(key);
+                if(!previousLocation.equals(location)) {
+                    double bearing = calculateBearing(previousLocation.latitude, previousLocation.longitude,
+                            location.latitude, location.longitude);
+                    Timber.i("BEARING " + key + " - " + bearing);
+                    directionsDelta.put(key, location);
+                    animateMarker(usersMarkers.get(key), new LatLng(location.latitude, location.longitude), bearing, false);
+                }
             }
         }
     }
@@ -870,8 +880,16 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         Timber.e("There was an error with this query: " + error);
     }
 
+    private double calculateBearing(double startLat, double startLong, double endLat,double  endLong){
+        double dLon = (endLong -startLong);
+        double y = Math.sin(dLon) * Math.cos(endLat);
+        double x = Math.cos(startLat)*Math.sin(endLat) - Math.sin(startLat)*Math.cos(endLat)*Math.cos(dLon);
+        double bearing = Math.toDegrees((Math.atan2(y, x)));
+        return  (360 - ((bearing + 360) % 360));
+    }
+
     public void animateMarker(final Marker marker, final LatLng toPosition,
-                              final boolean hideMarker) {
+                              final double bearing, final boolean hideMarker) {
         final Handler handler = new Handler();
         final long start = SystemClock.uptimeMillis();
         Projection proj = googleMap.getProjection();
@@ -892,6 +910,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                 double lat = t * toPosition.latitude + (1 - t)
                         * startLatLng.latitude;
                 marker.setPosition(new LatLng(lat, lng));
+                marker.setRotation((float) bearing);
 
                 if (t < 1.0) {
                     // Post again 16ms later.
