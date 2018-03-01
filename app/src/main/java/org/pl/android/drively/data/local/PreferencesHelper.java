@@ -168,10 +168,6 @@ public class PreferencesHelper {
         return user;
     }
 
-    public void removeAll() {
-        sharedPreferences.edit().clear().apply();
-    }
-
     public String getUserId() {
         return sharedPreferences.getString(SHARE_KEY_USER_ID, "");
     }
