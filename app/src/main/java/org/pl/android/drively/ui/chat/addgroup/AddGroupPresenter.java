@@ -6,7 +6,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import org.pl.android.drively.data.DataManager;
-import org.pl.android.drively.data.model.RoomMember;
+import org.pl.android.drively.data.model.chat.RoomMember;
 import org.pl.android.drively.data.model.chat.Room;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.FirebasePaths;

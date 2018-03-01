@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Const {
+    public final static String ADMIN = "ADMIN_DRIVELY";
     public final static String MESSAGING_TOKEN = "MESSAGING_TOKEN";
     public final static String LAST_LOCATION = "LAST_LOCATION";
     public final static String LAST_LOCATION_LAT = "LAST_LOCATION_LAT";
@@ -40,6 +41,7 @@ public class Const {
     public static String INTENT_KEY_CHAT_AVATA = "friendavata";
     public static String INTENT_KEY_CHAT_ID = "friendid";
     public static String INTENT_KEY_CHAT_ROOM_ID = "roomid";
+    public static String INTENT_KEY_CHAT_ROOM_NAME = "roomname";
     public static String INTENT_KEY_IS_GROUP_CHAT = "isChatGroup";
     public static long TIME_TO_REFRESH = 10 * 1000;
     public static long TIME_TO_OFFLINE = 2 * 60 * 1000;

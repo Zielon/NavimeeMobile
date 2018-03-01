@@ -7,8 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
-import org.pl.android.drively.data.model.RoomMember;
-import org.pl.android.drively.data.model.chat.Group;
+import org.pl.android.drively.data.model.chat.Room;
+import org.pl.android.drively.data.model.chat.RoomMember;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,11 +44,11 @@ public class GroupDB {
         return instance;
     }
 
-    public void addGroup(Group group) {
+    public void addGroup(Room group) {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        values.put(FeedEntry.COLUMN_GROUP_ID, group.id);
+        values.put(FeedEntry.COLUMN_GROUP_ID, group.getId());
         values.put(FeedEntry.COLUMN_GROUP_NAME, group.getName());
         values.put(FeedEntry.COLUMN_GROUP_ADMIN, group.getAdmin());
 
@@ -64,22 +64,22 @@ public class GroupDB {
         db.delete(FeedEntry.TABLE_NAME, FeedEntry.COLUMN_GROUP_ID + " = " + idGroup, null);
     }
 
-    public void addListGroup(ArrayList<Group> listGroup) {
-        for (Group group : listGroup) {
+    public void addListGroup(ArrayList<Room> listGroup) {
+        for (Room group : listGroup) {
             addGroup(group);
         }
     }
 
-    public Group getGroup(String id) {
+    public Room getGroup(String id) {
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from " + GroupDB.FeedEntry.TABLE_NAME + " where " + FeedEntry.COLUMN_GROUP_ID + " = " + id, null);
-        Group newGroup = new Group();
+        Room newGroup = new Room();
         while (cursor.moveToNext()) {
             String idGroup = cursor.getString(0);
             String nameGroup = cursor.getString(1);
             String admin = cursor.getString(2);
             String member = cursor.getString(3);
-            newGroup.id = idGroup;
+            newGroup.setId(idGroup);
             newGroup.setName(nameGroup);
             newGroup.setAdmin(admin);
             newGroup.getMembers().add(new RoomMember(member));
@@ -87,8 +87,8 @@ public class GroupDB {
         return newGroup;
     }
 
-    public ArrayList<Group> getListGroups() {
-        Map<String, Group> mapGroup = new HashMap<>();
+    public ArrayList<Room> getListGroups() {
+        Map<String, Room> mapGroup = new HashMap<>();
         ArrayList<String> listKey = new ArrayList<>();
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         // Define a projection that specifies which columns from the database
@@ -101,8 +101,8 @@ public class GroupDB {
                 String admin = cursor.getString(2);
                 String member = cursor.getString(3);
                 if (!listKey.contains(idGroup)) {
-                    Group newGroup = new Group();
-                    newGroup.id = idGroup;
+                    Room newGroup = new Room();
+                    newGroup.setId(idGroup);
                     newGroup.setName(nameGroup);
                     newGroup.setAdmin(admin);
                     newGroup.getMembers().add(new RoomMember(member));
@@ -117,7 +117,7 @@ public class GroupDB {
             return new ArrayList<>();
         }
 
-        ArrayList<Group> listGroup = new ArrayList<>();
+        ArrayList<Room> listGroup = new ArrayList<>();
         for (String key : listKey) {
             listGroup.add(mapGroup.get(key));
         }

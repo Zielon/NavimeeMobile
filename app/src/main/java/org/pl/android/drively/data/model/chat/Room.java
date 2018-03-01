@@ -3,8 +3,6 @@ package org.pl.android.drively.data.model.chat;
 import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.IgnoreExtraProperties;
 
-import org.pl.android.drively.data.model.RoomMember;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,16 +12,18 @@ public class Room {
     private List<RoomMember> members;
     private String admin;
     private String name;
-    private boolean isEditable;
+    private String id;
+    private boolean editable;
 
     public Room() {
         this.members = new ArrayList<>();
     }
 
-    public Room(String admin, String name, List<RoomMember> members) {
+    public Room(String roomId, String admin, String name, List<RoomMember> members) {
         this.members = members;
         this.admin = admin;
         this.name = name;
+        this.id = roomId;
     }
 
     @Exclude
@@ -53,10 +53,18 @@ public class Room {
     }
 
     public boolean isEditable() {
-        return isEditable;
+        return editable;
     }
 
     public void setEditable(boolean editable) {
-        isEditable = editable;
+        this.editable = editable;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
