@@ -188,6 +188,7 @@ dependencies {
     compile 'com.github.barteksc:android-pdf-viewer:2.8.2'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.7.3'
     compile 'net.sourceforge.streamsupport:streamsupport:1.6.0'
+    compile 'com.annimon:stream:1.1.9'
 
     //gui
     compile 'agency.tango.android:avatar-view:0.0.2'
