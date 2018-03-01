@@ -6,6 +6,7 @@ public class MessageNotificationFCM extends NotificationFCM {
     private String text;
     private String avatar;
     private String idRoom;
+    private String roomName;
 
     public MessageNotificationFCM() {
     }
@@ -50,4 +51,11 @@ public class MessageNotificationFCM extends NotificationFCM {
         this.idRoom = idRoom;
     }
 
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
+    }
 }

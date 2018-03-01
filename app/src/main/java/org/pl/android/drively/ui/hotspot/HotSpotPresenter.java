@@ -185,7 +185,8 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
                     CityNotAvailable cityNotAvailable = new CityNotAvailable();
                     cityNotAvailable.setCity(cityName.toUpperCase());
                     cityNotAvailable.setCountryName(countryName);
-                    getMvpView().showNotAvailableCity(cityNotAvailable);
+                    if(getMvpView() != null)
+                        getMvpView().showNotAvailableCity(cityNotAvailable);
                 }
             });
         } catch (NoSuchFieldException e) {
