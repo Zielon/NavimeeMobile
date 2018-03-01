@@ -28,9 +28,9 @@ import timber.log.Timber;
 
 public class GeolocationUpdateService extends Service {
     private static final String TAG = "BOOMBOOMTESTGPS";
-    private static final int LOCATION_INTERVAL = 10000;
+    private static final int LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 10f;
-    private static final long TIME_FOR_SERVICE = 60000;//1800000;
+    private static final long TIME_FOR_SERVICE = 1800000;
     private static String USER_COMPANY;
     public static String FIREBASE_KEY;
     private DatabaseReference databaseReference;

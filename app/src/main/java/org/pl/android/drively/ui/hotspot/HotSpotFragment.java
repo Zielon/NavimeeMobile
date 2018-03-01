@@ -807,15 +807,15 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                 directionsDelta.put(key,location);
                 MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).flat(true);
                 if(key.contains(Const.DriverType.UBER.getName())) {
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_directions_car_black_24dp));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.black_car));
                 } else if(key.contains(Const.DriverType.ITAXI.getName())) {
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_float_add_group));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_car));
                 } else if(key.contains(Const.DriverType.MY_TAXI.getName())) {
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_add_friend));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.green_car));
                 } else if(key.contains(Const.DriverType.TAXI.getName())) {
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_add_circle_outline_white_24dp));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.yellow_car));
                 } else {
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_float_add_group));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.yellow_car));
                 }
                 Marker marker = googleMap.addMarker(markerOptions);
                 usersMarkers.put(key, marker);
@@ -853,6 +853,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                 GeoLocation previousLocation = directionsDelta.get(key);
                 double bearing = calculateBearing(previousLocation.latitude, previousLocation.longitude,
                         location.latitude,location.longitude);
+                directionsDelta.put(key,location);
                 animateMarker(usersMarkers.get(key), new LatLng(location.latitude, location.longitude),bearing, false);
             }
         }
