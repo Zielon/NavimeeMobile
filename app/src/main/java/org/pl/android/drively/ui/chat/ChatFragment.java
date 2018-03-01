@@ -104,8 +104,8 @@ public class ChatFragment extends BaseTabFragment implements ChatMvpView {
 
     private void setupTabIcons() {
         int[] tabIcons = {
-                R.drawable.ic_tab_group,
-                R.drawable.ic_tab_person
+                R.drawable.ic_group_black_24dp,
+                R.drawable.ic_person_black_24dp
         };
 
         tabLayout.getTabAt(0).setIcon(tabIcons[0]);

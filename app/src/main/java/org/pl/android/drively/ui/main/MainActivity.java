@@ -9,13 +9,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.IdRes;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.util.DisplayMetrics;
 import android.view.Display;
-import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -24,7 +21,6 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.firebase.auth.FirebaseUser;
 import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.OnTabSelectListener;
 
 import org.greenrobot.eventbus.EventBus;
 import org.pl.android.drively.R;
@@ -95,7 +91,10 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         getSupportActionBar().setCustomView(R.layout.app_bar);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         getSupportActionBar().setStackedBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
+        getSupportActionBar().getCustomView().findViewById(R.id.app_bar_left_icon)
+                .setOnClickListener(view -> selectedFragment.showInstructionPopup());
+        getSupportActionBar().getCustomView().findViewById(R.id.app_bar_right_icon)
+                .setOnClickListener(view -> startActivityForResult());
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
@@ -105,7 +104,6 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
 
         TextView text = (TextView) getSupportActionBar().getCustomView().findViewById(R.id.app_bar_text);
         text.setWidth(size.x);
-        text.setGravity(Gravity.LEFT);
 
 /*        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (findViewById(android.R.id.content) != null) {
@@ -142,39 +140,36 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         checkLogin();
 
         bottomBar = (BottomBar) findViewById(R.id.bottomBar);
-        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
-            @Override
-            public void onTabSelected(@IdRes int tabId) {
-                selectedFragment = null;
-                switch (tabId) {
-                    case R.id.tab_events:
-                        selectedFragment = PlannerFragment.newInstance();
-                        break;
-                    case R.id.tab_hotspot:
-                        selectedFragment = HotSpotFragment.newInstance();
-                        if (isFromNotification) {
-                            isFromNotification = false;
-                            Bundle bundle = new Bundle();
-                            bundle.putBoolean("isFromNotification", true);
-                            bundle.putDouble("lat", lat);
-                            bundle.putDouble("lng", lng);
-                            bundle.putString("name", name);
-                            bundle.putString("count", count);
-                            ((HotSpotFragment)selectedFragment).setArguments(bundle);
-                        }
-                        break;
-                    case R.id.tab_chat:
-                        selectedFragment = ChatFragment.newInstance();
-                        break;
-                    case R.id.tab_finance:
-                        selectedFragment = FinanceFragment.newInstance();
-                        break;
+        bottomBar.setOnTabSelectListener(tabId -> {
+            selectedFragment = null;
+            switch (tabId) {
+                case R.id.tab_events:
+                    selectedFragment = PlannerFragment.newInstance();
+                    break;
+                case R.id.tab_hotspot:
+                    selectedFragment = HotSpotFragment.newInstance();
+                    if (isFromNotification) {
+                        isFromNotification = false;
+                        Bundle bundle = new Bundle();
+                        bundle.putBoolean("isFromNotification", true);
+                        bundle.putDouble("lat", lat);
+                        bundle.putDouble("lng", lng);
+                        bundle.putString("name", name);
+                        bundle.putString("count", count);
+                        ((HotSpotFragment) selectedFragment).setArguments(bundle);
+                    }
+                    break;
+                case R.id.tab_chat:
+                    selectedFragment = ChatFragment.newInstance();
+                    break;
+                case R.id.tab_finance:
+                    selectedFragment = FinanceFragment.newInstance();
+                    break;
 
-                }
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.frame_layout, selectedFragment);
-                transaction.commitAllowingStateLoss();
             }
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.frame_layout, selectedFragment);
+            transaction.commitAllowingStateLoss();
         });
     }
 
@@ -203,12 +198,9 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
                     .contentColor(getResources().getColor(R.color.white))
                     .positiveText(R.string.close)
                     .negativeText(R.string.check_internet)
-                    .onPositive((dialog, which) -> {
-                        finish();
-                    })
-                    .onNegative((dialog, which) -> {
-                        startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
-                    })
+                    .onPositive((dialog, which) -> finish())
+                    .onNegative((dialog, which) ->
+                            startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS)))
                     .build();
             dialogAlert.show();
         }
@@ -223,28 +215,15 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
 
     private void checkAppIntro() {
         //  Declare a new thread to do a preference check
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                //  If the activity has never started before...
-                if (mMainPresenter.checkAppIntro()) {
-
-                    //  Launch app intro
-                    final Intent i = new Intent(MainActivity.this, IntroActivity.class);
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            startActivity(i);
-                        }
-                    });
-                    mMainPresenter.setAppIntroShowed();
-
-                }
+        Thread t = new Thread(() -> {
+            //  If the activity has never started before...
+            if (mMainPresenter.checkAppIntro()) {
+                //  Launch app intro
+                final Intent i = new Intent(MainActivity.this, IntroActivity.class);
+                runOnUiThread(() -> startActivity(i));
+                mMainPresenter.setAppIntroShowed();
             }
         });
-
         // Start the thread
         t.start();
     }
@@ -292,26 +271,8 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         return bottomBar;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        switch(id) {
-            case R.id.user_settings: {
-                Intent intent = new Intent(this, SettingsActivity.class);
-                startActivityForResult(intent, SETTINGS_REQUEST);
-                return true;
-            }
-            case R.id.show_instruction: {
-                selectedFragment.showInstructionPopup();
-                return true;
-            }
-        }
-
-        return super.onOptionsItemSelected(item);
+    private void startActivityForResult() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivityForResult(intent, SETTINGS_REQUEST);
     }
 }

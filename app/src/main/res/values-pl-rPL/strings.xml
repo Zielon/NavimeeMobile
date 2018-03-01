@@ -160,7 +160,7 @@
 
     <!--CALENDAR-->
     <string name="popup_events_title">WSZYSTKO W JEDNYM MIEJSCU</string>
-    <string name="popup_events_info">Tutaj sprawdzisz listę miejsc, w których aktulanie odbywają się duże wydarzenia:
+    <string name="popup_events_info">Tutaj sprawdzisz listę miejsc, w których aktualnie odbywają się duże wydarzenia:
         imprezy, koncerty czy konferencje. Poniżej, wyświetlają się nadchodzące wydarzenia.</string>
     <string name="popup_events_info1">Lista miejsc i wydarzeń w twoim mieście</string>
     <string name="popup_events_info2">Plan Dnia: wydarzeń o których dostaniesz przypomnienie kiedy będą się kończyć</string>

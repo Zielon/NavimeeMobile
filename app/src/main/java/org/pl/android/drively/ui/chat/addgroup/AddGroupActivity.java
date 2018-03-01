@@ -23,8 +23,7 @@ import com.yarolegovich.lovelydialog.LovelyInfoDialog;
 import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 
 import org.pl.android.drively.R;
-import org.pl.android.drively.data.model.RoomMember;
-import org.pl.android.drively.data.model.chat.Group;
+import org.pl.android.drively.data.model.chat.RoomMember;
 import org.pl.android.drively.data.model.chat.ListFriend;
 import org.pl.android.drively.data.model.chat.Room;
 import org.pl.android.drively.ui.base.BaseActivity;
@@ -54,7 +53,7 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView {
     private TextView txtGroupIcon, txtActionName;
     private LovelyProgressDialog dialogWait;
     private boolean isEditGroup;
-    private Group groupEdit;
+    private Room groupEdit;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -136,7 +135,7 @@ public class AddGroupActivity extends BaseActivity implements AddGroupMvpView {
                 .setTopColorRes(R.color.primary)
                 .show();
         //Delete group
-        final String idGroup = groupEdit.id;
+        final String idGroup = groupEdit.getId();
         Room room = new Room();
         for (String id : listIDChoose) {
             room.getMembers().add(new RoomMember(id));
@@ -268,10 +267,10 @@ class ListPeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Set<String> listIDChoose;
     private Set<String> listIDRemove;
     private boolean isEdit;
-    private Group editGroup;
+    private Room editGroup;
     private AddGroupActivity addGroupActivity;
 
-    public ListPeopleAdapter(Context context, ListFriend listFriend, LinearLayout btnAddGroup, Set<String> listIDChoose, Set<String> listIDRemove, boolean isEdit, Group editGroup, AddGroupActivity addGroupActivity) {
+    public ListPeopleAdapter(Context context, ListFriend listFriend, LinearLayout btnAddGroup, Set<String> listIDChoose, Set<String> listIDRemove, boolean isEdit, Room editGroup, AddGroupActivity addGroupActivity) {
         this.context = context;
         this.listFriend = listFriend;
         this.btnAddGroup = btnAddGroup;

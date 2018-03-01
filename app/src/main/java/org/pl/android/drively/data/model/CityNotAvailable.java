@@ -7,6 +7,7 @@ public class CityNotAvailable {
     private int count;
 
     public CityNotAvailable() {
+        this.count = 1;
     }
 
     public String getCity() {

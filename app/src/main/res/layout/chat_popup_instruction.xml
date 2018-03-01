@@ -2,270 +2,281 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_centerInParent="true"
-    android:layout_gravity="center"
-    android:layout_marginBottom="12dp"
-    android:layout_marginTop="12dp"
-    android:background="@drawable/rounded_corner2"
-    android:paddingBottom="16dp"
-    android:paddingTop="16dp">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/popup_chat_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:paddingEnd="24dp"
-        android:paddingStart="24dp"
-        android:text="@string/popup_chat_title"
-        android:textColor="@color/md_black_1000"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
-    <TextView
-        android:id="@+id/popup_chat_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:paddingEnd="0dp"
-        android:paddingStart="12dp"
-        android:text="@string/popup_chat_info"
-        android:textColor="@color/gray_font"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/popup_chat_title" />
-
-    <RelativeLayout
-        android:id="@+id/popup_chat_info1_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/popup_chat_info">
-
-        <com.rilixtech.materialfancybutton.MaterialFancyButton
-            android:id="@+id/popup_chat_info1_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginTop="8dp"
-            android:minWidth="64dp"
-            android:elevation="8dp"
-            fancy:mfb_defaultColor="@color/primary"
-            fancy:mfb_focusColor="@color/white"
-            fancy:mfb_radius="2dp"
-            fancy:mfb_text="@string/popup_chat_info1_button"
-            fancy:mfb_textSize="12sp" />
-
-        <TextView
-            android:id="@+id/popup_chat_info1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
-            android:layout_toLeftOf="@id/popup_chat_info1_group"
-            android:paddingEnd="24dp"
-            android:paddingStart="12dp"
-            android:layout_centerVertical="true"
-            android:text="@string/popup_chat_info1"
-            android:textColor="@color/gray_font"
-            android:textSize="14sp" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/popup_chat_info2_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/popup_chat_info1_layout">
-
-        <com.rilixtech.materialfancybutton.MaterialFancyButton
-            android:id="@+id/popup_chat_info2_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginTop="8dp"
-            android:minWidth="64dp"
-            android:elevation="8dp"
-            fancy:mfb_defaultColor="@color/primary"
-            fancy:mfb_focusColor="@color/white"
-            fancy:mfb_radius="2dp"
-            fancy:mfb_text="@string/popup_chat_info2_button"
-            fancy:mfb_textSize="12sp" />
-
-        <TextView
-            android:id="@+id/popup_chat_info2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
-            android:layout_toLeftOf="@id/popup_chat_info2_group"
-            android:paddingEnd="24dp"
-            android:paddingStart="12dp"
-            android:layout_centerVertical="true"
-            android:text="@string/popup_chat_info2"
-            android:textColor="@color/gray_font"
-            android:textSize="14sp" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/popup_chat_info3_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/popup_chat_info2_layout">
-
-        <com.rilixtech.materialfancybutton.MaterialFancyButton
-            android:id="@+id/popup_chat_info3_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginTop="8dp"
-            android:elevation="8dp"
-            fancy:mfb_defaultColor="@color/primary"
-            fancy:mfb_focusColor="@color/white"
-            fancy:mfb_radius="2dp"
-            fancy:mfb_text="@string/popup_chat_info3_button"
-            fancy:mfb_textSize="12sp" />
-
-        <TextView
-            android:id="@+id/popup_chat_info3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="8dp"
-            android:layout_toLeftOf="@id/popup_chat_info3_button"
-            android:paddingEnd="24dp"
-            android:paddingStart="12dp"
-            android:text="@string/popup_chat_info3"
-            android:textColor="@color/gray_font"
-            android:textSize="14sp" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/popup_chat_info4_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="2dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/popup_chat_info3_layout">
-
-        <ImageView
-            android:id="@+id/chat_popup_search_icon"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:layout_alignParentEnd="true"
-            android:padding="10dp"
-            android:background="@drawable/circle_background_pink"
-            android:layout_marginEnd="12dp"
-            android:src="@drawable/search_loop_24dp_white" />
-
-        <TextView
-            android:id="@+id/popup_chat_info4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="8dp"
-            android:layout_toLeftOf="@id/chat_popup_search_icon"
-            android:paddingEnd="24dp"
-            android:paddingStart="12dp"
-            android:text="@string/popup_chat_info4"
-            android:textColor="@color/gray_font"
-            android:textSize="14sp" />
-
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/popup_chat_question"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:paddingEnd="0dp"
-        android:paddingStart="12dp"
-        android:text="@string/popup_chat_question"
-        android:textColor="@color/gray_font"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/popup_chat_info4_layout" />
-
-    <RelativeLayout
-        android:id="@+id/popup_chat_info5_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="2dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/popup_chat_question">
-
-        <ImageView
-            android:id="@+id/event_size_icon_single"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="12dp"
-            android:src="@drawable/ic_notification_active_black_24dp" />
-
-        <TextView
-            android:id="@+id/popup_chat_info6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="8dp"
-            android:layout_toLeftOf="@id/event_size_icon_single"
-            android:paddingEnd="24dp"
-            android:paddingStart="12dp"
-            android:text="@string/popup_chat_question_explanation"
-            android:textColor="@color/gray_font"
-            android:textSize="14sp" />
-
-    </RelativeLayout>
-
-    <com.rilixtech.materialfancybutton.MaterialFancyButton
-        android:id="@+id/popup_chat_understood_button"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="8dp"
-        android:elevation="8dp"
-        android:padding="12dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/popup_chat_info5_layout"
-        fancy:mfb_defaultColor="@color/button_background"
-        fancy:mfb_focusColor="@color/white"
-        fancy:mfb_radius="2dp"
-        fancy:mfb_text="@string/popup_chat_understood"
-        fancy:mfb_textSize="16sp" />
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/popup_hotspot_preference_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/popup_chat_preference_info"
-        android:textAlignment="center"
-        android:textSize="14sp"
-        android:textColor="@color/gray_font"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/popup_chat_understood_button" />
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:layout_marginBottom="12dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/rounded_corner2"
+            android:paddingBottom="16dp"
+            android:paddingTop="16dp">
+
+            <TextView
+                android:id="@+id/popup_chat_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingEnd="24dp"
+                android:paddingStart="24dp"
+                android:text="@string/popup_chat_title"
+                android:textColor="@color/md_black_1000"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <TextView
+                android:id="@+id/popup_chat_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:paddingEnd="0dp"
+                android:paddingStart="12dp"
+                android:text="@string/popup_chat_info"
+                android:textColor="@color/gray_font"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@id/popup_chat_title" />
+
+            <RelativeLayout
+                android:id="@+id/popup_chat_info1_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/popup_chat_info">
+
+                <com.rilixtech.materialfancybutton.MaterialFancyButton
+                    android:id="@+id/popup_chat_info1_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginTop="8dp"
+                    android:elevation="8dp"
+                    android:minWidth="64dp"
+                    fancy:mfb_defaultColor="@color/primary"
+                    fancy:mfb_focusColor="@color/white"
+                    fancy:mfb_radius="2dp"
+                    fancy:mfb_text="@string/popup_chat_info1_button"
+                    fancy:mfb_textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/popup_chat_info1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="8dp"
+                    android:layout_toLeftOf="@id/popup_chat_info1_group"
+                    android:paddingEnd="24dp"
+                    android:paddingStart="12dp"
+                    android:text="@string/popup_chat_info1"
+                    android:textColor="@color/gray_font"
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/popup_chat_info2_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/popup_chat_info1_layout">
+
+                <com.rilixtech.materialfancybutton.MaterialFancyButton
+                    android:id="@+id/popup_chat_info2_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginTop="8dp"
+                    android:elevation="8dp"
+                    android:minWidth="64dp"
+                    fancy:mfb_defaultColor="@color/primary"
+                    fancy:mfb_focusColor="@color/white"
+                    fancy:mfb_radius="2dp"
+                    fancy:mfb_text="@string/popup_chat_info2_button"
+                    fancy:mfb_textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/popup_chat_info2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="8dp"
+                    android:layout_toLeftOf="@id/popup_chat_info2_group"
+                    android:paddingEnd="24dp"
+                    android:paddingStart="12dp"
+                    android:text="@string/popup_chat_info2"
+                    android:textColor="@color/gray_font"
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/popup_chat_info3_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/popup_chat_info2_layout">
+
+                <com.rilixtech.materialfancybutton.MaterialFancyButton
+                    android:id="@+id/popup_chat_info3_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginTop="8dp"
+                    android:elevation="8dp"
+                    fancy:mfb_defaultColor="@color/primary"
+                    fancy:mfb_focusColor="@color/white"
+                    fancy:mfb_radius="2dp"
+                    fancy:mfb_text="@string/popup_chat_info3_button"
+                    fancy:mfb_textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/popup_chat_info3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="8dp"
+                    android:layout_toLeftOf="@id/popup_chat_info3_button"
+                    android:paddingEnd="24dp"
+                    android:paddingStart="12dp"
+                    android:text="@string/popup_chat_info3"
+                    android:textColor="@color/gray_font"
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/popup_chat_info4_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="2dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/popup_chat_info3_layout">
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/chat_popup_search_icon"-->
+                    <!--android:layout_width="44dp"-->
+                    <!--android:layout_height="44dp"-->
+                    <!--android:layout_alignParentEnd="true"-->
+                    <!--android:layout_marginEnd="12dp"-->
+                    <!--android:background="@drawable/circle_background_pink"-->
+                    <!--android:padding="10dp"-->
+                    <!--android:src="@drawable/search_loop_24dp_white" />-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/popup_chat_info4"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:layout_marginRight="8dp"-->
+                    <!--android:layout_toLeftOf="@id/chat_popup_search_icon"-->
+                    <!--android:paddingEnd="24dp"-->
+                    <!--android:paddingStart="12dp"-->
+                    <!--android:text="@string/popup_chat_info4"-->
+                    <!--android:textColor="@color/gray_font"-->
+                    <!--android:textSize="14sp" />-->
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/popup_chat_question"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:paddingEnd="0dp"
+                android:paddingStart="12dp"
+                android:text="@string/popup_chat_question"
+                android:textColor="@color/gray_font"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@id/popup_chat_info4_layout" />
+
+            <RelativeLayout
+                android:id="@+id/popup_chat_info5_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="2dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/popup_chat_question">
+
+                <ImageView
+                    android:id="@+id/event_size_icon_single"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="12dp"
+                    android:src="@drawable/ic_notification_active_black_24dp" />
+
+                <TextView
+                    android:id="@+id/popup_chat_info6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="8dp"
+                    android:layout_toLeftOf="@id/event_size_icon_single"
+                    android:paddingEnd="24dp"
+                    android:paddingStart="12dp"
+                    android:text="@string/popup_chat_question_explanation"
+                    android:textColor="@color/gray_font"
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
+
+            <com.rilixtech.materialfancybutton.MaterialFancyButton
+                android:id="@+id/popup_chat_understood_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="8dp"
+                android:elevation="8dp"
+                android:padding="12dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/popup_chat_info5_layout"
+                fancy:mfb_defaultColor="@color/button_background"
+                fancy:mfb_focusColor="@color/white"
+                fancy:mfb_radius="2dp"
+                fancy:mfb_text="@string/popup_chat_understood"
+                fancy:mfb_textSize="16sp" />
+
+            <TextView
+                android:id="@+id/popup_hotspot_preference_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@string/popup_chat_preference_info"
+                android:textAlignment="center"
+                android:textColor="@color/gray_font"
+                android:textSize="14sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/popup_chat_understood_button" />
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
 
 </android.support.constraint.ConstraintLayout>

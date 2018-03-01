@@ -14,9 +14,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
 import org.pl.android.drively.data.DataManager;
-import org.pl.android.drively.data.model.RoomMember;
-import org.pl.android.drively.data.model.chat.Friend;
-import org.pl.android.drively.data.model.chat.Group;
+import org.pl.android.drively.data.model.chat.RoomMember;
 import org.pl.android.drively.data.model.chat.Room;
 import org.pl.android.drively.injection.ActivityContext;
 import org.pl.android.drively.ui.base.BasePresenter;
@@ -87,11 +85,12 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
                 .collection(FirebasePaths.GROUP).document(mDataManager.getPreferencesHelper().getCountry());
 
         for (String id : roomsIds) {
-            tasks.add(groupRef.collection(id).document(ROOM_DETAILS).get().continueWith(task -> {
+            tasks.add(groupRef.collection(id).document(ROOM_DETAILS).get()
+                    .continueWith(task -> {
                         DocumentSnapshot snapshot = task.getResult();
                         if (snapshot != null && snapshot.exists()) {
                             Room room = snapshot.toObject(Room.class);
-                            return groupRef.collection(id).document(ROOM_DETAILS).collection(MEMBERS).get().continueWith(members -> {
+                            return groupRef.collection(id).document(MEMBERS).collection(MEMBERS).get().continueWith(members -> {
                                 if(members.isSuccessful()){
                                     for(DocumentSnapshot doc : members.getResult().getDocuments())
                                         room.getMembers().add(doc.toObject(RoomMember.class));
@@ -121,10 +120,10 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
         });
     }
 
-    public void deleteGroup(Group group) {
+    public void deleteGroup(Room group) {
         deleteCollection(mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.GROUP)
-                .document(group.id).collection(FirebasePaths.MEMBERS), 1000, Executors.newSingleThreadExecutor());
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.GROUP).document(group.id)
+                .document(group.getId()).collection(FirebasePaths.MEMBERS), 1000, Executors.newSingleThreadExecutor());
+        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.GROUP).document(group.getId())
                 .delete()
                 .addOnSuccessListener(aVoid -> {
                     if (getMvpView() != null) {
@@ -182,10 +181,10 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
         return querySnapshot.getDocuments();
     }
 
-    public void deleteGroupReference(int index, Group group) {
+    public void deleteGroupReference(int index, Room group) {
         mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS)
                 .document(group.getMembers().get(index).getMemberId())
-                .collection(FirebasePaths.GROUP).whereEqualTo("roomId", group.id)
+                .collection(FirebasePaths.GROUP).whereEqualTo("roomId", group.getId())
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -221,9 +220,9 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
                 });
     }
 
-    public void leaveGroup(Group group) {
+    public void leaveGroup(Room group) {
         mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.GROUP)
-                .document(group.id)
+                .document(group.getId())
                 .collection(FirebasePaths.MEMBERS)
                 .document(getId()).delete()
                 .addOnSuccessListener(aVoid -> {
@@ -239,10 +238,10 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
     }
 
 
-    public void leaveGroupUserReference(Group group) {
+    public void leaveGroupUserReference(Room group) {
         mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS)
                 .document(getId())
-                .collection(FirebasePaths.GROUP).whereEqualTo("roomId", group.id)
+                .collection(FirebasePaths.GROUP).whereEqualTo("roomId", group.getId())
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {

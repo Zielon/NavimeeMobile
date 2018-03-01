@@ -52,13 +52,15 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
     public static final int VIEW_TYPE_FRIEND_MESSAGE = 1;
     public static HashMap<String, Bitmap> bitmapAvataFriend;
     public static Bitmap bitmapAvatarUser;
-    public static boolean active = false;
+    public static String ACTIVE_ROOM = "";
     public String UID;
+
     @Inject
     ChatViewPresenter mChatViewPresenter;
     private RecyclerView recyclerChat;
     private ListMessageAdapter adapter;
     private String roomId;
+    private String roomName;
     private ArrayList<CharSequence> idFriend;
     private Conversation conversation;
     private ImageButton btnSend;
@@ -75,6 +77,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         Intent intentData = getIntent();
         idFriend = intentData.getCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID);
         roomId = intentData.getStringExtra(Const.INTENT_KEY_CHAT_ROOM_ID);
+        roomName = intentData.getStringExtra(Const.INTENT_KEY_CHAT_ROOM_NAME);
         isGroupChat = intentData.getBooleanExtra(Const.INTENT_KEY_IS_GROUP_CHAT, false);
         String nameFriend = intentData.getStringExtra(Const.INTENT_KEY_CHAT_FRIEND);
 
@@ -87,7 +90,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         if (!isGroupChat && nameFriend != null)
             getSupportActionBar().setTitle(nameFriend);
         else
-            getSupportActionBar().setTitle(roomId);
+            getSupportActionBar().setTitle(roomName);
 
         linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerChat = (RecyclerView) findViewById(R.id.recyclerChat);
@@ -125,7 +128,8 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             Intent result = new Intent();
-            result.putExtra("idFriend", idFriend.get(0));
+            if(idFriend.size() > 0)
+                result.putExtra("idFriend", idFriend.get(0));
             setResult(RESULT_OK, result);
             this.finish();
         }
@@ -150,13 +154,13 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onStart() {
         super.onStart();
-        active = true;
+        ACTIVE_ROOM = roomId;
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        active = false;
+        ACTIVE_ROOM = "";
     }
 
     @Override

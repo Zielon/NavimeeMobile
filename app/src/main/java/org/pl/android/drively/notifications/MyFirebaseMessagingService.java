@@ -98,18 +98,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void sendNotificationFromChat(MessageNotificationFCM fcm, boolean isGroup) {
-        if (!ChatViewActivity.active) {
-            dataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + fcm.getAvatar())
-                    .getBytes(Const.FIVE_MEGABYTE)
-                    .addOnSuccessListener(bytes -> {
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        sendNotificationFromChatWithIcon(fcm, bitmap, isGroup);
+        if (ChatViewActivity.ACTIVE_ROOM.equals(fcm.getIdRoom()))
+            return;
 
-                    }).addOnFailureListener(exception -> {
-                Bitmap bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.default_avatar);
-                sendNotificationFromChatWithIcon(fcm, bitmap, isGroup);
-            });
-        }
+        dataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + fcm.getAvatar())
+                .getBytes(Const.FIVE_MEGABYTE)
+                .addOnSuccessListener(bytes -> {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    sendNotificationFromChatWithIcon(fcm, bitmap, isGroup);
+
+                }).addOnFailureListener(exception -> {
+            Bitmap bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.default_avatar);
+            sendNotificationFromChatWithIcon(fcm, bitmap, isGroup);
+        });
     }
 
     private void sendNotificationFromChatWithIcon(MessageNotificationFCM fcm, Bitmap bitmap, boolean isGroup) {
@@ -121,6 +122,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         idFriend.add(fcm.getIdSender());
         intent.putCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID, idFriend);
         intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, fcm.getIdRoom());
+        intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_NAME, fcm.getRoomName());
         intent.putExtra(Const.INTENT_KEY_IS_GROUP_CHAT, isGroup);
         ChatViewActivity.bitmapAvataFriend = new HashMap<>();
         ChatViewActivity.bitmapAvataFriend.put(fcm.getIdSender(), avatar);
@@ -132,7 +134,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-        String nameSender = isGroup ? fcm.getNameSender() + " (" + fcm.getIdRoom() + ")" : fcm.getNameSender();
+        String nameSender = isGroup ? fcm.getNameSender() + " (" + fcm.getRoomName() + ")" : fcm.getNameSender();
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.notification_d)
