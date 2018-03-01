@@ -1,5 +1,7 @@
 package org.pl.android.drively.data.model;
 
+import org.pl.android.drively.util.Const;
+
 public class User {
 
     public static final String DEFAULT_AVATAR = "DEFAULT";
@@ -18,6 +20,7 @@ public class User {
     private boolean chatPrivateNotification;
     private boolean chatGroupNotification;
     private boolean shareLocalization;
+    private Const.DriverType driverType;
 
     public User() {
         this.avatar = DEFAULT_AVATAR;
@@ -130,5 +133,13 @@ public class User {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public Const.DriverType getDriverType() {
+        return driverType;
+    }
+
+    public void setDriverType(Const.DriverType driverType) {
+        this.driverType = driverType;
     }
 }
