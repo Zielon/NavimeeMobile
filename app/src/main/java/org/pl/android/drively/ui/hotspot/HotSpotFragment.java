@@ -877,22 +877,11 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
     }
 
     private double calculateBearing(double startLat, double startLong, double endLat,double  endLong){
-        startLat = Math.toRadians(startLat);
-        startLong = Math.toRadians(startLong);
-        endLat = Math.toRadians(endLat);
-        endLong = Math.toRadians(endLong);
-
-        double dLong = endLong - startLong;
-
-        double dPhi = Math.log(Math.tan(endLat/2.0+Math.PI/4.0)/Math.tan(startLat/2.0+Math.PI/4.0));
-        if (Math.abs(dLong) > Math.PI){
-            if (dLong > 0.0)
-                dLong = -(2.0 * Math.PI - dLong);
-            else
-                dLong = (2.0 * Math.PI + dLong);
-        }
-
-        return (Math.toDegrees((Math.atan2(dLong, dPhi)) + 360.0) % 360.0);
+        double dLon = (endLong -startLong);
+        double y = Math.sin(dLon) * Math.cos(endLat);
+        double x = Math.cos(startLat)*Math.sin(endLat) - Math.sin(startLat)*Math.cos(endLat)*Math.cos(dLon);
+        double bearing = Math.toDegrees((Math.atan2(y, x)));
+        return  (360 - ((bearing + 360) % 360));
     }
 
     public void animateMarker(final Marker marker, final LatLng toPosition,
