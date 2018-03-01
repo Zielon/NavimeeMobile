@@ -81,6 +81,8 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
 
     public void getGroupInfo(List<String> roomsIds) {
         List<Task<Task<Room>>> tasks = new ArrayList<>();
+        if(mDataManager.getPreferencesHelper().getCountry().equals("")) return;
+
         DocumentReference groupRef = mDataManager.getFirebaseService().getFirebaseFirestore()
                 .collection(FirebasePaths.GROUP).document(mDataManager.getPreferencesHelper().getCountry());
 
