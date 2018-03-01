@@ -851,10 +851,13 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
             Timber.i("USER LOCATION");
             if (usersMarkers.containsKey(key)) {
                 GeoLocation previousLocation = directionsDelta.get(key);
-                double bearing = calculateBearing(previousLocation.latitude, previousLocation.longitude,
-                        location.latitude,location.longitude);
-                directionsDelta.put(key,location);
-                animateMarker(usersMarkers.get(key), new LatLng(location.latitude, location.longitude),bearing, false);
+                if(!previousLocation.equals(location)) {
+                    double bearing = calculateBearing(previousLocation.latitude, previousLocation.longitude,
+                            location.latitude, location.longitude);
+                    Timber.i("BEARING " + key + " - " + bearing);
+                    directionsDelta.put(key, location);
+                    animateMarker(usersMarkers.get(key), new LatLng(location.latitude, location.longitude), bearing, false);
+                }
             }
         }
     }
