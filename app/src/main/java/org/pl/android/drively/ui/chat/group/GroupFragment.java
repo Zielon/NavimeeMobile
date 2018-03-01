@@ -371,17 +371,17 @@ class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 listFriend = FriendDB.getInstance(context).getListFriend();
             }
             ArrayList<CharSequence> idFriend = new ArrayList<>();
-            ChatViewActivity.bitmapAvataFriend = new HashMap<>();
+            ChatViewActivity.bitmapAvatarFriends = new HashMap<>();
             for (RoomMember member : listGroup.get(position).getMembers()) {
                 String id = member.getMemberId();
                 idFriend.add(id);
                 String avatar = listFriend.getAvataById(id);
                 if (!avatar.equals(Const.STR_DEFAULT_AVATAR) && listFriend.getById(id) != null && listFriend.getById(id).avatarBytes != null) {
-                    ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(listFriend.getById(id).avatarBytes, 0, listFriend.getById(id).avatarBytes.length));
+                    ChatViewActivity.bitmapAvatarFriends.put(id, BitmapFactory.decodeByteArray(listFriend.getById(id).avatarBytes, 0, listFriend.getById(id).avatarBytes.length));
                 } else if (avatar.equals(Const.STR_DEFAULT_AVATAR)) {
-                    ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
+                    ChatViewActivity.bitmapAvatarFriends.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
                 } else {
-                    ChatViewActivity.bitmapAvataFriend.put(id, null);
+                    ChatViewActivity.bitmapAvatarFriends.put(id, null);
                 }
             }
 

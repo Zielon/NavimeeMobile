@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -445,13 +444,13 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     idFriend.add(id);
                     intent.putCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID, idFriend);
                     intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, idRoom);
-                    ChatViewActivity.bitmapAvataFriend = new HashMap<>();
+                    ChatViewActivity.bitmapAvatarFriends = new HashMap<>();
                     if (!avata.equals(Const.STR_DEFAULT_AVATAR)) {
                         BitmapDrawable bitmapDrawable = (BitmapDrawable) ((ItemFriendViewHolder) holder).avata.getDrawable();
                         if (bitmapDrawable != null)
-                            ChatViewActivity.bitmapAvataFriend.put(id, bitmapDrawable.getBitmap());
+                            ChatViewActivity.bitmapAvatarFriends.put(id, bitmapDrawable.getBitmap());
                     } else {
-                        ChatViewActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
+                        ChatViewActivity.bitmapAvatarFriends.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
                     }
 
                     mapMark.put(id, null);
