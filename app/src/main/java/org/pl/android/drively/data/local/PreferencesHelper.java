@@ -171,4 +171,6 @@ public class PreferencesHelper {
     public String getUserId() {
         return sharedPreferences.getString(SHARE_KEY_USER_ID, "");
     }
+
+
 }
