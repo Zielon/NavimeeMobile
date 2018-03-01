@@ -807,15 +807,15 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                 directionsDelta.put(key,location);
                 MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).flat(true);
                 if(key.contains(Const.DriverType.UBER.getName())) {
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.black_car));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.uber));
                 } else if(key.contains(Const.DriverType.ITAXI.getName())) {
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_car));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.uber));
                 } else if(key.contains(Const.DriverType.MY_TAXI.getName())) {
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.green_car));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi));
                 } else if(key.contains(Const.DriverType.TAXI.getName())) {
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.yellow_car));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi));
                 } else {
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.yellow_car));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi));
                 }
                 Marker marker = googleMap.addMarker(markerOptions);
                 usersMarkers.put(key, marker);
