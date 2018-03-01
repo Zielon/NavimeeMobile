@@ -52,7 +52,7 @@ interface MessageHolder {
 public class ChatViewActivity extends BaseActivity implements View.OnClickListener, ChatViewMvpView {
     public static final int VIEW_TYPE_USER_MESSAGE = 0;
     public static final int VIEW_TYPE_FRIEND_MESSAGE = 1;
-    public static HashMap<String, Bitmap> bitmapAvataFriend;
+    public static HashMap<String, Bitmap> bitmapAvatarFriends = new HashMap<>();
     public static Bitmap bitmapAvatarUser;
     public static String ACTIVE_ROOM = "";
     public String UID;
@@ -101,7 +101,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         adapter = new ListMessageAdapter(this,
                 conversation,
                 new RecyclerViewPositionHelper(recyclerChat),
-                bitmapAvataFriend,
+                bitmapAvatarFriends,
                 bitmapAvatarUser,
                 mChatViewPresenter);
 
@@ -191,19 +191,19 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
     private Conversation conversation;
     private HashMap<String, Bitmap> bitmapAvatars;
-    private Bitmap bitmapAvataUser;
+    private Bitmap bitmapAvatarUser;
     private ChatViewPresenter chatViewPresenter;
     private RecyclerViewPositionHelper positionHelper;
 
     public ListMessageAdapter(Context context,
                               Conversation conversation,
                               RecyclerViewPositionHelper positionHelper,
-                              HashMap<String, Bitmap> bitmapAvata,
-                              Bitmap bitmapAvataUser, ChatViewPresenter chatViewPresenter) {
+                              HashMap<String, Bitmap> bitmapAvatars,
+                              Bitmap bitmapAvatarUser, ChatViewPresenter chatViewPresenter) {
         this.context = context;
         this.conversation = conversation;
-        this.bitmapAvatars = bitmapAvata;
-        this.bitmapAvataUser = bitmapAvataUser;
+        this.bitmapAvatars = bitmapAvatars;
+        this.bitmapAvatarUser = bitmapAvatarUser;
         this.chatViewPresenter = chatViewPresenter;
         this.positionHelper = positionHelper;
     }
@@ -324,8 +324,8 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             String time = new SimpleDateFormat("EEE 'AT' HH:mm").format(message.timestamp).toUpperCase();
             messageHolder.txtContent.setText(message.text);
             messageHolder.timeStamp.setText(time);
-            if (bitmapAvataUser != null)
-                messageHolder.avatar.setImageBitmap(bitmapAvataUser);
+            if (bitmapAvatarUser != null)
+                messageHolder.avatar.setImageBitmap(bitmapAvatarUser);
         }
 
         groupMessages(position, (MessageHolder) holder);

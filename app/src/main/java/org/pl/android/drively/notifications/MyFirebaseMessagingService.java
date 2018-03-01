@@ -101,16 +101,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (ChatViewActivity.ACTIVE_ROOM.equals(fcm.getIdRoom()))
             return;
 
-        dataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + fcm.getAvatar())
-                .getBytes(Const.FIVE_MEGABYTE)
-                .addOnSuccessListener(bytes -> {
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    sendNotificationFromChatWithIcon(fcm, bitmap, isGroup);
+        if (ChatViewActivity.bitmapAvatarFriends.containsKey(fcm.getIdSender()))
+            sendNotificationFromChatWithIcon(fcm, ChatViewActivity.bitmapAvatarFriends.get(fcm.getIdSender()), isGroup);
+        else
+            dataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + fcm.getAvatar())
+                    .getBytes(Const.FIVE_MEGABYTE)
+                    .addOnSuccessListener(bytes -> {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        sendNotificationFromChatWithIcon(fcm, bitmap, isGroup);
 
-                }).addOnFailureListener(exception -> {
-            Bitmap bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.default_avatar);
-            sendNotificationFromChatWithIcon(fcm, bitmap, isGroup);
-        });
+                    }).addOnFailureListener(exception -> {
+                Bitmap bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.default_avatar);
+                sendNotificationFromChatWithIcon(fcm, bitmap, isGroup);
+            });
     }
 
     private void sendNotificationFromChatWithIcon(MessageNotificationFCM fcm, Bitmap bitmap, boolean isGroup) {
@@ -124,8 +127,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, fcm.getIdRoom());
         intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_NAME, fcm.getRoomName());
         intent.putExtra(Const.INTENT_KEY_IS_GROUP_CHAT, isGroup);
-        ChatViewActivity.bitmapAvataFriend = new HashMap<>();
-        ChatViewActivity.bitmapAvataFriend.put(fcm.getIdSender(), avatar);
+        ChatViewActivity.bitmapAvatarFriends.put(fcm.getIdSender(), avatar);
 
         PendingIntent navigationIntent = TaskStackBuilder.create(this)
                 .addParentStack(ChatViewActivity.class)
