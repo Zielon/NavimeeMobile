@@ -196,6 +196,11 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
 
     public void saveUserCompany(String name) {
         mDataManager.getPreferencesHelper().setValue(Const.USER_COMPANY, name);
+        try {
+            usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "driverType", name);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getUserCompany() {

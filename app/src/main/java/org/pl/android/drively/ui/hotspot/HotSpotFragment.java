@@ -815,8 +815,12 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                 } else {
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_float_add_group));
                 }
-                Marker marker = googleMap.addMarker(markerOptions);
-                usersMarkers.put(key, marker);
+                try{
+                    Marker marker = googleMap.addMarker(markerOptions);
+                    usersMarkers.put(key, marker);
+                } catch (NullPointerException e) {
+                    Timber.d(e);
+                }
             }
         } else {
             mHotspotPresenter.loadHotSpotPlace(key);

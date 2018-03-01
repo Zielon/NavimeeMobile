@@ -16,8 +16,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import org.pl.android.drively.R;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.base.tab.BaseTabFragment;
-import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.ui.main.MainActivity;
+import org.pl.android.drively.util.ChatUtils;
 
 import javax.inject.Inject;
 
@@ -72,8 +72,7 @@ public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
     private void preparePopupLayout(View rootView) {
         rootView.findViewById(R.id.popup_finance_contact_us_button).setOnClickListener(view -> {
             changeTabToChat();
-            Intent intent = new Intent(context, ChatViewActivity.class);
-            // TODO: put specific chat id into intent data
+            Intent intent = ChatUtils.getChatActivityIntent(context, "Drively");
             context.startActivity(intent);
             popup.dismiss();
         });
