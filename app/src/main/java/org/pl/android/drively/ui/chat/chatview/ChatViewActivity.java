@@ -35,6 +35,8 @@ import javax.inject.Inject;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static org.pl.android.drively.util.Const.ADMIN;
+
 interface MessageHolder {
     TextView getTextContent();
 
@@ -302,7 +304,7 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     context.startActivity(intent);
                 });
 
-            if (message instanceof PrivateMessage)
+            if (message.idSender.equals(ADMIN) || message instanceof PrivateMessage)
                 view.findViewById(R.id.sendMessage).setVisibility(View.GONE);
 
             messageHolder.timeStamp.setText(new SimpleDateFormat("EEE 'AT' HH:mm").format(message.timestamp).toUpperCase());
@@ -311,7 +313,7 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 messageHolder.avatar.setImageBitmap(currentAvatar);
                 ((CircleImageView) view.findViewById(R.id.avatar)).setImageBitmap(currentAvatar);
             } else {
-                if (message.idSender.equals("ADMIN_DRIVELY")) {
+                if (message.idSender.equals(ADMIN)) {
                     ((CircleImageView) view.findViewById(R.id.avatar)).setImageResource(R.drawable.drively);
                     messageHolder.avatar.setImageResource(R.drawable.drively);
                 } else

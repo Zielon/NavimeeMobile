@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Const {
+    public final static String ADMIN = "ADMIN_DRIVELY";
     public final static String MESSAGING_TOKEN = "MESSAGING_TOKEN";
     public final static String LAST_LOCATION = "LAST_LOCATION";
     public final static String LAST_LOCATION_LAT = "LAST_LOCATION_LAT";
