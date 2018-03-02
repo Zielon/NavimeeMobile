@@ -189,7 +189,14 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     public void onStart() {
         super.onStart();
         IS_USER_POSITION_CHECKED = false;
+        mMainPresenter.updateOnlineStatus(true);
         checkInternetConnectivity();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mMainPresenter.updateOnlineStatus(false);
     }
 
     private void checkInternetConnectivity() {
@@ -211,7 +218,6 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mMainPresenter.updateOnlineStatus(false);
         mMainPresenter.detachView();
     }
 
