@@ -17,7 +17,6 @@ import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.data.model.chat.ChatUser;
 import org.pl.android.drively.data.model.chat.Friend;
-import org.pl.android.drively.data.model.chat.ListFriend;
 import org.pl.android.drively.data.model.chat.Message;
 import org.pl.android.drively.injection.ActivityContext;
 import org.pl.android.drively.ui.base.BasePresenter;
@@ -27,7 +26,6 @@ import org.pl.android.drively.ui.chat.friendsearch.FriendSearchDialogCompat;
 import org.pl.android.drively.util.ChatUtils;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
-import org.pl.android.drively.util.NetworkUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -175,7 +173,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                     if (task.isSuccessful() && task.getResult() != null && getMvpView() != null)
                         getMvpView().addFriendInfo(task.getResult());
 
-                if(getMvpView() != null)
+                if (getMvpView() != null)
                     getMvpView().allFriendsFound();
             });
         });

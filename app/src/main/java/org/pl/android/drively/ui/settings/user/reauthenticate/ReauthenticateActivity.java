@@ -23,18 +23,15 @@ import static org.pl.android.drively.util.UserInputValidation.isPasswordValid;
 public class ReauthenticateActivity extends BaseActivity implements ReauthenticateMvpView {
 
     @BindView(R.id.input_email)
-    EditText _emailText;
-
+    EditText editText;
     @BindView(R.id.input_password)
-    TextInputEditText _passwordText;
-
+    TextInputEditText passwordText;
     @BindView(R.id.reauthenticate)
-    Button _reauthenticateButton;
-
+    Button reauthenticateButton;
     @Inject
-    ReauthenticatePresenter _reauthenticatePresenter;
+    ReauthenticatePresenter reauthenticatePresenter;
 
-    ProgressDialog _progressDialog;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,46 +42,46 @@ public class ReauthenticateActivity extends BaseActivity implements Reauthentica
         activityComponent().inject(this);
         HideKeyboard.setupUI(findViewById(R.id.reauthenticate_layout), this);
 
-        _reauthenticatePresenter.attachView(this);
+        reauthenticatePresenter.attachView(this);
 
-        _reauthenticateButton.setOnClickListener(v -> {
+        reauthenticateButton.setOnClickListener(v -> {
 
-            _progressDialog = new ProgressDialog(this, R.style.AppTheme_Dark_Dialog);
-            _progressDialog.setIndeterminate(true);
-            _progressDialog.setMessage(getResources().getString(R.string.login_progress));
+            progressDialog = new ProgressDialog(this, R.style.AppTheme_Dark_Dialog);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setMessage(getResources().getString(R.string.login_progress));
 
-            String email = _emailText.getText().toString();
-            String password = _passwordText.getText().toString();
+            String email = editText.getText().toString();
+            String password = passwordText.getText().toString();
 
             boolean valid = true;
 
             if (!isEmailValid(email)) {
-                _emailText.setError(getResources().getString(R.string.valid_email_address));
+                editText.setError(getResources().getString(R.string.valid_email_address));
                 valid = false;
             } else {
-                _emailText.setError(null);
+                editText.setError(null);
             }
 
             if (!isPasswordValid(password)) {
-                _passwordText.setError(getResources().getString(R.string.valid_password));
+                passwordText.setError(getResources().getString(R.string.valid_password));
                 valid = false;
             } else {
-                _passwordText.setError(null);
+                passwordText.setError(null);
             }
 
             if (!valid) return;
 
-            _progressDialog.show();
-            _reauthenticateButton.setEnabled(false);
-            _reauthenticatePresenter.reauthenticate(email, password);
+            progressDialog.show();
+            reauthenticateButton.setEnabled(false);
+            reauthenticatePresenter.reauthenticate(email, password);
         });
     }
 
     @Override
     public void onSuccess() {
-        _reauthenticatePresenter.detachView();
-        _reauthenticateButton.setEnabled(true);
-        _progressDialog.dismiss();
+        reauthenticatePresenter.detachView();
+        reauthenticateButton.setEnabled(true);
+        progressDialog.dismiss();
 
         setResult(RESULT_OK, null);
         finish();
@@ -93,9 +90,9 @@ public class ReauthenticateActivity extends BaseActivity implements Reauthentica
     @Override
     public void onError() {
         Toast.makeText(getBaseContext(), getResources().getString(R.string.login_failed), Toast.LENGTH_LONG).show();
-        _passwordText.setText("");
-        _emailText.setText("");
-        _progressDialog.dismiss();
+        passwordText.setText("");
+        editText.setText("");
+        progressDialog.dismiss();
     }
 
     @Override

@@ -10,28 +10,28 @@ import javax.inject.Inject;
 
 public class UserEmailChangePresenter extends BasePresenter<UserEmailChangeMvpView> {
 
-    private final DataManager _dataManager;
-    private UserEmailChangeMvpView _mvpView;
+    private final DataManager dataManager;
+    private UserEmailChangeMvpView userEmailChangeMvpView;
 
     @Inject
     public UserEmailChangePresenter(DataManager dataManager) {
-        _dataManager = dataManager;
+        this.dataManager = dataManager;
     }
 
     @Override
     public void attachView(UserEmailChangeMvpView mvpView) {
-        _mvpView = mvpView;
+        userEmailChangeMvpView = mvpView;
     }
 
     public String getEmail() {
-        FirebaseUser user = _dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
+        FirebaseUser user = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
         return user.getEmail();
     }
 
     public void changeEmail(String newEmail) {
-        FirebaseUser user = _dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
+        FirebaseUser user = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
         if (user == null) return;
         RxFirebaseUser.updateEmail(user, newEmail)
-                .subscribe(sub -> _mvpView.onSuccess(), throwable -> _mvpView.onError(throwable));
+                .subscribe(sub -> userEmailChangeMvpView.onSuccess(), throwable -> userEmailChangeMvpView.onError(throwable));
     }
 }

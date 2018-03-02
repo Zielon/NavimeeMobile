@@ -13,7 +13,7 @@ public class BaseTabPresenter<T extends TabMvpView> extends BasePresenter<T> {
     @Override
     public void attachView(T mvpView) {
         super.attachView(mvpView);
-        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             verifyFirstStartPopupNecessity();
         }
     }
@@ -22,9 +22,9 @@ public class BaseTabPresenter<T extends TabMvpView> extends BasePresenter<T> {
         String sharedPreferenceConst = getMvpView().getClass().getSimpleName() + Const.FIRST_START_POPUP_SUFFIX;
         boolean wasFirstStartPopup = mDataManager.getPreferencesHelper()
                 .getValue(sharedPreferenceConst);
-        if(!wasFirstStartPopup) {
+        if (!wasFirstStartPopup) {
             getMvpView().showInstructionPopup();
-            if(!getMvpView().getClass().getSimpleName().equals("FinanceFragment")) {
+            if (!getMvpView().getClass().getSimpleName().equals("FinanceFragment")) {
                 mDataManager.getPreferencesHelper().setValue(sharedPreferenceConst, true);
             }
         }

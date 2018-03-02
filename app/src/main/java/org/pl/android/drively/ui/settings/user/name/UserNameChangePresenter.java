@@ -11,29 +11,29 @@ import javax.inject.Inject;
 
 public class UserNameChangePresenter extends BasePresenter<UserNameChangeMvpView> {
 
-    private final DataManager _dataManager;
-    private UserNameChangeMvpView _mvpView;
+    private final DataManager dataManager;
+    private UserNameChangeMvpView userNameChangeMvpView;
 
     @Inject
     public UserNameChangePresenter(DataManager dataManager) {
-        _dataManager = dataManager;
+        this.dataManager = dataManager;
     }
 
     public String getName() {
-        FirebaseUser user = _dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
+        FirebaseUser user = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
         return user.getDisplayName();
     }
 
     @Override
     public void attachView(UserNameChangeMvpView mvpView) {
-        _mvpView = mvpView;
+        userNameChangeMvpView = mvpView;
     }
 
     public void changeName(String name) {
-        FirebaseUser user = _dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
+        FirebaseUser user = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
         if (user == null) return;
         UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
         RxFirebaseUser.updateProfile(user, profile)
-                .subscribe(sub -> _mvpView.onSuccess(), throwable -> _mvpView.onError());
+                .subscribe(sub -> userNameChangeMvpView.onSuccess(), throwable -> userNameChangeMvpView.onError());
     }
 }

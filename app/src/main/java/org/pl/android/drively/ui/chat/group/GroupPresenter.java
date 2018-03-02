@@ -14,8 +14,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
 import org.pl.android.drively.data.DataManager;
-import org.pl.android.drively.data.model.chat.RoomMember;
 import org.pl.android.drively.data.model.chat.Room;
+import org.pl.android.drively.data.model.chat.RoomMember;
 import org.pl.android.drively.injection.ActivityContext;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.FirebasePaths;
@@ -81,7 +81,7 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
 
     public void getGroupInfo(List<String> roomsIds) {
         List<Task<Task<Room>>> tasks = new ArrayList<>();
-        if(mDataManager.getPreferencesHelper().getCountry().equals("")) return;
+        if (mDataManager.getPreferencesHelper().getCountry().equals("")) return;
 
         DocumentReference groupRef = mDataManager.getFirebaseService().getFirebaseFirestore()
                 .collection(FirebasePaths.GROUP).document(mDataManager.getPreferencesHelper().getCountry());
@@ -93,8 +93,8 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
                         if (snapshot != null && snapshot.exists()) {
                             Room room = snapshot.toObject(Room.class);
                             return groupRef.collection(id).document(MEMBERS).collection(MEMBERS).get().continueWith(members -> {
-                                if(members.isSuccessful()){
-                                    for(DocumentSnapshot doc : members.getResult().getDocuments())
+                                if (members.isSuccessful()) {
+                                    for (DocumentSnapshot doc : members.getResult().getDocuments())
                                         room.getMembers().add(doc.toObject(RoomMember.class));
                                 }
                                 return room;

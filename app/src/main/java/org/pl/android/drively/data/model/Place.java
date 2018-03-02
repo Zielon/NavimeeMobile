@@ -1,20 +1,19 @@
 package org.pl.android.drively.data.model;
 
 
-import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.IgnoreExtraProperties;
 
 import java.io.Serializable;
 
 @IgnoreExtraProperties
 public class Place implements Serializable {
+    double lat;
+    double lon;
     private String id;
     private String address;
     private String name;
     private String category;
     private String city;
-    double lat;
-    double lon;
 
     public Place(String id, String address, String name, String category, String city, double lat, double lon) {
         this.id = id;

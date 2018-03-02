@@ -38,19 +38,17 @@ public class PlannerFragment extends BaseTabFragment {
 
     public static String STR_CALENDAR_FRAGMENT = "CALENDAR";
     public static String STR_YOUR_PLAN_FRAGMENT = "YOUR_PLAN";
-
+    public static Calendar selectedDate;
     @BindView(R.id.tab_layout_planner)
     TabLayout tabLayout;
     @BindView(R.id.viewpager_planner)
     ViewPager viewPager;
     ViewPagerAdapter adapter;
-    public static Calendar selectedDate;
-    private MaterialDialog popup;
-
     int[] tabIcons = {
             R.drawable.ic_action_today_black_24dp,
             R.drawable.ic_event_available_black_24dp
     };
+    private MaterialDialog popup;
 
     public static PlannerFragment newInstance() {
         PlannerFragment fragment = new PlannerFragment();
@@ -95,7 +93,7 @@ public class PlannerFragment extends BaseTabFragment {
 
     private void setupViewPager(ViewPager viewPager) {
         adapter = new ViewPagerAdapter(this.getFragmentManager());
-        adapter.addFrag(new EventsFragment(),STR_CALENDAR_FRAGMENT);
+        adapter.addFrag(new EventsFragment(), STR_CALENDAR_FRAGMENT);
         adapter.addFrag(new DayScheduleFragment(), STR_YOUR_PLAN_FRAGMENT);
         viewPager.setAdapter(adapter);
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -110,6 +108,7 @@ public class PlannerFragment extends BaseTabFragment {
                     setupTabIcons();
                 }
             }
+
             @Override
             public void onPageScrollStateChanged(int state) {
 

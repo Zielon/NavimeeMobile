@@ -110,7 +110,7 @@ public class PreferencesHelper {
         userListenerRegistration = registration;
     }
 
-    public int getAppVersion(){
+    public int getAppVersion() {
         return sharedPreferences.getInt(APP_VERSION, -1);
     }
 

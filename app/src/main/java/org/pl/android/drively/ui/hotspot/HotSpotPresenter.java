@@ -4,7 +4,6 @@ import com.annimon.stream.Stream;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.ListenerRegistration;
 
 import org.pl.android.drively.contracts.repositories.CoordinatesRepository;
@@ -181,11 +180,11 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
             usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "country", countryName.toUpperCase());
             usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "city", cityName.toUpperCase());
             coordinatesRepository.getAvailableCities(countryName).addOnSuccessListener(cities -> {
-                if(Stream.of(cities).allMatch(city -> !city.getName().toUpperCase().equals(cityName.toUpperCase()))){
+                if (Stream.of(cities).allMatch(city -> !city.getName().toUpperCase().equals(cityName.toUpperCase()))) {
                     CityNotAvailable cityNotAvailable = new CityNotAvailable();
                     cityNotAvailable.setCity(cityName.toUpperCase());
                     cityNotAvailable.setCountryName(countryName);
-                    if(getMvpView() != null)
+                    if (getMvpView() != null)
                         getMvpView().showNotAvailableCity(cityNotAvailable);
                 }
             });

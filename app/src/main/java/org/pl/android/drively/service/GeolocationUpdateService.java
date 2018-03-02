@@ -31,9 +31,8 @@ public class GeolocationUpdateService extends Service {
     private static final int LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 10f;
     private static final long TIME_FOR_SERVICE = 1800000;
-    private static String USER_COMPANY;
     public static String FIREBASE_KEY;
-    private DatabaseReference databaseReference;
+    private static String USER_COMPANY;
     GeoFire geoFire;
     @Inject
     DataManager dataManager;
@@ -41,6 +40,7 @@ public class GeolocationUpdateService extends Service {
             new LocationListener(LocationManager.GPS_PROVIDER),
             new LocationListener(LocationManager.NETWORK_PROVIDER)
     };
+    private DatabaseReference databaseReference;
     private LocationManager mLocationManager = null;
 
     @Override
@@ -74,7 +74,7 @@ public class GeolocationUpdateService extends Service {
             }
         }, TIME_FOR_SERVICE);
         USER_COMPANY = dataManager.getPreferencesHelper().getValueString(Const.USER_COMPANY);
-        if(!USER_COMPANY.isEmpty()) {
+        if (!USER_COMPANY.isEmpty()) {
             startLocationUpdates();
         }
     }
@@ -86,7 +86,7 @@ public class GeolocationUpdateService extends Service {
         Timber.e("onDestroy");
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-        if(FIREBASE_KEY != null && !FIREBASE_KEY.isEmpty()) {
+        if (FIREBASE_KEY != null && !FIREBASE_KEY.isEmpty()) {
             databaseReference.child(FIREBASE_KEY).removeValue();
         }
         if (mLocationManager != null) {

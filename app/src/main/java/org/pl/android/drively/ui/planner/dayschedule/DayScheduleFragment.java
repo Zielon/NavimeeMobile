@@ -2,16 +2,13 @@ package org.pl.android.drively.ui.planner.dayschedule;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ethanhua.skeleton.Skeleton;
@@ -25,7 +22,6 @@ import org.pl.android.drively.ui.main.MainActivity;
 import org.pl.android.drively.ui.planner.PlannerFragment;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -79,36 +75,36 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
         Calendar startDate = Calendar.getInstance();
         startDate.add(Calendar.DAY_OF_WEEK, 0);
 
-        if(PlannerFragment.selectedDate != null) {
+        if (PlannerFragment.selectedDate != null) {
             horizontalCalendar = new HorizontalCalendar.Builder(fragmentView, R.id.calendarView)
                     .range(startDate, endDate)
                     .datesNumberOnScreen(5)
                     .configure()// Number of Dates cells shown on screen (Recommended 5)
-                        .textSize(15,15,15)
-                        .formatMiddleText("EEE")      // WeekDay text format
-                        .formatBottomText("dd")// Date format
-                        .showTopText(true)
-                        .showBottomText(true)
+                    .textSize(15, 15, 15)
+                    .formatMiddleText("EEE")      // WeekDay text format
+                    .formatBottomText("dd")// Date format
+                    .showTopText(true)
+                    .showBottomText(true)
                     // Show or Hide month text
                     .end()
                     .defaultSelectedDate(PlannerFragment.selectedDate)  // Date to be seleceted at start (default to Today)
                     .build();
-            selectedDate  = PlannerFragment.selectedDate;
+            selectedDate = PlannerFragment.selectedDate;
         } else {
             horizontalCalendar = new HorizontalCalendar.Builder(fragmentView, R.id.calendarView)
                     .range(startDate, endDate)
                     .datesNumberOnScreen(5)
                     .configure()// Number of Dates cells shown on screen (Recommended 5)
-                        .textSize(15,15,15)
-                        .formatMiddleText("EEE")      // WeekDay text format
-                        .formatBottomText("dd")// Date format
-                        .showTopText(true)
-                        .showBottomText(true)
+                    .textSize(15, 15, 15)
+                    .formatMiddleText("EEE")      // WeekDay text format
+                    .formatBottomText("dd")// Date format
+                    .showTopText(true)
+                    .showBottomText(true)
                     // Show or Hide month text
                     .end()
                     .defaultSelectedDate(Calendar.getInstance())  // Date to be seleceted at start (default to Today)
                     .build();
-            selectedDate  = Calendar.getInstance();
+            selectedDate = Calendar.getInstance();
         }
 
 

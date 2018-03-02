@@ -473,10 +473,10 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         addressDisposable = addressObservable
                 .subscribe(address -> {
                     mHotspotPresenter.setLastLocation(address.getLocality());
-                        if(!MainActivity.IS_USER_POSITION_CHECKED) {
-                            mHotspotPresenter.checkAvailableCities(address.getCountryName(), address.getLocality());
-                            MainActivity.IS_USER_POSITION_CHECKED = true;
-                        }
+                    if (!MainActivity.IS_USER_POSITION_CHECKED) {
+                        mHotspotPresenter.checkAvailableCities(address.getCountryName(), address.getLocality());
+                        MainActivity.IS_USER_POSITION_CHECKED = true;
+                    }
                     Timber.d("address " + address);
                 }, new ErrorHandler());
 
@@ -803,20 +803,20 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         if (key.contains(FirebasePaths.USER_LOCATION) && !key.contains(mHotspotPresenter.getUid())) {
             Timber.i("USER LOCATION");
             if (!usersMarkers.containsKey(key)) {
-                directionsDelta.put(key,location);
+                directionsDelta.put(key, location);
                 MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).flat(true);
-                if(key.contains(Const.DriverType.UBER.getName())) {
+                if (key.contains(Const.DriverType.UBER.getName())) {
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.uber));
-                } else if(key.contains(Const.DriverType.ITAXI.getName())) {
+                } else if (key.contains(Const.DriverType.ITAXI.getName())) {
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.itaxi));
-                } else if(key.contains(Const.DriverType.MY_TAXI.getName())) {
+                } else if (key.contains(Const.DriverType.MY_TAXI.getName())) {
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.mytaxi));
-                } else if(key.contains(Const.DriverType.TAXI.getName())) {
+                } else if (key.contains(Const.DriverType.TAXI.getName())) {
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi));
                 } else {
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi));
                 }
-                try{
+                try {
                     Marker marker = googleMap.addMarker(markerOptions);
                     usersMarkers.put(key, marker);
                 } catch (NullPointerException e) {
@@ -854,7 +854,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
             Timber.i("USER LOCATION");
             if (usersMarkers.containsKey(key)) {
                 GeoLocation previousLocation = directionsDelta.get(key);
-                if(!previousLocation.equals(location)) {
+                if (!previousLocation.equals(location)) {
                     double bearing = calculateBearing(previousLocation.latitude, previousLocation.longitude,
                             location.latitude, location.longitude);
                     Timber.i("BEARING " + key + " - " + bearing);
@@ -879,12 +879,12 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         Timber.e("There was an error with this query: " + error);
     }
 
-    private double calculateBearing(double startLat, double startLong, double endLat,double  endLong){
-        double dLon = (endLong -startLong);
+    private double calculateBearing(double startLat, double startLong, double endLat, double endLong) {
+        double dLon = (endLong - startLong);
         double y = Math.sin(dLon) * Math.cos(endLat);
-        double x = Math.cos(startLat)*Math.sin(endLat) - Math.sin(startLat)*Math.cos(endLat)*Math.cos(dLon);
+        double x = Math.cos(startLat) * Math.sin(endLat) - Math.sin(startLat) * Math.cos(endLat) * Math.cos(dLon);
         double bearing = Math.toDegrees((Math.atan2(y, x)));
-        return  (360 - ((bearing + 360) % 360));
+        return (360 - ((bearing + 360) % 360));
     }
 
     public void animateMarker(final Marker marker, final LatLng toPosition,
