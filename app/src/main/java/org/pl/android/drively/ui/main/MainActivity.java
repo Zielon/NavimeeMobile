@@ -52,6 +52,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     String name, count;
     BottomBar bottomBar;
 
+    public static boolean IS_USER_POSITION_CHECKED = false;
     private BaseTabFragment selectedFragment;
 
     // @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
@@ -187,6 +188,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     @Override
     public void onStart() {
         super.onStart();
+        IS_USER_POSITION_CHECKED = false;
         checkInternetConnectivity();
     }
 

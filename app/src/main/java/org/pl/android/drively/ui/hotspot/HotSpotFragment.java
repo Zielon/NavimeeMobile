@@ -158,7 +158,6 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
     double lngNotification;
     boolean isFromNotification = false;
     String notificationName, notificationCount;
-    boolean isCityChecked = false;
     @Inject
     HotSpotPresenter mHotspotPresenter;
     private GoogleMap googleMap;
@@ -474,9 +473,9 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         addressDisposable = addressObservable
                 .subscribe(address -> {
                     mHotspotPresenter.setLastLocation(address.getLocality());
-                        if(!isCityChecked) {
+                        if(!MainActivity.IS_USER_POSITION_CHECKED) {
                             mHotspotPresenter.checkAvailableCities(address.getCountryName(), address.getLocality());
-                            isCityChecked = true;
+                            MainActivity.IS_USER_POSITION_CHECKED = true;
                         }
                     Timber.d("address " + address);
                 }, new ErrorHandler());
