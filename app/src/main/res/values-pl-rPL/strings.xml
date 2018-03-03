@@ -203,4 +203,7 @@
     <string name="logout_popup_negative">Zostań</string>
     <string name="logout_popup_content">Na pewno chcesz się wylogować?</string>
 
+    <!--SETTINGS MAIN SCREEN-->
+    <string name="choose_app">Wybierz aplikację</string>
+
 </resources>

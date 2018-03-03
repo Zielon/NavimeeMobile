@@ -1,14 +1,17 @@
 package org.pl.android.drively.ui.settings;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FieldValue;
 
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.local.PreferencesHelper;
+import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.injection.ConfigPersistent;
 import org.pl.android.drively.service.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
+import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
 
 import java.util.HashMap;
@@ -17,14 +20,16 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import io.reactivex.disposables.Disposable;
+import timber.log.Timber;
 
 import static org.pl.android.drively.util.FirebasePaths.USERS;
+import static org.pl.android.drively.util.ReflectionUtil.nameof;
 
 @ConfigPersistent
 public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
 
     private final DataManager dataManager;
-    private final PreferencesHelper preferencesHelper;
+    private PreferencesHelper preferencesHelper;
     private Disposable disposable;
     private FirebaseUser firebaseUser;
 
@@ -73,5 +78,31 @@ public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
         dataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.USER_LOCATION)
                 .child(GeolocationUpdateService.FIREBASE_KEY).removeValue();
 
+    }
+
+    public String getUserCompany() {
+        return dataManager.getPreferencesHelper().getValueString(Const.USER_COMPANY);
+    }
+
+    public boolean getShareLocalisation() {
+        return dataManager.getPreferencesHelper().getValue(Const.SETTINGS_PREFERENCE_SHARE_LOCALISATION);
+    }
+
+    public void updateShareLocalisationAndUserCompany(String userCompany, boolean shareLocalisation) {
+        dataManager.getPreferencesHelper().setValue(Const.USER_COMPANY, userCompany);
+        dataManager.getPreferencesHelper().setValue(Const.SETTINGS_PREFERENCE_SHARE_LOCALISATION, shareLocalisation);
+        try {
+            updateUserField(dataManager.getPreferencesHelper().getUserId(), Const.SETTINGS_PREFERENCE_SHARE_LOCALISATION, shareLocalisation);
+            updateUserField(dataManager.getPreferencesHelper().getUserId(), "driverType", userCompany);
+        } catch (NoSuchFieldException e) {
+            Timber.d(e);
+        }
+    }
+
+    public Task<Void> updateUserField(String userId, String field, Object value) throws NoSuchFieldException {
+        String filedToUpdate = nameof(User.class, field);
+        return dataManager.getFirebaseService()
+                .getFirebaseFirestore()
+                .collection(USERS).document(userId).update(filedToUpdate, value);
     }
 }

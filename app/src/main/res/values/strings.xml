@@ -207,4 +207,7 @@
     <string name="logout_popup_positive">Log out</string>
     <string name="logout_popup_negative">Stay</string>
     <string name="logout_popup_content">Are you sure you want to log out?</string>
+
+    <!--SETTINGS MAIN SCREEN-->
+    <string name="choose_app">Choose application</string>
 </resources>

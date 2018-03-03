@@ -37,7 +37,6 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
         BoilerplateApplication.get(this).getComponent().inject(this);
 
         // Settings form the user model
-        settings.add(Const.SETTINGS_PREFERENCE_SHARE_LOCALISATION);
         settings.add(Const.SETTINGS_PREFERENCE_CHAT_PRIVATE_NOTIFICATION);
         settings.add(Const.SETTINGS_PREFERENCE_GROUP_NOTIFICATION);
         settings.add(Const.SETTINGS_PREFERENCE_DAY_SCHEDULE_NOTIFICATION);
