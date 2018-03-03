@@ -7,9 +7,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.rilixtech.materialfancybutton.MaterialFancyButton;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -35,7 +36,6 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
     private List<Event> mEvents;
     private Context mContext;
     private DateTime dateTime;
-
 
     @Inject
     public DayScheduleAdapter(@ActivityContext Context context) {
@@ -96,6 +96,7 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
         } else {
             holder.deleteButton.setTag(1);
             holder.deleteButton.setBackgroundColor(mContext.getResources().getColor(R.color.colorLine));
+            holder.deleteButton.setTextColor(mContext.getResources().getColor(R.color.gray_font));
             holder.deleteButton.setText(R.string.cancel);
         }
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -149,7 +150,7 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
         @BindView(R.id.viewTextTime)
         TextView timeTextView;
         @BindView(R.id.deleteButton)
-        Button deleteButton;
+        MaterialFancyButton deleteButton;
 
         public DayScheduleHolder(View itemView) {
             super(itemView);

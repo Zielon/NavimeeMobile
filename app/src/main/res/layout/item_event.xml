@@ -84,7 +84,7 @@
                 android:paddingStart="7dp"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_small_body"
-                tools:text="developer" />
+                tools:text="developer"  />
 
             <ImageView
                 android:id="@+id/imageTime"
