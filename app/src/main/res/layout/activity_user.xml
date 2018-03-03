@@ -1,4 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primary"
@@ -19,13 +21,62 @@
         android:textColor="#ffffff"
         android:textSize="18sp" />
 
+    <TextView
+        android:id="@+id/localization_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_user_name"
+        android:layout_margin="16dp"
+        android:text="@string/hotspot"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+    <com.rm.rmswitch.RMSwitch
+        android:id="@+id/share_localisation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/text_user_name"
+        android:layout_margin="16dp"
+        app:checked="true"
+        app:enabled="true"
+        app:forceAspectRatio="false"
+        app:switchBkgCheckedColor="@color/filters_buttons"
+        app:switchBkgNotCheckedColor="@color/gray_font"
+        app:switchDesign="android"
+        app:switchToggleCheckedColor="@color/button_background"
+        app:switchToggleCheckedImage="@drawable/my_location_white_24dp"
+        app:switchToggleNotCheckedColor="@color/white"
+        app:switchToggleNotCheckedImage="@drawable/ic_clear_grey_24dp" />
+
+    <com.rilixtech.materialfancybutton.MaterialFancyButton
+        android:id="@+id/choose_app"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/localization_text"
+        android:layout_margin="8dp"
+        android:padding="8dp"
+        fancy:mfb_defaultColor="@color/transparent"
+        fancy:mfb_focusColor="@color/white"
+        fancy:mfb_radius="2dp"
+        fancy:mfb_text="@string/choose_app"
+        fancy:mfb_textColor="@color/white"
+        fancy:mfb_textSize="18sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/choose_app"
+        android:layout_margin="8dp"
+        android:background="@color/md_black_1000" />
+
     <FrameLayout
         android:id="@+id/frame_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/text_user_name"
+        android:layout_below="@+id/choose_app"
         android:background="@color/primary" />
 
 </RelativeLayout>

@@ -83,7 +83,6 @@ public class SettingsPreferencesPresenter extends BasePresenter<SettingsPreferen
     public void updateUserCompanyAndShareLocalisation(String userCompany, boolean shareLocalisation, Preference preference) {
         dataManager.getPreferencesHelper().setValue(Const.USER_COMPANY, userCompany);
         dataManager.getPreferencesHelper().setValue(Const.SETTINGS_PREFERENCE_SHARE_LOCALISATION, shareLocalisation);
-        preference.getEditor().putBoolean(Const.SETTINGS_PREFERENCE_SHARE_LOCALISATION, shareLocalisation);
         try {
             usersRepository.updateUserField(dataManager.getPreferencesHelper().getUserId(), Const.USER_COMPANY, userCompany);
             usersRepository.updateUserField(dataManager.getPreferencesHelper().getUserId(), Const.SETTINGS_PREFERENCE_SHARE_LOCALISATION, shareLocalisation);
