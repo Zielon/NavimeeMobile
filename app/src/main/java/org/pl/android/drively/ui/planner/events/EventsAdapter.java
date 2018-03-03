@@ -37,11 +37,14 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
     private Context mContext;
     private DateTime dateTime;
 
+    private List<Event> dayScheduleList;
+
     @Inject
-    public EventsAdapter(@ActivityContext Context context) {
+    public EventsAdapter(@ActivityContext Context context, EventsPresenter eventsPresenter) {
         this.mEvents = new ArrayList<Event>();
         mContext = context;
         currentDateTime = new DateTime(Calendar.getInstance().getTime());
+        this.mEventsPresenter = eventsPresenter;
     }
 
     @Override
@@ -87,7 +90,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         if (Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() < 30) {
             holder.addButton.setTag(1);
             holder.addButton.setText(R.string.navigate);
-        } else if (mEventsPresenter.getDayScheduleList().contains(event)) {
+        } else if (dayScheduleList != null && dayScheduleList.contains(event)) {
             holder.addButton.setTag(2);
             holder.addButton.setBackgroundColor(mContext.getResources().getColor(R.color.colorLine));
             holder.addButton.setTextColor(mContext.getResources().getColor(R.color.gray_font));
@@ -96,34 +99,35 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
             holder.addButton.setTag(3);
         }
 
-        holder.addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if ((int) view.getTag() == 1) {
-                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + String.valueOf(event.getPlace().getLat()) + "," +
-                            String.valueOf(event.getPlace().getLon()));
-                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                    mapIntent.setPackage("com.google.android.apps.maps");
-                    if (mapIntent.resolveActivity(mContext.getPackageManager()) != null) {
-                        mContext.startActivity(mapIntent);
-                    }
-                } else if ((int) view.getTag() == 2) {
-                    holder.addButton.setTag(3);
-                    holder.addButton.setBackgroundColor(mContext.getResources().getColor(R.color.button_background));
-                    holder.addButton.setTextColor(mContext.getResources().getColor(R.color.white));
-                    holder.addButton.setText(R.string.remember_me);
-                    mEventsPresenter.deleteEvent(event);
-                } else if ((int) view.getTag() == 3) {
-                    holder.addButton.setTag(2);
-                    holder.addButton.setBackgroundColor(mContext.getResources().getColor(R.color.colorLine));
-                    holder.addButton.setTextColor(mContext.getResources().getColor(R.color.gray_font));
-                    holder.addButton.setText(R.string.cancel);
-                    mEventsPresenter.saveEvent(event);
+        holder.addButton.setOnClickListener(view -> {
+            if ((int) view.getTag() == 1) {
+                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + String.valueOf(event.getPlace().getLat()) + "," +
+                        String.valueOf(event.getPlace().getLon()));
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                if (mapIntent.resolveActivity(mContext.getPackageManager()) != null) {
+                    mContext.startActivity(mapIntent);
                 }
+            } else if ((int) view.getTag() == 2) {
+                holder.addButton.setTag(3);
+                holder.addButton.setBackgroundColor(mContext.getResources().getColor(R.color.button_background));
+                holder.addButton.setTextColor(mContext.getResources().getColor(R.color.white));
+                holder.addButton.setText(R.string.remember_me);
+                mEventsPresenter.deleteEvent(event);
+            } else if ((int) view.getTag() == 3) {
+                holder.addButton.setTag(2);
+                holder.addButton.setBackgroundColor(mContext.getResources().getColor(R.color.colorLine));
+                holder.addButton.setTextColor(mContext.getResources().getColor(R.color.gray_font));
+                holder.addButton.setText(R.string.cancel);
+                mEventsPresenter.saveEvent(event);
             }
         });
 
 
+    }
+
+    public void setDayScheduleList(List<Event> dayScheduleList) {
+        this.dayScheduleList = dayScheduleList;
     }
 
     @Override

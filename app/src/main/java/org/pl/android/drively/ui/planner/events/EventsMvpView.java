@@ -18,4 +18,6 @@ public interface EventsMvpView extends TabMvpView {
     void showEvents(List<Event> eventsList, DateTime dateTime);
 
     void onSuccessDelete();
+
+    void updateDayScheduleListInAdapter(List<Event> dayScheduleList);
 }

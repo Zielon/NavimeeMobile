@@ -3,7 +3,6 @@ package org.pl.android.drively.ui.planner.events;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +24,7 @@ import org.joda.time.DateTime;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.ui.base.BaseActivity;
+import org.pl.android.drively.ui.base.tab.BaseTabFragment;
 import org.pl.android.drively.ui.planner.PlannerFragment;
 
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ import devs.mulham.horizontalcalendar.HorizontalCalendarView;
 import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
 import timber.log.Timber;
 
-public class EventsFragment extends Fragment implements EventsMvpView {
+public class EventsFragment extends BaseTabFragment implements EventsMvpView {
 
     @Inject
     EventsPresenter mEventsPresenter;
@@ -165,6 +165,11 @@ public class EventsFragment extends Fragment implements EventsMvpView {
     @Override
     public void onStart() {
         super.onStart();
+    }
+
+    @Override
+    public void updateDayScheduleListInAdapter(List<Event> dayScheduleList) {
+        mEventsAdapter.setDayScheduleList(dayScheduleList);
     }
 
     private void queryOnDate(Calendar date) {
