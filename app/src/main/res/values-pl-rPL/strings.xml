@@ -105,31 +105,31 @@
     <string name="delete_group_cannot_right_now">Nie można teraz usunąć grupy, spróbuj ponownie</string>
     <string name="cannot_connect_with_server">Nie można połączyć się z serwerem</string>
     <string name="error_during_leaveing_group">Wystąpił błąd podczas opuszczania grupy</string>
-    <string name="success_leaveing_group">Opuszczenie grupy zakończyło się pomyślnie</string>
+    <string name="success_leaveing_group">Opuściłeś grupę pomyślnie</string>
     <string name="delete_group">Usuń grupę</string>
     <string name="leave_group">Opuść grupę</string>
     <string name="accept_regulation">Logując się do aplikacji akceptujesz <u>regulamin</u></string>
-    <string name="send_private_message">Wyślij prywatnę wiadomość</string>
+    <string name="send_private_message">Wyślij prywatną wiadomość</string>
 
     <!--Settings-->
     <string name="settings">Ustawienia</string>
     <string name="instruction">Instrukcja</string>
 
     <string name="general">Ogólne</string>
-    <string name="shareLocalization">Lokalizacja</string>
-    <string name="shareLocalization_description">Udostępnij swoją lokalizację innym kierowcom</string>
+    <string name="shareLocalization">Hospot</string>
+    <string name="shareLocalization_description">Dzielenie się lokalizacją na Hotspot</string>
 
     <string name="notifications">Powiadomienia</string>
     <string name="notifications_day_schedule">Plan Dnia</string>
-    <string name="notifications_day_schedule_description">Powiadom o kończących się wydarzeniach z Planu Dnia</string>
+    <string name="notifications_day_schedule_description">Powiadomienia o kończących się wydarzeniach z Planu Dnia</string>
     <string name="notifications_chat_group">Czat grupowy</string>
-    <string name="notifications_chat_group_description">Wyłącz notyfikacje dla czatu grupowego</string>
+    <string name="notifications_chat_group_description">Notyfikacje dla czatu grupowego</string>
     <string name="notifications_chat_private">Prywatny czat</string>
-    <string name="notifications_chat_private_description">Wyłącz notyfikacje dla prywatnych wiadomości</string>
+    <string name="notifications_chat_private_description">Notyfikacje dla prywatnych wiadomości</string>
 
     <!--Network connection-->
-    <string name="network_lack">Brak internetu</string>
-    <string name="check_internet">Ustawienia Wi-fi</string>
+    <string name="network_lack">Brak Internetu</string>
+    <string name="check_internet">Ustawienia sieci</string>
     <string name="close">Zamknij</string>
     <string name="let_us_know">Daj nam znać</string>
     <string name="not_available_in_city">Nie jesteśmy dostępni w Twoim mieście</string>
@@ -160,10 +160,10 @@
 
     <!--CALENDAR-->
     <string name="popup_events_title">WSZYSTKO W JEDNYM MIEJSCU</string>
-    <string name="popup_events_info">Tutaj sprawdzisz listę miejsc, w których aktualnie odbywają się duże wydarzenia:
-        imprezy, koncerty czy konferencje. Poniżej, wyświetlają się nadchodzące wydarzenia.</string>
+    <string name="popup_events_info">Tutaj sprawdzisz, które lokale są obecnie zatłoczone, gdzie aktualnie odbywają się duże wydarzenia:
+        imprezy, koncerty czy konferencje. Na końcu wyświetlają się nadchodzące wydarzenia.</string>
     <string name="popup_events_info1">Lista miejsc i wydarzeń w twoim mieście</string>
-    <string name="popup_events_info2">Plan Dnia: wydarzeń o których dostaniesz przypomnienie kiedy będą się kończyć</string>
+    <string name="popup_events_info2">Plan Dnia: wydarzenia, o których dostaniesz przypomnienie kiedy będą się kończyć</string>
     <string name="popup_events_info3">Dodaj wydarzenie do Planu Dnia</string>
     <string name="popup_events_info3_button">Przypomnij mi</string>
     <string name="popup_events_info4">Przejdź do nawigacji GPS</string>
@@ -174,7 +174,7 @@
     <string name="popup_events_preference_info">Przypomnienia możesz wyłączyć w Ustawieniach</string>
 
     <!--CHAT-->
-    <string name="popup_chat_title">Pytaj, odpisuj, dziel się!</string>
+    <string name="popup_chat_title">Pytaj, odpowiadaj, dziel się!</string>
     <string name="popup_chat_info">Dostępne grupy:</string>
     <string name="popup_chat_info1">Cały kraj w jednym miejscu</string>
     <string name="popup_chat_info1_button">Wszyscy</string>
@@ -190,11 +190,10 @@
 
     <!--FINANCE-->
     <string name="popup_finance_title">Wszystkie wydatki w jednym miejscu? Już niedługo!</string>
-    <string name="popup_finance_info">Już niedługo dostępny będzie nowy ekran Wydatki,
-        na którym będziesz kontrolować swoje koszty.
-        W prosty i szybki sposób dodasz nowy wydatek, zobaczysz ile i na co wydałeś,
-        a także załączysz zdjęcie rachunku lub faktury.</string>
-    <string name="popup_finance_contact_us">NAPISZ, CO O TYM MYŚLISZ!</string>
+    <string name="popup_finance_info">Wkrótce udostępnimy nowy ekran,
+        na którym w prosty sposób dodasz swoje koszty, sprawdzisz historię wydatków,
+        a także załączysz zdjęcie rachunku lub faktury. Koniec z papierkową robotą!</string>
+    <string name="popup_finance_contact_us">NAPISZ CO O TYM MYŚLISZ!</string>
 
     <!--LOGOUT-->
     <string name="logout_popup_positive">Wyloguj się</string>
