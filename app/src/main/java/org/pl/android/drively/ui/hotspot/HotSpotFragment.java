@@ -819,7 +819,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                 } else if (key.contains(Const.DriverType.TAXI.getName())) {
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi2));
                 } else {
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi2));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_car));
                 }
                 try {
                     Marker marker = googleMap.addMarker(markerOptions);
