@@ -5,12 +5,15 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.view.MenuItem;
 
 import org.pl.android.drively.BoilerplateApplication;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.ui.hotspot.HotspotPopupHelper;
+import org.pl.android.drively.util.Const;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +37,14 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
         BoilerplateApplication.get(this).getComponent().inject(this);
 
         // Settings form the user model
-        settings.add("shareLocalization");
-        settings.add("chatPrivateNotification");
-        settings.add("chatGroupNotification");
-        settings.add("dayScheduleNotification");
+        settings.add(Const.SETTINGS_PREFERENCE_SHARE_LOCALISATION);
+        settings.add(Const.SETTINGS_PREFERENCE_CHAT_PRIVATE_NOTIFICATION);
+        settings.add(Const.SETTINGS_PREFERENCE_GROUP_NOTIFICATION);
+        settings.add(Const.SETTINGS_PREFERENCE_DAY_SCHEDULE_NOTIFICATION);
 
         settingsPreferencesPresenter.updateSharedPreferences(settings, this);
+
+        settingsPreferencesPresenter.attachView(this);
 
         getFragmentManager().beginTransaction().replace(android.R.id.content, new MainPreferenceFragment()).commit();
     }
@@ -50,6 +55,16 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void showAppropriatePopup(Preference preference) {
+        HotspotPopupHelper.showFirstPopup(this, settingsPreferencesPresenter.getUserCompany(),
+                selectedDriverType -> {
+                    settingsPreferencesPresenter
+                            .updateUserCompanyAndShareLocalisation(selectedDriverType.getName(), true);
+                    settingsPreferencesPresenter.updatePreference(preference, true);
+                });
     }
 
     @SuppressLint("ValidFragment")

@@ -16,9 +16,9 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.app.ActionBar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,7 +68,6 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
-import com.rilixtech.materialfancybutton.MaterialFancyButton;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
 import org.greenrobot.eventbus.EventBus;
@@ -176,7 +175,6 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
     private HashMap<String, ClusterItemGoogleMap> eventsOnMap = new HashMap<>();
     private HashMap<String, Marker> usersMarkers = new HashMap<>();
     private Context context;
-    private Const.DriverType selectedDriverType;
     private MaterialDialog popup;
     private HashMap<String, GeoLocation> directionsDelta = new HashMap<>();
 
@@ -200,6 +198,14 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
 
         initGeolocation();
         context = this.getContext();
+        verifyFirstStartSecondHotspotPopup();
+    }
+
+    private void verifyFirstStartSecondHotspotPopup() {
+        if (mHotspotPresenter.getHotspotSecondPopupFirstStart() && !TextUtils.isEmpty(mHotspotPresenter.getUserCompany())) {
+            HotspotPopupHelper.showSecondPopup(context);
+            mHotspotPresenter.setHotspotSecondPopupFirstStart(false);
+        }
     }
 
     @Override
@@ -474,10 +480,10 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         addressDisposable = addressObservable
                 .subscribe(address -> {
                     mHotspotPresenter.setLastLocation(address.getLocality());
-                        if(!isCityChecked) {
-                            mHotspotPresenter.checkAvailableCities(address.getCountryName(), address.getLocality());
-                            isCityChecked = true;
-                        }
+                    if (!isCityChecked) {
+                        mHotspotPresenter.checkAvailableCities(address.getCountryName(), address.getLocality());
+                        isCityChecked = true;
+                    }
                     Timber.d("address " + address);
                 }, new ErrorHandler());
 
@@ -804,20 +810,20 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         if (key.contains(FirebasePaths.USER_LOCATION) && !key.contains(mHotspotPresenter.getUid())) {
             Timber.i("USER LOCATION");
             if (!usersMarkers.containsKey(key)) {
-                directionsDelta.put(key,location);
+                directionsDelta.put(key, location);
                 MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).flat(true);
-                if(key.contains(Const.DriverType.UBER.getName())) {
+                if (key.contains(Const.DriverType.UBER.getName())) {
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.uber));
-                } else if(key.contains(Const.DriverType.ITAXI.getName())) {
+                } else if (key.contains(Const.DriverType.ITAXI.getName())) {
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.uber));
-                } else if(key.contains(Const.DriverType.MY_TAXI.getName())) {
+                } else if (key.contains(Const.DriverType.MY_TAXI.getName())) {
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi));
-                } else if(key.contains(Const.DriverType.TAXI.getName())) {
+                } else if (key.contains(Const.DriverType.TAXI.getName())) {
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi));
                 } else {
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi));
                 }
-                try{
+                try {
                     Marker marker = googleMap.addMarker(markerOptions);
                     usersMarkers.put(key, marker);
                 } catch (NullPointerException e) {
@@ -855,7 +861,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
             Timber.i("USER LOCATION");
             if (usersMarkers.containsKey(key)) {
                 GeoLocation previousLocation = directionsDelta.get(key);
-                if(!previousLocation.equals(location)) {
+                if (!previousLocation.equals(location)) {
                     double bearing = calculateBearing(previousLocation.latitude, previousLocation.longitude,
                             location.latitude, location.longitude);
                     Timber.i("BEARING " + key + " - " + bearing);
@@ -880,12 +886,12 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         Timber.e("There was an error with this query: " + error);
     }
 
-    private double calculateBearing(double startLat, double startLong, double endLat,double  endLong){
-        double dLon = (endLong -startLong);
+    private double calculateBearing(double startLat, double startLong, double endLat, double endLong) {
+        double dLon = (endLong - startLong);
         double y = Math.sin(dLon) * Math.cos(endLat);
-        double x = Math.cos(startLat)*Math.sin(endLat) - Math.sin(startLat)*Math.cos(endLat)*Math.cos(dLon);
+        double x = Math.cos(startLat) * Math.sin(endLat) - Math.sin(startLat) * Math.cos(endLat) * Math.cos(dLon);
         double bearing = Math.toDegrees((Math.atan2(y, x)));
-        return  (360 - ((bearing + 360) % 360));
+        return (360 - ((bearing + 360) % 360));
     }
 
     public void animateMarker(final Marker marker, final LatLng toPosition,
@@ -997,51 +1003,18 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
 
     @Override
     public void showInstructionPopup() {
-        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.hotspot_popup_instruction, null);
-        preparePopupLayout(view);
-        popup = new MaterialDialog.Builder(context)
-                .customView(view, false)
-                .backgroundColor(ContextCompat.getColor(context, R.color.dark_transparent))
-                .show();
-    }
-
-    private void preparePopupLayout(View rootView) {
-        for (Const.DriverType driverType : Const.DriverType.values()) {
-            rootView.findViewById(driverType.getButtonResId()).setOnClickListener(view -> {
-                for (Const.DriverType driverTypeDeselect : Const.DriverType.values()) {
-                    rootView.findViewById(driverTypeDeselect.getButtonResId()).setBackgroundColor(ContextCompat.getColor(context, R.color.white));
-                    ((MaterialFancyButton) rootView.findViewById(driverTypeDeselect.getButtonResId())).setTextColor(ContextCompat.getColor(context, R.color.filters_buttons));
-                }
-                view.setBackgroundColor(ContextCompat.getColor(context, R.color.filters_buttons));
-                ((MaterialFancyButton) view).setTextColor(ContextCompat.getColor(context, R.color.white));
-                selectedDriverType = driverType;
-                rootView.findViewById(R.id.brand_error).setVisibility(View.GONE);
-            });
-        }
-        rootView.findViewById(R.id.agree_button)
-                .setOnClickListener(view -> {
-                    if (selectedDriverType == null) {
-                        rootView.findViewById(R.id.brand_error).setVisibility(View.VISIBLE);
-                    } else {
-                        popup.dismiss();
+        if (mHotspotPresenter.getHotspotFirstPopupFirstStart() || TextUtils.isEmpty(mHotspotPresenter.getUserCompany())) {
+            HotspotPopupHelper.showFirstPopup(context, mHotspotPresenter.getUserCompany(),
+                    selectedDriverType -> {
+                        mHotspotPresenter.updateShareLocalisation(true);
                         mHotspotPresenter.saveUserCompany(selectedDriverType.getName());
                         EventBus.getDefault().post(new CompanySelectedEvent());
-                        Log.d(context.getClass().getSimpleName(), "User agreed to the terms and is using " + selectedDriverType != null ? selectedDriverType.getName() : "no one" + ".");
-                        showSecondPopup();
-                    }
-                });
-        rootView.findViewById(R.id.dismiss_dialog).setOnClickListener(view -> popup.dismiss());
-    }
-
-    private void showSecondPopup() {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.hotspot_popup_instruction_second, null);
-        view.findViewById(R.id.popup_hotspot_second_agree_button).setOnClickListener(s -> popup.dismiss());
-        popup = new MaterialDialog.Builder(context)
-                .customView(view, false)
-                .backgroundColor(ContextCompat.getColor(context, R.color.transparent))
-                .show();
+                        HotspotPopupHelper.showSecondPopup(context);
+                        mHotspotPresenter.setHotspotSecondPopupFirstStart(false);
+                    });
+        } else {
+            HotspotPopupHelper.showSecondPopup(context);
+        }
     }
 
     private class ErrorHandler implements Consumer<Throwable> {

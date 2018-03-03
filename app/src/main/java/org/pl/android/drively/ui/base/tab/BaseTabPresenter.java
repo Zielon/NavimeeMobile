@@ -20,8 +20,7 @@ public class BaseTabPresenter<T extends TabMvpView> extends BasePresenter<T> {
 
     private void verifyFirstStartPopupNecessity() {
         String sharedPreferenceConst = getMvpView().getClass().getSimpleName() + Const.FIRST_START_POPUP_SUFFIX;
-        boolean needFirstStartPopup = mDataManager.getPreferencesHelper()
-                .getValue(sharedPreferenceConst);
+        boolean needFirstStartPopup = mDataManager.getPreferencesHelper().getValue(sharedPreferenceConst);
         if(needFirstStartPopup) {
             getMvpView().showInstructionPopup();
             if(!getMvpView().getClass().getSimpleName().equals("FinanceFragment")) {

@@ -152,8 +152,12 @@
     <string name="popup_hotspot_agreement">I voluntarily agree to anonymous sharing my own 
         location exclusive within the Drively application. The location is not used outside of the application. Only people 
         which agreed to the terms may see the location of other users.</string>
+    <string name="popup_hotspot_agreement_change">The location is not used outside of the application. Only people 
+        which agreed to the terms may see the location of other users.</string>
     <string name="popup_hotspot_brand_question">Which application do you use most often?</string>
+    <string name="popup_hotspot_brand_question_change">Do you want to change application?</string>
     <string name="popup_hotspot_button_agreement">I AGREE</string>
+    <string name="popup_hotspot_button_agreement_change">CHANGE</string>
     <string name="popup_hotspot_preference_info">Your preferences can be changed in Settings</string>
     <string name="popup_hotspot_localisation_info">Your preferences can be changed in Settings</string>
     <string name="brand_not_chose">You did not choose brand!</string>

@@ -36,7 +36,7 @@
                 android:layout_alignParentStart="true"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:maxLength="20"
+                android:maxLength="25"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_body"
                 tools:text="Antony Ribot" />
@@ -60,8 +60,8 @@
 
             <ImageView
                 android:id="@+id/image_address_name"
-                android:layout_width="17dp"
-                android:layout_height="17dp"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:paddingTop="8dp"
                 android:layout_alignParentStart="true"
                 android:layout_below="@id/text_name"
@@ -72,7 +72,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:maxLength="30"
+                android:maxLength="38"
                 android:layout_below="@id/text_name"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
@@ -85,8 +85,8 @@
 
             <ImageView
                 android:id="@+id/imageTime"
-                android:layout_width="14dp"
-                android:layout_height="14dp"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
                 android:paddingTop="4dp"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/text_address"
@@ -100,6 +100,7 @@
                 android:layout_below="@id/text_address"
                 android:layout_centerVertical="true"
                 android:layout_marginTop="8dp"
+                android:textSize="13sp"
                 android:layout_toEndOf="@id/imageTime"
                 android:layout_toRightOf="@+id/imageTime"
                 android:paddingStart="10dp"

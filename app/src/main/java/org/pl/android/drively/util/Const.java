@@ -9,6 +9,8 @@ import org.pl.android.drively.ui.planner.events.EventsFragment;
 import java.util.Arrays;
 import java.util.List;
 
+import java8.util.stream.StreamSupport;
+
 public class Const {
     public final static String ADMIN = "ADMIN_DRIVELY";
     public final static String MESSAGING_TOKEN = "MESSAGING_TOKEN";
@@ -26,6 +28,7 @@ public class Const {
     public final static String FIRST_START_POPUP_SUFFIX = "FIRST_START_POPUP";
     public final static List<String> TAB_FRAGMENTS = Arrays.asList(HotSpotFragment.class.getSimpleName(),
             EventsFragment.class.getSimpleName(), ChatFragment.class.getSimpleName(), FinanceFragment.class.getSimpleName());
+    public final static String HOTSPOT_SECOND_POPUP_FIRST_START = "HOTSPOT_SECOND_POPUP_" + FIRST_START_POPUP_SUFFIX;
 
     public static int REQUEST_CODE_REGISTER = 2000;
     public static String STR_EXTRA_ACTION_LOGIN = "login";
@@ -46,6 +49,11 @@ public class Const {
     public static long TIME_TO_REFRESH = 10 * 1000;
     public static long TIME_TO_OFFLINE = 2 * 60 * 1000;
     public static long FIVE_MEGABYTE = 5 * 1024 * 1024;
+
+    public static String SETTINGS_PREFERENCE_SHARE_LOCALISATION = "shareLocalization";
+    public static String SETTINGS_PREFERENCE_CHAT_PRIVATE_NOTIFICATION = "chatPrivateNotification";
+    public static String SETTINGS_PREFERENCE_GROUP_NOTIFICATION = "chatGroupNotification";
+    public static String SETTINGS_PREFERENCE_DAY_SCHEDULE_NOTIFICATION = "dayScheduleNotification";
 
     public enum HotSpotType {
         EVENT,
@@ -80,6 +88,13 @@ public class Const {
         DriverType(int buttonResId, String name) {
             this.buttonResId = buttonResId;
             this.name = name;
+        }
+
+        public static DriverType getByName(String name) {
+            return StreamSupport.stream(Arrays.asList(Const.DriverType.values()))
+                    .filter(driverTypeInner -> driverTypeInner.getName().equals(name))
+                    .findFirst()
+                    .get();
         }
 
         public int getButtonResId() {
