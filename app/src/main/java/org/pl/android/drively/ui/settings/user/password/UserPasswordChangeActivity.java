@@ -22,13 +22,11 @@ public class UserPasswordChangeActivity extends BaseActivity implements UserPass
 
     private static final int REQUEST_REAUTHENTICATE = 0;
     @BindView(R.id.save)
-    Button _saveButton;
-
+    Button saveButton;
     @BindView(R.id.input_password)
-    TextInputEditText _passwordText;
-
+    TextInputEditText passwordText;
     @Inject
-    UserPasswordChangePresenter _userPasswordChangePresenter;
+    UserPasswordChangePresenter userPasswordChangePresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +36,14 @@ public class UserPasswordChangeActivity extends BaseActivity implements UserPass
         activityComponent().inject(this);
         HideKeyboard.setupUI(findViewById(R.id.layout_password_change), this);
 
-        _userPasswordChangePresenter.attachView(this);
+        userPasswordChangePresenter.attachView(this);
 
-        _saveButton.setOnClickListener(v -> {
-            if (!isPasswordValid(_passwordText.getText().toString())) {
-                _passwordText.setError(getResources().getString(R.string.valid_password));
+        saveButton.setOnClickListener(v -> {
+            if (!isPasswordValid(passwordText.getText().toString())) {
+                passwordText.setError(getResources().getString(R.string.valid_password));
                 return;
             } else
-                _passwordText.setError(null);
+                passwordText.setError(null);
 
             this.startActivityForResult(new Intent(this, ReauthenticateActivity.class), REQUEST_REAUTHENTICATE);
         });
@@ -55,16 +53,16 @@ public class UserPasswordChangeActivity extends BaseActivity implements UserPass
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_REAUTHENTICATE)
             if (resultCode == RESULT_OK) {
-                String password = _passwordText.getText().toString();
+                String password = passwordText.getText().toString();
                 if (isPasswordValid(password))
-                    _userPasswordChangePresenter.changePassword(password);
+                    userPasswordChangePresenter.changePassword(password);
             }
     }
 
     @Override
     public void onSuccess() {
         Toast.makeText(getBaseContext(), getResources().getString(R.string.change_password_succeed), Toast.LENGTH_LONG).show();
-        _userPasswordChangePresenter.detachView();
+        userPasswordChangePresenter.detachView();
         setResult(RESULT_OK, null);
         finish();
     }
@@ -72,6 +70,6 @@ public class UserPasswordChangeActivity extends BaseActivity implements UserPass
     @Override
     public void onError() {
         Toast.makeText(getBaseContext(), getResources().getString(R.string.change_password_failed), Toast.LENGTH_LONG).show();
-        _passwordText.setText("");
+        passwordText.setText("");
     }
 }

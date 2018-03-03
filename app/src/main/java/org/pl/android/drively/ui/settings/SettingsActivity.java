@@ -22,7 +22,6 @@ import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.regulations.RegulationsActivity;
 import org.pl.android.drively.ui.settings.personalsettings.SettingsPreferencesActivity;
 import org.pl.android.drively.ui.settings.user.UserSettingsActivity;
-import org.pl.android.drively.util.FirebasePaths;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,8 +136,10 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
                 .negativeText(R.string.logout_popup_negative)
                 .content(R.string.logout_popup_content)
                 .onPositive((dialog, which) -> settingsPresenter.logout())
-                .onNegative((dialog, which) -> dialog.dismiss())
-                .show();
+                .onNegative((dialog, which) -> {
+                    dialog.dismiss();
+                    drawer.setSelection(-1);
+                }).show();
     }
 
     @Override
@@ -156,7 +157,7 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
         resultInt.putExtra("ACTION", "LOGOUT");
         Intent intentGeoService = new Intent(this, GeolocationUpdateService.class);
         stopService(intentGeoService);
-        if(GeolocationUpdateService.FIREBASE_KEY != null && !GeolocationUpdateService.FIREBASE_KEY.isEmpty()) {
+        if (GeolocationUpdateService.FIREBASE_KEY != null && !GeolocationUpdateService.FIREBASE_KEY.isEmpty()) {
             settingsPresenter.deleteGeolocation();
         }
         setResult(Activity.RESULT_OK, resultInt);

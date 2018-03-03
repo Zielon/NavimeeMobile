@@ -115,7 +115,7 @@ public class PreferencesHelper {
         userListenerRegistration = registration;
     }
 
-    public int getAppVersion(){
+    public int getAppVersion() {
         return sharedPreferences.getInt(APP_VERSION, -1);
     }
 
@@ -132,6 +132,7 @@ public class PreferencesHelper {
         e.putString(SHARE_KEY_USER_ID, user.getId());
         e.putString(USER_CITY, user.getCity());
         e.putString(USER_COUNTRY, user.getCountry());
+
         e.putBoolean(DAY_SCHEDULE_NOTIFICATION, user.isDayScheduleNotification());
         e.putBoolean(BIG_EVENTS_NOTIFICATION, user.isBigEventsNotification());
         e.putBoolean(CHAT_GROUP_NOTIFICATION, user.isChatGroupNotification());

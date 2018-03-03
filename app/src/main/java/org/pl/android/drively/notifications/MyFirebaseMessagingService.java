@@ -30,7 +30,6 @@ import org.pl.android.drively.ui.main.MainActivity;
 import org.pl.android.drively.util.Const;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.inject.Inject;
 

@@ -31,7 +31,7 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
     private FirebaseUser firebaseUser;
     private FirebaseStorage firebaseStorage;
     private FirebaseFirestore firebaseFirestore;
-    private UserSettingsChangeMvpView _mvpView;
+    private UserSettingsChangeMvpView userSettingsChangeMvpView;
 
     @Inject
     public UserSettingsPresenter(DataManager dataManager) {
@@ -54,7 +54,7 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
 
     @Override
     public void attachView(UserSettingsChangeMvpView mvpView) {
-        _mvpView = mvpView;
+        userSettingsChangeMvpView = mvpView;
     }
 
     @Override
@@ -78,7 +78,7 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
         String path = String.format("%s/%s", AVATARS, user.getAvatar());
         if (!user.getAvatar().equals(User.DEFAULT_AVATAR))
             RxFirebaseStorage.delete(firebaseStorage.getReference().child(path)).subscribe(success -> {
-            }, throwable -> _mvpView.onError(throwable));
+            }, throwable -> userSettingsChangeMvpView.onError(throwable));
 
         Date currentTime = Calendar.getInstance().getTime();
         String avatar = this.firebaseUser.getEmail().replace('.', '_') + "_" + currentTime.getTime();
@@ -91,7 +91,7 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
         try {
             uri = saveBitmap(user.getId(), bitmap, context);
         } catch (Exception e) {
-            _mvpView.onError(e);
+            userSettingsChangeMvpView.onError(e);
             return user;
         }
 
@@ -101,9 +101,9 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
                 .subscribe(
                         sub -> firebaseFirestore.collection(FirebasePaths.USERS)
                                 .document(user.getId()).update("avatar", user.getAvatar())
-                                .addOnSuccessListener(task -> _mvpView.reloadAvatar())
-                                .addOnFailureListener(throwable -> _mvpView.onError(throwable)),
-                        throwable -> _mvpView.onError(throwable));
+                                .addOnSuccessListener(task -> userSettingsChangeMvpView.reloadAvatar())
+                                .addOnFailureListener(throwable -> userSettingsChangeMvpView.onError(throwable)),
+                        throwable -> userSettingsChangeMvpView.onError(throwable));
 
         return user;
     }

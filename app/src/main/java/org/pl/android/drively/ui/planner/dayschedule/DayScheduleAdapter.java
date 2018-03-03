@@ -3,13 +3,11 @@ package org.pl.android.drively.ui.planner.dayschedule;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -68,7 +66,7 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
         if (event.getEndTime() != null) {
             DateTime startTime = new DateTime(event.getStartTime());
             DateTime endTime = new DateTime(event.getEndTime());
-            if(Days.daysBetween(startTime.withTimeAtStartOfDay(), dateTime.withTimeAtStartOfDay()).getDays() == 0
+            if (Days.daysBetween(startTime.withTimeAtStartOfDay(), dateTime.withTimeAtStartOfDay()).getDays() == 0
                     && Days.daysBetween(endTime.withTimeAtStartOfDay(), dateTime.withTimeAtStartOfDay()).getDays() == 0) {
                 holder.timeTextView.setText(event.getStartTime().getHours() + ":" + String.format("%02d", event.getStartTime().getMinutes()) + " - " +
                         event.getEndTime().getHours() + ":" + String.format("%02d", event.getEndTime().getMinutes()));
@@ -76,8 +74,8 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
                 SimpleDateFormat simpleDateformat = new SimpleDateFormat("E"); // the day of the week abbreviated
                 String startDay = simpleDateformat.format(event.getStartTime());
                 String endDay = simpleDateformat.format(event.getEndTime());
-                holder.timeTextView.setText(startDay+" "+event.getStartTime().getHours() + ":" + String.format("%02d", event.getStartTime().getMinutes()) + " - " +
-                        endDay+ " "+ event.getEndTime().getHours() + ":" + String.format("%02d", event.getEndTime().getMinutes()));
+                holder.timeTextView.setText(startDay + " " + event.getStartTime().getHours() + ":" + String.format("%02d", event.getStartTime().getMinutes()) + " - " +
+                        endDay + " " + event.getEndTime().getHours() + ":" + String.format("%02d", event.getEndTime().getMinutes()));
             }
         }
         if (event.getRank() == 1) {
@@ -95,7 +93,7 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
         if (Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() < 30) {
             holder.deleteButton.setTag(2);
             holder.deleteButton.setText(R.string.navigate);
-        } else  {
+        } else {
             holder.deleteButton.setTag(1);
             holder.deleteButton.setBackgroundColor(mContext.getResources().getColor(R.color.colorLine));
             holder.deleteButton.setText(R.string.cancel);
@@ -105,7 +103,7 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
             public void onClick(View view) {
                 if ((int) view.getTag() == 1) {
                     mDaySchedulePresenter.deleteEvent(event);
-                } else if((int) view.getTag() == 2) {
+                } else if ((int) view.getTag() == 2) {
                     Uri gmmIntentUri = Uri.parse("google.navigation:q=" + String.valueOf(event.getPlace().getLat()) + "," +
                             String.valueOf(event.getPlace().getLon()));
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);

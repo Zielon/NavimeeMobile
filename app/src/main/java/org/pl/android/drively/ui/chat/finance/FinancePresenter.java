@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import io.reactivex.disposables.Disposable;
 
-public class FinancePresenter extends BaseTabPresenter<FinanceMvpView>{
+public class FinancePresenter extends BaseTabPresenter<FinanceMvpView> {
 
     private Disposable mDisposable;
 
@@ -17,7 +17,9 @@ public class FinancePresenter extends BaseTabPresenter<FinanceMvpView>{
     }
 
     @Override
-    public void attachView(FinanceMvpView mvpView) {super.attachView(mvpView); }
+    public void attachView(FinanceMvpView mvpView) {
+        super.attachView(mvpView);
+    }
 
     @Override
     public void detachView() {

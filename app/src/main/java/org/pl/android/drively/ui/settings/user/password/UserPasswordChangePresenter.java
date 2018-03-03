@@ -11,23 +11,23 @@ import javax.inject.Inject;
 
 public class UserPasswordChangePresenter extends BasePresenter<UserPasswordChangeMvpView> {
 
-    private final DataManager _dataManager;
-    private UserPasswordChangeMvpView _mvpView;
+    private final DataManager dataManager;
+    private UserPasswordChangeMvpView userPasswordChangeMvpView;
 
     @Inject
     public UserPasswordChangePresenter(DataManager dataManager) {
-        _dataManager = dataManager;
+        this.dataManager = dataManager;
     }
 
     @Override
     public void attachView(UserPasswordChangeMvpView mvpView) {
-        _mvpView = mvpView;
+        userPasswordChangeMvpView = mvpView;
     }
 
     public void changePassword(String password) {
-        FirebaseUser user = _dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
+        FirebaseUser user = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
         if (user == null) return;
         RxFirebaseUser.updatePassword(user, password)
-                .subscribe(sub -> _mvpView.onSuccess(), throwable -> _mvpView.onError());
+                .subscribe(sub -> userPasswordChangeMvpView.onSuccess(), throwable -> userPasswordChangeMvpView.onError());
     }
 }

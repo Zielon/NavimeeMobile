@@ -23,9 +23,9 @@ import com.yarolegovich.lovelydialog.LovelyInfoDialog;
 import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 
 import org.pl.android.drively.R;
-import org.pl.android.drively.data.model.chat.RoomMember;
 import org.pl.android.drively.data.model.chat.ListFriend;
 import org.pl.android.drively.data.model.chat.Room;
+import org.pl.android.drively.data.model.chat.RoomMember;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.chat.data.FriendDB;
 import org.pl.android.drively.ui.chat.data.GroupDB;

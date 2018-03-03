@@ -41,11 +41,11 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
         if (mDisposable != null) mDisposable.dispose();
     }
 
-    public void updateOnlineStatus(boolean online){
+    public void updateOnlineStatus(boolean online) {
         try {
             String isOnlineField = nameof(User.class, "online");
             String userId = mDataManager.getPreferencesHelper().getUserId();
-            if(userId.equals("")) return;
+            if (userId.equals("")) return;
             mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).update(isOnlineField, online);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
@@ -60,12 +60,12 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
         return mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
     }
 
-    public void checkVersion(){
+    public void checkVersion() {
         try {
-            PackageInfo packageInfo = ((Context)getMvpView()).getPackageManager().getPackageInfo(((Context)getMvpView()).getPackageName(), 0);
+            PackageInfo packageInfo = ((Context) getMvpView()).getPackageManager().getPackageInfo(((Context) getMvpView()).getPackageName(), 0);
             int currentVersion = packageInfo.versionCode;
             int oldVersion = mDataManager.getPreferencesHelper().getAppVersion();
-            if(oldVersion == -1 || currentVersion != oldVersion) {
+            if (oldVersion < currentVersion) {
                 mDataManager.getFirebaseService().getFirebaseAuth().signOut();
                 mDataManager.getPreferencesHelper().clear();
             }

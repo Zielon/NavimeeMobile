@@ -51,10 +51,9 @@ import timber.log.Timber;
 public class UserSettingsActivity extends BaseActivity implements UserSettingsChangeMvpView {
 
     @Inject
-    UserSettingsPresenter _userSettingsPresenter;
-
+    UserSettingsPresenter userSettingsPresenter;
     @Inject
-    PreferencesHelper _preferencesHelper;
+    PreferencesHelper preferencesHelper;
     @BindView(R.id.avatar)
     AvatarView avatarView;
     @BindView(R.id.avatar_change)
@@ -65,8 +64,8 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
     ProgressBar avatarProgressBar;
     @BindView(R.id.avatar_layout)
     RelativeLayout avatarLayout;
-    private Drawer _drawer = null;
-    private Bundle _savedInstanceState;
+    private Drawer drawer = null;
+    private Bundle savedInstanceState;
     private int PICK_IMAGE_REQUEST = 1;
     private int CHANGE_SETTINGS = 2;
     private long FILE_MAX_SIZE_5_MB = 5000000;
@@ -81,8 +80,8 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
         avatarLayout.setVisibility(View.INVISIBLE);
         avatarProgressBar.setVisibility(View.VISIBLE);
 
-        _userSettingsPresenter.attachView(this);
-        _savedInstanceState = savedInstanceState;
+        userSettingsPresenter.attachView(this);
+        this.savedInstanceState = savedInstanceState;
 
         loadAvatar();
         initDrawer();
@@ -91,7 +90,7 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
     private void loadAvatar() {
         Glide.with(this)
                 .using(new FirebaseImageLoader())
-                .load(_userSettingsPresenter.getStorageReference(_preferencesHelper.getUserInfo().getAvatar()))
+                .load(userSettingsPresenter.getStorageReference(preferencesHelper.getUserInfo().getAvatar()))
                 .asBitmap()
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
@@ -129,13 +128,13 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
                     avatarLayout.setVisibility(View.INVISIBLE);
                     avatarProgressBar.setVisibility(View.VISIBLE);
                     ChatViewActivity.bitmapAvatarUser = bitmap;
-                    User user = _userSettingsPresenter.setNewAvatar(bitmap, _preferencesHelper.getUserInfo(), this);
-                    _preferencesHelper.saveUserInfo(user);
+                    User user = userSettingsPresenter.setNewAvatar(bitmap, preferencesHelper.getUserInfo(), this);
+                    preferencesHelper.saveUserInfo(user);
                 }
             } else
                 initDrawer();
         else
-            _drawer.setSelection(-1);
+            drawer.setSelection(-1);
     }
 
     private boolean checkSize(Uri returnUri) {
@@ -184,11 +183,11 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
 
         List<IDrawerItem> drawerItems = new ArrayList<>();
 
-        drawerItems.add(new PrimaryDrawerItem().withName(_userSettingsPresenter.getName())
+        drawerItems.add(new PrimaryDrawerItem().withName(userSettingsPresenter.getName())
                 .withIcon(R.drawable.happy_user_24dp)
                 .withTextColor(getResources().getColor(R.color.white)));
 
-        drawerItems.add(new PrimaryDrawerItem().withName(_userSettingsPresenter.getEmail())
+        drawerItems.add(new PrimaryDrawerItem().withName(userSettingsPresenter.getEmail())
                 .withIcon(R.drawable.email_user_24dp)
                 .withTextColor(getResources().getColor(R.color.white)));
 
@@ -196,14 +195,14 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
                 .withIcon(R.drawable.password_24dp)
                 .withTextColor(getResources().getColor(R.color.white)));
 
-        _drawer = new DrawerBuilder()
+        drawer = new DrawerBuilder()
                 .withActivity(this)
                 .withTranslucentStatusBar(false)
                 .addDrawerItems(drawerItems.toArray(new IDrawerItem[drawerItems.size()]))
                 .withSliderBackgroundColor(0)
                 .withOnDrawerItemClickListener((view, position, drawerItem) -> {
-                    if (_userSettingsPresenter.isExternalProvider()) {
-                        _drawer.setSelection(-1);
+                    if (userSettingsPresenter.isExternalProvider()) {
+                        drawer.setSelection(-1);
                     } else if (drawerItem instanceof Nameable) {
                         Intent intent = null;
                         if (position == 0) {
@@ -223,14 +222,14 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
                     }
                     return false;
                 })
-                .withSavedInstance(_savedInstanceState)
+                .withSavedInstance(savedInstanceState)
                 .withSelectedItem(-1)
                 .buildView();
 
-        _drawer.getSlider().setBackground(grayBackground);
+        drawer.getSlider().setBackground(grayBackground);
 
         ViewGroup view = (ViewGroup) findViewById(R.id.frame_container);
         view.removeAllViews();
-        view.addView(_drawer.getSlider());
+        view.addView(drawer.getSlider());
     }
 }

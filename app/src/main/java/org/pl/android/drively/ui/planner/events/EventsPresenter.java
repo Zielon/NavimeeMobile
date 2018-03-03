@@ -9,7 +9,6 @@ import org.pl.android.drively.contracts.repositories.NotificationsRepository;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.EventNotification;
-import org.pl.android.drively.injection.ConfigPersistent;
 import org.pl.android.drively.ui.base.tab.BaseTabPresenter;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;

@@ -180,7 +180,7 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
             usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "country", countryName.toUpperCase());
             usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "city", cityName.toUpperCase());
             coordinatesRepository.getAvailableCities(countryName).addOnSuccessListener(cities -> {
-                if (Stream.of(cities).allMatch(city -> !city.getName().equals(cityName))) {
+                if (Stream.of(cities).allMatch(city -> !city.getName().toUpperCase().equals(cityName.toUpperCase()))) {
                     CityNotAvailable cityNotAvailable = new CityNotAvailable();
                     cityNotAvailable.setCity(cityName.toUpperCase());
                     cityNotAvailable.setCountryName(countryName);

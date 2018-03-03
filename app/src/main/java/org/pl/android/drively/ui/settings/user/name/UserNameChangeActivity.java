@@ -20,11 +20,11 @@ public class UserNameChangeActivity extends BaseActivity implements UserNameChan
 
     private static final int REQUEST_REAUTHENTICATE = 0;
     @BindView(R.id.save)
-    Button _saveButton;
+    Button saveButton;
     @BindView(R.id.input_name)
-    EditText _nameText;
+    EditText editText;
     @Inject
-    UserNameChangePresenter _userNameChangePresenter;
+    UserNameChangePresenter userNameChangePresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,15 +34,15 @@ public class UserNameChangeActivity extends BaseActivity implements UserNameChan
         activityComponent().inject(this);
         HideKeyboard.setupUI(findViewById(R.id.layout_name_change), this);
 
-        _userNameChangePresenter.attachView(this);
+        userNameChangePresenter.attachView(this);
 
-        _nameText.setText(_userNameChangePresenter.getName());
+        editText.setText(userNameChangePresenter.getName());
 
-        _saveButton.setOnClickListener(v -> {
-            String name = _nameText.getText().toString();
+        saveButton.setOnClickListener(v -> {
+            String name = editText.getText().toString();
 
             if (name.equals("")) {
-                _nameText.setError(getResources().getString(R.string.change_name_failed));
+                editText.setError(getResources().getString(R.string.change_name_failed));
                 return;
             }
 
@@ -54,15 +54,15 @@ public class UserNameChangeActivity extends BaseActivity implements UserNameChan
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_REAUTHENTICATE)
             if (resultCode == RESULT_OK) {
-                String name = _nameText.getText().toString();
-                _userNameChangePresenter.changeName(name);
+                String name = editText.getText().toString();
+                userNameChangePresenter.changeName(name);
             }
     }
 
     @Override
     public void onSuccess() {
         Toast.makeText(getBaseContext(), getResources().getString(R.string.change_name_succeed), Toast.LENGTH_LONG).show();
-        _userNameChangePresenter.detachView();
+        userNameChangePresenter.detachView();
         setResult(RESULT_OK, null);
         finish();
     }
@@ -70,6 +70,6 @@ public class UserNameChangeActivity extends BaseActivity implements UserNameChan
     @Override
     public void onError() {
         Toast.makeText(getBaseContext(), getResources().getString(R.string.change_name_failed), Toast.LENGTH_LONG).show();
-        _nameText.setText("");
+        editText.setText("");
     }
 }

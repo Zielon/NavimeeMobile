@@ -45,13 +45,13 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     static final int SETTINGS_REQUEST = 1;  // The request code
     private static final String EXTRA_TRIGGER_SYNC_FLAG =
             "uk.co.ribot.androidboilerplate.ui.main.MainActivity.EXTRA_TRIGGER_SYNC_FLAG";
+    public static boolean IS_USER_POSITION_CHECKED = false;
     @Inject
     MainPresenter mMainPresenter;
     boolean isFromNotification = false;
     double lat, lng;
     String name, count;
     BottomBar bottomBar;
-
     private BaseTabFragment selectedFragment;
 
     // @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
@@ -65,6 +65,17 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra(EXTRA_TRIGGER_SYNC_FLAG, triggerDataSyncOnCreate);
         return intent;
+    }
+
+    public static void setWindowFlag(Activity activity, final int bits, boolean on) {
+        Window win = activity.getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        if (on) {
+            winParams.flags |= bits;
+        } else {
+            winParams.flags &= ~bits;
+        }
+        win.setAttributes(winParams);
     }
 
     @Override
@@ -173,21 +184,18 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         });
     }
 
-    public static void setWindowFlag(Activity activity, final int bits, boolean on) {
-        Window win = activity.getWindow();
-        WindowManager.LayoutParams winParams = win.getAttributes();
-        if (on) {
-            winParams.flags |= bits;
-        } else {
-            winParams.flags &= ~bits;
-        }
-        win.setAttributes(winParams);
-    }
-
     @Override
     public void onStart() {
         super.onStart();
+        IS_USER_POSITION_CHECKED = false;
+        mMainPresenter.updateOnlineStatus(true);
         checkInternetConnectivity();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mMainPresenter.updateOnlineStatus(false);
     }
 
     private void checkInternetConnectivity() {
@@ -209,7 +217,6 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mMainPresenter.updateOnlineStatus(false);
         mMainPresenter.detachView();
     }
 

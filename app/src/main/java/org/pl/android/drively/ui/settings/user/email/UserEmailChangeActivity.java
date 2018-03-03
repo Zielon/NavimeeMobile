@@ -24,11 +24,11 @@ public class UserEmailChangeActivity extends BaseActivity implements UserEmailCh
 
     private static final int REQUEST_REAUTHENTICATE = 0;
     @BindView(R.id.input_email)
-    EditText _emailText;
+    EditText editText;
     @BindView(R.id.save)
-    Button _saveButton;
+    Button saveButton;
     @Inject
-    UserEmailChangePresenter _userEmailChangePresenter;
+    UserEmailChangePresenter userEmailChangePresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,16 +38,16 @@ public class UserEmailChangeActivity extends BaseActivity implements UserEmailCh
         activityComponent().inject(this);
         HideKeyboard.setupUI(findViewById(R.id.layout_email_change), this);
 
-        _userEmailChangePresenter.attachView(this);
+        userEmailChangePresenter.attachView(this);
 
-        _emailText.setText(_userEmailChangePresenter.getEmail());
+        editText.setText(userEmailChangePresenter.getEmail());
 
-        _saveButton.setOnClickListener(v -> {
-            if (!isEmailValid(_emailText.getText().toString())) {
-                _emailText.setError(getResources().getString(R.string.valid_email_address));
+        saveButton.setOnClickListener(v -> {
+            if (!isEmailValid(editText.getText().toString())) {
+                editText.setError(getResources().getString(R.string.valid_email_address));
                 return;
             } else
-                _emailText.setError(null);
+                editText.setError(null);
 
             this.startActivityForResult(new Intent(this, ReauthenticateActivity.class), REQUEST_REAUTHENTICATE);
         });
@@ -57,16 +57,16 @@ public class UserEmailChangeActivity extends BaseActivity implements UserEmailCh
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_REAUTHENTICATE)
             if (resultCode == RESULT_OK) {
-                String newEmail = _emailText.getText().toString();
+                String newEmail = editText.getText().toString();
                 if (isEmailValid(newEmail))
-                    _userEmailChangePresenter.changeEmail(newEmail);
+                    userEmailChangePresenter.changeEmail(newEmail);
             }
     }
 
     @Override
     public void onSuccess() {
         Toast.makeText(getBaseContext(), getResources().getString(R.string.change_email_succeed), Toast.LENGTH_LONG).show();
-        _userEmailChangePresenter.detachView();
+        userEmailChangePresenter.detachView();
         setResult(RESULT_OK, null);
         finish();
     }
@@ -78,6 +78,6 @@ public class UserEmailChangeActivity extends BaseActivity implements UserEmailCh
         else
             Toast.makeText(getBaseContext(), getResources().getString(R.string.change_email_failed), Toast.LENGTH_LONG).show();
 
-        _emailText.setText("");
+        editText.setText("");
     }
 }

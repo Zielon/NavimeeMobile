@@ -18,7 +18,7 @@ import javax.inject.Inject;
 
 import static org.pl.android.drively.util.FirebasePaths.CITIES;
 
-public class CoordinatesRepositoryImpl implements CoordinatesRepository{
+public class CoordinatesRepositoryImpl implements CoordinatesRepository {
 
     private DataManager dataManager;
     private ObjectMapper mapper = new ObjectMapper();
@@ -48,12 +48,12 @@ public class CoordinatesRepositoryImpl implements CoordinatesRepository{
                 .collection(FirebasePaths.NOT_AVAILABLE_CITIES)
                 .document(city.getCity().toUpperCase());
 
-        return cityRef.get().continueWith(missingCity ->{
+        return cityRef.get().continueWith(missingCity -> {
             DocumentSnapshot snapshot = missingCity.getResult();
-            if(snapshot.exists()){
+            if (snapshot.exists()) {
                 CityNotAvailable cityNotAvailable = snapshot.toObject(CityNotAvailable.class);
                 return cityRef.update("count", cityNotAvailable.getCount() + 1);
-            }else
+            } else
                 return cityRef.set(city);
         });
     }
