@@ -82,6 +82,8 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
             String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
             mDataManager.getFirebaseService().getFirebaseFirestore()
                     .collection(FirebasePaths.NOTIFICATIONS)
+                    .document(mDataManager.getPreferencesHelper().getCountry())
+                    .collection(FirebasePaths.EVENTS_NOTIFICATION)
                     .whereEqualTo("userId", userId)
                     .whereGreaterThan(endTimeFilter, dateFinal)
                     .whereLessThan(endTimeFilter, dt.getTime())
@@ -112,7 +114,13 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
     }
 
     public void deleteEvent(Event event) {
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.NOTIFICATIONS).document(event.getFirestoreId()).delete()
+        mDataManager.getFirebaseService()
+                .getFirebaseFirestore()
+                .collection(FirebasePaths.NOTIFICATIONS)
+                .document(mDataManager.getPreferencesHelper().getCountry())
+                .collection(FirebasePaths.EVENTS_NOTIFICATION)
+                .document(event.getFirestoreId())
+                .delete()
                 .addOnSuccessListener(aVoid -> {
                     if (getMvpView() != null) {
                         getMvpView().onSuccessDelete(event);

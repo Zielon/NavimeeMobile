@@ -38,10 +38,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
     private DateTime dateTime;
 
     @Inject
-    public EventsAdapter(@ActivityContext Context context) {
+    public EventsAdapter(@ActivityContext Context context, EventsPresenter eventsPresenter) {
         this.mEvents = new ArrayList<Event>();
         mContext = context;
         currentDateTime = new DateTime(Calendar.getInstance().getTime());
+        this.mEventsPresenter = eventsPresenter;
+        mEventsPresenter.loadDayScheduleEvents();
     }
 
     @Override

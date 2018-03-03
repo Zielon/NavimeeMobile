@@ -124,6 +124,8 @@ public class EventsPresenter extends BaseTabPresenter<EventsMvpView> {
             userIdFilter = nameof(EventNotification.class, "userId");
             mDataManager.getFirebaseService().getFirebaseFirestore()
                     .collection(FirebasePaths.NOTIFICATIONS)
+                    .document(mDataManager.getPreferencesHelper().getCountry())
+                    .collection(FirebasePaths.EVENTS_NOTIFICATION)
                     .whereEqualTo(userIdFilter, userId)
                     .addSnapshotListener((value, e) -> {
                         if (e != null) {
@@ -191,7 +193,12 @@ public class EventsPresenter extends BaseTabPresenter<EventsMvpView> {
 
 
     public void deleteEvent(Event event) {
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.NOTIFICATIONS).document(event.getFirestoreId()).delete()
+        mDataManager.getFirebaseService().getFirebaseFirestore()
+                .collection(FirebasePaths.NOTIFICATIONS)
+                .document(mDataManager.getPreferencesHelper().getCountry())
+                .collection(FirebasePaths.EVENTS_NOTIFICATION)
+                .document(event.getFirestoreId())
+                .delete()
                 .addOnSuccessListener(aVoid -> {
                     if (getMvpView() != null) {
                         getMvpView().onSuccessDelete();
