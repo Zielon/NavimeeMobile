@@ -3,15 +3,12 @@ package org.pl.android.drively;
 import android.app.Application;
 import android.content.Context;
 
-import com.crashlytics.android.Crashlytics;
-
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.pl.android.drively.injection.component.ApplicationComponent;
 import org.pl.android.drively.injection.component.DaggerApplicationComponent;
 import org.pl.android.drively.injection.module.ApplicationModule;
 
-import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 public class BoilerplateApplication extends Application {
@@ -26,7 +23,7 @@ public class BoilerplateApplication extends Application {
     public void onCreate() {
         super.onCreate();
         JodaTimeAndroid.init(this);
-        Fabric.with(this, new Crashlytics());
+//        Fabric.with(this, new Crashlytics());
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }

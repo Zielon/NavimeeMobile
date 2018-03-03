@@ -14,10 +14,12 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.pl.android.drively.R;
+import org.pl.android.drively.data.model.chat.Room;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.base.tab.BaseTabFragment;
+import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.ui.main.MainActivity;
-import org.pl.android.drively.util.ChatUtils;
+import org.pl.android.drively.util.Const;
 
 import javax.inject.Inject;
 
@@ -72,11 +74,19 @@ public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
     private void preparePopupLayout(View rootView) {
         rootView.findViewById(R.id.popup_finance_contact_us_button).setOnClickListener(view -> {
             changeTabToChat();
-            Intent intent = ChatUtils.getChatActivityIntent(context, "Drively");
-            context.startActivity(intent);
-            popup.dismiss();
+            financePresenter.getDrivelyGroup();
         });
         /*rootView.findViewById(R.id.popup_finance_dismiss_dialog).setOnClickListener(view -> popup.dismiss());*/
+    }
+
+    @Override
+    public void goToDrivelyChat(Room room) {
+        Intent intent = new Intent(context, ChatViewActivity.class);
+        intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, room.getId());
+        intent.putExtra(Const.INTENT_KEY_IS_GROUP_CHAT, true);
+        intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_NAME, room.getName());
+        context.startActivity(intent);
+        popup.dismiss();
     }
 
     private void changeTabToChat() {

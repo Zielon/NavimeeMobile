@@ -130,7 +130,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             Intent result = new Intent();
-            if (idFriend.size() > 0)
+            if (idFriend != null && idFriend.size() > 0)
                 result.putExtra("idFriend", idFriend.get(0));
             setResult(RESULT_OK, result);
             this.finish();
@@ -147,7 +147,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onBackPressed() {
         Intent result = new Intent();
-        if (idFriend.size() > 0)
+        if (idFriend != null && idFriend.size() > 0)
             result.putExtra("idFriend", idFriend.get(0));
         setResult(RESULT_OK, result);
         this.finish();

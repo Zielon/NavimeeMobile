@@ -15,8 +15,8 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:background="@color/primary"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/primary">
 
         <RelativeLayout
             android:id="@+id/left_content"
@@ -35,8 +35,8 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:ellipsize="end"
-                android:maxLines="1"
                 android:maxLength="25"
+                android:maxLines="1"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_body"
                 tools:text="Antony Ribot" />
@@ -60,36 +60,40 @@
 
             <ImageView
                 android:id="@+id/image_address_name"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:paddingTop="8dp"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="2dp"
                 android:layout_alignParentStart="true"
                 android:layout_below="@id/text_name"
+                android:paddingTop="5dp"
                 android:src="@mipmap/place_address" />
 
             <TextView
                 android:id="@+id/text_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:maxLength="38"
                 android:layout_below="@id/text_name"
-                android:layout_marginRight="5dp"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_toEndOf="@+id/image_address_name"
                 android:layout_toRightOf="@+id/image_address_name"
-                android:paddingStart="10dp"
+                android:maxLength="38"
+                android:maxLines="1"
+                android:paddingStart="7dp"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_small_body"
                 tools:text="developer" />
 
             <ImageView
                 android:id="@+id/imageTime"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:paddingTop="4dp"
+                android:layout_width="13dp"
+                android:layout_height="13dp"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/text_address"
+                android:layout_marginStart="3dp"
+                android:paddingTop="2dp"
                 android:layout_marginTop="8dp"
                 android:src="@drawable/end_time_24dp" />
 
@@ -100,36 +104,23 @@
                 android:layout_below="@id/text_address"
                 android:layout_centerVertical="true"
                 android:layout_marginTop="8dp"
-                android:textSize="13sp"
                 android:layout_toEndOf="@id/imageTime"
                 android:layout_toRightOf="@+id/imageTime"
                 android:paddingStart="10dp"
                 android:text="18:30"
-                android:textColor="@color/white" />
-
-        </RelativeLayout>
-
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/right_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            android:layout_alignBottom="@id/left_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true">
+                android:textColor="@color/white"
+                android:textSize="13sp" />
 
             <com.rilixtech.materialfancybutton.MaterialFancyButton
                 android:id="@+id/addButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/text_name"
+                android:layout_alignEnd="@id/text_address_name"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="8dp"
                 android:elevation="8dp"
                 android:minWidth="76dp"
-                card_view:layout_constraintTop_toTopOf="parent"
-                card_view:layout_constraintLeft_toLeftOf="parent"
-                card_view:layout_constraintRight_toRightOf="parent"
-                card_view:layout_constraintBottom_toTopOf="@+id/imageCount"
                 fancy:mfb_defaultColor="@color/button_background"
                 fancy:mfb_focusColor="@color/white"
                 fancy:mfb_radius="2dp"
@@ -140,17 +131,15 @@
                 android:id="@+id/imageCount"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
+                android:layout_alignTop="@id/viewTextTime"
+                android:layout_alignEnd="@id/viewTextTime"
+                android:layout_alignParentEnd="true"
+                android:layout_centerHorizontal="true"
                 android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
-                android:src="@mipmap/ranking_1"
-                card_view:layout_constraintTop_toBottomOf="@+id/addButton"
-                card_view:layout_constraintLeft_toLeftOf="parent"
-                card_view:layout_constraintRight_toRightOf="parent"
-                card_view:layout_constraintBottom_toBottomOf="parent"
-                card_view:layout_constraintVertical_chainStyle="spread" />
+                android:layout_marginEnd="16dp"
+                android:src="@mipmap/ranking_1" />
 
-
-        </android.support.constraint.ConstraintLayout>
+        </RelativeLayout>
 
     </RelativeLayout>
 

@@ -63,7 +63,7 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
                 selectedDriverType -> {
                     settingsPreferencesPresenter
                             .updateUserCompanyAndShareLocalisation(selectedDriverType.getName(), true);
-                    settingsPreferencesPresenter.updatePreference(preference, true);
+                    settingsPreferencesPresenter.updatePreference(preference, false);
                 });
     }
 
