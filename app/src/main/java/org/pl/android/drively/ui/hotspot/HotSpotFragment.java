@@ -805,7 +805,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
     @Override
     public void onKeyEntered(String key, GeoLocation location) {
         Timber.i(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
-        if (key.contains(FirebasePaths.USER_LOCATION) && !key.contains(mHotspotPresenter.getUid())) {
+        if (key.contains(FirebasePaths.USER_LOCATION) && !key.contains(mHotspotPresenter.getUid()) && mHotspotPresenter.getShareLocalisationPreference()) {
             Timber.i("USER LOCATION");
             if (!usersMarkers.containsKey(key)) {
                 directionsDelta.put(key, location);
