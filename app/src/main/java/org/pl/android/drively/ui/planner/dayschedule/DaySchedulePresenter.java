@@ -30,7 +30,6 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
 
     private ListenerRegistration mListener;
 
-
     @Inject
     public DaySchedulePresenter(DataManager dataManager) {
         mDataManager = dataManager;

@@ -167,6 +167,11 @@ public class EventsFragment extends BaseTabFragment implements EventsMvpView {
         super.onStart();
     }
 
+    @Override
+    public void updateDayScheduleListInAdapter(List<Event> dayScheduleList) {
+        mEventsAdapter.setDayScheduleList(dayScheduleList);
+    }
+
     private void queryOnDate(Calendar date) {
         mEventsRecycler.setVisibility(View.VISIBLE);
         mEventsEmptyLayout.setVisibility(View.GONE);

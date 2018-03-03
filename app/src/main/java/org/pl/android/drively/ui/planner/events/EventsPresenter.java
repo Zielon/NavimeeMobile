@@ -179,12 +179,11 @@ public class EventsPresenter extends BaseTabPresenter<EventsMvpView> {
         return mDataManager.getPreferencesHelper().getValueFloat(Const.LAST_LOCATION_LNG);
     }
 
-    public List<Event> getDayScheduleList() {
-        return dayScheduleList;
-    }
-
     public void setDayScheduleList(List<Event> dayScheduleList) {
         this.dayScheduleList = dayScheduleList;
+        if (getMvpView() != null) {
+            getMvpView().updateDayScheduleListInAdapter(dayScheduleList);
+        }
     }
 
     public void clearEvents() {

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -22,121 +22,124 @@
             android:id="@+id/content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp">
-
-            <TextView
-                android:id="@+id/text_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_toLeftOf="@+id/deleteButton"
-                android:layout_toStartOf="@+id/deleteButton"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_body"
-                tools:text="Antony Ribot" />
-
-            <ImageView
-                android:id="@+id/image_address_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/text_name"
-                android:layout_centerVertical="true"
-                android:paddingBottom="3dp"
-                android:paddingTop="10dp"
-                android:src="@mipmap/place_address" />
+            android:background="@color/primary"
+            android:paddingBottom="12dp"
+            android:paddingEnd="12dp"
+            android:paddingStart="12dp"
+            android:paddingTop="12dp">
 
             <TextView
                 android:id="@+id/text_address_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/text_name"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:ellipsize="end"
+                android:maxLength="25"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_body"
+                tools:text="Antony Ribot" />
+
+            <TextView
+                android:id="@+id/text_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/text_address_name"
                 android:layout_marginTop="5dp"
                 android:layout_toRightOf="@+id/image_address_name"
+                android:ellipsize="end"
+                android:maxLength="30"
+                android:maxLines="1"
                 android:paddingBottom="5dp"
-                android:paddingLeft="10dp"
                 android:paddingTop="5dp"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_small_body"
-                tools:text="developer"
-                android:layout_toLeftOf="@+id/deleteButton" />
+                tools:text="developer" />
 
+            <ImageView
+                android:id="@+id/image_address_name"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/text_name"
+                android:paddingTop="5dp"
+                android:src="@mipmap/place_address" />
 
             <TextView
                 android:id="@+id/text_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/text_address_name"
+                android:layout_below="@id/text_name"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_toEndOf="@+id/image_address_name"
                 android:layout_toRightOf="@+id/image_address_name"
-                android:paddingLeft="25dp"
-                android:paddingStart="10dp"
-                android:layout_toStartOf="@+id/deleteButton"
+                android:maxLength="38"
+                android:maxLines="1"
+                android:paddingStart="7dp"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_small_body"
-                tools:text="developer"
-                android:layout_toLeftOf="@+id/deleteButton" />
-            <Button
-                android:id="@+id/deleteButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/text_name"
-                android:layout_centerVertical="true"
-                android:layout_marginTop="10dp"
-                android:background="@color/button_background"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:text="@string/cancel" />
-
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/buttons"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginEnd="0dp"
-            android:layout_marginRight="0dp">
+                tools:text="developer"  />
 
             <ImageView
                 android:id="@+id/imageTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"
+                android:layout_width="13dp"
+                android:layout_height="13dp"
                 android:layout_alignParentStart="true"
+                android:layout_below="@+id/text_address"
+                android:layout_marginStart="3dp"
+                android:paddingTop="2dp"
+                android:layout_marginTop="8dp"
                 android:src="@drawable/end_time_24dp" />
 
             <TextView
                 android:id="@+id/viewTextTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/text_address"
                 android:layout_centerVertical="true"
+                android:layout_marginTop="8dp"
+                android:layout_toEndOf="@id/imageTime"
                 android:layout_toRightOf="@+id/imageTime"
-                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
                 android:text="18:30"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textSize="13sp" />
+
+            <com.rilixtech.materialfancybutton.MaterialFancyButton
+                android:id="@+id/deleteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/text_name"
+                android:layout_alignEnd="@id/text_address_name"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="8dp"
+                android:elevation="8dp"
+                android:minWidth="76dp"
+                fancy:mfb_defaultColor="@color/button_background"
+                fancy:mfb_focusColor="@color/white"
+                fancy:mfb_radius="2dp"
+                fancy:mfb_text="@string/cancel"
+                fancy:mfb_textSize="11sp" />
 
             <ImageView
                 android:id="@+id/imageCount"
-                android:layout_width="wrap_content"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/viewTextTime"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
+                android:layout_alignTop="@id/viewTextTime"
+                android:layout_alignEnd="@id/viewTextTime"
+                android:layout_alignParentEnd="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="16dp"
                 android:src="@mipmap/ranking_1" />
+
         </RelativeLayout>
-
-
 
     </RelativeLayout>
 
