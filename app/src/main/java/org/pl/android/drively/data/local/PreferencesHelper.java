@@ -29,6 +29,7 @@ public class PreferencesHelper {
     private static String SHARE_KEY_USER_ID = "id";
     private static String APP_VERSION = "app_version";
     private static String USER_COUNTRY = "user_country";
+    private static String USER_COMPANY = Const.USER_COMPANY;
     private static String USER_CITY = "user_city";
     private static String IS_ONLINE = "is_online";
 
@@ -138,6 +139,7 @@ public class PreferencesHelper {
         e.putBoolean(CHAT_GROUP_NOTIFICATION, user.isChatGroupNotification());
         e.putBoolean(CHAT_PRIVATE_NOTIFICATION, user.isChatPrivateNotification());
         e.putBoolean(SHARE_LOCALIZATION, user.isShareLocalization());
+        e.putString(USER_COMPANY, user.getDriverType());
         e.putBoolean(IS_ONLINE, user.isOnline());
 
         try {

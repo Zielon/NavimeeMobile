@@ -80,9 +80,10 @@ public class SettingsPreferencesPresenter extends BasePresenter<SettingsPreferen
         return dataManager.getPreferencesHelper().getValueString(Const.USER_COMPANY);
     }
 
-    public void updateUserCompanyAndShareLocalisation(String userCompany, boolean shareLocalisation) {
+    public void updateUserCompanyAndShareLocalisation(String userCompany, boolean shareLocalisation, Preference preference) {
         dataManager.getPreferencesHelper().setValue(Const.USER_COMPANY, userCompany);
         dataManager.getPreferencesHelper().setValue(Const.SETTINGS_PREFERENCE_SHARE_LOCALISATION, shareLocalisation);
+        preference.getEditor().putBoolean(Const.SETTINGS_PREFERENCE_SHARE_LOCALISATION, shareLocalisation);
         try {
             usersRepository.updateUserField(dataManager.getPreferencesHelper().getUserId(), Const.USER_COMPANY, userCompany);
             usersRepository.updateUserField(dataManager.getPreferencesHelper().getUserId(), Const.SETTINGS_PREFERENCE_SHARE_LOCALISATION, shareLocalisation);
@@ -93,5 +94,14 @@ public class SettingsPreferencesPresenter extends BasePresenter<SettingsPreferen
 
     public void bindPreferenceToValue(Preference preference) {
         preference.setOnPreferenceChangeListener(preferenceChangeListener);
+    }
+
+    public void updateShareLocalization(Preference preference, boolean shareLocalization) {
+        preference.getEditor().putBoolean(preference.getKey(), shareLocalization);
+        try {
+            usersRepository.updateUserField(dataManager.getPreferencesHelper().getUserId(), Const.SETTINGS_PREFERENCE_SHARE_LOCALISATION, shareLocalization);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 }

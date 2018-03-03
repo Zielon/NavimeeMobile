@@ -17,14 +17,17 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class HotspotPopupHelper {
 
-    private static MaterialDialog popup;
+    private static MaterialDialog firstPopup;
+    
+    private static MaterialDialog secondPopup;
 
     private static Const.DriverType selectedDriverType;
 
-    public static void showFirstPopup(Context context, String userCompany, OnSuccessCallback onSuccessCallback) {
+    public static void showFirstPopup(Context context, String userCompany, OnSuccessCallback onSuccessCallback, OnFailureCallback onFailureCallback) {
+        selectedDriverType = null;
         LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rootView = inflater.inflate(R.layout.hotspot_popup_instruction, null);
-        popup = new MaterialDialog.Builder(context)
+        firstPopup = new MaterialDialog.Builder(context)
                 .customView(rootView, false)
                 .backgroundColor(ContextCompat.getColor(context, R.color.dark_transparent))
                 .show();
@@ -45,18 +48,22 @@ public class HotspotPopupHelper {
                     if (selectedDriverType == null) {
                         rootView.findViewById(R.id.brand_error).setVisibility(View.VISIBLE);
                     } else {
-                        popup.dismiss();
+                        firstPopup.dismiss();
                         onSuccessCallback.onSuccessCallback(selectedDriverType);
                     }
                 });
-        rootView.findViewById(R.id.dismiss_dialog).setOnClickListener(view -> popup.dismiss());
-        if(userCompany != null) {
+        rootView.findViewById(R.id.dismiss_dialog).setOnClickListener(view -> {
+            onFailureCallback.onFailureCallback();
+            firstPopup.dismiss();
+        });
+        if (userCompany != null) {
             changeFirstPopupContent(context, userCompany, rootView);
         }
     }
 
     private static void changeFirstPopupContent(Context context, String userCompany, View rootView) {
         if (!TextUtils.isEmpty(userCompany)) {
+            selectedDriverType = Const.DriverType.getByName(userCompany);
             rootView.findViewById(Const.DriverType.getByName(userCompany).getButtonResId())
                     .setBackgroundColor(ContextCompat.getColor(context, R.color.filters_buttons));
             ((MaterialFancyButton) rootView.findViewById(Const.DriverType.getByName(userCompany).getButtonResId()))
@@ -68,17 +75,24 @@ public class HotspotPopupHelper {
     }
 
     public static void showSecondPopup(Context context) {
+        if (secondPopup != null) {
+            secondPopup.dismiss();
+        }
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.hotspot_popup_instruction_second, null);
-        popup = new MaterialDialog.Builder(context)
+        secondPopup = new MaterialDialog.Builder(context)
                 .customView(view, false)
                 .backgroundColor(ContextCompat.getColor(context, R.color.transparent))
                 .show();
-        view.findViewById(R.id.popup_hotspot_second_agree_button).setOnClickListener(s -> popup.dismiss());
+        view.findViewById(R.id.popup_hotspot_second_agree_button).setOnClickListener(s -> secondPopup.dismiss());
     }
 
     public interface OnSuccessCallback {
         void onSuccessCallback(Const.DriverType driverType);
+    }
+
+    public interface OnFailureCallback {
+        void onFailureCallback();
     }
 
 }
