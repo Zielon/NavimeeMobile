@@ -64,7 +64,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="12dp"
-                    android:src="@drawable/ic_action_today_black_24dp" />
+                    android:src="@drawable/ic_today_grey_24dp" />
 
                 <TextView
                     android:id="@+id/popup_events_info1"
@@ -96,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="12dp"
-                    android:src="@drawable/ic_event_available_black_24dp" />
+                    android:src="@drawable/ic_event_available_grey_24dp" />
 
                 <TextView
                     android:id="@+id/popup_events_info2"

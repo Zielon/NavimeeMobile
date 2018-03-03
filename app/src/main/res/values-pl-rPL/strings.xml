@@ -147,7 +147,7 @@
         które wyraziły zgodę mogą zobaczyć położenie innych użytkowników.</string>
     <string name="popup_hotspot_agreement_change">Lokalizacja nie jest używana poza aplikacją. Tylko osoby,
         które wyraziły zgodę mogą zobaczyć położenie innych użytkowników.</string>
-    <string name="popup_hotspot_brand_question">Której aplikacji używasz najczęściej do pracy?</string>
+    <string name="popup_hotspot_brand_question">Pod którą marką jeździsz najczęściej?</string>
     <string name="popup_hotspot_brand_question_change">Czy chcesz zmienić aplikację?</string>
     <string name="popup_hotspot_button_agreement">ZGADZAM SIĘ</string>
     <string name="popup_hotspot_button_agreement_change">ZMIEŃ APLIKACJE</string>
@@ -157,38 +157,37 @@
 
     <!--HOTSPOT SECOND-->
     <string name="popup_hotspot_second_title">WSZYSTKO JAK NA DŁONI!</string>
-    <string name="popup_hotspot_second_info">Kolory oznaczają aplikacje!</string>
+    <string name="popup_hotspot_second_info">Zobacz poniżej jakimi kolorami oznaczano samochody</string>
     <string name="popup_hotspot_second_info2">Zmień widok na mapie!</string>
     <string name="popup_hotspot_second_understood">ROZUMIEM</string>
-    <string name="popup_hotspot_second_preference_info">Swoje preferencje możesz zmienić w Ustawieniach</string>
+    <string name="popup_hotspot_second_preference_info">Hotspot można włączyć i wyłączyć w Ustawieniach</string>
 
     <!--CALENDAR-->
-    <string name="popup_events_title">WSZYSTKO W JEDNYM MIEJSCU</string>
-    <string name="popup_events_info">Tutaj sprawdzisz, które lokale są obecnie zatłoczone, gdzie aktualnie odbywają się duże wydarzenia:
-        imprezy, koncerty czy konferencje. Na końcu wyświetlają się nadchodzące wydarzenia.</string>
+    <string name="popup_events_title">WSZYSTKIE IMPREZY W JEDNYM MIEJSCU</string>
+    <string name="popup_events_info"> Zobacz kiedy i gdzie odbywaja się imprezy, koncerty i inne duże wydarzenia. Zaplanuj swój czas i nie przegap kolejnych okazji do złapania klientów.</string>
     <string name="popup_events_info1">Lista miejsc i wydarzeń w twoim mieście</string>
     <string name="popup_events_info2">Plan Dnia: wydarzenia, o których dostaniesz przypomnienie kiedy będą się kończyć</string>
     <string name="popup_events_info3">Dodaj wydarzenie do Planu Dnia</string>
     <string name="popup_events_info3_button">Przypomnij mi</string>
-    <string name="popup_events_info4">Przejdź do nawigacji GPS</string>
+    <string name="popup_events_info4">Przejdź do nawigacji</string>
     <string name="popup_events_info4_button">Jedź teraz</string>
-    <string name="popup_events_info5">Duuuuże wydarzenie</string>
+    <string name="popup_events_info5">Duże wydarzenie</string>
     <string name="popup_events_info6">Impreza na ok. 150 osób</string>
     <string name="popup_events_understood">ROZUMIEM</string>
     <string name="popup_events_preference_info">Przypomnienia możesz wyłączyć w Ustawieniach</string>
 
     <!--CHAT-->
     <string name="popup_chat_title">Pytaj, odpowiadaj, dziel się!</string>
-    <string name="popup_chat_info">Dostępne grupy:</string>
+    <string name="popup_chat_info">Grupy dostępne na czacie:</string>
     <string name="popup_chat_info1">Cały kraj w jednym miejscu</string>
     <string name="popup_chat_info1_button">Wszyscy</string>
-    <string name="popup_chat_info2">Po sąsiędzku</string>
+    <string name="popup_chat_info2">Blisko Ciebie</string>
     <string name="popup_chat_info2_button">Warszawa</string>
-    <string name="popup_chat_info3">Kupię, sprzedam, zamienię</string>
+    <string name="popup_chat_info3">Oferty i ogłoszenia</string>
     <string name="popup_chat_info3_button">Ogłoszenia</string>
     <string name="popup_chat_info4">Znajdź więcej grup</string>
     <string name="popup_chat_question">Chcesz być na bieżąco?</string>
-    <string name="popup_chat_question_explanation">Nowa wiadomość wpadnie jako powiadomienie!</string>
+    <string name="popup_chat_question_explanation">Wiadomości otrzymasz jako powiadomienia</string>
     <string name="popup_chat_understood">ROZUMIEM</string>
     <string name="popup_chat_preference_info">Swoje preferencje możesz zmienić w Ustawieniach</string>
 

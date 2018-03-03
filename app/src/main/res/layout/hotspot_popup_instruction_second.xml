@@ -89,7 +89,7 @@
                         android:layout_below="@id/uber_title"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="8dp"
-                        android:src="@drawable/car_24dp_gray" />
+                        android:src="@drawable/uber" />
 
                 </RelativeLayout>
 
@@ -118,7 +118,7 @@
                         android:layout_below="@id/myTaxi_title"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="8dp"
-                        android:src="@drawable/car_24dp_gray" />
+                        android:src="@drawable/mytaxi" />
 
                 </RelativeLayout>
 
@@ -149,7 +149,7 @@
                         android:layout_below="@id/iTaxi_title"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="8dp"
-                        android:src="@drawable/car_24dp_gray" />
+                        android:src="@drawable/itaxi" />
 
                 </RelativeLayout>
 
@@ -179,7 +179,7 @@
                         android:layout_below="@id/Taxi_title"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="8dp"
-                        android:src="@drawable/car_24dp_gray" />
+                        android:src="@drawable/taxi2" />
 
                 </RelativeLayout>
 
