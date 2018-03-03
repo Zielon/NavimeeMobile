@@ -206,6 +206,10 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
         return mDataManager.getPreferencesHelper().getValueString(Const.USER_COMPANY);
     }
 
+    public boolean getShareLocalisationPreference() {
+        return mDataManager.getPreferencesHelper().getValue(Const.SETTINGS_PREFERENCE_SHARE_LOCALISATION);
+    }
+
     public void updateShareLocalisation(boolean shareLocalisation) {
         mDataManager.getPreferencesHelper().setValue(Const.SETTINGS_PREFERENCE_SHARE_LOCALISATION, true);
         try {

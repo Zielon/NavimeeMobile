@@ -59,12 +59,13 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
 
     @Override
     public void showAppropriatePopup(Preference preference) {
+        settingsPreferencesPresenter.updateShareLocalization(preference, false);
         HotspotPopupHelper.showFirstPopup(this, settingsPreferencesPresenter.getUserCompany(),
                 selectedDriverType -> {
                     settingsPreferencesPresenter
-                            .updateUserCompanyAndShareLocalisation(selectedDriverType.getName(), true);
+                            .updateUserCompanyAndShareLocalisation(selectedDriverType.getName(), true, preference);
                     settingsPreferencesPresenter.updatePreference(preference, false);
-                });
+                }, () ->         settingsPreferencesPresenter.updateShareLocalization(preference, false));
     }
 
     @SuppressLint("ValidFragment")

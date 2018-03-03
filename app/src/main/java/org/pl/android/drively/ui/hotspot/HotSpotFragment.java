@@ -1001,7 +1001,8 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
 
     @Override
     public void showInstructionPopup() {
-        if (mHotspotPresenter.getHotspotFirstPopupFirstStart() || TextUtils.isEmpty(mHotspotPresenter.getUserCompany())) {
+        if (mHotspotPresenter.getHotspotFirstPopupFirstStart() && TextUtils.isEmpty(mHotspotPresenter.getUserCompany())
+                && !mHotspotPresenter.getShareLocalisationPreference()) {
             HotspotPopupHelper.showFirstPopup(context, mHotspotPresenter.getUserCompany(),
                     selectedDriverType -> {
                         mHotspotPresenter.updateShareLocalisation(true);
@@ -1009,7 +1010,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                         EventBus.getDefault().post(new CompanySelectedEvent());
                         HotspotPopupHelper.showSecondPopup(context);
                         mHotspotPresenter.setHotspotSecondPopupFirstStart(false);
-                    });
+                    }, () -> Timber.d("Dismissed"));
         } else {
             HotspotPopupHelper.showSecondPopup(context);
         }
