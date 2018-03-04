@@ -2,6 +2,7 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -21,114 +22,126 @@
             android:id="@+id/content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp">
-
-            <TextView
-                android:id="@+id/text_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_body"
-                tools:text="" />
-
-            <ImageView
-                android:id="@+id/image_address_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/text_name"
-                android:layout_centerVertical="true"
-                android:paddingBottom="3dp"
-                android:paddingTop="10dp"
-                android:src="@mipmap/place_address"
-                android:tint="@color/primary_dark"/>
+            android:background="@color/primary"
+            android:paddingBottom="12dp"
+            android:paddingEnd="12dp"
+            android:paddingStart="12dp"
+            android:paddingTop="12dp">
 
             <TextView
                 android:id="@+id/text_address_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/text_name"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:ellipsize="end"
+                android:maxLength="25"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_body"
+                tools:text="Antony Ribot" />
+
+            <TextView
+                android:id="@+id/text_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/text_address_name"
                 android:layout_marginTop="5dp"
                 android:layout_toRightOf="@+id/image_address_name"
+                android:ellipsize="end"
+                android:maxLength="30"
+                android:maxLines="1"
                 android:paddingBottom="5dp"
-                android:paddingLeft="10dp"
                 android:paddingTop="5dp"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_small_body"
-                tools:text="" />
+                tools:text="developer" />
+
+            <ImageView
+                android:id="@+id/image_address_name"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/text_name"
+                android:paddingTop="5dp"
+                android:tint="@color/primary_dark"
+                android:src="@mipmap/place_address" />
 
             <TextView
                 android:id="@+id/text_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/text_address_name"
+                android:layout_below="@id/text_name"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_toEndOf="@+id/image_address_name"
                 android:layout_toRightOf="@+id/image_address_name"
-                android:paddingLeft="25dp"
-                android:paddingStart="10dp"
+                android:maxLength="38"
+                android:maxLines="1"
+                android:paddingStart="7dp"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_small_body"
-                tools:text="" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/buttons"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/content"
-            android:layout_marginBottom="0dp"
-            android:layout_marginEnd="0dp"
-            android:layout_marginRight="0dp">
-
-            <ImageView
-                android:id="@+id/imageCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"
-                android:src="@mipmap/ranking_1"
-                android:tint="@color/primary_dark"/>
-
+                tools:text=""  />
 
             <ImageView
                 android:id="@+id/imageTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/imageCount"
-                android:paddingLeft="30dp"
-                android:src="@drawable/end_time_24dp"
-                android:tint="@color/primary_dark"/>
+                android:layout_width="13dp"
+                android:layout_height="13dp"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/text_address"
+                android:layout_marginStart="3dp"
+                android:paddingTop="2dp"
+                android:tint="@color/primary_dark"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/end_time_24dp" />
 
             <TextView
                 android:id="@+id/viewTextTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/text_address"
                 android:layout_centerVertical="true"
+                android:layout_marginTop="8dp"
+                android:layout_toEndOf="@id/imageTime"
                 android:layout_toRightOf="@+id/imageTime"
-                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
                 android:text="00:00"
                 android:textColor="@color/primary_dark"
-                />
+                android:textSize="13sp" />
 
-
-            <ImageView
-                android:id="@+id/addButton"
+            <com.rilixtech.materialfancybutton.MaterialFancyButton
+                android:id="@+id/deleteButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginBottom="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/bell_24dp"
-                android:tint="@color/primary_dark" />
+                android:layout_alignBottom="@id/text_name"
+                android:layout_alignEnd="@id/text_address_name"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="8dp"
+                android:elevation="8dp"
+                android:minWidth="76dp"
+                fancy:mfb_defaultColor="@color/primary_dark"
+                fancy:mfb_focusColor="@color/white"
+                fancy:mfb_radius="2dp"
+                fancy:mfb_text=""
+                fancy:mfb_textSize="11sp" />
+
+            <ImageView
+                android:id="@+id/imageCount"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/viewTextTime"
+                android:layout_alignEnd="@id/viewTextTime"
+                android:layout_alignParentEnd="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="8dp"
+                android:tint="@color/primary_dark"
+                android:layout_marginEnd="16dp"
+                android:src="@mipmap/ranking_1" />
+
         </RelativeLayout>
 
     </RelativeLayout>
