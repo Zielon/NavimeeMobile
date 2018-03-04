@@ -150,7 +150,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         mMainPresenter.checkVersion();
         mMainPresenter.updateOnlineStatus(true);
 
-        checkAppIntro();
+//        checkAppIntro();
         checkLogin();
 
         bottomBar = (BottomBar) findViewById(R.id.bottomBar);
