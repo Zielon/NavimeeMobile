@@ -78,8 +78,8 @@ import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.CityNotAvailable;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.FourSquarePlace;
+import org.pl.android.drively.data.model.eventbus.DriverTypeChanged;
 import org.pl.android.drively.data.model.eventbus.NotificationEvent;
-import org.pl.android.drively.data.model.eventbus.UserCompanyChanged;
 import org.pl.android.drively.data.model.maps.ClusterItemGoogleMap;
 import org.pl.android.drively.service.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BaseActivity;
@@ -200,7 +200,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
     }
 
     private void verifyFirstStartSecondHotspotPopup() {
-        if (mHotspotPresenter.getHotspotSecondPopupFirstStart() && !TextUtils.isEmpty(mHotspotPresenter.getUserCompany())) {
+        if (mHotspotPresenter.getHotspotSecondPopupFirstStart() && !TextUtils.isEmpty(mHotspotPresenter.getDriverType())) {
             HotspotPopupHelper.showSecondPopup(context);
             mHotspotPresenter.setHotspotSecondPopupFirstStart(false);
         }
@@ -416,7 +416,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         geoFire = new GeoFire(mHotspotPresenter.getHotSpotDatabaseRefernce());
         this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radius);
         geoFireUsersLocation = new GeoFire(mHotspotPresenter.getUsersLocationDatabaseRefernce());
-        if(mHotspotPresenter.getShareLocalisationPreference()) {
+        if (mHotspotPresenter.getShareLocalisationPreference()) {
             this.geoQueryUsersLocation = this.geoFireUsersLocation.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radius);
         }
     }
@@ -464,7 +464,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                         }
                         geoQuery = geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
                         geoQuery.addGeoQueryEventListener(HotSpotFragment.this);
-                        if(mHotspotPresenter.getShareLocalisationPreference()) {
+                        if (mHotspotPresenter.getShareLocalisationPreference()) {
                             geoQueryUsersLocation = geoFireUsersLocation.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
                             geoQueryUsersLocation.addGeoQueryEventListener(HotSpotFragment.this);
                         }
@@ -498,7 +498,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         mMapView.onResume();
         try {
             this.geoQuery.addGeoQueryEventListener(this);
-            if(mHotspotPresenter.getShareLocalisationPreference()) {
+            if (mHotspotPresenter.getShareLocalisationPreference()) {
                 this.geoQueryUsersLocation.addGeoQueryEventListener(this);
             }
         } catch (Exception e) {
@@ -632,8 +632,10 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         dispose(lastKnownLocationDisposable);
         dispose(activityDisposable);
         dispose(addressDisposable);
-        this.geoQuery.removeAllListeners();
-        if(mHotspotPresenter.getShareLocalisationPreference()) {
+        if (this.geoQuery != null) {
+            this.geoQuery.removeAllListeners();
+        }
+        if (mHotspotPresenter.getShareLocalisationPreference() && this.geoQueryUsersLocation != null) {
             this.geoQueryUsersLocation.removeAllListeners();
         }
     }
@@ -1007,13 +1009,13 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
 
     @Override
     public void showInstructionPopup() {
-        if (mHotspotPresenter.getHotspotFirstPopupFirstStart() && TextUtils.isEmpty(mHotspotPresenter.getUserCompany())
+        if (mHotspotPresenter.getHotspotFirstPopupFirstStart() && TextUtils.isEmpty(mHotspotPresenter.getDriverType())
                 && !mHotspotPresenter.getShareLocalisationPreference()) {
-            HotspotPopupHelper.showFirstPopup(context, mHotspotPresenter.getUserCompany(),
+            HotspotPopupHelper.showFirstPopup(context, mHotspotPresenter.getDriverType(),
                     selectedDriverType -> {
                         mHotspotPresenter.updateShareLocalisation(true);
-                        mHotspotPresenter.saveUserCompany(selectedDriverType.getName());
-                        EventBus.getDefault().post(new UserCompanyChanged(selectedDriverType.getName()));
+                        mHotspotPresenter.saveDriverType(selectedDriverType.getName());
+                        EventBus.getDefault().post(new DriverTypeChanged(selectedDriverType.getName()));
                         HotspotPopupHelper.showSecondPopup(context);
                         mHotspotPresenter.setHotspotSecondPopupFirstStart(false);
                     }, () -> Timber.d("Dismissed"));

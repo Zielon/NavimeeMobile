@@ -18,7 +18,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.pl.android.drively.BoilerplateApplication;
 import org.pl.android.drively.data.DataManager;
-import org.pl.android.drively.data.model.eventbus.UserCompanyChanged;
+import org.pl.android.drively.data.model.eventbus.DriverTypeChanged;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
 
@@ -32,7 +32,7 @@ public class GeolocationUpdateService extends Service {
     private static final float LOCATION_DISTANCE = 10f;
     private static final long TIME_FOR_SERVICE = 1800000;
     public static String FIREBASE_KEY;
-    private static String USER_COMPANY;
+    private static String DRIVER_TYPE;
     GeoFire geoFire;
     @Inject
     DataManager dataManager;
@@ -74,8 +74,8 @@ public class GeolocationUpdateService extends Service {
                 geoFire.removeLocation(FIREBASE_KEY);
             }
         }, TIME_FOR_SERVICE);
-        USER_COMPANY = dataManager.getPreferencesHelper().getValueString(Const.USER_COMPANY);
-        if (!USER_COMPANY.isEmpty()) {
+        DRIVER_TYPE = dataManager.getPreferencesHelper().getValueString(Const.DRIVER_TYPE);
+        if (!DRIVER_TYPE.isEmpty()) {
             startLocationUpdates();
         }
     }
@@ -141,9 +141,9 @@ public class GeolocationUpdateService extends Service {
         @Override
         public void onLocationChanged(Location location) {
             Timber.e("onLocationChanged: " + location);
-            Timber.i("USER_COMPANY: " + USER_COMPANY);
+            Timber.i("DRIVER_TYPE: " + DRIVER_TYPE);
             mLastLocation.set(location);
-            FIREBASE_KEY = USER_COMPANY + "_" + FirebasePaths.USER_LOCATION + "_" + dataManager.getFirebaseService().getFirebaseAuth().getUid();
+            FIREBASE_KEY = DRIVER_TYPE + "_" + FirebasePaths.USER_LOCATION + "_" + dataManager.getFirebaseService().getFirebaseAuth().getUid();
             geoFire.setLocation(FIREBASE_KEY,
                     new GeoLocation(location.getLatitude(), location.getLongitude()));
         }
@@ -165,8 +165,8 @@ public class GeolocationUpdateService extends Service {
     }
 
     @Subscribe
-    public void onUserCompanyChanged(UserCompanyChanged userCompanyChanged) {
-        USER_COMPANY = userCompanyChanged.getUserCompany();
+    public void onDriverTypeChanged(DriverTypeChanged driverTypeChanged) {
+        DRIVER_TYPE = driverTypeChanged.getDriverType();
         if (FIREBASE_KEY != null && !FIREBASE_KEY.isEmpty()) {
             databaseReference.child(FIREBASE_KEY).removeValue();
         }

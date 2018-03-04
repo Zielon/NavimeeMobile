@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -16,15 +15,10 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
-import com.rilixtech.materialfancybutton.MaterialFancyButton;
-import com.rm.rmswitch.RMSwitch;
 
-import org.greenrobot.eventbus.EventBus;
 import org.pl.android.drively.R;
-import org.pl.android.drively.data.model.eventbus.UserCompanyChanged;
 import org.pl.android.drively.service.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BaseActivity;
-import org.pl.android.drively.ui.hotspot.HotspotPopupHelper;
 import org.pl.android.drively.ui.regulations.RegulationsActivity;
 import org.pl.android.drively.ui.settings.personalsettings.SettingsPreferencesActivity;
 import org.pl.android.drively.ui.settings.user.UserSettingsActivity;
@@ -34,9 +28,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import timber.log.Timber;
 
 public class SettingsActivity extends BaseActivity implements SettingsMvpView {
@@ -45,12 +37,6 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
     @Inject
     SettingsPresenter settingsPresenter;
     private Drawer drawer = null;
-
-    @BindView(R.id.share_localisation)
-    RMSwitch shareLocalisationSwitch;
-
-    @BindView(R.id.choose_app)
-    MaterialFancyButton chooseApp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -138,51 +124,6 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
         drawer.getSlider().setBackground(grayBackground);
 
         ((ViewGroup) findViewById(R.id.frame_container)).addView(drawer.getSlider());
-        initializeLocalisationSwitch();
-    }
-
-    private void initializeLocalisationSwitch() {
-        boolean shareLocalisation = settingsPresenter.getShareLocalisation();
-        if (shareLocalisationSwitch.isChecked() != shareLocalisation) {
-            shareLocalisationSwitch.toggle();
-        }
-        if (!shareLocalisation) {
-            chooseApp.setTextColor(ContextCompat.getColor(this, R.color.gray_font));
-        }
-        shareLocalisationSwitch.addSwitchObserver((view, value) -> {
-            if (TextUtils.isEmpty(settingsPresenter.getUserCompany()) && value) {
-                showPopup(true);
-            }
-            chooseApp.setTextColor(ContextCompat.getColor(this, value ? R.color.white : R.color.gray_font));
-            settingsPresenter.updateShareLocalisationAndUserCompany(settingsPresenter.getUserCompany(), value);
-            if(!value) {
-                Intent intentGeoService = new Intent(this, GeolocationUpdateService.class);
-                stopService(intentGeoService);
-            } else {
-               startService(new Intent(this, GeolocationUpdateService.class));
-            }
-        });
-    }
-
-    private void showPopup(boolean shouldUncheck) {
-        HotspotPopupHelper.showFirstPopup(this, settingsPresenter.getUserCompany(),
-                selectedDriverType -> {
-                    EventBus.getDefault().post(new UserCompanyChanged(selectedDriverType.getName()));
-                    settingsPresenter.updateShareLocalisationAndUserCompany(selectedDriverType.getName(), true);
-                },
-                () -> {
-                    if (shouldUncheck) {
-                        shareLocalisationSwitch.toggle();
-                        settingsPresenter.updateShareLocalisationAndUserCompany(settingsPresenter.getUserCompany(), false);
-                    }
-                });
-    }
-
-    @OnClick(R.id.choose_app)
-    public void chooseApp() {
-        if (shareLocalisationSwitch.isChecked()) {
-            showPopup(false);
-        }
     }
 
     private void showLogoutPopup() {

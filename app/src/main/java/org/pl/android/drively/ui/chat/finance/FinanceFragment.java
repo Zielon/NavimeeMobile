@@ -67,7 +67,7 @@ public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
         popup = new MaterialDialog.Builder(getActivity())
                 .customView(view, false)
                 .backgroundColor(ContextCompat.getColor(getActivity(), R.color.transparent))
-                .dismissListener(dialog -> changeTabToHotSpot())
+                .dismissListener(dialog -> changeTabToChat())
                 .show();
     }
 
@@ -93,7 +93,4 @@ public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
         context.changeTabByResId(R.id.tab_chat);
     }
 
-    private void changeTabToHotSpot() {
-        context.changeTabByResId(R.id.tab_hotspot);
-    }
 }

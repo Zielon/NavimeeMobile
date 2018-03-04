@@ -21,7 +21,7 @@ public class Const {
     public final static String LOCATION_NAME = "LOCATION_NAME";
     public final static String LOCATION_ADDRESS = "LOCATION_ADDRESS";
     public final static String FEEDBACK_ID = "FEEDBACK_ID";
-    public final static String USER_COMPANY = "USER_COMPANY";
+    public final static String DRIVER_TYPE = "driverType";
     public final static String NAME = "NAME";
     public final static String FIRST_START = "firstStart";
 
@@ -50,7 +50,8 @@ public class Const {
     public static long TIME_TO_OFFLINE = 2 * 60 * 1000;
     public static long FIVE_MEGABYTE = 5 * 1024 * 1024;
 
-    public static String SETTINGS_PREFERENCE_SHARE_LOCALISATION = "shareLocalization";
+    public static String SETTINGS_PREFERENCE_SHARE_LOCALIZATION = "shareLocalization";
+    public static String SETTINGS_PREFERENCE_DRIVER_TYPE = "driverType";
     public static String SETTINGS_PREFERENCE_CHAT_PRIVATE_NOTIFICATION = "chatPrivateNotification";
     public static String SETTINGS_PREFERENCE_GROUP_NOTIFICATION = "chatGroupNotification";
     public static String SETTINGS_PREFERENCE_DAY_SCHEDULE_NOTIFICATION = "dayScheduleNotification";
