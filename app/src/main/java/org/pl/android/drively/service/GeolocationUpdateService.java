@@ -18,7 +18,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.pl.android.drively.BoilerplateApplication;
 import org.pl.android.drively.data.DataManager;
-import org.pl.android.drively.data.model.eventbus.CompanySelectedEvent;
+import org.pl.android.drively.data.model.eventbus.UserCompanyChanged;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
 
@@ -71,6 +71,7 @@ public class GeolocationUpdateService extends Service {
             public void run() {
                 Timber.i("stoping service");
                 stopSelf();
+                geoFire.removeLocation(FIREBASE_KEY);
             }
         }, TIME_FOR_SERVICE);
         USER_COMPANY = dataManager.getPreferencesHelper().getValueString(Const.USER_COMPANY);
@@ -122,13 +123,6 @@ public class GeolocationUpdateService extends Service {
         }
     }
 
-
-    @Subscribe
-    public void onEvent(CompanySelectedEvent companySelectedEvent) {
-        USER_COMPANY = dataManager.getPreferencesHelper().getValueString(Const.USER_COMPANY);
-        startLocationUpdates();
-    }
-
     private void initializeLocationManager() {
         Timber.e("initializeLocationManager");
         if (mLocationManager == null) {
@@ -169,4 +163,10 @@ public class GeolocationUpdateService extends Service {
             Timber.e("onStatusChanged: " + provider);
         }
     }
+
+    @Subscribe
+    public void onUserCompanyChanged(UserCompanyChanged userCompanyChanged) {
+        USER_COMPANY = userCompanyChanged.getUserCompany();
+    }
+
 }

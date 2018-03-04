@@ -19,7 +19,9 @@ import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 import com.rilixtech.materialfancybutton.MaterialFancyButton;
 import com.rm.rmswitch.RMSwitch;
 
+import org.greenrobot.eventbus.EventBus;
 import org.pl.android.drively.R;
+import org.pl.android.drively.data.model.eventbus.UserCompanyChanged;
 import org.pl.android.drively.service.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.hotspot.HotspotPopupHelper;
@@ -60,7 +62,6 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
         ButterKnife.bind(this);
         TextView textView = (TextView) findViewById(R.id.text_user_name);
         textView.setText(settingsPresenter.getName());
-
         List<IDrawerItem> drawerItems = new ArrayList<>();
 
         drawerItems.add(new PrimaryDrawerItem().withName(R.string.user)
@@ -159,7 +160,10 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
 
     private void showPopup(boolean shouldUncheck) {
         HotspotPopupHelper.showFirstPopup(this, settingsPresenter.getUserCompany(),
-                selectedDriverType -> settingsPresenter.updateShareLocalisationAndUserCompany(selectedDriverType.getName(), true),
+                selectedDriverType -> {
+                    EventBus.getDefault().post(new UserCompanyChanged(selectedDriverType.getName()));
+                    settingsPresenter.updateShareLocalisationAndUserCompany(selectedDriverType.getName(), true);
+                },
                 () -> {
                     if (shouldUncheck) {
                         shareLocalisationSwitch.toggle();
@@ -170,7 +174,7 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
 
     @OnClick(R.id.choose_app)
     public void chooseApp() {
-        if(shareLocalisationSwitch.isChecked()) {
+        if (shareLocalisationSwitch.isChecked()) {
             showPopup(false);
         }
     }
