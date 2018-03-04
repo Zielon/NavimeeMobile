@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.rilixtech.materialfancybutton.MaterialFancyButton;
 
 import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.joda.time.Minutes;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.Event;
@@ -64,19 +63,11 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
             }
         }
         if (event.getEndTime() != null) {
-            DateTime startTime = new DateTime(event.getStartTime());
-            DateTime endTime = new DateTime(event.getEndTime());
-            if (Days.daysBetween(startTime.withTimeAtStartOfDay(), dateTime.withTimeAtStartOfDay()).getDays() == 0
-                    && Days.daysBetween(endTime.withTimeAtStartOfDay(), dateTime.withTimeAtStartOfDay()).getDays() == 0) {
-                holder.timeTextView.setText(event.getStartTime().getHours() + ":" + String.format("%02d", event.getStartTime().getMinutes()) + " - " +
-                        event.getEndTime().getHours() + ":" + String.format("%02d", event.getEndTime().getMinutes()));
-            } else {
-                SimpleDateFormat simpleDateformat = new SimpleDateFormat("E"); // the day of the week abbreviated
-                String startDay = simpleDateformat.format(event.getStartTime());
-                String endDay = simpleDateformat.format(event.getEndTime());
-                holder.timeTextView.setText(startDay + " " + event.getStartTime().getHours() + ":" + String.format("%02d", event.getStartTime().getMinutes()) + " - " +
-                        endDay + " " + event.getEndTime().getHours() + ":" + String.format("%02d", event.getEndTime().getMinutes()));
-            }
+            SimpleDateFormat simpleDateformat = new SimpleDateFormat("E"); // the day of the week abbreviated
+            String startDay = simpleDateformat.format(event.getStartTime());
+            String endDay = simpleDateformat.format(event.getEndTime());
+            holder.timeTextView.setText(startDay + " " + event.getStartTime().getHours() + ":" + String.format("%02d", event.getStartTime().getMinutes()) + " - " +
+                    endDay + " " + event.getEndTime().getHours() + ":" + String.format("%02d", event.getEndTime().getMinutes()));
         }
         if (event.getRank() == 1) {
             holder.imageCount.setImageResource(R.mipmap.ranking_1);
@@ -90,7 +81,7 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
             holder.imageCount.setImageResource(R.mipmap.ranking_5);
         }
 
-        if (Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() < 30 && Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() >0) {
+        if (Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() < 30 && Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() > 0) {
             holder.deleteButton.setTag(2);
             holder.deleteButton.setText(R.string.navigate);
         } else {
