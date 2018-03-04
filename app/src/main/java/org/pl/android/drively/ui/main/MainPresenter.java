@@ -65,7 +65,7 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
             PackageInfo packageInfo = ((Context) getMvpView()).getPackageManager().getPackageInfo(((Context) getMvpView()).getPackageName(), 0);
             int currentVersion = packageInfo.versionCode;
             int oldVersion = mDataManager.getPreferencesHelper().getAppVersion();
-            if (oldVersion < currentVersion) {
+            if (oldVersion < currentVersion && oldVersion != -1) {
                 mDataManager.getFirebaseService().getFirebaseAuth().signOut();
                 mDataManager.getPreferencesHelper().clear();
             }

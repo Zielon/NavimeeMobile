@@ -87,7 +87,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
             holder.imageCount.setImageResource(R.mipmap.ranking_5);
         }
 
-        if (Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() < 30) {
+        if (Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() < 30 && Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() >0) {
             holder.addButton.setTag(1);
             holder.addButton.setText(R.string.navigate);
         } else if (dayScheduleList != null && dayScheduleList.contains(event)) {
