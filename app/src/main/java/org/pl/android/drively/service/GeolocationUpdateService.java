@@ -167,6 +167,9 @@ public class GeolocationUpdateService extends Service {
     @Subscribe
     public void onUserCompanyChanged(UserCompanyChanged userCompanyChanged) {
         USER_COMPANY = userCompanyChanged.getUserCompany();
+        if (FIREBASE_KEY != null && !FIREBASE_KEY.isEmpty()) {
+            databaseReference.child(FIREBASE_KEY).removeValue();
+        }
         startLocationUpdates();
     }
 
