@@ -90,7 +90,7 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
             holder.imageCount.setImageResource(R.mipmap.ranking_5);
         }
 
-        if (Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() < 30) {
+        if (Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() < 30 && Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() >0) {
             holder.deleteButton.setTag(2);
             holder.deleteButton.setText(R.string.navigate);
         } else {

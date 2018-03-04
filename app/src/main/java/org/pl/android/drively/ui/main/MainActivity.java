@@ -54,6 +54,9 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     BottomBar bottomBar;
     private BaseTabFragment selectedFragment;
 
+    public BaseTabFragment getSelectedFragment() {
+        return selectedFragment;
+    }
     // @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
 
     /**

@@ -175,5 +175,9 @@ public class PlannerFragment extends BaseTabFragment {
             return POSITION_NONE;
         }
     }
+
+    public ViewPager getViewPager() {
+        return viewPager;
+    }
 }
 

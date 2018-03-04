@@ -192,13 +192,7 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
 
     @OnClick(R.id.day_schedule_another_date)
     public void goToEventsFromLink(View view) {
-        ((MainActivity) getActivity()).getBottomBar().selectTabWithId(R.id.tab_events);
-    }
-
-
-    @OnClick(R.id.icon_day_schedule)
-    public void goToEventsFromIcon(View view) {
-        ((MainActivity) getActivity()).getBottomBar().selectTabWithId(R.id.tab_events);
+        ((PlannerFragment)((MainActivity) getActivity()).getSelectedFragment()).getViewPager().setCurrentItem(0);
     }
 
     @Override

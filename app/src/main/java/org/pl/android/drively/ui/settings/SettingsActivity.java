@@ -155,6 +155,12 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
             }
             chooseApp.setTextColor(ContextCompat.getColor(this, value ? R.color.white : R.color.gray_font));
             settingsPresenter.updateShareLocalisationAndUserCompany(settingsPresenter.getUserCompany(), value);
+            if(!value) {
+                Intent intentGeoService = new Intent(this, GeolocationUpdateService.class);
+                stopService(intentGeoService);
+            } else {
+               startService(new Intent(this, GeolocationUpdateService.class));
+            }
         });
     }
 

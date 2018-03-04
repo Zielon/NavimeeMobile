@@ -414,9 +414,11 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
         geoFire = new GeoFire(mHotspotPresenter.getHotSpotDatabaseRefernce());
-        geoFireUsersLocation = new GeoFire(mHotspotPresenter.getUsersLocationDatabaseRefernce());
         this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radius);
-        this.geoQueryUsersLocation = this.geoFireUsersLocation.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radius);
+        geoFireUsersLocation = new GeoFire(mHotspotPresenter.getUsersLocationDatabaseRefernce());
+        if(mHotspotPresenter.getShareLocalisationPreference()) {
+            this.geoQueryUsersLocation = this.geoFireUsersLocation.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radius);
+        }
     }
 
     protected void onLocationPermissionGranted() {
@@ -462,11 +464,12 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                         }
                         geoQuery = geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
                         geoQuery.addGeoQueryEventListener(HotSpotFragment.this);
-                        geoQueryUsersLocation = geoFireUsersLocation.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
-                        geoQueryUsersLocation.addGeoQueryEventListener(HotSpotFragment.this);
+                        if(mHotspotPresenter.getShareLocalisationPreference()) {
+                            geoQueryUsersLocation = geoFireUsersLocation.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
+                            geoQueryUsersLocation.addGeoQueryEventListener(HotSpotFragment.this);
+                        }
                         eventsOnMap.clear();
                         mClusterManager.clearItems();
-
                     }
                 });
 
@@ -495,7 +498,9 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         mMapView.onResume();
         try {
             this.geoQuery.addGeoQueryEventListener(this);
-            this.geoQueryUsersLocation.addGeoQueryEventListener(this);
+            if(mHotspotPresenter.getShareLocalisationPreference()) {
+                this.geoQueryUsersLocation.addGeoQueryEventListener(this);
+            }
         } catch (Exception e) {
 
         }
@@ -516,7 +521,6 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                                 @Override
                                 public void onMapReady(GoogleMap mMap) {
                                     googleMap = mMap;
-
                                     // MAP STYLES
                                     googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style));
 
@@ -629,7 +633,9 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         dispose(activityDisposable);
         dispose(addressDisposable);
         this.geoQuery.removeAllListeners();
-        this.geoQueryUsersLocation.removeAllListeners();
+        if(mHotspotPresenter.getShareLocalisationPreference()) {
+            this.geoQueryUsersLocation.removeAllListeners();
+        }
     }
 
     @Override
@@ -805,7 +811,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
     @Override
     public void onKeyEntered(String key, GeoLocation location) {
         Timber.i(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
-        if (key.contains(FirebasePaths.USER_LOCATION) && !key.contains(mHotspotPresenter.getUid()) && mHotspotPresenter.getShareLocalisationPreference()) {
+        if (key.contains(FirebasePaths.USER_LOCATION) && !key.contains(mHotspotPresenter.getUid())) {
             Timber.i("USER LOCATION");
             if (!usersMarkers.containsKey(key)) {
                 directionsDelta.put(key, location);
