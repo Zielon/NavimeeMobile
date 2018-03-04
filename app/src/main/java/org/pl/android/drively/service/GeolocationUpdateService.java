@@ -167,6 +167,7 @@ public class GeolocationUpdateService extends Service {
     @Subscribe
     public void onUserCompanyChanged(UserCompanyChanged userCompanyChanged) {
         USER_COMPANY = userCompanyChanged.getUserCompany();
+        startLocationUpdates();
     }
 
 }
