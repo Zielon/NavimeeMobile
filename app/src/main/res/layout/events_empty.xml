@@ -6,39 +6,46 @@
     android:background="@color/primary_dark"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/icon_events"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="95dp"
-        android:src="@drawable/ic_lupa" />
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/events_epmty_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/icon_events"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
-        android:layout_marginTop="60dp"
-        android:text="@string/events_empty_text"
-        android:textAlignment="center"
-        android:textColor="@color/settings_switch_color"
-        android:textSize="17sp" />
+        <ImageView
+            android:id="@+id/icon_events"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_lupa" />
 
-    <TextView
-        android:id="@+id/events_check_another_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/events_epmty_text"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:clickable="true"
-        android:text="@string/events_check_another_date"
-        android:textSize="15sp" />
+        <TextView
+            android:id="@+id/events_epmty_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/icon_events"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="45dp"
+            android:text="@string/events_empty_text"
+            android:textAlignment="center"
+            android:textColor="@color/settings_switch_color"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/events_check_another_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/events_epmty_text"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:clickable="true"
+            android:text="@string/events_check_another_date"
+            android:textSize="15sp" />
+
+    </RelativeLayout>
 
 
 </RelativeLayout>
