@@ -11,6 +11,8 @@ import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.injection.ApplicationContext;
 import org.pl.android.drively.util.Const;
 
+import java.util.Locale;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -121,7 +123,8 @@ public class PreferencesHelper {
     }
 
     public String getCountry() {
-        return sharedPreferences.getString(USER_COUNTRY, "");
+        String country = appContext.getResources().getConfiguration().locale.getDisplayCountry(Locale.ENGLISH).toUpperCase();
+        return sharedPreferences.getString(USER_COUNTRY, country);
     }
 
     public void saveUserInfo(User user) {
@@ -179,6 +182,4 @@ public class PreferencesHelper {
     public String getUserId() {
         return sharedPreferences.getString(SHARE_KEY_USER_ID, "");
     }
-
-
 }
