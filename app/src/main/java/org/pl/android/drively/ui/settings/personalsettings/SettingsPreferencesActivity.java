@@ -112,10 +112,14 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
             addPreferencesFromResource(R.xml.preferences);
             updateAbout();
 
-            updateDriverTypeEnableAfter();
-
-            for (String setting : settings)
-                settingsPreferencesPresenter.bindPreferenceToValue(findPreference(setting));
+            for (String setting : settings) {
+                Preference preference = findPreference(setting);
+                settingsPreferencesPresenter.bindPreferenceToValue(preference);
+                if(preference.getKey().equals(Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION)) {
+                    ((SwitchPreference)preference).setChecked(settingsPreferencesPresenter.getShareLocalization());
+                    updateDriverTypeEnableBefore();
+                }
+            }
         }
 
         public void updateDriverTypeEnableBefore() {

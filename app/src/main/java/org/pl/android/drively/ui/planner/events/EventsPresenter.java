@@ -10,6 +10,7 @@ import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.EventNotification;
 import org.pl.android.drively.ui.base.tab.BaseTabPresenter;
+import org.pl.android.drively.ui.planner.EventHelper;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
 
@@ -23,8 +24,6 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import java8.util.stream.Collectors;
-import java8.util.stream.StreamSupport;
 import timber.log.Timber;
 
 import static org.pl.android.drively.util.ReflectionUtil.nameof;
@@ -105,10 +104,7 @@ public class EventsPresenter extends BaseTabPresenter<EventsMvpView> {
                                     if (eventList.isEmpty()) {
                                         getMvpView().showEventsEmpty();
                                     } else {
-                                        eventList = StreamSupport.stream(eventList)
-                                                .filter(event -> event.getEndTime().compareTo(new Date()) > 0)
-                                                .sorted((event1, event2) -> event1.getStartTime().compareTo(event2.getStartTime()))
-                                                .collect(Collectors.toList());
+                                        eventList = EventHelper.filterAndSortEvents(eventList);
                                         getMvpView().showEvents(eventList, dateTime);
                                     }
                                 }
