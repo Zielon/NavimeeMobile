@@ -4,6 +4,18 @@
     <PreferenceCategory android:title="@string/notifications">
 
         <SwitchPreference
+            android:defaultValue="false"
+            android:key="shareLocalization"
+            android:title="@string/shareLocalization"
+            android:summary="@string/shareLocalization_description" />
+
+        <Preference
+            android:selectable="true"
+            android:key="driverType"
+            android:title="@string/change_application"
+            android:summary="@string/shareLocalization_description" />
+
+        <SwitchPreference
             android:defaultValue="true"
             android:key="dayScheduleNotification"
             android:title="@string/notifications_day_schedule"

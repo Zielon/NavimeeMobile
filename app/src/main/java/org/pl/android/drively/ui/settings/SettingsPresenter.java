@@ -80,20 +80,20 @@ public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
 
     }
 
-    public String getUserCompany() {
-        return dataManager.getPreferencesHelper().getValueString(Const.USER_COMPANY);
+    public String getDriverType() {
+        return dataManager.getPreferencesHelper().getValueString(Const.DRIVER_TYPE);
     }
 
     public boolean getShareLocalisation() {
-        return dataManager.getPreferencesHelper().getValue(Const.SETTINGS_PREFERENCE_SHARE_LOCALISATION);
+        return dataManager.getPreferencesHelper().getValue(Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION);
     }
 
-    public void updateShareLocalisationAndUserCompany(String userCompany, boolean shareLocalisation) {
-        dataManager.getPreferencesHelper().setValue(Const.USER_COMPANY, userCompany);
-        dataManager.getPreferencesHelper().setValue(Const.SETTINGS_PREFERENCE_SHARE_LOCALISATION, shareLocalisation);
+    public void updateShareLocalisationAndDriverType(String driverType, boolean shareLocalisation) {
+        dataManager.getPreferencesHelper().setValue(Const.DRIVER_TYPE, driverType);
+        dataManager.getPreferencesHelper().setValue(Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION, shareLocalisation);
         try {
-            updateUserField(dataManager.getPreferencesHelper().getUserId(), Const.SETTINGS_PREFERENCE_SHARE_LOCALISATION, shareLocalisation);
-            updateUserField(dataManager.getPreferencesHelper().getUserId(), "driverType", userCompany);
+            updateUserField(dataManager.getPreferencesHelper().getUserId(), Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION, shareLocalisation);
+            updateUserField(dataManager.getPreferencesHelper().getUserId(), "driverType", driverType);
         } catch (NoSuchFieldException e) {
             Timber.d(e);
         }

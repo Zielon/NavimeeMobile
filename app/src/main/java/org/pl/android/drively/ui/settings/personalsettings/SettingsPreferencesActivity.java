@@ -7,11 +7,15 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.SwitchPreference;
+import android.text.TextUtils;
 import android.view.MenuItem;
 
+import org.greenrobot.eventbus.EventBus;
 import org.pl.android.drively.BoilerplateApplication;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.data.model.eventbus.DriverTypeChanged;
 import org.pl.android.drively.ui.hotspot.HotspotPopupHelper;
 import org.pl.android.drively.util.Const;
 
@@ -29,6 +33,8 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
     private List<String> settings = new ArrayList<>();
     private Context context;
 
+    private MainPreferenceFragment mainPreferenceFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +43,8 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
         BoilerplateApplication.get(this).getComponent().inject(this);
 
         // Settings form the user model
+        settings.add(Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION);
+        settings.add(Const.SETTINGS_PREFERENCE_DRIVER_TYPE);
         settings.add(Const.SETTINGS_PREFERENCE_CHAT_PRIVATE_NOTIFICATION);
         settings.add(Const.SETTINGS_PREFERENCE_GROUP_NOTIFICATION);
         settings.add(Const.SETTINGS_PREFERENCE_DAY_SCHEDULE_NOTIFICATION);
@@ -44,8 +52,8 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
         settingsPreferencesPresenter.updateSharedPreferences(settings, this);
 
         settingsPreferencesPresenter.attachView(this);
-
-        getFragmentManager().beginTransaction().replace(android.R.id.content, new MainPreferenceFragment()).commit();
+        mainPreferenceFragment = new MainPreferenceFragment();
+        getFragmentManager().beginTransaction().replace(android.R.id.content, mainPreferenceFragment).commit();
     }
 
     @Override
@@ -58,13 +66,31 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
 
     @Override
     public void showAppropriatePopup(Preference preference) {
-        settingsPreferencesPresenter.updateShareLocalization(preference, false);
-        HotspotPopupHelper.showFirstPopup(this, settingsPreferencesPresenter.getUserCompany(),
+        if (preference.getKey().equals(Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION)) {
+            if (TextUtils.isEmpty(settingsPreferencesPresenter.getDriverType())
+                    && !settingsPreferencesPresenter.getShareLocalization()) {
+                showPopup(preference, true);
+            }
+            mainPreferenceFragment.updateDriverTypeEnableBefore();
+        } else if (preference.getKey().equals(Const.DRIVER_TYPE)) {
+            showPopup(preference, false);
+        }
+    }
+
+    private void showPopup(Preference preference, boolean shouldUncheckLocalization) {
+        HotspotPopupHelper.showFirstPopup(this, settingsPreferencesPresenter.getDriverType(),
                 selectedDriverType -> {
                     settingsPreferencesPresenter
-                            .updateUserCompanyAndShareLocalisation(selectedDriverType.getName(), true, preference);
-                    settingsPreferencesPresenter.updatePreference(preference, false);
-                }, () ->         settingsPreferencesPresenter.updateShareLocalization(preference, false));
+                            .updateDriverTypeAndShareLocalisation(selectedDriverType.getName(), settingsPreferencesPresenter.getShareLocalization(), preference);
+                    EventBus.getDefault().post(new DriverTypeChanged(selectedDriverType.getName()));
+                },
+                () -> {
+                    if (shouldUncheckLocalization) {
+                        ((SwitchPreference) preference).setChecked(false);
+                        settingsPreferencesPresenter.updateShareLocalization(preference, false);
+                        mainPreferenceFragment.updateDriverTypeEnableAfter();
+                    }
+                });
     }
 
     @SuppressLint("ValidFragment")
@@ -76,8 +102,20 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
             addPreferencesFromResource(R.xml.preferences);
             updateAbout();
 
+            updateDriverTypeEnableAfter();
+
             for (String setting : settings)
                 settingsPreferencesPresenter.bindPreferenceToValue(findPreference(setting));
+        }
+
+        public void updateDriverTypeEnableBefore() {
+            mainPreferenceFragment.findPreference(Const.DRIVER_TYPE)
+                    .setEnabled(!settingsPreferencesPresenter.getShareLocalization());
+        }
+
+        public void updateDriverTypeEnableAfter() {
+            mainPreferenceFragment.findPreference(Const.DRIVER_TYPE)
+                    .setEnabled(settingsPreferencesPresenter.getShareLocalization());
         }
 
         private void updateAbout() {

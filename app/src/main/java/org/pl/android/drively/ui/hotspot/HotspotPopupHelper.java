@@ -23,23 +23,27 @@ public class HotspotPopupHelper {
 
     private static Const.DriverType selectedDriverType;
 
-    public static void showFirstPopup(Context context, String userCompany, OnSuccessCallback onSuccessCallback, OnFailureCallback onFailureCallback) {
+    public static void showFirstPopup(Context context, String driverType, OnSuccessCallback onSuccessCallback, OnFailureCallback onFailureCallback) {
+        if (firstPopup != null) {
+            firstPopup.dismiss();
+        }
         selectedDriverType = null;
         LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rootView = inflater.inflate(R.layout.hotspot_popup_instruction, null);
         firstPopup = new MaterialDialog.Builder(context)
                 .customView(rootView, false)
                 .backgroundColor(ContextCompat.getColor(context, R.color.dark_transparent))
+                .canceledOnTouchOutside(false)
                 .show();
-        for (Const.DriverType driverType : Const.DriverType.values()) {
-            rootView.findViewById(driverType.getButtonResId()).setOnClickListener(view -> {
+        for (Const.DriverType driverType2 : Const.DriverType.values()) {
+            rootView.findViewById(driverType2.getButtonResId()).setOnClickListener(view -> {
                 for (Const.DriverType driverTypeDeselect : Const.DriverType.values()) {
                     rootView.findViewById(driverTypeDeselect.getButtonResId()).setBackgroundColor(ContextCompat.getColor(context, R.color.white));
                     ((MaterialFancyButton) rootView.findViewById(driverTypeDeselect.getButtonResId())).setTextColor(ContextCompat.getColor(context, R.color.filters_buttons));
                 }
                 view.setBackgroundColor(ContextCompat.getColor(context, R.color.filters_buttons));
                 ((MaterialFancyButton) view).setTextColor(ContextCompat.getColor(context, R.color.white));
-                selectedDriverType = driverType;
+                selectedDriverType = driverType2;
                 rootView.findViewById(R.id.brand_error).setVisibility(View.GONE);
             });
         }
@@ -56,17 +60,17 @@ public class HotspotPopupHelper {
             onFailureCallback.onFailureCallback();
             firstPopup.dismiss();
         });
-        if (userCompany != null) {
-            changeFirstPopupContent(context, userCompany, rootView);
+        if (driverType != null) {
+            changeFirstPopupContent(context, driverType, rootView);
         }
     }
 
-    private static void changeFirstPopupContent(Context context, String userCompany, View rootView) {
-        if (!TextUtils.isEmpty(userCompany)) {
-            selectedDriverType = Const.DriverType.getByName(userCompany);
-            rootView.findViewById(Const.DriverType.getByName(userCompany).getButtonResId())
+    private static void changeFirstPopupContent(Context context, String driverType, View rootView) {
+        if (!TextUtils.isEmpty(driverType)) {
+            selectedDriverType = Const.DriverType.getByName(driverType);
+            rootView.findViewById(Const.DriverType.getByName(driverType).getButtonResId())
                     .setBackgroundColor(ContextCompat.getColor(context, R.color.filters_buttons));
-            ((MaterialFancyButton) rootView.findViewById(Const.DriverType.getByName(userCompany).getButtonResId()))
+            ((MaterialFancyButton) rootView.findViewById(Const.DriverType.getByName(driverType).getButtonResId()))
                     .setTextColor(ContextCompat.getColor(context, R.color.white));
             ((TextView) rootView.findViewById(R.id.popup_hotspot_agreement)).setText(R.string.popup_hotspot_agreement_change);
             ((TextView) rootView.findViewById(R.id.popup_hotspot_brand_question)).setText(R.string.popup_hotspot_brand_question_change);

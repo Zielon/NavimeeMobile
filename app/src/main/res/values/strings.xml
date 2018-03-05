@@ -130,6 +130,8 @@
     <string name="general">General</string>
     <string name="shareLocalization">Hotspot</string>
     <string name="shareLocalization_description">Share you location to see the other drivers</string>
+    <string name="change_application">Change application</string>
+    <string name="change_application_description">Change your application</string>
 
     <string name="notifications">Notifications</string>
     <string name="notifications_day_schedule">Calendar</string>

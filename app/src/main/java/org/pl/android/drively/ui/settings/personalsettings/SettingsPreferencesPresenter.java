@@ -69,23 +69,23 @@ public class SettingsPreferencesPresenter extends BasePresenter<SettingsPreferen
 
     public void updatePreferenceAndCheckShareLocalisation(Preference preference, Object newValue) {
         updatePreference(preference, newValue);
-        if (preference.getKey().equals(Const.SETTINGS_PREFERENCE_SHARE_LOCALISATION) && (boolean) newValue) {
+        if (preference.getKey().equals(Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION)) {
             if (getMvpView() != null) {
                 getMvpView().showAppropriatePopup(preference);
             }
         }
     }
 
-    public String getUserCompany() {
-        return dataManager.getPreferencesHelper().getValueString(Const.USER_COMPANY);
+    public String getDriverType() {
+        return dataManager.getPreferencesHelper().getValueString(Const.DRIVER_TYPE);
     }
 
-    public void updateUserCompanyAndShareLocalisation(String userCompany, boolean shareLocalisation, Preference preference) {
-        dataManager.getPreferencesHelper().setValue(Const.USER_COMPANY, userCompany);
-        dataManager.getPreferencesHelper().setValue(Const.SETTINGS_PREFERENCE_SHARE_LOCALISATION, shareLocalisation);
+    public void updateDriverTypeAndShareLocalisation(String driverType, boolean shareLocalisation, Preference preference) {
+        dataManager.getPreferencesHelper().setValue(Const.DRIVER_TYPE, driverType);
+        dataManager.getPreferencesHelper().setValue(Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION, shareLocalisation);
         try {
-            usersRepository.updateUserField(dataManager.getPreferencesHelper().getUserId(), Const.USER_COMPANY, userCompany);
-            usersRepository.updateUserField(dataManager.getPreferencesHelper().getUserId(), Const.SETTINGS_PREFERENCE_SHARE_LOCALISATION, shareLocalisation);
+            usersRepository.updateUserField(dataManager.getPreferencesHelper().getUserId(), "driverType", driverType);
+            usersRepository.updateUserField(dataManager.getPreferencesHelper().getUserId(), Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION, shareLocalisation);
         } catch (NoSuchFieldException e) {
             Timber.d(e);
         }
@@ -93,14 +93,27 @@ public class SettingsPreferencesPresenter extends BasePresenter<SettingsPreferen
 
     public void bindPreferenceToValue(Preference preference) {
         preference.setOnPreferenceChangeListener(preferenceChangeListener);
+        if (preference.getKey().equals(Const.DRIVER_TYPE)) {
+            preference.setOnPreferenceClickListener(preference1 -> {
+                if(getMvpView() != null && getShareLocalization()) {
+                    getMvpView().showAppropriatePopup(preference1);
+                }
+                return false;
+            });
+        }
     }
 
     public void updateShareLocalization(Preference preference, boolean shareLocalization) {
         preference.getEditor().putBoolean(preference.getKey(), shareLocalization);
         try {
-            usersRepository.updateUserField(dataManager.getPreferencesHelper().getUserId(), Const.SETTINGS_PREFERENCE_SHARE_LOCALISATION, shareLocalization);
+            dataManager.getPreferencesHelper().setValue(Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION, shareLocalization);
+            usersRepository.updateUserField(dataManager.getPreferencesHelper().getUserId(), Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION, shareLocalization);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean getShareLocalization() {
+        return dataManager.getPreferencesHelper().getValue(Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION);
     }
 }
