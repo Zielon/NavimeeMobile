@@ -1023,6 +1023,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                         EventBus.getDefault().post(new HotspotSettingsChanged(selectedDriverType.getName(), true));
                         HotspotPopupHelper.showSecondPopup(context);
                         mHotspotPresenter.setHotspotSecondPopupFirstStart(false);
+                        getFragmentManager().beginTransaction().detach(this).attach(this).commit();
                     }, () -> Timber.d("Dismissed"));
         } else {
             HotspotPopupHelper.showSecondPopup(context);
