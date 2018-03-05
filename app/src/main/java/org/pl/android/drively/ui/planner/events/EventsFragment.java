@@ -144,6 +144,7 @@ public class EventsFragment extends BaseTabFragment implements EventsMvpView {
         mEventsRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mEventsRecycler.setHasFixedSize(true);
         mEventsRecycler.setAdapter(mEventsAdapter);
+        mEventsAdapter.setCallback(this::handleAdapterCallback);
         mEventsPresenter.loadDayScheduleEvents();
         geoFire = new GeoFire(mEventsPresenter.getHotSpotDatabaseRefernce());
 
@@ -159,6 +160,19 @@ public class EventsFragment extends BaseTabFragment implements EventsMvpView {
         queryOnDate(selectedDate);
 
         return fragmentView;
+    }
+
+    private void handleAdapterCallback(EventsAdapter.EventsAdapterAction eventsAdapterAction, Object additionalData) {
+        switch (eventsAdapterAction) {
+            case SAVE: {
+                mEventsPresenter.saveEvent((Event) additionalData);
+                break;
+            }
+            case DELETE: {
+                mEventsPresenter.deleteEvent((Event) additionalData);
+                break;
+            }
+        }
     }
 
 

@@ -78,7 +78,7 @@ import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.CityNotAvailable;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.FourSquarePlace;
-import org.pl.android.drively.data.model.eventbus.DriverTypeChanged;
+import org.pl.android.drively.data.model.eventbus.HotspotSettingsChanged;
 import org.pl.android.drively.data.model.eventbus.NotificationEvent;
 import org.pl.android.drively.data.model.maps.ClusterItemGoogleMap;
 import org.pl.android.drively.service.GeolocationUpdateService;
@@ -1020,7 +1020,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                     selectedDriverType -> {
                         mHotspotPresenter.updateShareLocalisation(true);
                         mHotspotPresenter.saveDriverType(selectedDriverType.getName());
-                        EventBus.getDefault().post(new DriverTypeChanged(selectedDriverType.getName()));
+                        EventBus.getDefault().post(new HotspotSettingsChanged(selectedDriverType.getName(), true));
                         HotspotPopupHelper.showSecondPopup(context);
                         mHotspotPresenter.setHotspotSecondPopupFirstStart(false);
                     }, () -> Timber.d("Dismissed"));

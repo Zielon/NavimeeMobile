@@ -17,7 +17,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Minutes;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.Event;
-import org.pl.android.drively.injection.ActivityContext;
+import org.pl.android.drively.injection.ApplicationContext;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,22 +29,25 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHolder> {
+public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHolder>{
     DateTime currentDateTime;
-    @Inject
-    EventsPresenter mEventsPresenter;
     private List<Event> mEvents;
     private Context mContext;
     private DateTime dateTime;
 
     private List<Event> dayScheduleList;
 
+    private EventsAdapterCallback eventsAdapterCallback;
+
     @Inject
-    public EventsAdapter(@ActivityContext Context context, EventsPresenter eventsPresenter) {
-        this.mEvents = new ArrayList<Event>();
-        mContext = context;
+    public EventsAdapter(@ApplicationContext Context context) {
+        this.mEvents = new ArrayList<>();
+        this.mContext = context;
         currentDateTime = new DateTime(Calendar.getInstance().getTime());
-        this.mEventsPresenter = eventsPresenter;
+    }
+
+    public void setCallback(EventsAdapterCallback eventsAdapterCallback) {
+        this.eventsAdapterCallback = eventsAdapterCallback;
     }
 
     @Override
@@ -87,7 +90,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
             holder.imageCount.setImageResource(R.mipmap.ranking_5);
         }
 
-        if (Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() < 30 && Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() >0) {
+        if (Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() < 30 && Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() > 0) {
             holder.addButton.setTag(1);
             holder.addButton.setText(R.string.navigate);
         } else if (dayScheduleList != null && dayScheduleList.contains(event)) {
@@ -113,13 +116,14 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
                 holder.addButton.setBackgroundColor(mContext.getResources().getColor(R.color.button_background));
                 holder.addButton.setTextColor(mContext.getResources().getColor(R.color.white));
                 holder.addButton.setText(R.string.remember_me);
-                mEventsPresenter.deleteEvent(event);
+                eventsAdapterCallback.eventsAdapterCallback(EventsAdapterAction.DELETE, event);
             } else if ((int) view.getTag() == 3) {
                 holder.addButton.setTag(2);
                 holder.addButton.setBackgroundColor(mContext.getResources().getColor(R.color.colorLine));
                 holder.addButton.setTextColor(mContext.getResources().getColor(R.color.gray_font));
                 holder.addButton.setText(R.string.cancel);
-                mEventsPresenter.saveEvent(event);
+                eventsAdapterCallback.eventsAdapterCallback(EventsAdapterAction.SAVE, event);
+
             }
         });
 
@@ -176,5 +180,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
 
     }
 
+    enum EventsAdapterAction {
+        SAVE,
+        DELETE
+    }
+
+    interface EventsAdapterCallback {
+        void eventsAdapterCallback(EventsAdapterAction eventsAdapterAction, Object additionalData);
+    }
 
 }

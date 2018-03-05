@@ -15,7 +15,6 @@ import org.pl.android.drively.util.FirebasePaths;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -24,6 +23,8 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import java8.util.stream.Collectors;
+import java8.util.stream.StreamSupport;
 import timber.log.Timber;
 
 import static org.pl.android.drively.util.ReflectionUtil.nameof;
@@ -104,7 +105,10 @@ public class EventsPresenter extends BaseTabPresenter<EventsMvpView> {
                                     if (eventList.isEmpty()) {
                                         getMvpView().showEventsEmpty();
                                     } else {
-                                        Collections.sort(eventList, (event1, event2) -> event1.getStartTime().compareTo(event2.getStartTime()));
+                                        eventList = StreamSupport.stream(eventList)
+                                                .filter(event -> event.getEndTime().compareTo(new Date()) > 0)
+                                                .sorted((event1, event2) -> event1.getStartTime().compareTo(event2.getStartTime()))
+                                                .collect(Collectors.toList());
                                         getMvpView().showEvents(eventList, dateTime);
                                     }
                                 }
