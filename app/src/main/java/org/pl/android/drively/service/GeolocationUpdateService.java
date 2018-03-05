@@ -18,7 +18,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.pl.android.drively.BoilerplateApplication;
 import org.pl.android.drively.data.DataManager;
-import org.pl.android.drively.data.model.eventbus.DriverTypeChanged;
+import org.pl.android.drively.data.model.eventbus.HotspotSettingsChanged;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
 
@@ -165,12 +165,14 @@ public class GeolocationUpdateService extends Service {
     }
 
     @Subscribe
-    public void onDriverTypeChanged(DriverTypeChanged driverTypeChanged) {
-        DRIVER_TYPE = driverTypeChanged.getDriverType();
+    public void onDriverTypeChanged(HotspotSettingsChanged hotspotSettingsChanged) {
+        DRIVER_TYPE = hotspotSettingsChanged.getDriverType();
         if (FIREBASE_KEY != null && !FIREBASE_KEY.isEmpty()) {
             databaseReference.child(FIREBASE_KEY).removeValue();
         }
-        startLocationUpdates();
+        if (hotspotSettingsChanged.getShareLocalization()) {
+            startLocationUpdates();
+        }
     }
 
 }
