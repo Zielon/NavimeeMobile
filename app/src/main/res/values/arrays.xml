@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="changeApp">
+        <item>Uber</item>
+        <item>myTaxi</item>
+        <item>iTaxi</item>
+        <item>Taxi</item>
+    </string-array>
+    <string-array name="changeAppValues">
+        <item>Uber</item>
+        <item>myTaxi</item>
+        <item>iTaxi</item>
+        <item>Taxi</item>
+    </string-array>
+
+</resources>
