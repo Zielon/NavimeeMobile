@@ -11,7 +11,7 @@ public class EventHelper {
 
     public static List<Event> sortEvents(List<Event> eventList) {
         return StreamSupport.stream(eventList)
-                .sorted((event1, event2) -> Integer.valueOf(event1.getRank()).compareTo((event2.getRank())))
+                .sorted((event1, event2) -> Integer.valueOf(event2.getRank()).compareTo((event1.getRank())))
                 .sorted((event1, event2) -> event1.getStartTime().compareTo(event2.getStartTime()))
                 .collect(Collectors.toList());
     }
