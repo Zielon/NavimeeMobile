@@ -500,6 +500,11 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
             this.geoQuery.addGeoQueryEventListener(this);
             if (mHotspotPresenter.getShareLocalisationPreference()) {
                 this.geoQueryUsersLocation.addGeoQueryEventListener(this);
+            } else {
+                for (Marker marker : usersMarkers.values()) {
+                    marker.remove();
+                }
+                usersMarkers.clear();
             }
         } catch (Exception e) {
 
