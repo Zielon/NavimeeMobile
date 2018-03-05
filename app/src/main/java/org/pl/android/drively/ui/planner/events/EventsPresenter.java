@@ -101,10 +101,10 @@ public class EventsPresenter extends BaseTabPresenter<EventsMvpView> {
                             }
                             if (eventsKeyList.isEmpty()) {
                                 if (getMvpView() != null) {
+                                    eventList = EventHelper.sortEvents(eventList);
                                     if (eventList.isEmpty()) {
                                         getMvpView().showEventsEmpty();
                                     } else {
-                                        eventList = EventHelper.filterAndSortEvents(eventList);
                                         getMvpView().showEvents(eventList, dateTime);
                                     }
                                 }
