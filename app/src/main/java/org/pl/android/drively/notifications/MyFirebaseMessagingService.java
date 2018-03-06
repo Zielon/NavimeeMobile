@@ -11,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -51,21 +50,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        Log.d(TAG, "From: " + remoteMessage.getFrom());
-
-        if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-
-            // Handle message within 10 seconds
-            handleNow();
-        }
-
-        Log.d(TAG, "Data manager in service: " + dataManager.toString());
         Const.NotificationsType type = Const.NotificationsType.valueOf(remoteMessage.getData().get("type"));
         final ObjectMapper mapper = new ObjectMapper();
         switch (type) {
             case FEEDBACK:
-                // jackson's objectmapper
                 final FeedbackNotificationFCM feedbackNotification = mapper.convertValue(remoteMessage.getData(), FeedbackNotificationFCM.class);
                 dataManager.getPreferencesHelper().setValue(Const.IS_FEEDBACK, true);
                 dataManager.getPreferencesHelper().setValue(Const.LOCATION_NAME, feedbackNotification.getLocationName());
@@ -92,11 +80,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
     }
 
-    private void handleNow() {
-        Log.d(TAG, "Short lived task is done.");
-    }
-
     private void sendNotificationFromChat(MessageNotificationFCM fcm, boolean isGroup) {
+        if(System.currentTimeMillis() - fcm.getTimestamp() > Const.TIME_TO_DROP_NOTIFICATION)
+            return;
+
         if (ChatViewActivity.ACTIVE_ROOM.equals(fcm.getIdRoom()))
             return;
 

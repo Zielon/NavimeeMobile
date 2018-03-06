@@ -7,6 +7,7 @@ public class MessageNotificationFCM extends NotificationFCM {
     private String avatar;
     private String idRoom;
     private String roomName;
+    private long timestamp;
 
     public MessageNotificationFCM() {
     }
@@ -57,5 +58,13 @@ public class MessageNotificationFCM extends NotificationFCM {
 
     public void setRoomName(String roomName) {
         this.roomName = roomName;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }
