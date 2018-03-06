@@ -93,14 +93,6 @@ public class SettingsPreferencesPresenter extends BasePresenter<SettingsPreferen
 
     public void bindPreferenceToValue(Preference preference) {
         preference.setOnPreferenceChangeListener(preferenceChangeListener);
-        if (preference.getKey().equals(Const.DRIVER_TYPE)) {
-            preference.setOnPreferenceClickListener(preference1 -> {
-                if(getMvpView() != null && getShareLocalization()) {
-                    getMvpView().showAppropriatePopup(preference1);
-                }
-                return false;
-            });
-        }
     }
 
     public void updateShareLocalization(Preference preference, boolean shareLocalization) {

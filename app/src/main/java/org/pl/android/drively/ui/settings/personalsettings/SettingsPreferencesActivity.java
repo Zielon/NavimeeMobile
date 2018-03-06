@@ -117,7 +117,8 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
                 settingsPreferencesPresenter.bindPreferenceToValue(preference);
                 if(preference.getKey().equals(Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION)) {
                     ((SwitchPreference)preference).setChecked(settingsPreferencesPresenter.getShareLocalization());
-                    updateDriverTypeEnableBefore();
+                    mainPreferenceFragment.findPreference(Const.DRIVER_TYPE)
+                            .setEnabled(((SwitchPreference)preference).isChecked());
                 }
             }
         }

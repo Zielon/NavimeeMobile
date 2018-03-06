@@ -9,9 +9,10 @@
             android:title="@string/shareLocalization"
             android:summary="@string/shareLocalization_description" />
 
-        <Preference
-            android:selectable="true"
+        <ListPreference
             android:key="driverType"
+            android:entries="@array/changeApp"
+            android:entryValues="@array/changeAppValues"
             android:title="@string/change_application"
             android:summary="@string/shareLocalization_description" />
 
