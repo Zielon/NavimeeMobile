@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
@@ -119,6 +120,8 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
                     ((SwitchPreference)preference).setChecked(settingsPreferencesPresenter.getShareLocalization());
                     mainPreferenceFragment.findPreference(Const.DRIVER_TYPE)
                             .setEnabled(((SwitchPreference)preference).isChecked());
+                } else if(preference.getKey().equals(Const.DRIVER_TYPE)){
+                    ((ListPreference)preference).setValue(settingsPreferencesPresenter.getDriverType());
                 }
             }
         }

@@ -1,10 +1,8 @@
 package org.pl.android.drively.ui.chat.finance;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +22,7 @@ import org.pl.android.drively.util.Const;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
 
@@ -59,24 +58,15 @@ public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
         return fragmentView;
     }
 
-    @Override
-    public void showInstructionPopup() {
-        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.finance_popup_instruction, null);
-        preparePopupLayout(view);
-        popup = new MaterialDialog.Builder(getActivity())
-                .customView(view, false)
-                .backgroundColor(ContextCompat.getColor(getActivity(), R.color.transparent))
-                .dismissListener(dialog -> changeTabToChat())
-                .show();
+    @OnClick(R.id.popup_finance_contact_us_button)
+    public void onContanctUsClick(View view) {
+        changeTabToChat();
+        financePresenter.getDrivelyGroup();
     }
 
-    private void preparePopupLayout(View rootView) {
-        rootView.findViewById(R.id.popup_finance_contact_us_button).setOnClickListener(view -> {
-            changeTabToChat();
-            financePresenter.getDrivelyGroup();
-        });
-        /*rootView.findViewById(R.id.popup_finance_dismiss_dialog).setOnClickListener(view -> popup.dismiss());*/
+
+    @Override
+    public void showInstructionPopup() {
     }
 
     @Override
