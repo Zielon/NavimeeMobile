@@ -18,9 +18,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -52,7 +50,7 @@ public class EventsPresenter extends BaseTabPresenter<EventsMvpView> {
         super.detachView();
     }
 
-    public void show(Date date){
+    public void show(Date date) {
         if (getMvpView() != null)
             if (eventList.isEmpty()) {
                 getMvpView().showEventsEmpty();
@@ -166,18 +164,11 @@ public class EventsPresenter extends BaseTabPresenter<EventsMvpView> {
 
 
     public void deleteEvent(Event event) {
-        mDataManager.getFirebaseService().getFirebaseFirestore()
-                .collection(FirebasePaths.NOTIFICATIONS)
-                .document(mDataManager.getPreferencesHelper().getCountry())
-                .collection(FirebasePaths.EVENTS_NOTIFICATION)
-                .document(event.getFirestoreId())
-                .delete()
-                .addOnSuccessListener(aVoid -> {
-                    if (getMvpView() != null) {
-                        getMvpView().onSuccessDelete();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                });
+        notificationsRepository.deleteEventNotification(event.getFirestoreId()).addOnSuccessListener(aVoid -> {
+            if (getMvpView() != null) {
+                getMvpView().onSuccessDelete();
+            }
+        }).addOnFailureListener(e -> {
+        });
     }
 }

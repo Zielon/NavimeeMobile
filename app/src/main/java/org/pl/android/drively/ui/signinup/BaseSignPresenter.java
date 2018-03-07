@@ -4,6 +4,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.kelvinapps.rxfirebase.RxFirebaseAuth;
 import com.kelvinapps.rxfirebase.RxFirebaseUser;
 
@@ -61,7 +62,7 @@ public class BaseSignPresenter extends BasePresenter<BaseSignMvpView> {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
         String name = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getDisplayName();
         String email = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getEmail();
-        String token = mDataManager.getPreferencesHelper().getValueString(Const.MESSAGING_TOKEN);
+        String token = FirebaseInstanceId.getInstance().getToken();
 
         return usersRepository.getUser(userId).addOnSuccessListener(user -> {
             user.setToken(token);

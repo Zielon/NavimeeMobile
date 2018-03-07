@@ -7,6 +7,8 @@ import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.EventNotification;
 import org.pl.android.drively.util.FirebasePaths;
 
+import java.util.UUID;
+
 import javax.inject.Inject;
 
 public class NotificationsRepositoryImpl implements NotificationsRepository {
@@ -22,12 +24,23 @@ public class NotificationsRepositoryImpl implements NotificationsRepository {
 
     @Override
     public Task<Void> addEventNotification(EventNotification eventNotification) {
+        String uuid = UUID.randomUUID().toString();
+        eventNotification.setId(uuid);
         return dataManager.getFirebaseService()
                 .getFirebaseFirestore()
                 .collection(FirebasePaths.NOTIFICATIONS)
                 .document(country)
                 .collection(FirebasePaths.EVENTS_NOTIFICATION)
-                .document(eventNotification.getId())
-                .set(eventNotification);
+                .document(uuid).set(eventNotification);
+    }
+
+    @Override
+    public Task<Void> deleteEventNotification(String notificationId) {
+        return dataManager.getFirebaseService().getFirebaseFirestore()
+                .collection(FirebasePaths.NOTIFICATIONS)
+                .document(dataManager.getPreferencesHelper().getCountry())
+                .collection(FirebasePaths.EVENTS_NOTIFICATION)
+                .document(notificationId)
+                .delete();
     }
 }

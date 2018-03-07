@@ -6,4 +6,6 @@ import org.pl.android.drively.data.model.EventNotification;
 
 public interface NotificationsRepository {
     Task<Void> addEventNotification(EventNotification eventNotification);
+
+    Task<Void> deleteEventNotification(String notificationId);
 }

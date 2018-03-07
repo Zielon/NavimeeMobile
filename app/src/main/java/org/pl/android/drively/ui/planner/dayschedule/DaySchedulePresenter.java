@@ -6,6 +6,7 @@ import com.google.firebase.firestore.ListenerRegistration;
 import net.danlew.android.joda.DateUtils;
 
 import org.joda.time.DateTime;
+import org.pl.android.drively.contracts.repositories.NotificationsRepository;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.injection.ConfigPersistent;
@@ -24,15 +25,15 @@ import timber.log.Timber;
 
 import static org.pl.android.drively.util.ReflectionUtil.nameof;
 
-@ConfigPersistent
 public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
     private final DataManager mDataManager;
-
     private ListenerRegistration mListener;
+    private NotificationsRepository notificationsRepository;
 
     @Inject
-    public DaySchedulePresenter(DataManager dataManager) {
-        mDataManager = dataManager;
+    public DaySchedulePresenter(DataManager dataManager, NotificationsRepository notificationsRepository) {
+        this.mDataManager = dataManager;
+        this.notificationsRepository = notificationsRepository;
     }
 
     @Override
@@ -113,19 +114,11 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
     }
 
     public void deleteEvent(Event event) {
-        mDataManager.getFirebaseService()
-                .getFirebaseFirestore()
-                .collection(FirebasePaths.NOTIFICATIONS)
-                .document(mDataManager.getPreferencesHelper().getCountry())
-                .collection(FirebasePaths.EVENTS_NOTIFICATION)
-                .document(event.getFirestoreId())
-                .delete()
-                .addOnSuccessListener(aVoid -> {
-                    if (getMvpView() != null) {
-                        getMvpView().onSuccessDelete(event);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                });
+        notificationsRepository.deleteEventNotification(event.getFirestoreId()).addOnSuccessListener(aVoid -> {
+            if (getMvpView() != null) {
+                getMvpView().onSuccessDelete(event);
+            }
+        }).addOnFailureListener(e -> {
+        });
     }
 }
