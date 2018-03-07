@@ -220,7 +220,7 @@ public class EventsFragment extends BaseTabFragment implements EventsMvpView {
 
             @Override
             public void onGeoQueryReady() {
-
+                mEventsPresenter.show(date.getTime());
             }
 
             @Override

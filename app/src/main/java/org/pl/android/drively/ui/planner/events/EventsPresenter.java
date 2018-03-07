@@ -52,6 +52,14 @@ public class EventsPresenter extends BaseTabPresenter<EventsMvpView> {
         super.detachView();
     }
 
+    public void show(Date date){
+        if (getMvpView() != null)
+            if (eventList.isEmpty()) {
+                getMvpView().showEventsEmpty();
+            } else {
+                getMvpView().showEvents(EventHelper.sortEvents(eventList), new DateTime(date));
+            }
+    }
 
     public void add(Date date, Event event) {
         Calendar dt = new GregorianCalendar();
@@ -81,13 +89,6 @@ public class EventsPresenter extends BaseTabPresenter<EventsMvpView> {
 
         if (event.getEndTime() != null && event.getEndTime().after(dateFinal) && event.getEndTime().before(dt.getTime()))
             eventList.add(event);
-
-        if (getMvpView() != null)
-            if (eventList.isEmpty()) {
-                getMvpView().showEventsEmpty();
-            } else {
-                getMvpView().showEvents(EventHelper.sortEvents(eventList), dateTime);
-            }
     }
 
     public void loadDayScheduleEvents() {
