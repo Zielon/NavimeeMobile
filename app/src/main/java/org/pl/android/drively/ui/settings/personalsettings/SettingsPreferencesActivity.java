@@ -92,7 +92,7 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
         HotspotPopupHelper.showFirstPopup(this, settingsPreferencesPresenter.getDriverType(),
                 selectedDriverType -> {
                     settingsPreferencesPresenter
-                            .updateDriverTypeAndShareLocalisation(selectedDriverType.getName(), settingsPreferencesPresenter.getShareLocalization(), preference);
+                            .updateDriverTypeAndShareLocalisation(selectedDriverType.getName(), settingsPreferencesPresenter.getShareLocalization());
                     EventBus.getDefault().post(new HotspotSettingsChanged(selectedDriverType.getName(), true));
                 },
                 () -> {
@@ -116,12 +116,18 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
             for (String setting : settings) {
                 Preference preference = findPreference(setting);
                 settingsPreferencesPresenter.bindPreferenceToValue(preference);
-                if(preference.getKey().equals(Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION)) {
-                    ((SwitchPreference)preference).setChecked(settingsPreferencesPresenter.getShareLocalization());
-                    mainPreferenceFragment.findPreference(Const.DRIVER_TYPE)
-                            .setEnabled(((SwitchPreference)preference).isChecked());
-                } else if(preference.getKey().equals(Const.DRIVER_TYPE)){
-                    ((ListPreference)preference).setValue(settingsPreferencesPresenter.getDriverType());
+
+                switch (preference.getKey()){
+                    case Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION:
+                        SwitchPreference switchPreference = ((SwitchPreference)preference);
+                        switchPreference.setChecked(settingsPreferencesPresenter.getShareLocalization());
+                        mainPreferenceFragment.findPreference(Const.DRIVER_TYPE).setEnabled(switchPreference.isChecked());
+                        break;
+
+                    case Const.DRIVER_TYPE:
+                        String v = settingsPreferencesPresenter.getDriverType();
+                        ((ListPreference)preference).setValue(v);
+                        break;
                 }
             }
         }

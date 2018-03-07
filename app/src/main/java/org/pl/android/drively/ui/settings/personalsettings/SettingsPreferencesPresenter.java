@@ -32,7 +32,7 @@ public class SettingsPreferencesPresenter extends BasePresenter<SettingsPreferen
         this.preferenceChangeListener = (preference, newValue) -> {
             updatePreferenceAndCheckShareLocalisation(preference, newValue);
 
-            if (Boolean.valueOf(newValue.toString()) != null)
+            if ("false".equals(newValue.toString()) || "true".equals(newValue.toString()))
                 dataManager.getPreferencesHelper().setValue(preference.getKey(), Boolean.parseBoolean(newValue.toString()));
             else if (newValue instanceof String)
                 dataManager.getPreferencesHelper().setValue(preference.getKey(), (String) newValue);
@@ -50,8 +50,13 @@ public class SettingsPreferencesPresenter extends BasePresenter<SettingsPreferen
         User user = dataManager.getPreferencesHelper().getUserInfo();
 
         try {
-            for (String setting : settings)
-                prefs.putBoolean(setting, valueof(user, setting));
+            for (String setting : settings){
+                Object value = valueof(user, setting);
+                if ("false".equals(value.toString()) || "true".equals(value.toString()))
+                    prefs.putBoolean(setting, valueof(user, setting));
+                else if (value instanceof String)
+                    prefs.putString(setting, valueof(user, setting));
+            }
             prefs.apply();
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -80,14 +85,14 @@ public class SettingsPreferencesPresenter extends BasePresenter<SettingsPreferen
         return dataManager.getPreferencesHelper().getValueString(Const.DRIVER_TYPE);
     }
 
-    public void updateDriverTypeAndShareLocalisation(String driverType, boolean shareLocalisation, Preference preference) {
+    public void updateDriverTypeAndShareLocalisation(String driverType, boolean shareLocalisation) {
         dataManager.getPreferencesHelper().setValue(Const.DRIVER_TYPE, driverType);
         dataManager.getPreferencesHelper().setValue(Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION, shareLocalisation);
         try {
             usersRepository.updateUserField(dataManager.getPreferencesHelper().getUserId(), "driverType", driverType);
             usersRepository.updateUserField(dataManager.getPreferencesHelper().getUserId(), Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION, shareLocalisation);
         } catch (NoSuchFieldException e) {
-            Timber.d(e);
+            e.printStackTrace();
         }
     }
 

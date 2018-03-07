@@ -167,6 +167,7 @@ public class PreferencesHelper {
         user.setChatGroupNotification(getValue(CHAT_GROUP_NOTIFICATION));
         user.setShareLocalization(getValue(SHARE_LOCALIZATION));
 
+        user.setDriverType(sharedPreferences.getString(DRIVER_TYPE, ""));
         user.setCity(sharedPreferences.getString(USER_CITY, ""));
         user.setCountry(sharedPreferences.getString(USER_COUNTRY, ""));
         user.setName(sharedPreferences.getString(SHARE_KEY_NAME, ""));
