@@ -70,6 +70,7 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
                              Bundle savedInstanceState) {
 
         mDaySchedulePresenter.attachView(this);
+        mDayScheduleAdapter.setDaySchedulePresenter(mDaySchedulePresenter);
 
         View fragmentView = inflater.inflate(R.layout.day_schedule_fragment, container, false);
 
@@ -161,6 +162,7 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mDaySchedulePresenter.detachView();
     }
 
     private void queryOnDate(Calendar date) {

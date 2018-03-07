@@ -239,6 +239,7 @@ public class EventsFragment extends BaseTabFragment implements EventsMvpView {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mEventsPresenter.detachView();
     }
 
     @OnClick(R.id.events_check_another_date)
