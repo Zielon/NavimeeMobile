@@ -253,10 +253,8 @@ public class EventsFragment extends BaseTabFragment implements EventsMvpView {
     }
 
     private void moveToNextDay() {
-        Date dt;
         Calendar c = horizontalCalendar.getSelectedDate();
         c.add(Calendar.DATE, 1);
-        dt = c.getTime();
         horizontalCalendar.selectDate(c, true);
     }
 

@@ -199,6 +199,11 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
         ((PlannerFragment) ((MainActivity) getActivity()).getSelectedFragment()).getViewPager().setCurrentItem(0);
     }
 
+    @OnClick(R.id.icon_day_schedule)
+    public void goToEventsFromIcon(View view) {
+        ((PlannerFragment) ((MainActivity) getActivity()).getSelectedFragment()).getViewPager().setCurrentItem(0);
+    }
+
     @Override
     public void showError() {
         skeletonScreen.hide();
