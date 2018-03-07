@@ -70,8 +70,7 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
     @Override
     public void showAppropriatePopup(Preference preference) {
         if (preference.getKey().equals(Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION)) {
-            if (TextUtils.isEmpty(settingsPreferencesPresenter.getDriverType())
-                    && !settingsPreferencesPresenter.getShareLocalization()) {
+            if (TextUtils.isEmpty(settingsPreferencesPresenter.getDriverType()) && settingsPreferencesPresenter.getShareLocalization()) {
                 showPopup(preference, true);
             }
             if (settingsPreferencesPresenter.getShareLocalization()) {
@@ -89,8 +88,13 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
     private void showPopup(Preference preference, boolean shouldUncheckLocalization) {
         HotspotPopupHelper.showFirstPopup(this, settingsPreferencesPresenter.getDriverType(),
                 selectedDriverType -> {
-                    settingsPreferencesPresenter
-                            .updateDriverTypeAndShareLocalisation(selectedDriverType.getName(), settingsPreferencesPresenter.getShareLocalization());
+                    settingsPreferencesPresenter.updateDriverTypeAndShareLocalisation(selectedDriverType.getName(), settingsPreferencesPresenter.getShareLocalization());
+
+                    // Refresh the view
+                    getFragmentManager().beginTransaction().remove(mainPreferenceFragment).commit();
+                    mainPreferenceFragment = new MainPreferenceFragment();
+                    getFragmentManager().beginTransaction().replace(android.R.id.content, mainPreferenceFragment).commit();
+
                     EventBus.getDefault().post(new HotspotSettingsChanged(selectedDriverType.getName(), true));
                 },
                 () -> {

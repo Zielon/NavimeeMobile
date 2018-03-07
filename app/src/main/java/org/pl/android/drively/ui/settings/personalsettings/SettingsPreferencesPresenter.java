@@ -96,6 +96,8 @@ public class SettingsPreferencesPresenter extends BasePresenter<SettingsPreferen
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
+
+
     }
 
     public void bindPreferenceToValue(Preference preference) {
