@@ -325,30 +325,24 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
 
             }
         });
-        mPlaceDriveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + String.valueOf(latLngEnd.latitude) + "," +
-                        String.valueOf(latLngEnd.longitude));
-                mHotspotPresenter.setRouteFromDriver(mTextPlaceAddress.getText().toString(), sEventName, durationInSec, distanceValue, locationGeo);
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                mapIntent.setPackage("com.google.android.apps.maps");
-                if (mapIntent.resolveActivity(getContext().getPackageManager()) != null) {
-                    getContext().startActivity(mapIntent);
-                }
+        mPlaceDriveButton.setOnClickListener(v -> {
+            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + String.valueOf(latLngEnd.latitude) + "," +
+                    String.valueOf(latLngEnd.longitude));
+            mHotspotPresenter.setRouteFromDriver(mTextPlaceAddress.getText().toString(), sEventName, durationInSec, distanceValue, locationGeo);
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            mapIntent.setPackage("com.google.android.apps.maps");
+            if (mapIntent.resolveActivity(getContext().getPackageManager()) != null) {
+                getContext().startActivity(mapIntent);
             }
         });
 
-        mPlaceCloseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (polylines.size() > 0) {
-                    for (Polyline poly : polylines) {
-                        poly.remove();
-                    }
+        mPlaceCloseButton.setOnClickListener(v -> {
+            if (polylines.size() > 0) {
+                for (Polyline poly : polylines) {
+                    poly.remove();
                 }
-                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
             }
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         });
     }
 
@@ -360,6 +354,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         lastKnownLocationObservable = locationProvider
                 .getLastKnownLocation()
                 .observeOn(AndroidSchedulers.mainThread());
+
         final LocationRequest locationRequest = LocationRequest.create()
                 .setSmallestDisplacement(100)
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
@@ -373,25 +368,17 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                                 .setAlwaysShow(true)  //Refrence: http://stackoverflow.com/questions/29824408/google-play-services-locationservices-api-new-option-never
                                 .build()
                 )
-                .doOnNext(new Consumer<LocationSettingsResult>() {
-                    @Override
-                    public void accept(LocationSettingsResult locationSettingsResult) {
-                        Status status = locationSettingsResult.getStatus();
-                        if (status.getStatusCode() == LocationSettingsStatusCodes.RESOLUTION_REQUIRED) {
-                            try {
-                                status.startResolutionForResult(getActivity(), REQUEST_CHECK_SETTINGS);
-                            } catch (IntentSender.SendIntentException th) {
-                                Log.e("MainActivity", "Error opening settings activity.", th);
-                            }
+                .doOnNext(locationSettingsResult -> {
+                    Status status = locationSettingsResult.getStatus();
+                    if (status.getStatusCode() == LocationSettingsStatusCodes.RESOLUTION_REQUIRED) {
+                        try {
+                            status.startResolutionForResult(getActivity(), REQUEST_CHECK_SETTINGS);
+                        } catch (IntentSender.SendIntentException th) {
+                            Log.e("MainActivity", "Error opening settings activity.", th);
                         }
                     }
                 })
-                .flatMap(new Function<LocationSettingsResult, Observable<Location>>() {
-                    @Override
-                    public Observable<Location> apply(LocationSettingsResult locationSettingsResult) {
-                        return locationProvider.getUpdatedLocation(locationRequest);
-                    }
-                })
+                .flatMap(locationSettingsResult -> locationProvider.getUpdatedLocation(locationRequest))
                 .observeOn(AndroidSchedulers.mainThread());
 
         activityObservable = locationProvider
@@ -399,20 +386,11 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                 .observeOn(AndroidSchedulers.mainThread());
 
         addressObservable = locationProvider.getUpdatedLocation(locationRequest)
-                .flatMap(new Function<Location, Observable<List<Address>>>() {
-                    @Override
-                    public Observable<List<Address>> apply(Location location) {
-                        return locationProvider.getReverseGeocodeObservable(Locale.ENGLISH, location.getLatitude(), location.getLongitude(), 1);
-                    }
-                })
-                .map(new Function<List<Address>, Address>() {
-                    @Override
-                    public Address apply(List<Address> addresses) {
-                        return addresses != null && !addresses.isEmpty() ? addresses.get(0) : null;
-                    }
-                })
+                .flatMap(location -> locationProvider.getReverseGeocodeObservable(Locale.ENGLISH, location.getLatitude(), location.getLongitude(), 1))
+                .map(addresses -> addresses != null && !addresses.isEmpty() ? addresses.get(0) : null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+
         geoFire = new GeoFire(mHotspotPresenter.getHotSpotDatabaseRefernce());
         this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radius);
         geoFireUsersLocation = new GeoFire(mHotspotPresenter.getUsersLocationDatabaseRefernce());
@@ -423,54 +401,38 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
 
     protected void onLocationPermissionGranted() {
         lastKnownLocationDisposable = lastKnownLocationObservable
-                .map(new Function<Location, LatLng>() {
-                    @Override
-                    public LatLng apply(Location s) {
-                        return new LatLng(s.getLatitude(), s.getLongitude());
-                    }
-                })
-                .subscribe(new Consumer<LatLng>() {
-                    @Override
-                    public void accept(LatLng latLng) throws Exception {
-                        CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 13);
-                        googleMap.moveCamera(yourLocation);
-                    }
+                .map(s -> new LatLng(s.getLatitude(), s.getLongitude()))
+                .subscribe(latLng -> {
+                    CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 13);
+                    googleMap.moveCamera(yourLocation);
                 }, new ErrorHandler());
 
         updatableLocationDisposable = locationUpdatesObservable
-                .map(new Function<Location, LatLng>() {
-                    @Override
-                    public LatLng apply(Location s) {
-                        return new LatLng(s.getLatitude(), s.getLongitude());
+                .map(s -> new LatLng(s.getLatitude(), s.getLongitude()))
+                .subscribe(latLng -> {
+                    Timber.d("ON LOCATION UPDATE");
+                    mHotspotPresenter.setLastLocationLatLng(latLng);
+                    if (isFirstAfterPermissionGranted) {
+                        CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 12);
+                        googleMap.moveCamera(yourLocation);
+                        isFirstAfterPermissionGranted = false;
+                    } else {
+                        CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, googleMap.getCameraPosition().zoom);
+                        googleMap.moveCamera(yourLocation);
                     }
-                })
-                .subscribe(new Consumer<LatLng>() {
-                    @Override
-                    public void accept(LatLng latLng) throws Exception {
-                        Timber.d("ON LOCATION UPDATE");
-                        mHotspotPresenter.setLastLocationLatLng(latLng);
-                        if (isFirstAfterPermissionGranted) {
-                            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 12);
-                            googleMap.moveCamera(yourLocation);
-                            isFirstAfterPermissionGranted = false;
-                        } else {
-                            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, googleMap.getCameraPosition().zoom);
-                            googleMap.moveCamera(yourLocation);
-                        }
-                        latLngCurrent = latLng;
-                        if (isFromNotification) {
-                            isFromNotification = false;
-                            route(latLng, new LatLng(latNotification, lngNotification), notificationName, notificationCount);
-                        }
-                        geoQuery = geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
-                        geoQuery.addGeoQueryEventListener(HotSpotFragment.this);
-                        if (mHotspotPresenter.getShareLocalisationPreference()) {
-                            geoQueryUsersLocation = geoFireUsersLocation.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
-                            geoQueryUsersLocation.addGeoQueryEventListener(HotSpotFragment.this);
-                        }
-                        eventsOnMap.clear();
-                        mClusterManager.clearItems();
+                    latLngCurrent = latLng;
+                    if (isFromNotification) {
+                        isFromNotification = false;
+                        route(latLng, new LatLng(latNotification, lngNotification), notificationName, notificationCount);
                     }
+                    geoQuery = geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
+                    geoQuery.addGeoQueryEventListener(HotSpotFragment.this);
+                    if (mHotspotPresenter.getShareLocalisationPreference()) {
+                        geoQueryUsersLocation = geoFireUsersLocation.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
+                        geoQueryUsersLocation.addGeoQueryEventListener(HotSpotFragment.this);
+                    }
+                    eventsOnMap.clear();
+                    mClusterManager.clearItems();
                 });
 
         activityDisposable = activityObservable
@@ -521,60 +483,46 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                     .subscribe((Boolean granted) -> {
                         if (granted) { // Always true pre-M
                             onLocationPermissionGranted();
-                            mMapView.getMapAsync(new OnMapReadyCallback() {
-                                @SuppressLint("MissingPermission")
-                                @Override
-                                public void onMapReady(GoogleMap mMap) {
-                                    googleMap = mMap;
-                                    // MAP STYLES
-                                    googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style));
+                            mMapView.getMapAsync(mMap -> {
+                                googleMap = mMap;
+                                // MAP STYLES
+                                googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style));
 
-                                    // For showing a move to my location button
-                                    googleMap.setMyLocationEnabled(true);
-                                    googleMap.getUiSettings().setZoomControlsEnabled(false);
-                                    googleMap.getUiSettings().setMyLocationButtonEnabled(false);
-                                    googleMap.getUiSettings().setMapToolbarEnabled(false);
-                                  /*  googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                                        @Override
-                                        public boolean onMarkerClick(Marker marker) {
-                                            route(latLngCurrent,marker.getPosition());
-                                            return true;
-                                        }
-                                    });*/
-                                    if (mClusterManager == null) {
-                                        mClusterManager = new ClusterManager<ClusterItemGoogleMap>(getContext(), googleMap);
-                                        mClusterManager.setRenderer(new MapRenderer());
-                                        mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<ClusterItemGoogleMap>() {
-                                            @Override
-                                            public boolean onClusterItemClick(ClusterItemGoogleMap clusterItemGoogleMap) {
-                                                route(latLngCurrent, clusterItemGoogleMap.getPosition(), clusterItemGoogleMap.getName(), clusterItemGoogleMap.getCount());
-                                                return false;
-                                            }
-                                        });
-                                        mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<ClusterItemGoogleMap>() {
-                                            @Override
-                                            public boolean onClusterClick(Cluster<ClusterItemGoogleMap> cluster) {
-                                                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(cluster.getPosition(), googleMap.getCameraPosition().zoom + 1);
-                                                googleMap.moveCamera(yourLocation);
-                                                return false;
-                                            }
-                                        });
+                                // For showing a move to my location button
+                                googleMap.setMyLocationEnabled(true);
+                                googleMap.getUiSettings().setZoomControlsEnabled(false);
+                                googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+                                googleMap.getUiSettings().setMapToolbarEnabled(false);
+                              /*  googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                                    @Override
+                                    public boolean onMarkerClick(Marker marker) {
+                                        route(latLngCurrent,marker.getPosition());
+                                        return true;
                                     }
-                                    googleMap.setOnMarkerClickListener(mClusterManager);
-                                    googleMap.setOnCameraIdleListener(mClusterManager);
+                                });*/
+                                if (mClusterManager == null) {
+                                    mClusterManager = new ClusterManager<>(getContext(), googleMap);
+                                    mClusterManager.setRenderer(new MapRenderer());
+                                    mClusterManager.setOnClusterItemClickListener(clusterItemGoogleMap -> {
+                                        route(latLngCurrent, clusterItemGoogleMap.getPosition(), clusterItemGoogleMap.getName(), clusterItemGoogleMap.getCount());
+                                        return false;
+                                    });
+                                    mClusterManager.setOnClusterClickListener(cluster -> {
+                                        CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(cluster.getPosition(), googleMap.getCameraPosition().zoom + 1);
+                                        googleMap.moveCamera(yourLocation);
+                                        return false;
+                                    });
                                 }
+                                googleMap.setOnMarkerClickListener(mClusterManager);
+                                googleMap.setOnCameraIdleListener(mClusterManager);
                             });
                         } else {
-                            mMapView.getMapAsync(new OnMapReadyCallback() {
-                                @SuppressLint("MissingPermission")
-                                @Override
-                                public void onMapReady(GoogleMap mMap) {
-                                    googleMap = mMap;
-                                    boolean success = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style));
+                            mMapView.getMapAsync(mMap -> {
+                                googleMap = mMap;
+                                boolean success = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style));
 
-                                    if (!success)
-                                        Timber.i("Map style was not loaded");
-                                }
+                                if (!success)
+                                    Timber.i("Map style was not loaded");
                             });
                         }
                     });
@@ -926,6 +874,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                         * startLatLng.longitude;
                 double lat = t * toPosition.latitude + (1 - t)
                         * startLatLng.latitude;
+
                 marker.setPosition(new LatLng(lat, lng));
                 marker.setRotation((float) bearing);
 
@@ -1100,6 +1049,4 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
             return cluster.getSize() > 1;
         }
     }
-
-
 }
