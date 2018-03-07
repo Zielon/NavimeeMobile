@@ -75,7 +75,6 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
         }
 
         try {
-            //TODO create the notification data model and replace `userId` with the correct type!
             String endTimeFilter = nameof(Event.class, "endTime");
             String rankFilter = nameof(Event.class, "rank");
 
@@ -115,9 +114,8 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
 
     public void deleteEvent(Event event) {
         notificationsRepository.deleteEventNotification(event.getFirestoreId()).addOnSuccessListener(aVoid -> {
-            if (getMvpView() != null) {
+            if (getMvpView() != null)
                 getMvpView().onSuccessDelete(event);
-            }
         }).addOnFailureListener(e -> {
         });
     }

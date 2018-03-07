@@ -30,10 +30,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by Wojtek on 2018-02-19.
- */
-
 public class PlannerFragment extends BaseTabFragment {
 
     public static String STR_CALENDAR_FRAGMENT = "CALENDAR";
@@ -80,7 +76,6 @@ public class PlannerFragment extends BaseTabFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        //mChatPresenter.detachView();
     }
 
 

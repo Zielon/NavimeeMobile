@@ -68,6 +68,9 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        mDaySchedulePresenter.attachView(this);
+
         View fragmentView = inflater.inflate(R.layout.day_schedule_fragment, container, false);
 
         Calendar endDate = Calendar.getInstance();
@@ -125,7 +128,7 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
             }
         });
         ButterKnife.bind(this, fragmentView);
-        mDaySchedulePresenter.attachView(this);
+
         mDayScheduleRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mDayScheduleRecycler.setHasFixedSize(true);
         mDayScheduleRecycler.setAdapter(mDayScheduleAdapter);
@@ -158,7 +161,6 @@ public class DayScheduleFragment extends Fragment implements DayScheduleMvpView 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mDaySchedulePresenter.detachView();
     }
 
     private void queryOnDate(Calendar date) {

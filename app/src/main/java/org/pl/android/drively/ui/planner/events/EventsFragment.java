@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 
 import org.joda.time.DateTime;
 import org.pl.android.drively.R;
+import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.base.tab.BaseTabFragment;
@@ -46,6 +47,9 @@ public class EventsFragment extends BaseTabFragment implements EventsMvpView {
 
     @Inject
     EventsPresenter mEventsPresenter;
+
+    @Inject
+    DataManager dataManager;
 
     @Inject
     EventsAdapter mEventsAdapter;
@@ -79,6 +83,8 @@ public class EventsFragment extends BaseTabFragment implements EventsMvpView {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        mEventsPresenter.attachView(this);
 
         View fragmentView = inflater.inflate(R.layout.events_fragment, container, false);
         Calendar endDate = Calendar.getInstance();
@@ -138,7 +144,6 @@ public class EventsFragment extends BaseTabFragment implements EventsMvpView {
 
         ButterKnife.bind(this, fragmentView);
 
-        mEventsPresenter.attachView(this);
         mEventsRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mEventsRecycler.setHasFixedSize(true);
         mEventsRecycler.setAdapter(mEventsAdapter);
@@ -199,7 +204,8 @@ public class EventsFragment extends BaseTabFragment implements EventsMvpView {
             @Override
             public void onDataEntered(DataSnapshot dataSnapshot, GeoLocation location) {
                 Event event = mapper.convertValue(dataSnapshot.getValue(), Event.class);
-                event.setFirestoreId(dataSnapshot.getKey());
+                String uuid = event.getId() + "_" + dataManager.getPreferencesHelper().getUserId();
+                event.setFirestoreId(uuid);
                 mEventsPresenter.add(date.getTime(), event);
             }
 
@@ -230,11 +236,9 @@ public class EventsFragment extends BaseTabFragment implements EventsMvpView {
         });
     }
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mEventsPresenter.detachView();
     }
 
     @OnClick(R.id.events_check_another_date)

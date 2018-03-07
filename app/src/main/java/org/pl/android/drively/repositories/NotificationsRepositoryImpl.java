@@ -24,8 +24,7 @@ public class NotificationsRepositoryImpl implements NotificationsRepository {
 
     @Override
     public Task<Void> addEventNotification(EventNotification eventNotification) {
-        String uuid = UUID.randomUUID().toString();
-        eventNotification.setId(uuid);
+        String uuid = eventNotification.getId() + "_" + dataManager.getPreferencesHelper().getUserId();
         return dataManager.getFirebaseService()
                 .getFirebaseFirestore()
                 .collection(FirebasePaths.NOTIFICATIONS)

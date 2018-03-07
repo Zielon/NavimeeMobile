@@ -144,8 +144,8 @@ public class GeolocationUpdateService extends Service {
             Timber.i("DRIVER_TYPE: " + DRIVER_TYPE);
             mLastLocation.set(location);
             FIREBASE_KEY = DRIVER_TYPE + "_" + FirebasePaths.USER_LOCATION + "_" + dataManager.getFirebaseService().getFirebaseAuth().getUid();
-            geoFire.setLocation(FIREBASE_KEY,
-                    new GeoLocation(location.getLatitude(), location.getLongitude()));
+            //geoFire.setLocation(FIREBASE_KEY,
+            //        new GeoLocation(location.getLatitude(), location.getLongitude()));
         }
 
         @Override
