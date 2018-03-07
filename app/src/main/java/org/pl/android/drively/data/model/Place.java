@@ -1,11 +1,13 @@
 package org.pl.android.drively.data.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.firebase.firestore.IgnoreExtraProperties;
 
 import java.io.Serializable;
 
 @IgnoreExtraProperties
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Place implements Serializable {
     double lat;
     double lon;

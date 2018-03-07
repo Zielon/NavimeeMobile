@@ -2,6 +2,7 @@ package org.pl.android.drively.data.model;
 
 import android.support.annotation.NonNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.IgnoreExtraProperties;
 
@@ -11,6 +12,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @IgnoreExtraProperties
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Event implements Comparable<Event>, Serializable {
 
     private String id;

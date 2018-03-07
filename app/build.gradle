@@ -182,7 +182,7 @@ dependencies {
     compile "com.google.firebase:firebase-storage:${FIREBASE_VERSION}"
     compile 'com.firebaseui:firebase-ui-storage:0.6.0'
     compile 'com.kelvinapps:rxfirebase:0.0.15'
-    compile 'com.firebase:geofire-android:2.1.3'
+    compile 'com.firebase:geofire-android:2.3.0'
 
     // utils
     compile 'com.github.barteksc:android-pdf-viewer:2.8.2'

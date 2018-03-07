@@ -15,9 +15,11 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
-import com.firebase.geofire.GeoQueryEventListener;
+import com.firebase.geofire.GeoQueryDataEventListener;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
 import org.joda.time.DateTime;
@@ -27,7 +29,6 @@ import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.base.tab.BaseTabFragment;
 import org.pl.android.drively.ui.planner.PlannerFragment;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -40,7 +41,6 @@ import butterknife.OnClick;
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.HorizontalCalendarView;
 import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
-import timber.log.Timber;
 
 public class EventsFragment extends BaseTabFragment implements EventsMvpView {
 
@@ -59,10 +59,8 @@ public class EventsFragment extends BaseTabFragment implements EventsMvpView {
     Calendar selectedDate;
     SkeletonScreen skeletonScreen;
     HorizontalCalendar horizontalCalendar;
-
+    ObjectMapper mapper = new ObjectMapper();
     GeoFire geoFire;
-
-    List<String> keys = new ArrayList<>();
 
     private MaterialDialog popup;
 
@@ -195,33 +193,38 @@ public class EventsFragment extends BaseTabFragment implements EventsMvpView {
         PlannerFragment.selectedDate = date;
         double latitude = mEventsPresenter.getLastLat();
         double longitude = mEventsPresenter.getLastLng();
-        keys.clear();
-        geoFire.queryAtLocation(new GeoLocation(latitude, longitude), 16).addGeoQueryEventListener(new GeoQueryEventListener() {
+
+        geoFire.queryAtLocation(new GeoLocation(latitude, longitude), 16).addGeoQueryDataEventListener(new GeoQueryDataEventListener() {
+
             @Override
-            public void onKeyEntered(String key, GeoLocation location) {
-                Timber.i(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
-                keys.add(key);
+            public void onDataEntered(DataSnapshot dataSnapshot, GeoLocation location) {
+                Event event = mapper.convertValue(dataSnapshot.getValue(), Event.class);
+                event.setFirestoreId(dataSnapshot.getKey());
+                mEventsPresenter.add(date.getTime(), event);
             }
 
             @Override
-            public void onKeyExited(String key) {
-                Timber.i(String.format("Key %s is no longer in the search area", key));
+            public void onDataExited(DataSnapshot dataSnapshot) {
+
             }
 
             @Override
-            public void onKeyMoved(String key, GeoLocation location) {
-                Timber.i(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+            public void onDataMoved(DataSnapshot dataSnapshot, GeoLocation location) {
+
+            }
+
+            @Override
+            public void onDataChanged(DataSnapshot dataSnapshot, GeoLocation location) {
+
             }
 
             @Override
             public void onGeoQueryReady() {
-                mEventsPresenter.loadEvents(date.getTime(), keys);
-                Timber.i("All initial data has been loaded and events have been fired!");
+
             }
 
             @Override
             public void onGeoQueryError(DatabaseError error) {
-                Timber.e("There was an error with this query: " + error);
 
             }
         });

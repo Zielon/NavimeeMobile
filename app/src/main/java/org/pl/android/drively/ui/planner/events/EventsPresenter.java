@@ -30,9 +30,7 @@ import static org.pl.android.drively.util.ReflectionUtil.nameof;
 
 public class EventsPresenter extends BaseTabPresenter<EventsMvpView> {
 
-    private List<Event> eventList = new ArrayList<Event>();
-
-    private Set<String> eventsKeyList = new HashSet<>();
+    private List<Event> eventList = new ArrayList<>();
 
     private List<Event> dayScheduleList = new ArrayList<>();
 
@@ -55,7 +53,7 @@ public class EventsPresenter extends BaseTabPresenter<EventsMvpView> {
     }
 
 
-    public void loadEvents(Date date, List<String> keys) {
+    public void add(Date date, Event event) {
         Calendar dt = new GregorianCalendar();
         // reset hour, minutes, seconds and millis
         dt.setTime(date);
@@ -80,42 +78,17 @@ public class EventsPresenter extends BaseTabPresenter<EventsMvpView> {
             dt1.set(Calendar.MILLISECOND, 0);
             dateFinal = dt1.getTime();
         }
-        eventsKeyList.addAll(keys);
-        Date finalDateFinal = dateFinal;
-        try {
-            final String hotspotTypeFilter = nameof(Event.class, "hotspotType");
-            for (String key : keys) {
-                mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.HOTSPOT).document(key)
-                        .addSnapshotListener((snapshot, e) -> {
-                            if (e != null) {
-                                Timber.e("Listen failed.", e);
-                                return;
-                            }
-                            eventsKeyList.remove(snapshot.getId());
-                            if (snapshot != null && snapshot.exists() && snapshot.get(hotspotTypeFilter).equals(Const.HotSpotType.EVENT.name())) {
-                                Event event = snapshot.toObject(Event.class);
-                                if (event.getEndTime() != null && event.getEndTime().after(finalDateFinal) && event.getEndTime().before(dt.getTime())) {
-                                    event.setFirestoreId(snapshot.getId());
-                                    eventList.add(event);
-                                }
-                            }
-                            if (eventsKeyList.isEmpty()) {
-                                if (getMvpView() != null) {
-                                    eventList = EventHelper.sortEvents(eventList);
-                                    if (eventList.isEmpty()) {
-                                        getMvpView().showEventsEmpty();
-                                    } else {
-                                        getMvpView().showEvents(eventList, dateTime);
-                                    }
-                                }
-                            }
-                        });
-            }
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        }
-    }
 
+        if (event.getEndTime() != null && event.getEndTime().after(dateFinal) && event.getEndTime().before(dt.getTime()))
+            eventList.add(event);
+
+        if (getMvpView() != null)
+            if (eventList.isEmpty()) {
+                getMvpView().showEventsEmpty();
+            } else {
+                getMvpView().showEvents(EventHelper.sortEvents(eventList), dateTime);
+            }
+    }
 
     public void loadDayScheduleEvents() {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
