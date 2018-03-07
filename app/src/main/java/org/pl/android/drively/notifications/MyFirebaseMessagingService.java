@@ -81,6 +81,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void sendNotificationFromChat(MessageNotificationFCM fcm, boolean isGroup) {
+
+        if (dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() == null)
+            return;
+
         if (System.currentTimeMillis() - fcm.getTimestamp() > Const.TIME_TO_DROP_NOTIFICATION)
             return;
 
