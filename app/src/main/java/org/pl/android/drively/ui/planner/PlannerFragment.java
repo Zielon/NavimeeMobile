@@ -132,6 +132,10 @@ public class PlannerFragment extends BaseTabFragment {
         rootView.findViewById(R.id.understood_button).setOnClickListener(view -> popup.dismiss());
     }
 
+    public ViewPager getViewPager() {
+        return viewPager;
+    }
+
     class ViewPagerAdapter extends FragmentStatePagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
@@ -169,10 +173,6 @@ public class PlannerFragment extends BaseTabFragment {
             // refresh all fragments when data set changed
             return POSITION_NONE;
         }
-    }
-
-    public ViewPager getViewPager() {
-        return viewPager;
     }
 }
 

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.google.firebase.database.DatabaseReference;
@@ -18,28 +19,34 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.pl.android.drively.BoilerplateApplication;
 import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.data.model.Car;
+import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.data.model.eventbus.HotspotSettingsChanged;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
+
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import timber.log.Timber;
 
 public class GeolocationUpdateService extends Service {
+
     private static final String TAG = "BOOMBOOMTESTGPS";
     private static final int LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 10f;
     private static final long TIME_FOR_SERVICE = 1800000;
     public static String FIREBASE_KEY;
     private static String DRIVER_TYPE;
-    GeoFire geoFire;
     @Inject
     DataManager dataManager;
     LocationListener[] mLocationListeners = new LocationListener[]{
             new LocationListener(LocationManager.GPS_PROVIDER),
             new LocationListener(LocationManager.NETWORK_PROVIDER)
     };
+    private GeoFire geoFire;
+    private ObjectMapper mapper = new ObjectMapper();
     private DatabaseReference databaseReference;
     private LocationManager mLocationManager = null;
 
@@ -66,20 +73,20 @@ public class GeolocationUpdateService extends Service {
         geoFire = new GeoFire(databaseReference);
         initializeLocationManager();
         final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Timber.i("stoping service");
-                stopSelf();
-                geoFire.removeLocation(FIREBASE_KEY);
-            }
+        handler.postDelayed(() -> {
+            stopSelf();
+            geoFire.removeLocation(FIREBASE_KEY);
         }, TIME_FOR_SERVICE);
-        DRIVER_TYPE = dataManager.getPreferencesHelper().getValueString(Const.DRIVER_TYPE);
-        if (!DRIVER_TYPE.isEmpty()) {
+
+        User user = dataManager.getPreferencesHelper().getUserInfo();
+
+        DRIVER_TYPE = user.getDriverType();
+        FIREBASE_KEY = user.getId();
+
+        if (!DRIVER_TYPE.isEmpty() && user.isShareLocalization()) {
             startLocationUpdates();
         }
     }
-
 
     @SuppressLint("TimberArgCount")
     @Override
@@ -130,6 +137,20 @@ public class GeolocationUpdateService extends Service {
         }
     }
 
+    @Subscribe
+    public void onDriverTypeChanged(HotspotSettingsChanged hotspotSettingsChanged) {
+        DRIVER_TYPE = hotspotSettingsChanged.getDriverType();
+        if (FIREBASE_KEY != null && !FIREBASE_KEY.isEmpty()) {
+            databaseReference.child(FIREBASE_KEY).removeValue();
+        }
+        if (hotspotSettingsChanged.getShareLocalization()) {
+            startLocationUpdates();
+        }else{
+            stopSelf();
+            geoFire.removeLocation(FIREBASE_KEY);
+        }
+    }
+
     private class LocationListener implements android.location.LocationListener {
         Location mLastLocation;
 
@@ -140,12 +161,18 @@ public class GeolocationUpdateService extends Service {
 
         @Override
         public void onLocationChanged(Location location) {
-            Timber.e("onLocationChanged: " + location);
-            Timber.i("DRIVER_TYPE: " + DRIVER_TYPE);
             mLastLocation.set(location);
-            FIREBASE_KEY = DRIVER_TYPE + "_" + FirebasePaths.USER_LOCATION + "_" + dataManager.getFirebaseService().getFirebaseAuth().getUid();
-            //geoFire.setLocation(FIREBASE_KEY,
-            //        new GeoLocation(location.getLatitude(), location.getLongitude()));
+            String userId = dataManager.getFirebaseService().getFirebaseAuth().getUid();
+
+            Car car = new Car();
+            car.setDriverType(DRIVER_TYPE);
+            car.setUserId(userId);
+
+            geoFire.setLocation(userId, new GeoLocation(location.getLatitude(), location.getLongitude()),
+                    (locationKey, databaseError) -> {
+                        Map<String, Object> map = mapper.convertValue(car, Map.class);
+                        databaseReference.child(locationKey).updateChildren(map);
+                    });
         }
 
         @Override
@@ -163,16 +190,4 @@ public class GeolocationUpdateService extends Service {
             Timber.e("onStatusChanged: " + provider);
         }
     }
-
-    @Subscribe
-    public void onDriverTypeChanged(HotspotSettingsChanged hotspotSettingsChanged) {
-        DRIVER_TYPE = hotspotSettingsChanged.getDriverType();
-        if (FIREBASE_KEY != null && !FIREBASE_KEY.isEmpty()) {
-            databaseReference.child(FIREBASE_KEY).removeValue();
-        }
-        if (hotspotSettingsChanged.getShareLocalization()) {
-            startLocationUpdates();
-        }
-    }
-
 }

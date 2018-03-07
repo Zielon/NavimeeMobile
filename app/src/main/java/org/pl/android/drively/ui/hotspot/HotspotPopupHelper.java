@@ -18,7 +18,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class HotspotPopupHelper {
 
     private static MaterialDialog firstPopup;
-    
+
     private static MaterialDialog secondPopup;
 
     private static Const.DriverType selectedDriverType;

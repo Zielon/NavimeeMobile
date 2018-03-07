@@ -12,7 +12,6 @@ import org.pl.android.drively.contracts.repositories.UsersRepository;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.ui.base.BasePresenter;
-import org.pl.android.drively.util.Const;
 
 import javax.inject.Inject;
 

@@ -219,12 +219,12 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
         }
     }
 
-    public void setHotspotSecondPopupFirstStart(boolean value) {
-        mDataManager.getPreferencesHelper().setValue(Const.HOTSPOT_SECOND_POPUP_FIRST_START, value);
-    }
-
     public boolean getHotspotSecondPopupFirstStart() {
         return mDataManager.getPreferencesHelper().getValue(Const.HOTSPOT_SECOND_POPUP_FIRST_START);
+    }
+
+    public void setHotspotSecondPopupFirstStart(boolean value) {
+        mDataManager.getPreferencesHelper().setValue(Const.HOTSPOT_SECOND_POPUP_FIRST_START, value);
     }
 
     public boolean getHotspotFirstPopupFirstStart() {

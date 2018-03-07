@@ -80,12 +80,10 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
             } else {
                 startService(new Intent(this, GeolocationUpdateService.class));
             }
-            EventBus.getDefault().post(new HotspotSettingsChanged(settingsPreferencesPresenter.getDriverType(),
-                    settingsPreferencesPresenter.getShareLocalization()));
-            mainPreferenceFragment.updateDriverTypeEnableBefore();
-        } else if (preference.getKey().equals(Const.DRIVER_TYPE)) {
-            showPopup(preference, false);
+            mainPreferenceFragment.updateDriverTypeEnableAfter();
         }
+
+        EventBus.getDefault().post(new HotspotSettingsChanged(settingsPreferencesPresenter.getDriverType(), settingsPreferencesPresenter.getShareLocalization()));
     }
 
     private void showPopup(Preference preference, boolean shouldUncheckLocalization) {
@@ -117,24 +115,19 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
                 Preference preference = findPreference(setting);
                 settingsPreferencesPresenter.bindPreferenceToValue(preference);
 
-                switch (preference.getKey()){
+                switch (preference.getKey()) {
                     case Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION:
-                        SwitchPreference switchPreference = ((SwitchPreference)preference);
+                        SwitchPreference switchPreference = ((SwitchPreference) preference);
                         switchPreference.setChecked(settingsPreferencesPresenter.getShareLocalization());
                         mainPreferenceFragment.findPreference(Const.DRIVER_TYPE).setEnabled(switchPreference.isChecked());
                         break;
 
                     case Const.DRIVER_TYPE:
                         String v = settingsPreferencesPresenter.getDriverType();
-                        ((ListPreference)preference).setValue(v);
+                        ((ListPreference) preference).setValue(v);
                         break;
                 }
             }
-        }
-
-        public void updateDriverTypeEnableBefore() {
-            mainPreferenceFragment.findPreference(Const.DRIVER_TYPE)
-                    .setEnabled(!settingsPreferencesPresenter.getShareLocalization());
         }
 
         public void updateDriverTypeEnableAfter() {

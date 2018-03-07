@@ -54,11 +54,6 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     BottomBar bottomBar;
     private BaseTabFragment selectedFragment;
 
-    public BaseTabFragment getSelectedFragment() {
-        return selectedFragment;
-    }
-    // @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
-
     /**
      * Return an Intent to start this Activity.
      * triggerDataSyncOnCreate allows disabling the background sync service onCreate. Should
@@ -69,6 +64,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         intent.putExtra(EXTRA_TRIGGER_SYNC_FLAG, triggerDataSyncOnCreate);
         return intent;
     }
+    // @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
 
     public static void setWindowFlag(Activity activity, final int bits, boolean on) {
         Window win = activity.getWindow();
@@ -79,6 +75,10 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
             winParams.flags &= ~bits;
         }
         win.setAttributes(winParams);
+    }
+
+    public BaseTabFragment getSelectedFragment() {
+        return selectedFragment;
     }
 
     @Override

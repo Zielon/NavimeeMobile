@@ -29,7 +29,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHolder>{
+public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHolder> {
     DateTime currentDateTime;
     private List<Event> mEvents;
     private Context mContext;
@@ -158,6 +158,15 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
     }
 
 
+    enum EventsAdapterAction {
+        SAVE,
+        DELETE
+    }
+
+    interface EventsAdapterCallback {
+        void eventsAdapterCallback(EventsAdapterAction eventsAdapterAction, Object additionalData);
+    }
+
     class EventsHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.imageCount)
@@ -178,15 +187,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
             ButterKnife.bind(this, itemView);
         }
 
-    }
-
-    enum EventsAdapterAction {
-        SAVE,
-        DELETE
-    }
-
-    interface EventsAdapterCallback {
-        void eventsAdapterCallback(EventsAdapterAction eventsAdapterAction, Object additionalData);
     }
 
 }

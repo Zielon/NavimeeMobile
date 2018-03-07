@@ -81,7 +81,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void sendNotificationFromChat(MessageNotificationFCM fcm, boolean isGroup) {
-        if(System.currentTimeMillis() - fcm.getTimestamp() > Const.TIME_TO_DROP_NOTIFICATION)
+        if (System.currentTimeMillis() - fcm.getTimestamp() > Const.TIME_TO_DROP_NOTIFICATION)
             return;
 
         if (ChatViewActivity.ACTIVE_ROOM.equals(fcm.getIdRoom()))

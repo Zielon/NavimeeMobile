@@ -29,7 +29,11 @@ public class Const {
     public final static List<String> TAB_FRAGMENTS = Arrays.asList(HotSpotFragment.class.getSimpleName(),
             EventsFragment.class.getSimpleName(), ChatFragment.class.getSimpleName(), FinanceFragment.class.getSimpleName());
     public final static String HOTSPOT_SECOND_POPUP_FIRST_START = "HOTSPOT_SECOND_POPUP_" + FIRST_START_POPUP_SUFFIX;
-
+    public static final String SETTINGS_PREFERENCE_SHARE_LOCALIZATION = "shareLocalization";
+    public static final String SETTINGS_PREFERENCE_DRIVER_TYPE = "driverType";
+    public static final String SETTINGS_PREFERENCE_CHAT_PRIVATE_NOTIFICATION = "chatPrivateNotification";
+    public static final String SETTINGS_PREFERENCE_GROUP_NOTIFICATION = "chatGroupNotification";
+    public static final String SETTINGS_PREFERENCE_DAY_SCHEDULE_NOTIFICATION = "dayScheduleNotification";
     public static int REQUEST_CODE_REGISTER = 2000;
     public static String STR_EXTRA_ACTION_LOGIN = "login";
     public static String STR_EXTRA_ACTION_RESET = "resetpass";
@@ -50,12 +54,6 @@ public class Const {
     public static long TIME_TO_OFFLINE = 2 * 60 * 1000;
     public static long TIME_TO_DROP_NOTIFICATION = 10 * 60 * 1000;
     public static long FIVE_MEGABYTE = 5 * 1024 * 1024;
-
-    public static final String SETTINGS_PREFERENCE_SHARE_LOCALIZATION = "shareLocalization";
-    public static final String SETTINGS_PREFERENCE_DRIVER_TYPE = "driverType";
-    public static final String SETTINGS_PREFERENCE_CHAT_PRIVATE_NOTIFICATION = "chatPrivateNotification";
-    public static final String SETTINGS_PREFERENCE_GROUP_NOTIFICATION = "chatGroupNotification";
-    public static final String SETTINGS_PREFERENCE_DAY_SCHEDULE_NOTIFICATION = "dayScheduleNotification";
 
     public enum HotSpotType {
         EVENT,

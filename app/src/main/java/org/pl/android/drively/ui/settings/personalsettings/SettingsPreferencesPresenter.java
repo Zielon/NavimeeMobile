@@ -15,8 +15,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
-
 import static org.pl.android.drively.util.ReflectionUtil.valueof;
 
 public class SettingsPreferencesPresenter extends BasePresenter<SettingsPreferencesMvpView> {
@@ -32,10 +30,10 @@ public class SettingsPreferencesPresenter extends BasePresenter<SettingsPreferen
         this.preferenceChangeListener = (preference, newValue) -> {
             updatePreferenceAndCheckShareLocalisation(preference, newValue);
 
-            if ("false".equals(newValue.toString()) || "true".equals(newValue.toString()))
+            if (newValue instanceof Boolean)
                 dataManager.getPreferencesHelper().setValue(preference.getKey(), Boolean.parseBoolean(newValue.toString()));
             else if (newValue instanceof String)
-                dataManager.getPreferencesHelper().setValue(preference.getKey(), (String) newValue);
+                dataManager.getPreferencesHelper().setValue(preference.getKey(), newValue.toString());
             return true;
         };
     }
@@ -50,9 +48,9 @@ public class SettingsPreferencesPresenter extends BasePresenter<SettingsPreferen
         User user = dataManager.getPreferencesHelper().getUserInfo();
 
         try {
-            for (String setting : settings){
+            for (String setting : settings) {
                 Object value = valueof(user, setting);
-                if ("false".equals(value.toString()) || "true".equals(value.toString()))
+                if (value instanceof Boolean)
                     prefs.putBoolean(setting, valueof(user, setting));
                 else if (value instanceof String)
                     prefs.putString(setting, valueof(user, setting));
@@ -63,10 +61,16 @@ public class SettingsPreferencesPresenter extends BasePresenter<SettingsPreferen
         }
     }
 
-    public void updatePreference(Preference preference, Object newValue) {
+    public void updatePreference(Preference preference, Object value) {
         String userId = dataManager.getPreferencesHelper().getUserId();
+
+        if (value instanceof Boolean)
+            dataManager.getPreferencesHelper().setValue(preference.getKey(), Boolean.parseBoolean(value.toString()));
+        else if (value instanceof String)
+            dataManager.getPreferencesHelper().setValue(preference.getKey(), value.toString());
+
         try {
-            usersRepository.updateUserField(userId, preference.getKey(), newValue);
+            usersRepository.updateUserField(userId, preference.getKey(), value);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
@@ -74,10 +78,8 @@ public class SettingsPreferencesPresenter extends BasePresenter<SettingsPreferen
 
     public void updatePreferenceAndCheckShareLocalisation(Preference preference, Object newValue) {
         updatePreference(preference, newValue);
-        if (preference.getKey().equals(Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION)) {
-            if (getMvpView() != null) {
-                getMvpView().showAppropriatePopup(preference);
-            }
+        if (getMvpView() != null) {
+            getMvpView().showAppropriatePopup(preference);
         }
     }
 
