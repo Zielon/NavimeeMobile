@@ -19,9 +19,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.allattentionhere.fabulousfilter.AAH_FabulousFragment;
+import com.annimon.stream.Stream;
 import com.google.android.flexbox.FlexboxLayout;
 
 import org.pl.android.drively.R;
+import org.pl.android.drively.util.Const;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,7 +90,7 @@ public class MyFabFragment extends AAH_FabulousFragment {
 
 
         //params to set
-        setAnimationDuration(600); //optional; default 500ms
+        setAnimationDuration(400); //optional; default 500ms
         setPeekHeight(300); // optional; default 400dp
         //setCallbacks((Callbacks) getActivity()); //optional; to get back result
         // setAnimationListener((AnimationListener) getActivity()); //optional; to get animation callbacks
@@ -101,10 +103,16 @@ public class MyFabFragment extends AAH_FabulousFragment {
 
     private void inflateLayoutWithFilters(final String filter_category, FlexboxLayout fbl) {
         List<String> keys = new ArrayList<>();
+
         if (filter_category.equals(getResources().getString(R.string.visible_on_map))) {
-            String[] chips = {getResources().getString(R.string.events_filtr), getResources().getString(R.string.popular_places)};
-            keys = Arrays.asList(chips);
+
+            keys.add(getResources().getString(R.string.events_filtr));
+            keys.add(getResources().getString(R.string.popular_places));
+
+            List<String> filters = Stream.of(new ArrayList<>(Arrays.asList(Const.DriverType.values()))).map(Const.DriverType::getName).toList();
+            keys.addAll(filters);
         }
+
         for (int i = 0; i < keys.size(); i++) {
             View subchild = getActivity().getLayoutInflater().inflate(R.layout.single_chip, null);
             final TextView tv = ((TextView) subchild.findViewById(R.id.txt_title));
@@ -124,14 +132,7 @@ public class MyFabFragment extends AAH_FabulousFragment {
                     addToSelectedMap(filter_category, finalKeys.get(finalI));
                 }
             });
-            try {
-                Log.d("k9res", "key: " + filter_category + " |val:" + keys.get(finalI));
-                Log.d("k9res", "applied_filters != null: " + (applied_filters != null));
-                Log.d("k9res", "applied_filters.get(key) != null: " + (applied_filters.get(filter_category) != null));
-                Log.d("k9res", "applied_filters.get(key).contains(keys.get(finalI)): " + (applied_filters.get(filter_category).contains(keys.get(finalI))));
-            } catch (Exception e) {
 
-            }
             if (applied_filters != null && applied_filters.get(filter_category) != null && applied_filters.get(filter_category).contains(keys.get(finalI))) {
                 tv.setTag("selected");
                 tv.setBackgroundResource(R.drawable.chip_selected);
@@ -144,8 +145,6 @@ public class MyFabFragment extends AAH_FabulousFragment {
 
             fbl.addView(subchild);
         }
-
-
     }
 
     private void addToSelectedMap(String key, String value) {

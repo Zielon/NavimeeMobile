@@ -1,14 +1,27 @@
 package org.pl.android.drively.ui.hotspot;
 
+import android.graphics.Point;
+import android.os.Handler;
+import android.os.SystemClock;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
+
 import com.annimon.stream.Stream;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQueryDataEventListener;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.firestore.ListenerRegistration;
 
 import org.pl.android.drively.contracts.repositories.CoordinatesRepository;
 import org.pl.android.drively.contracts.repositories.UsersRepository;
 import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.data.model.Car;
 import org.pl.android.drively.data.model.CityNotAvailable;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.Feedback;
@@ -30,16 +43,14 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-import static org.pl.android.drively.util.ReflectionUtil.nameof;
-
 public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
 
     private final UsersRepository usersRepository;
     private final CoordinatesRepository coordinatesRepository;
-    private ListenerRegistration mListener;
+    private ObjectMapper mapper = new ObjectMapper();
 
-    private Set<Const.HotSpotType> filterList = new HashSet<>();
-    private Set<String> hotspotKeyList = new HashSet<>();
+    private Set<String> mapItemFilterList = new HashSet<>();
+    private Set<String> carApplicationFilterList = new HashSet<>();
 
     @Inject
     public HotSpotPresenter(DataManager dataManager, UsersRepository usersRepository, CoordinatesRepository coordinatesRepository) {
@@ -71,54 +82,168 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
         mDataManager.getPreferencesHelper().setValueFloat(Const.LAST_LOCATION_LNG, (float) latLng.longitude);
     }
 
-
-    public DatabaseReference getHotSpotDatabaseRefernce() {
+    public DatabaseReference getHotSpotDatabaseReference() {
         return mDataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.HOTSPOT_CURRENT);
     }
 
-
-    public DatabaseReference getUsersLocationDatabaseRefernce() {
+    public DatabaseReference getUsersLocationDatabaseReference() {
         return mDataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.USER_LOCATION);
     }
 
+    private void updateCarView(DataSnapshot dataSnapshot, GeoLocation location){
+        Car car = mapper.convertValue(dataSnapshot.getValue(), Car.class);
+        car.setGeoLocation(location);
+        if(carApplicationFilterList.contains(car.getDriverType())) return;
+        if (getMvpView() != null) {
+            getMvpView().showCarOnMap(car);
+        }
+    }
+
+    public GeoQueryDataEventListener getUsersLocationListener() {
+        return new GeoQueryDataEventListener() {
+
+            @Override
+            public void onDataEntered(DataSnapshot dataSnapshot, GeoLocation location) {
+                updateCarView(dataSnapshot, location);
+            }
+
+            @Override
+            public void onDataExited(DataSnapshot dataSnapshot) {
+                Car car = mapper.convertValue(dataSnapshot.getValue(), Car.class);
+                if (getMvpView() != null) {
+                    getMvpView().removeCarFromMap(car);
+                }
+            }
+
+            @Override
+            public void onDataMoved(DataSnapshot dataSnapshot, GeoLocation location) {
+                updateCarView(dataSnapshot, location);
+            }
+
+            @Override
+            public void onDataChanged(DataSnapshot dataSnapshot, GeoLocation location) {
+                updateCarView(dataSnapshot, location);
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+                if (getMvpView() != null) {
+                    getMvpView().clusterMap();
+                }
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+
+            }
+        };
+    }
+
+    private void updateMapItem(DataSnapshot dataSnapshot, GeoLocation location){
+        String type = ((HashMap<String, Object>) dataSnapshot.getValue()).get("hotspotType").toString();
+
+        switch (Const.HotSpotType.valueOf(type)) {
+            case EVENT:
+                Event event = mapper.convertValue(dataSnapshot.getValue(), Event.class);
+                if(mapItemFilterList.contains(Const.HotSpotType.EVENT.name())) return;
+                if (getMvpView() != null)
+                    getMvpView().showEventOnMap(event);
+                break;
+
+            case FOURSQUARE_PLACE:
+                FourSquarePlace fourSquarePlace = mapper.convertValue(dataSnapshot.getValue(), FourSquarePlace.class);
+                if(mapItemFilterList.contains(Const.HotSpotType.FOURSQUARE_PLACE.name())) return;
+                if (getMvpView() != null)
+                    getMvpView().showFoursquareOnMap(fourSquarePlace);
+                break;
+        }
+    }
+
+    public GeoQueryDataEventListener getMapPointsListener() {
+        return new GeoQueryDataEventListener() {
+
+            @Override
+            public void onDataEntered(DataSnapshot dataSnapshot, GeoLocation location) {
+                updateMapItem(dataSnapshot, location);
+            }
+
+            @Override
+            public void onDataExited(DataSnapshot dataSnapshot) {
+                if (getMvpView() != null)
+                    getMvpView().removeItemFromMap(dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onDataMoved(DataSnapshot dataSnapshot, GeoLocation location) {
+                updateMapItem(dataSnapshot, location);
+            }
+
+            @Override
+            public void onDataChanged(DataSnapshot dataSnapshot, GeoLocation location) {
+                updateMapItem(dataSnapshot, location);
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+                if (getMvpView() != null) {
+                    getMvpView().clusterMap();
+                }
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+
+            }
+        };
+    }
+
+    public void animateMarker(final Marker marker, final LatLng toPosition, final double bearing, final boolean hideMarker, Projection projection) {
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        Point startPoint = projection.toScreenLocation(marker.getPosition());
+        final LatLng startLatLng = projection.fromScreenLocation(startPoint);
+        final long duration = 500;
+
+        final Interpolator interpolator = new LinearInterpolator();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                float t = interpolator.getInterpolation((float) elapsed
+                        / duration);
+                double lng = t * toPosition.longitude + (1 - t)
+                        * startLatLng.longitude;
+                double lat = t * toPosition.latitude + (1 - t)
+                        * startLatLng.latitude;
+
+                marker.setPosition(new LatLng(lat, lng));
+                marker.setRotation((float) bearing);
+
+                if (t < 1.0) {
+                    // Post again 16ms later.
+                    handler.postDelayed(this, 16);
+                } else {
+                    if (hideMarker) {
+                        marker.setVisible(false);
+                    } else {
+                        marker.setVisible(true);
+                    }
+                }
+            }
+        });
+    }
+
+    public double calculateBearing(double startLat, double startLong, double endLat, double endLong) {
+        double dLon = (endLong - startLong);
+        double y = Math.sin(dLon) * Math.cos(endLat);
+        double x = Math.cos(startLat) * Math.sin(endLat) - Math.sin(startLat) * Math.cos(endLat) * Math.cos(dLon);
+        double bearing = Math.toDegrees((Math.atan2(y, x)));
+        return (360 - ((bearing + 360) % 360));
+    }
 
     public String getUid() {
         return mDataManager.getPreferencesHelper().getUserId();
-    }
-
-    public void loadHotSpotPlace(String key) {
-        hotspotKeyList.add(key);
-        try {
-            final String hotspotTypeFilter = nameof(Event.class, "hotspotType");
-            mListener = mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.HOTSPOT).document(key).addSnapshotListener((snapshot, e) -> {
-                if (e != null) {
-                    Timber.e("Listen failed.", e);
-                    return;
-                }
-                hotspotKeyList.remove(key);
-                if (snapshot != null && snapshot.exists()) {
-                    // Timber.d("Current data: " + snapshot.getData());
-                    if (snapshot.get(hotspotTypeFilter).equals(Const.HotSpotType.EVENT.name()) && (filterList.contains(Const.HotSpotType.EVENT) || filterList.isEmpty())) {
-                        if (getMvpView() != null) {
-                            getMvpView().showEventOnMap(snapshot.toObject(Event.class));
-                        }
-                    } else if (snapshot.get(hotspotTypeFilter).equals(Const.HotSpotType.FOURSQUARE_PLACE.name()) && (filterList.contains(Const.HotSpotType.FOURSQUARE_PLACE) || filterList.isEmpty())) {
-                        if (getMvpView() != null) {
-                            getMvpView().showFoursquareOnMap(snapshot.toObject(FourSquarePlace.class));
-                        }
-                    }
-
-                }
-
-                if (hotspotKeyList.isEmpty()) {
-                    if (getMvpView() != null) {
-                        getMvpView().clusterMap();
-                    }
-                }
-            });
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        }
     }
 
     public void setRouteFromDriver(String locationAddress, String locationName, int durationInSec, int distanceValue, LatLng latLng) {
@@ -161,14 +286,6 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
         Map<String, Object> feedbackAnswerMap = new HashMap<>();
         feedbackAnswerMap.put("feedbackAnswer", feedbackAnswer);
         mDataManager.getFirebaseService().getFirebaseDatabase().getReference().child(FirebasePaths.FEEDBACK).child(feedbackId).updateChildren(feedbackAnswerMap);
-    }
-
-    public void addItemToFilterList(Const.HotSpotType item) {
-        filterList.add(item);
-    }
-
-    public void clearFilterList() {
-        filterList.clear();
     }
 
     public void sendMessageWhenCityNotAvailable(CityNotAvailable city) {
@@ -231,4 +348,16 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
         return mDataManager.getPreferencesHelper().getValue(getMvpView().getClass().getSimpleName() + Const.FIRST_START_POPUP_SUFFIX);
     }
 
+    public void addItemToMapItemFilterList(String item) {
+        mapItemFilterList.add(item);
+    }
+
+    public void addCarApplicationFilterList(String item) {
+        carApplicationFilterList.add(item);
+    }
+
+    public void clearFilters() {
+        mapItemFilterList.clear();
+        carApplicationFilterList.clear();
+    }
 }

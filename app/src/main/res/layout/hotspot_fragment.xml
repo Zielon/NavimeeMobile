@@ -70,7 +70,7 @@
 
     <!-- Bottom Sheet Content -->
     <include
-        layout="@layout/content_bottom_sheet"
+        layout="@layout/foursquare_map_item"
         app:layout_anchor="@id/button_layout" />
 
 </android.support.design.widget.CoordinatorLayout>

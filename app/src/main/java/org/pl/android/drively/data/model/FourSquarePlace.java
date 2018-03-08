@@ -1,9 +1,14 @@
 package org.pl.android.drively.data.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.google.firebase.firestore.IgnoreExtraProperties;
+
 import org.pl.android.drively.util.Const;
 
 import java.io.Serializable;
 
+@IgnoreExtraProperties
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FourSquarePlace implements Serializable {
     private String id;
     private String name;

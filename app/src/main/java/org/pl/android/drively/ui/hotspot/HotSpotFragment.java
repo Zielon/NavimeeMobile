@@ -6,14 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.SystemClock;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.util.ArrayMap;
@@ -23,8 +20,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Interpolator;
-import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -35,6 +30,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.allattentionhere.fabulousfilter.AAH_FabulousFragment;
+import com.annimon.stream.Stream;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
@@ -42,20 +38,16 @@ import com.directions.route.RoutingListener;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
-import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -63,18 +55,19 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.firebase.database.DatabaseError;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
+import org.apache.commons.collections4.ListUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.pl.android.drively.BuildConfig;
 import org.pl.android.drively.R;
+import org.pl.android.drively.data.model.Car;
 import org.pl.android.drively.data.model.CityNotAvailable;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.FourSquarePlace;
@@ -88,11 +81,11 @@ import org.pl.android.drively.ui.main.MainActivity;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.DetectedActivityToString;
 import org.pl.android.drively.util.DisplayTextOnViewAction;
-import org.pl.android.drively.util.FirebasePaths;
 import org.pl.android.drively.util.MultiDrawable;
 import org.pl.android.drively.util.ToMostProbableActivity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -107,7 +100,6 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import pl.charmas.android.reactivelocation2.ReactiveLocationProvider;
 import timber.log.Timber;
@@ -115,9 +107,13 @@ import timber.log.Timber;
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static org.pl.android.drively.util.RxUtil.dispose;
 
-public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapLongClickListener,
-        AdapterView.OnItemSelectedListener, RoutingListener, GeoQueryEventListener, AAH_FabulousFragment.Callbacks {
-
+public class HotSpotFragment extends BaseTabFragment implements
+        HotSpotMvpView,
+        GoogleMap.OnMarkerDragListener,
+        GoogleMap.OnMapLongClickListener,
+        AdapterView.OnItemSelectedListener,
+        RoutingListener,
+        AAH_FabulousFragment.Callbacks {
     private static final int[] COLORS = new int[]{R.color.primary_dark, R.color.primary, R.color.primary_light, R.color.accent, R.color.primary_dark_material_light};
     private final static int REQUEST_CHECK_SETTINGS = 0;
     @BindView(R.id.mapView)
@@ -141,13 +137,13 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
     @BindView(R.id.fab_plus)
     FloatingActionButton plusButton;
     @BindView(R.id.fab_my_location)
-    FloatingActionButton myLocatioButton;
+    FloatingActionButton myLocationButton;
     BottomSheetBehavior mBottomSheetBehavior;
     RxPermissions rxPermissions;
     LatLng latLngCurrent, latLngEnd;
     String sEventName, sEventCount;
-    GeoFire geoFire, geoFireUsersLocation;
-    GeoQuery geoQuery, geoQueryUsersLocation;
+    GeoFire geoFireMapPoints, geoFireUsersLocation;
+    GeoQuery geoQueryMapPoints, geoQueryUsersLocation;
     MyFabFragment dialogFrag;
     boolean isFirstAfterPermissionGranted = true;
     int durationInSec, distanceValue;
@@ -169,10 +165,10 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
     private Disposable updatableLocationDisposable;
     private Disposable activityDisposable;
     private Disposable addressDisposable;
-    private List<Polyline> polylines;
+    private List<Polyline> polylineList;
     private ClusterManager<ClusterItemGoogleMap> mClusterManager;
     private HashMap<String, ClusterItemGoogleMap> eventsOnMap = new HashMap<>();
-    private HashMap<String, Marker> usersMarkers = new HashMap<>();
+    private HashMap<String, Marker> usersOnMap = new HashMap<>();
     private Context context;
     private HashMap<String, GeoLocation> directionsDelta = new HashMap<>();
 
@@ -293,41 +289,17 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(View bottomSheet, int newState) {
-
-                /*if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    bottomSheetHeading.setText(getString(R.string.text_collapse_me));
-                } else {
-                    bottomSheetHeading.setText(getString(R.string.text_expand_me));
-                }*/
-
-                // Check Logs to see how bottom sheets behaves
-                switch (newState) {
-                    case BottomSheetBehavior.STATE_COLLAPSED:
-                        Log.e("Bottom Sheet Behaviour", "STATE_COLLAPSED");
-                        break;
-                    case BottomSheetBehavior.STATE_DRAGGING:
-                        Log.e("Bottom Sheet Behaviour", "STATE_DRAGGING");
-                        break;
-                    case BottomSheetBehavior.STATE_EXPANDED:
-                        Log.e("Bottom Sheet Behaviour", "STATE_EXPANDED");
-                        break;
-                    case BottomSheetBehavior.STATE_HIDDEN:
-                        Log.e("Bottom Sheet Behaviour", "STATE_HIDDEN");
-                        break;
-                    case BottomSheetBehavior.STATE_SETTLING:
-                        Log.e("Bottom Sheet Behaviour", "STATE_SETTLING");
-                        break;
-                }
+                //bottomSheet.animate();
             }
 
             @Override
             public void onSlide(View bottomSheet, float slideOffset) {
-
+                //bottomSheet.animate();
             }
         });
+
         mPlaceDriveButton.setOnClickListener(v -> {
-            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + String.valueOf(latLngEnd.latitude) + "," +
-                    String.valueOf(latLngEnd.longitude));
+            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + String.valueOf(latLngEnd.latitude) + "," + String.valueOf(latLngEnd.longitude));
             mHotspotPresenter.setRouteFromDriver(mTextPlaceAddress.getText().toString(), sEventName, durationInSec, distanceValue, locationGeo);
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
             mapIntent.setPackage("com.google.android.apps.maps");
@@ -337,8 +309,8 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         });
 
         mPlaceCloseButton.setOnClickListener(v -> {
-            if (polylines.size() > 0) {
-                for (Polyline poly : polylines) {
+            if (polylineList.size() > 0) {
+                for (Polyline poly : polylineList) {
                     poly.remove();
                 }
             }
@@ -350,7 +322,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
     private void initGeolocation() {
         rxPermissions = new RxPermissions(getActivity());
         locationProvider = new ReactiveLocationProvider(getApplicationContext());
-        polylines = new ArrayList<>();
+        polylineList = new ArrayList<>();
         lastKnownLocationObservable = locationProvider
                 .getLastKnownLocation()
                 .observeOn(AndroidSchedulers.mainThread());
@@ -391,9 +363,10 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
-        geoFire = new GeoFire(mHotspotPresenter.getHotSpotDatabaseRefernce());
-        this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radius);
-        geoFireUsersLocation = new GeoFire(mHotspotPresenter.getUsersLocationDatabaseRefernce());
+        this.geoFireMapPoints = new GeoFire(mHotspotPresenter.getHotSpotDatabaseReference());
+        this.geoQueryMapPoints = this.geoFireMapPoints.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radius);
+
+        this.geoFireUsersLocation = new GeoFire(mHotspotPresenter.getUsersLocationDatabaseReference());
         if (mHotspotPresenter.getShareLocalisationPreference()) {
             this.geoQueryUsersLocation = this.geoFireUsersLocation.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radius);
         }
@@ -425,12 +398,15 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                         isFromNotification = false;
                         route(latLng, new LatLng(latNotification, lngNotification), notificationName, notificationCount);
                     }
-                    geoQuery = geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
-                    geoQuery.addGeoQueryEventListener(HotSpotFragment.this);
+
+                    geoQueryMapPoints = geoFireMapPoints.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
+                    geoQueryMapPoints.addGeoQueryDataEventListener(mHotspotPresenter.getMapPointsListener());
+
                     if (mHotspotPresenter.getShareLocalisationPreference()) {
                         geoQueryUsersLocation = geoFireUsersLocation.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
-                        geoQueryUsersLocation.addGeoQueryEventListener(HotSpotFragment.this);
+                        geoQueryUsersLocation.addGeoQueryDataEventListener(mHotspotPresenter.getUsersLocationListener());
                     }
+
                     eventsOnMap.clear();
                     mClusterManager.clearItems();
                 });
@@ -449,9 +425,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
                     }
                     Timber.d("address " + address);
                 }, new ErrorHandler());
-
     }
-
 
     @Override
     public void onStart() {
@@ -459,20 +433,19 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         EventBus.getDefault().register(this);
         mMapView.onResume();
         try {
-            this.geoQuery.addGeoQueryEventListener(this);
+            this.geoQueryMapPoints.addGeoQueryDataEventListener(mHotspotPresenter.getMapPointsListener());
             if (mHotspotPresenter.getShareLocalisationPreference()) {
-                this.geoQueryUsersLocation.addGeoQueryEventListener(this);
+                this.geoQueryUsersLocation.addGeoQueryDataEventListener(mHotspotPresenter.getUsersLocationListener());
             } else {
-                for (Marker marker : usersMarkers.values()) {
+                for (Marker marker : usersOnMap.values()) {
                     marker.remove();
                 }
-                usersMarkers.clear();
+                usersOnMap.clear();
             }
         } catch (Exception e) {
 
         }
     }
-
 
     @Override
     public void onResume() {
@@ -535,7 +508,6 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         if (!dialogFrag.isAdded()) {
             dialogFrag.show(getActivity().getSupportFragmentManager(), dialogFrag.getTag());
         }
-
     }
 
     @OnClick(R.id.fab_my_location)
@@ -568,14 +540,12 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         mMapView.onPause();
     }
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         mMapView.onDestroy();
         mHotspotPresenter.detachView();
     }
-
 
     @Override
     public void onStop() {
@@ -585,8 +555,8 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         dispose(lastKnownLocationDisposable);
         dispose(activityDisposable);
         dispose(addressDisposable);
-        if (this.geoQuery != null) {
-            this.geoQuery.removeAllListeners();
+        if (this.geoQueryMapPoints != null) {
+            this.geoQueryMapPoints.removeAllListeners();
         }
         if (mHotspotPresenter.getShareLocalisationPreference() && this.geoQueryUsersLocation != null) {
             this.geoQueryUsersLocation.removeAllListeners();
@@ -610,7 +580,6 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
 
     @Override
     public void onRoutingStart() {
-
     }
 
     @Override
@@ -621,14 +590,13 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         googleMap.moveCamera(center);
 
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        if (polylines.size() > 0) {
-            for (Polyline poly : polylines) {
+        if (polylineList.size() > 0) {
+            for (Polyline poly : polylineList) {
                 poly.remove();
             }
         }
 
-        polylines = new ArrayList<>();
-        //add route(s) to the map.
+        polylineList = new ArrayList<>();
 
         for (int i = 0; i < route.size(); i++) {
             PolylineOptions polyOptions = new PolylineOptions();
@@ -636,7 +604,7 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
             polyOptions.width(10 + i * 3);
             polyOptions.addAll(route.get(i).getPoints());
             Polyline polyline = googleMap.addPolyline(polyOptions);
-            polylines.add(polyline);
+            polylineList.add(polyline);
             mTextPlaceAddress.setText(route.get(i).getEndAddressText());
             mTextPlaceDistance.setText(route.get(i).getDistanceText());
             mTextPlaceTime.setText(route.get(i).getDurationText());
@@ -645,18 +613,6 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
             locationGeo = route.get(i).getLatLgnBounds().getCenter();
             mTextPlaceName.setText(sEventName);
         }
-
-        // Start marker
-        //  MarkerOptions options = new MarkerOptions();
-        //  options.position(start);
-        //options.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_calendar_plus));
-        //  googleMap.addMarker(options);
-
-        // End marker
-        // MarkerOptions options = new MarkerOptions();
-        //   options.position(latLngEnd);
-        // options.icon(BitmapDescriptorFactory.fromBitmap(bmp));
-        // googleMap.addMarker(options);
     }
 
     @Override
@@ -666,32 +622,26 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
     }
 
     @Override
     public void onMapLongClick(LatLng latLng) {
-
     }
 
     @Override
     public void onMarkerDragStart(Marker marker) {
-
     }
 
     @Override
     public void onMarkerDrag(Marker marker) {
-
     }
 
     @Override
     public void onMarkerDragEnd(Marker marker) {
-
     }
 
     @Override
@@ -707,7 +657,6 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
 
     @Override
     public void showFoursquareOnMap(FourSquarePlace fourSquarePlace) {
-        Timber.d(fourSquarePlace.getName());
         if (!eventsOnMap.containsKey(fourSquarePlace.getId())) {
             int picture = R.drawable.people;
             if (fourSquarePlace.getMainCategory().equals("NIGHTLIFE SPOT")) {
@@ -729,17 +678,78 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
             } else if (fourSquarePlace.getMainCategory().equals("SHOP & SERVICE")) {
                 picture = R.drawable.category_shop_24dp;
             }
-            ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(fourSquarePlace.getId(), new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()), fourSquarePlace.getName(), String.valueOf(fourSquarePlace.getStatsVisitsCount()), fourSquarePlace.getHotspotType(), picture);
+
+            ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(
+                    fourSquarePlace.getId(),
+                    new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()),
+                    fourSquarePlace.getName(),
+                    String.valueOf(fourSquarePlace.getStatsVisitsCount()),
+                    fourSquarePlace.getHotspotType(),
+                    picture);
+
             eventsOnMap.put(fourSquarePlace.getId(), clusterItemGoogleMap);
+
             if (mClusterManager != null)
                 mClusterManager.addItem(clusterItemGoogleMap);
+
+        } else {
+            mClusterManager.removeItem(eventsOnMap.get(fourSquarePlace.getId()));
+            eventsOnMap.get(fourSquarePlace.getId()).setPosition(new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()));
+            mClusterManager.addItem(eventsOnMap.get(fourSquarePlace.getId()));
+        }
+    }
+
+    @Override
+    public void showCarOnMap(Car car) {
+        if (car.getUserId() == null || car.getUserId().equals(mHotspotPresenter.getUid()))
+            return;
+
+        GeoLocation location = car.getGeoLocation();
+        if (!usersOnMap.containsKey(car.getUserId())) {
+
+            MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).flat(true);
+            if (car.getDriverType().contains(Const.DriverType.UBER.getName())) {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.uber));
+            } else if (car.getDriverType().contains(Const.DriverType.ITAXI.getName())) {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.itaxi));
+            } else if (car.getDriverType().contains(Const.DriverType.MY_TAXI.getName())) {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.mytaxi));
+            } else if (car.getDriverType().contains(Const.DriverType.TAXI.getName())) {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi2));
+            } else {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_car));
+            }
+            try {
+                Marker marker = googleMap.addMarker(markerOptions);
+                // Animate a marker after the map filtering
+                if (directionsDelta.containsKey(car.getUserId())) {
+                    GeoLocation previousLocation = directionsDelta.get(car.getUserId());
+                    double bearing = mHotspotPresenter.calculateBearing(previousLocation.latitude, previousLocation.longitude, location.latitude, location.longitude);
+                    mHotspotPresenter.animateMarker(marker,
+                            new LatLng(location.latitude, location.longitude),
+                            bearing, false, googleMap.getProjection());
+                }
+                usersOnMap.put(car.getUserId(), marker);
+                directionsDelta.put(car.getUserId(), location);
+
+            } catch (NullPointerException e) {
+                Timber.d(e);
+            }
+        } else {
+            GeoLocation previousLocation = directionsDelta.get(car.getUserId());
+            if (!previousLocation.equals(location)) {
+                double bearing = mHotspotPresenter.calculateBearing(previousLocation.latitude, previousLocation.longitude, location.latitude, location.longitude);
+                directionsDelta.put(car.getUserId(), location);
+                mHotspotPresenter.animateMarker(usersOnMap.get(car.getUserId()),
+                        new LatLng(location.latitude, location.longitude),
+                        bearing, false, googleMap.getProjection());
+            }
         }
     }
 
     @Override
     public void clusterMap() {
         if (mClusterManager != null) {
-            Timber.i("Cluster size from presenter" + mClusterManager.getAlgorithm().getItems().size());
             mClusterManager.cluster();
         }
     }
@@ -758,185 +768,57 @@ public class HotSpotFragment extends BaseTabFragment implements HotSpotMvpView, 
         dialogAlert.show();
     }
 
-
     protected GoogleMap getMap() {
         return googleMap;
     }
 
     @Override
-    public void onKeyEntered(String key, GeoLocation location) {
-        Timber.i(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
-        if (key.contains(FirebasePaths.USER_LOCATION) && !key.contains(mHotspotPresenter.getUid())) {
-            Timber.i("USER LOCATION");
-            if (!usersMarkers.containsKey(key)) {
-                directionsDelta.put(key, location);
-                MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).flat(true);
-                if (key.contains(Const.DriverType.UBER.getName())) {
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.uber));
-                } else if (key.contains(Const.DriverType.ITAXI.getName())) {
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.itaxi));
-                } else if (key.contains(Const.DriverType.MY_TAXI.getName())) {
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.mytaxi));
-                } else if (key.contains(Const.DriverType.TAXI.getName())) {
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi2));
-                } else {
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_car));
-                }
-                try {
-                    Marker marker = googleMap.addMarker(markerOptions);
-                    usersMarkers.put(key, marker);
-                } catch (NullPointerException e) {
-                    Timber.d(e);
-                }
-            }
-        } else {
-            mHotspotPresenter.loadHotSpotPlace(key);
-        }
+    public void removeCarFromMap(Car car) {
+        directionsDelta.remove(car.getUserId());
+        usersOnMap.remove(car.getUserId());
     }
 
     @Override
-    public void onKeyExited(String key) {
-        Timber.i(String.format("Key %s is no longer in the search area", key));
-        if (eventsOnMap.containsKey(key)) {
-            mClusterManager.removeItem((ClusterItemGoogleMap) eventsOnMap.get(key));
-            eventsOnMap.remove(key);
-        } else if (key.contains(FirebasePaths.USER_LOCATION)) {
-            directionsDelta.remove(key);
-            usersMarkers.remove(key);
-        }
-
-    }
-
-    @Override
-    public void onKeyMoved(String key, GeoLocation location) {
-        Timber.i(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
-        if (eventsOnMap.containsKey(key)) {
-            Timber.i("Old Location: " + eventsOnMap.get(key).getPosition());
-            Timber.i("New Location: " + location);
-            mClusterManager.removeItem(eventsOnMap.get(key));
-            eventsOnMap.get(key).setPosition(new LatLng(location.latitude, location.longitude));
-            mClusterManager.addItem(eventsOnMap.get(key));
-        } else if (key.contains(FirebasePaths.USER_LOCATION) && !key.contains(mHotspotPresenter.getUid())) {
-            Timber.i("USER LOCATION");
-            if (usersMarkers.containsKey(key)) {
-                GeoLocation previousLocation = directionsDelta.get(key);
-                if (!previousLocation.equals(location)) {
-                    double bearing = calculateBearing(previousLocation.latitude, previousLocation.longitude,
-                            location.latitude, location.longitude);
-                    Timber.i("BEARING " + key + " - " + bearing);
-                    directionsDelta.put(key, location);
-                    animateMarker(usersMarkers.get(key), new LatLng(location.latitude, location.longitude), bearing, false);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onGeoQueryReady() {
-        Timber.i("All initial data has been loaded and events have been fired!");
-        if (mClusterManager != null) {
-            Timber.i("Cluster size" + mClusterManager.getAlgorithm().getItems().size());
-            mClusterManager.cluster();
-        }
-    }
-
-    @Override
-    public void onGeoQueryError(DatabaseError error) {
-        Timber.e("There was an error with this query: " + error);
-    }
-
-    private double calculateBearing(double startLat, double startLong, double endLat, double endLong) {
-        double dLon = (endLong - startLong);
-        double y = Math.sin(dLon) * Math.cos(endLat);
-        double x = Math.cos(startLat) * Math.sin(endLat) - Math.sin(startLat) * Math.cos(endLat) * Math.cos(dLon);
-        double bearing = Math.toDegrees((Math.atan2(y, x)));
-        return (360 - ((bearing + 360) % 360));
-    }
-
-    public void animateMarker(final Marker marker, final LatLng toPosition,
-                              final double bearing, final boolean hideMarker) {
-        final Handler handler = new Handler();
-        final long start = SystemClock.uptimeMillis();
-        Projection proj = googleMap.getProjection();
-        Point startPoint = proj.toScreenLocation(marker.getPosition());
-        final LatLng startLatLng = proj.fromScreenLocation(startPoint);
-        final long duration = 500;
-
-        final Interpolator interpolator = new LinearInterpolator();
-
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                long elapsed = SystemClock.uptimeMillis() - start;
-                float t = interpolator.getInterpolation((float) elapsed
-                        / duration);
-                double lng = t * toPosition.longitude + (1 - t)
-                        * startLatLng.longitude;
-                double lat = t * toPosition.latitude + (1 - t)
-                        * startLatLng.latitude;
-
-                marker.setPosition(new LatLng(lat, lng));
-                marker.setRotation((float) bearing);
-
-                if (t < 1.0) {
-                    // Post again 16ms later.
-                    handler.postDelayed(this, 16);
-                } else {
-                    if (hideMarker) {
-                        marker.setVisible(false);
-                    } else {
-                        marker.setVisible(true);
-                    }
-                }
-            }
-        });
+    public void removeItemFromMap(String id) {
+        mClusterManager.removeItem(eventsOnMap.get(id));
+        eventsOnMap.remove(id);
     }
 
     @Override
     public void onResult(Object result) {
-        Log.d("k9res", "onResult: " + result.toString());
-        Log.d("k9res", "onResult: " + result.toString());
-        mHotspotPresenter.clearFilterList();
+        mHotspotPresenter.clearFilters();
+
         if (result.toString().equalsIgnoreCase("swiped_down")) {
 
         } else {
             if (result != null) {
                 ArrayMap<String, List<String>> applied_filters = (ArrayMap<String, List<String>>) result;
-                if (applied_filters.size() != 0) {
-
-                    //iterate over arraymap
+                if (applied_filters.size() > 0) {
                     for (Map.Entry<String, List<String>> entry : applied_filters.entrySet()) {
-                        Log.d("k9res", "entry.key: " + entry.getKey());
-                        if (entry.getValue().contains(getResources().getString(R.string.events_filtr))) {
-                            mHotspotPresenter.addItemToFilterList(Const.HotSpotType.EVENT);
-                        }
-                        if (entry.getValue().contains(getResources().getString(R.string.popular_places))) {
-                            mHotspotPresenter.addItemToFilterList(Const.HotSpotType.FOURSQUARE_PLACE);
-                        }
-                        if (entry.getValue().contains(getResources().getString(R.string.uber_ratio))) {
-                            mHotspotPresenter.addItemToFilterList(Const.HotSpotType.UBER_MULTIPLIER);
-                          /*  for(ClusterItemGoogleMap item : eventsOnMap.values()) {
-                                if(item.getType().equals(Const.HotSpotType.UBER_MULTIPLIER)) {
+                        if (entry.getValue().contains(getResources().getString(R.string.events_filtr)))
+                            mHotspotPresenter.addItemToMapItemFilterList(Const.HotSpotType.EVENT.name());
 
-                                }
-                            }*/
-                        }
+                        if (entry.getValue().contains(getResources().getString(R.string.popular_places)))
+                            mHotspotPresenter.addItemToMapItemFilterList(Const.HotSpotType.FOURSQUARE_PLACE.name());
+
+                        List<String> filters = entry.getValue();
+                        List<String> applications = Stream.of(new ArrayList<>(Arrays.asList(Const.DriverType.values()))).map(Const.DriverType::getName).toList();
+                        Stream.of(ListUtils.intersection(applications, filters)).forEach(app -> mHotspotPresenter.addCarApplicationFilterList(app));
                     }
-                    // this.geoQuery.setLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), 3);
-
-                } else {
-
                 }
             }
         }
-
-        if (latLngCurrent == null) return;
-
-        this.geoQuery = this.geoFire.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
-        this.geoQuery.addGeoQueryEventListener(this);
-
+        
         eventsOnMap.clear();
+        usersOnMap.clear();
         mClusterManager.clearItems();
+        googleMap.clear();
+
+        this.geoQueryMapPoints.removeAllListeners();
+        this.geoQueryMapPoints.addGeoQueryDataEventListener(mHotspotPresenter.getMapPointsListener());
+
+        this.geoQueryUsersLocation.removeAllListeners();
+        this.geoQueryUsersLocation.addGeoQueryDataEventListener(mHotspotPresenter.getUsersLocationListener());
     }
 
     public void route(LatLng start, LatLng end, String eventName, String eventCount) {

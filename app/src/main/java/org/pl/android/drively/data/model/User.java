@@ -1,5 +1,10 @@
 package org.pl.android.drively.data.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.google.firebase.firestore.IgnoreExtraProperties;
+
+@IgnoreExtraProperties
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 
     public static final String DEFAULT_AVATAR = "DEFAULT";
