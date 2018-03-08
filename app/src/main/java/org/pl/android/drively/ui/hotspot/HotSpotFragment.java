@@ -24,7 +24,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -87,7 +86,6 @@ import org.pl.android.drively.util.ToMostProbableActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -151,7 +149,8 @@ public class HotSpotFragment extends BaseTabFragment implements
     boolean isFirstAfterPermissionGranted = true;
     int durationInSec, distanceValue;
     LatLng locationGeo;
-    int radius = 10;
+    int radiusForItems = 5;
+    int radiusForCars = 2;
     double latNotification;
     double lngNotification;
     boolean isFromNotification = false;
@@ -367,11 +366,11 @@ public class HotSpotFragment extends BaseTabFragment implements
                 .observeOn(AndroidSchedulers.mainThread());
 
         this.geoFireMapPoints = new GeoFire(mHotspotPresenter.getHotSpotDatabaseReference());
-        this.geoQueryMapPoints = this.geoFireMapPoints.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radius);
+        this.geoQueryMapPoints = this.geoFireMapPoints.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radiusForItems);
 
         this.geoFireUsersLocation = new GeoFire(mHotspotPresenter.getUsersLocationDatabaseReference());
         if (mHotspotPresenter.getShareLocalisationPreference()) {
-            this.geoQueryUsersLocation = this.geoFireUsersLocation.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radius);
+            this.geoQueryUsersLocation = this.geoFireUsersLocation.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radiusForCars);
         }
     }
 
@@ -402,11 +401,11 @@ public class HotSpotFragment extends BaseTabFragment implements
                         route(latLng, new LatLng(latNotification, lngNotification), notificationName, notificationCount, Const.HotSpotType.EVENT);
                     }
 
-                    geoQueryMapPoints = geoFireMapPoints.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
+                    geoQueryMapPoints = geoFireMapPoints.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radiusForItems);
                     geoQueryMapPoints.addGeoQueryDataEventListener(mHotspotPresenter.getMapPointsListener());
 
                     if (mHotspotPresenter.getShareLocalisationPreference()) {
-                        geoQueryUsersLocation = geoFireUsersLocation.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
+                        geoQueryUsersLocation = geoFireUsersLocation.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radiusForItems);
                         geoQueryUsersLocation.addGeoQueryDataEventListener(mHotspotPresenter.getUsersLocationListener());
                     }
 
@@ -435,19 +434,6 @@ public class HotSpotFragment extends BaseTabFragment implements
         super.onStart();
         EventBus.getDefault().register(this);
         mMapView.onResume();
-        try {
-            this.geoQueryMapPoints.addGeoQueryDataEventListener(mHotspotPresenter.getMapPointsListener());
-            if (mHotspotPresenter.getShareLocalisationPreference()) {
-                this.geoQueryUsersLocation.addGeoQueryDataEventListener(mHotspotPresenter.getUsersLocationListener());
-            } else {
-                for (Marker marker : usersOnMap.values()) {
-                    marker.remove();
-                }
-                usersOnMap.clear();
-            }
-        } catch (Exception e) {
-
-        }
     }
 
     @Override
@@ -557,6 +543,13 @@ public class HotSpotFragment extends BaseTabFragment implements
         super.onDestroyView();
         mMapView.onDestroy();
         mHotspotPresenter.detachView();
+
+        if (this.geoQueryMapPoints != null) {
+            this.geoQueryMapPoints.removeAllListeners();
+        }
+        if (this.geoQueryUsersLocation != null) {
+            this.geoQueryUsersLocation.removeAllListeners();
+        }
     }
 
     @Override
@@ -567,12 +560,6 @@ public class HotSpotFragment extends BaseTabFragment implements
         dispose(lastKnownLocationDisposable);
         dispose(activityDisposable);
         dispose(addressDisposable);
-        if (this.geoQueryMapPoints != null) {
-            this.geoQueryMapPoints.removeAllListeners();
-        }
-        if (mHotspotPresenter.getShareLocalisationPreference() && this.geoQueryUsersLocation != null) {
-            this.geoQueryUsersLocation.removeAllListeners();
-        }
     }
 
     @Override
@@ -784,7 +771,7 @@ public class HotSpotFragment extends BaseTabFragment implements
 
     @Override
     public void removeCarFromMap(Car car) {
-        directionsDelta.remove(car.getUserId());
+        directionsDelta.remove(car);
         if(usersOnMap.containsKey(car)) {
             usersOnMap.get(car).remove();
             usersOnMap.remove(car);

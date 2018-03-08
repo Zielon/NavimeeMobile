@@ -18,6 +18,7 @@ import com.ethanhua.skeleton.SkeletonScreen;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryDataEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -65,6 +66,7 @@ public class EventsFragment extends BaseTabFragment implements EventsMvpView {
     HorizontalCalendar horizontalCalendar;
     ObjectMapper mapper = new ObjectMapper();
     GeoFire geoFire;
+    GeoQuery geoQuery;
 
     private MaterialDialog popup;
 
@@ -178,7 +180,6 @@ public class EventsFragment extends BaseTabFragment implements EventsMvpView {
         }
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
@@ -199,7 +200,8 @@ public class EventsFragment extends BaseTabFragment implements EventsMvpView {
         double latitude = mEventsPresenter.getLastLat();
         double longitude = mEventsPresenter.getLastLng();
 
-        geoFire.queryAtLocation(new GeoLocation(latitude, longitude), 16).addGeoQueryDataEventListener(new GeoQueryDataEventListener() {
+        geoQuery = geoFire.queryAtLocation(new GeoLocation(latitude, longitude), 16);
+        geoQuery.addGeoQueryDataEventListener(new GeoQueryDataEventListener() {
 
             @Override
             public void onDataEntered(DataSnapshot dataSnapshot, GeoLocation location) {
@@ -240,6 +242,7 @@ public class EventsFragment extends BaseTabFragment implements EventsMvpView {
     public void onDestroyView() {
         super.onDestroyView();
         mEventsPresenter.detachView();
+        geoQuery.removeAllListeners();
     }
 
     @OnClick(R.id.events_check_another_date)

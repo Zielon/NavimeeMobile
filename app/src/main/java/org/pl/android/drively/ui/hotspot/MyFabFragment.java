@@ -180,7 +180,7 @@ public class MyFabFragment extends AAH_FabulousFragment {
                     inflateLayoutWithFilters(getResources().getString(R.string.visible_on_map), fbl);
                     break;
                 case 1:
-                    //inflateLayoutWithFilters(getResources().getString(R.string.radius), fbl);
+                    //inflateLayoutWithFilters(getResources().getString(R.string.radiusForItems), fbl);
                     break;
             }
             collection.addView(layout);
