@@ -5,10 +5,6 @@ import com.google.maps.android.clustering.ClusterItem;
 
 import org.pl.android.drively.util.Const;
 
-/**
- * Created by wojciech.grazawski on 2017-11-30.
- */
-
 public class ClusterItemGoogleMap implements ClusterItem {
     private LatLng mPosition;
     private int profilePhoto;

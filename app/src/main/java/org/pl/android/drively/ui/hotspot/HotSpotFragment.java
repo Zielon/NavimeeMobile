@@ -480,7 +480,11 @@ public class HotSpotFragment extends BaseTabFragment implements
                                     mClusterManager = new ClusterManager<>(getContext(), googleMap);
                                     mClusterManager.setRenderer(new MapRenderer());
                                     mClusterManager.setOnClusterItemClickListener(clusterItemGoogleMap -> {
-                                        route(latLngCurrent, clusterItemGoogleMap.getPosition(), clusterItemGoogleMap.getName(), clusterItemGoogleMap.getCount(), sEventType);
+                                        route(latLngCurrent,
+                                                clusterItemGoogleMap.getPosition(),
+                                                clusterItemGoogleMap.getName(),
+                                                clusterItemGoogleMap.getCount(),
+                                                clusterItemGoogleMap.getType());
                                         return false;
                                     });
                                     mClusterManager.setOnClusterClickListener(cluster -> {
@@ -662,6 +666,7 @@ public class HotSpotFragment extends BaseTabFragment implements
         Timber.d(event.getTitle());
         if (!eventsOnMap.containsKey(event.getId()) && event.getPlace() != null) {
             ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(), new LatLng(event.getPlace().getLat(), event.getPlace().getLon()), event.getTitle(), String.valueOf(event.getRank()), event.getHotspotType(), R.drawable.hotspot_24dp);
+            clusterItemGoogleMap.setType(Const.HotSpotType.EVENT);
             eventsOnMap.put(event.getId(), clusterItemGoogleMap);
             if (mClusterManager != null)
                 mClusterManager.addItem(clusterItemGoogleMap);
