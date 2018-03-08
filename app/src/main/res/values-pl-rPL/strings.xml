@@ -40,7 +40,7 @@
     <string name="reauthenticate">Zaloguj się ponownie</string>
     <string name="privacy_conditions">Polityka Prywatności</string>
     <string name="help">Pomoc</string>
-    <string name="visible_on_map">Widoczne na mapie</string>
+    <string name="visible_on_map">Filtruj na mapie</string>
     <string name="radius">Promień</string>
     <string name="events_filtr">Kończące się wydarzenia</string>
     <string name="popular_places">Popularne miejsca</string>

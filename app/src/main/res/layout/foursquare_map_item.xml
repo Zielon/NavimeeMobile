@@ -17,7 +17,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/driveButton"
         android:ellipsize="end"
         android:maxLines="1"
         android:textSize="@dimen/text_small_body" />
@@ -32,7 +31,6 @@
         android:layout_below="@id/text_place_event_name"
         android:layout_marginBottom="2dp"
         android:layout_marginTop="5dp"
-        android:layout_toLeftOf="@+id/driveButton"
         android:ellipsize="end"
         android:maxLines="1"
         android:textSize="@dimen/text_small_body" />
@@ -45,8 +43,6 @@
         android:layout_alignParentStart="true"
         android:layout_below="@id/text_place_address"
         android:layout_marginTop="5dp"
-        android:layout_toLeftOf="@+id/driveButton"
-        android:layout_toStartOf="@+id/driveButton"
         android:textSize="@dimen/text_body" />
 
     <TextView
@@ -57,8 +53,6 @@
         android:layout_alignParentStart="true"
         android:layout_below="@id/text_place_distance"
         android:layout_marginTop="5dp"
-        android:layout_toLeftOf="@+id/driveButton"
-        android:layout_toStartOf="@+id/driveButton"
         android:textSize="@dimen/text_body" />
 
 

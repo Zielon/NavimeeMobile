@@ -91,6 +91,8 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
     }
 
     private void updateCarView(DataSnapshot dataSnapshot, GeoLocation location){
+        if(dataSnapshot == null || !dataSnapshot.exists()) return;
+
         Car car = mapper.convertValue(dataSnapshot.getValue(), Car.class);
         car.setGeoLocation(location);
         if(carApplicationFilterList.contains(car.getDriverType())) return;
@@ -140,7 +142,13 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
     }
 
     private void updateMapItem(DataSnapshot dataSnapshot, GeoLocation location){
-        String type = ((HashMap<String, Object>) dataSnapshot.getValue()).get("hotspotType").toString();
+        if(dataSnapshot == null || !dataSnapshot.exists()) return;
+
+        HashMap<String, Object> data = ((HashMap<String, Object>) dataSnapshot.getValue());
+
+        if(!data.containsKey("hotspotType")) return;
+
+        String type = data.get("hotspotType").toString();
 
         switch (Const.HotSpotType.valueOf(type)) {
             case EVENT:

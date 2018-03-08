@@ -24,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -90,6 +91,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
 
@@ -142,6 +144,7 @@ public class HotSpotFragment extends BaseTabFragment implements
     RxPermissions rxPermissions;
     LatLng latLngCurrent, latLngEnd;
     String sEventName, sEventCount;
+    Const.HotSpotType sEventType;
     GeoFire geoFireMapPoints, geoFireUsersLocation;
     GeoQuery geoQueryMapPoints, geoQueryUsersLocation;
     MyFabFragment dialogFrag;
@@ -167,10 +170,11 @@ public class HotSpotFragment extends BaseTabFragment implements
     private Disposable addressDisposable;
     private List<Polyline> polylineList;
     private ClusterManager<ClusterItemGoogleMap> mClusterManager;
-    private HashMap<String, ClusterItemGoogleMap> eventsOnMap = new HashMap<>();
-    private HashMap<String, Marker> usersOnMap = new HashMap<>();
+    private ConcurrentHashMap<String, ClusterItemGoogleMap> eventsOnMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Car, Marker> usersOnMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Car, GeoLocation> directionsDelta = new ConcurrentHashMap<>();
+    private View rootView;
     private Context context;
-    private HashMap<String, GeoLocation> directionsDelta = new HashMap<>();
 
     public static HotSpotFragment newInstance() {
         HotSpotFragment fragment = new HotSpotFragment();
@@ -205,11 +209,10 @@ public class HotSpotFragment extends BaseTabFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.hotspot_fragment, container, false);
+        rootView = inflater.inflate(R.layout.hotspot_fragment, container, false);
         ButterKnife.bind(this, rootView);
         mMapView.onCreate(savedInstanceState);
         mHotspotPresenter.attachView(this);
-
 
         mMapView.onResume(); // needed to get the map to display immediately
 
@@ -396,7 +399,7 @@ public class HotSpotFragment extends BaseTabFragment implements
                     latLngCurrent = latLng;
                     if (isFromNotification) {
                         isFromNotification = false;
-                        route(latLng, new LatLng(latNotification, lngNotification), notificationName, notificationCount);
+                        route(latLng, new LatLng(latNotification, lngNotification), notificationName, notificationCount, Const.HotSpotType.EVENT);
                     }
 
                     geoQueryMapPoints = geoFireMapPoints.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radius);
@@ -477,7 +480,7 @@ public class HotSpotFragment extends BaseTabFragment implements
                                     mClusterManager = new ClusterManager<>(getContext(), googleMap);
                                     mClusterManager.setRenderer(new MapRenderer());
                                     mClusterManager.setOnClusterItemClickListener(clusterItemGoogleMap -> {
-                                        route(latLngCurrent, clusterItemGoogleMap.getPosition(), clusterItemGoogleMap.getName(), clusterItemGoogleMap.getCount());
+                                        route(latLngCurrent, clusterItemGoogleMap.getPosition(), clusterItemGoogleMap.getName(), clusterItemGoogleMap.getCount(), sEventType);
                                         return false;
                                     });
                                     mClusterManager.setOnClusterClickListener(cluster -> {
@@ -531,7 +534,12 @@ public class HotSpotFragment extends BaseTabFragment implements
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(NotificationEvent notificationEvent) {
-        route(latLngCurrent, new LatLng(notificationEvent.getLat(), notificationEvent.getLng()), notificationEvent.getName(), notificationEvent.getCount());
+        route(latLngCurrent,
+                new LatLng(notificationEvent.getLat(),
+                notificationEvent.getLng()),
+                notificationEvent.getName(),
+                notificationEvent.getCount(),
+                Const.HotSpotType.EVENT);
     }
 
     @Override
@@ -588,6 +596,11 @@ public class HotSpotFragment extends BaseTabFragment implements
         CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
 
         googleMap.moveCamera(center);
+
+        if(sEventType != null && sEventType.equals(Const.HotSpotType.EVENT))
+            rootView.findViewById(R.id.foursquare_icon).setVisibility(View.GONE);
+        else
+            rootView.findViewById(R.id.foursquare_icon).setVisibility(View.VISIBLE);
 
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         if (polylineList.size() > 0) {
@@ -705,7 +718,7 @@ public class HotSpotFragment extends BaseTabFragment implements
             return;
 
         GeoLocation location = car.getGeoLocation();
-        if (!usersOnMap.containsKey(car.getUserId())) {
+        if (!usersOnMap.containsKey(car)) {
 
             MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).flat(true);
             if (car.getDriverType().contains(Const.DriverType.UBER.getName())) {
@@ -721,26 +734,18 @@ public class HotSpotFragment extends BaseTabFragment implements
             }
             try {
                 Marker marker = googleMap.addMarker(markerOptions);
-                // Animate a marker after the map filtering
-                if (directionsDelta.containsKey(car.getUserId())) {
-                    GeoLocation previousLocation = directionsDelta.get(car.getUserId());
-                    double bearing = mHotspotPresenter.calculateBearing(previousLocation.latitude, previousLocation.longitude, location.latitude, location.longitude);
-                    mHotspotPresenter.animateMarker(marker,
-                            new LatLng(location.latitude, location.longitude),
-                            bearing, false, googleMap.getProjection());
-                }
-                usersOnMap.put(car.getUserId(), marker);
-                directionsDelta.put(car.getUserId(), location);
-
+                usersOnMap.put(car, marker);
+                directionsDelta.put(car, location);
             } catch (NullPointerException e) {
                 Timber.d(e);
             }
         } else {
-            GeoLocation previousLocation = directionsDelta.get(car.getUserId());
+            GeoLocation previousLocation = directionsDelta.get(car);
             if (!previousLocation.equals(location)) {
                 double bearing = mHotspotPresenter.calculateBearing(previousLocation.latitude, previousLocation.longitude, location.latitude, location.longitude);
-                directionsDelta.put(car.getUserId(), location);
-                mHotspotPresenter.animateMarker(usersOnMap.get(car.getUserId()),
+                directionsDelta.put(car, location);
+                Marker marker = usersOnMap.get(car);
+                mHotspotPresenter.animateMarker(marker,
                         new LatLng(location.latitude, location.longitude),
                         bearing, false, googleMap.getProjection());
             }
@@ -775,19 +780,24 @@ public class HotSpotFragment extends BaseTabFragment implements
     @Override
     public void removeCarFromMap(Car car) {
         directionsDelta.remove(car.getUserId());
-        usersOnMap.remove(car.getUserId());
+        if(usersOnMap.containsKey(car)) {
+            usersOnMap.get(car).remove();
+            usersOnMap.remove(car);
+        }
     }
 
     @Override
     public void removeItemFromMap(String id) {
-        mClusterManager.removeItem(eventsOnMap.get(id));
-        eventsOnMap.remove(id);
+        if(eventsOnMap.containsKey(id)){
+            mClusterManager.removeItem(eventsOnMap.get(id));
+            eventsOnMap.remove(id);
+        }
     }
 
     @Override
     public void onResult(Object result) {
         mHotspotPresenter.clearFilters();
-
+        final List<String> filtersTypes = new ArrayList<>();
         if (result.toString().equalsIgnoreCase("swiped_down")) {
 
         } else {
@@ -803,16 +813,25 @@ public class HotSpotFragment extends BaseTabFragment implements
 
                         List<String> filters = entry.getValue();
                         List<String> applications = Stream.of(new ArrayList<>(Arrays.asList(Const.DriverType.values()))).map(Const.DriverType::getName).toList();
-                        Stream.of(ListUtils.intersection(applications, filters)).forEach(app -> mHotspotPresenter.addCarApplicationFilterList(app));
+                        filtersTypes.addAll(ListUtils.intersection(applications, filters));
+                        Stream.of(filtersTypes).forEach(app -> mHotspotPresenter.addCarApplicationFilterList(app));
                     }
                 }
             }
         }
-        
-        eventsOnMap.clear();
-        usersOnMap.clear();
+
+        Stream.of(usersOnMap)
+                .filter(car -> filtersTypes.contains(car.getKey().getDriverType()))
+                .map(Map.Entry::getKey)
+                .forEach(car -> {
+                    if(usersOnMap.containsKey(car)){
+                        usersOnMap.get(car).remove();
+                        usersOnMap.remove(car);
+                    }
+        });
+
         mClusterManager.clearItems();
-        googleMap.clear();
+        eventsOnMap.clear();
 
         this.geoQueryMapPoints.removeAllListeners();
         this.geoQueryMapPoints.addGeoQueryDataEventListener(mHotspotPresenter.getMapPointsListener());
@@ -821,10 +840,12 @@ public class HotSpotFragment extends BaseTabFragment implements
         this.geoQueryUsersLocation.addGeoQueryDataEventListener(mHotspotPresenter.getUsersLocationListener());
     }
 
-    public void route(LatLng start, LatLng end, String eventName, String eventCount) {
+    public void route(LatLng start, LatLng end, String eventName, String eventCount, Const.HotSpotType hotSpotType) {
         sEventName = eventName;
         sEventCount = eventCount;
+        sEventType = hotSpotType;
         latLngEnd = end;
+
         if (BuildConfig.DEBUG) {
             Routing routing = new Routing.Builder()
                     .travelMode(Routing.TravelMode.DRIVING)

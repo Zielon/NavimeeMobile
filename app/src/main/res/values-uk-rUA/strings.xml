@@ -39,7 +39,7 @@
     <string name="reauthenticate">Я знову ввійду</string>
     <string name="privacy_conditions">політика конфіденційності</string>
     <string name="help">допомогти</string>
-    <string name="visible_on_map">видимий на карті</string>
+    <string name="visible_on_map">Фільтрувати на карті</string>
     <string name="radius">радіус</string>
     <string name="events_filtr">закінчення події</string>
     <string name="popular_places">популярні місця</string>
