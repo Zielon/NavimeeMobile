@@ -75,7 +75,9 @@ public class UsersRepositoryImpl implements UsersRepository {
         String filedToUpdate = nameof(User.class, field);
         return dataManager.getFirebaseService()
                 .getFirebaseFirestore()
-                .collection(USERS).document(userId).update(filedToUpdate, value);
+                .collection(USERS)
+                .document(userId)
+                .update(filedToUpdate, value);
     }
 
     @Override
@@ -84,6 +86,9 @@ public class UsersRepositoryImpl implements UsersRepository {
         map.put("id", friendId);
         return dataManager.getFirebaseService()
                 .getFirebaseFirestore()
-                .collection(USERS).document(userId).collection(FRIENDS).document().set(map);
+                .collection(USERS).document(userId)
+                .collection(FRIENDS)
+                .document(friendId).set(map)
+                .addOnSuccessListener(success -> addFriend(friendId, userId));
     }
 }
