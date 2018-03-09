@@ -365,21 +365,14 @@ public class HotSpotFragment extends BaseTabFragment implements
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
-        if(!mHotspotPresenter.getShareLocalisationPreference()){
-            Stream.of(usersOnMap).forEach(car -> car.getValue().getMarker().remove());
-        }
-
         // Init GeoFire queries on the starting position. The listeners are init only once.
 
         this.geoFireMapPoints = new GeoFire(mHotspotPresenter.getHotSpotDatabaseReference());
         this.geoQueryMapPoints = this.geoFireMapPoints.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radiusForItems);
         this.geoQueryMapPoints.addGeoQueryDataEventListener(mHotspotPresenter.getMapPointsListener());
 
-        if (mHotspotPresenter.getShareLocalisationPreference()) {
-            this.geoFireUsersLocation = new GeoFire(mHotspotPresenter.getUsersLocationDatabaseReference());
-            this.geoQueryUsersLocation = this.geoFireUsersLocation.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radiusForCars);
-            this.geoQueryUsersLocation.addGeoQueryDataEventListener(mHotspotPresenter.getUsersLocationListener());
-        }
+        this.geoFireUsersLocation = new GeoFire(mHotspotPresenter.getUsersLocationDatabaseReference());
+        this.geoQueryUsersLocation = this.geoFireUsersLocation.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radiusForCars);
     }
 
     protected void onLocationPermissionGranted() {
@@ -439,6 +432,18 @@ public class HotSpotFragment extends BaseTabFragment implements
         super.onStart();
         EventBus.getDefault().register(this);
         mMapView.onResume();
+
+        if(!mHotspotPresenter.getShareLocalisationPreference()){
+            Stream.of(usersOnMap).forEach(key -> key.getValue().getMarker().setVisible(false));
+            this.geoQueryUsersLocation.removeAllListeners();
+        } else {
+            try{
+                this.geoQueryUsersLocation.addGeoQueryDataEventListener(mHotspotPresenter.getUsersLocationListener());
+            }catch (IllegalArgumentException exception){
+                // Added the same listener twice to a GeoQuery!
+                exception.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -548,13 +553,6 @@ public class HotSpotFragment extends BaseTabFragment implements
         super.onDestroyView();
         mMapView.onDestroy();
         mHotspotPresenter.detachView();
-
-        if (this.geoQueryMapPoints != null) {
-            this.geoQueryMapPoints.removeAllListeners();
-        }
-        if (this.geoQueryUsersLocation != null) {
-            this.geoQueryUsersLocation.removeAllListeners();
-        }
     }
 
     @Override

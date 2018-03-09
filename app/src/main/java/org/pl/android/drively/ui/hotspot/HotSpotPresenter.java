@@ -102,43 +102,46 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
     }
 
     public GeoQueryDataEventListener getUsersLocationListener() {
-        return new GeoQueryDataEventListener() {
+        UsersLocationListener usersLocationListener = new UsersLocationListener();
+        usersLocationListener.setName("UsersLocationListener");
+        return usersLocationListener;
+    }
 
-            @Override
-            public void onDataEntered(DataSnapshot dataSnapshot, GeoLocation location) {
-                updateCarView(dataSnapshot, location);
+    public class UsersLocationListener extends BaseGeoFireListener{
+        @Override
+        public void onDataEntered(DataSnapshot dataSnapshot, GeoLocation location) {
+            updateCarView(dataSnapshot, location);
+        }
+
+        @Override
+        public void onDataExited(DataSnapshot dataSnapshot) {
+            Car car = mapper.convertValue(dataSnapshot.getValue(), Car.class);
+            if (getMvpView() != null) {
+                getMvpView().removeCarFromMap(car);
             }
+        }
 
-            @Override
-            public void onDataExited(DataSnapshot dataSnapshot) {
-                Car car = mapper.convertValue(dataSnapshot.getValue(), Car.class);
-                if (getMvpView() != null) {
-                    getMvpView().removeCarFromMap(car);
-                }
+        @Override
+        public void onDataMoved(DataSnapshot dataSnapshot, GeoLocation location) {
+            updateCarView(dataSnapshot, location);
+        }
+
+        @Override
+        public void onDataChanged(DataSnapshot dataSnapshot, GeoLocation location) {
+            updateCarView(dataSnapshot, location);
+        }
+
+        @Override
+        public void onGeoQueryReady() {
+            if (getMvpView() != null) {
+                getMvpView().clusterMap();
             }
+        }
 
-            @Override
-            public void onDataMoved(DataSnapshot dataSnapshot, GeoLocation location) {
-                updateCarView(dataSnapshot, location);
-            }
+        @Override
+        public void onGeoQueryError(DatabaseError error) {
 
-            @Override
-            public void onDataChanged(DataSnapshot dataSnapshot, GeoLocation location) {
-                updateCarView(dataSnapshot, location);
-            }
-
-            @Override
-            public void onGeoQueryReady() {
-                if (getMvpView() != null) {
-                    getMvpView().clusterMap();
-                }
-            }
-
-            @Override
-            public void onGeoQueryError(DatabaseError error) {
-
-            }
-        };
+        }
     }
 
     private void updateMapItem(DataSnapshot dataSnapshot, GeoLocation location) {
@@ -168,39 +171,42 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
     }
 
     public GeoQueryDataEventListener getMapPointsListener() {
-        return new GeoQueryDataEventListener() {
+        MapPointsListener mapPointsListener = new MapPointsListener();
+        mapPointsListener.setName("MapPointsListener");
+        return mapPointsListener;
+    }
 
-            @Override
-            public void onDataEntered(DataSnapshot dataSnapshot, GeoLocation location) {
-                updateMapItem(dataSnapshot, location);
+    public class MapPointsListener extends BaseGeoFireListener{
+        @Override
+        public void onDataEntered(DataSnapshot dataSnapshot, GeoLocation location) {
+            updateMapItem(dataSnapshot, location);
+        }
+
+        @Override
+        public void onDataExited(DataSnapshot dataSnapshot) {
+            if (getMvpView() != null)
+                getMvpView().removeItemFromMap(dataSnapshot.getKey());
+        }
+
+        @Override
+        public void onDataMoved(DataSnapshot dataSnapshot, GeoLocation location) {
+        }
+
+        @Override
+        public void onDataChanged(DataSnapshot dataSnapshot, GeoLocation location) {
+        }
+
+        @Override
+        public void onGeoQueryReady() {
+            if (getMvpView() != null) {
+                getMvpView().clusterMap();
             }
+        }
 
-            @Override
-            public void onDataExited(DataSnapshot dataSnapshot) {
-                if (getMvpView() != null)
-                    getMvpView().removeItemFromMap(dataSnapshot.getKey());
-            }
+        @Override
+        public void onGeoQueryError(DatabaseError error) {
 
-            @Override
-            public void onDataMoved(DataSnapshot dataSnapshot, GeoLocation location) {
-            }
-
-            @Override
-            public void onDataChanged(DataSnapshot dataSnapshot, GeoLocation location) {
-            }
-
-            @Override
-            public void onGeoQueryReady() {
-                if (getMvpView() != null) {
-                    getMvpView().clusterMap();
-                }
-            }
-
-            @Override
-            public void onGeoQueryError(DatabaseError error) {
-
-            }
-        };
+        }
     }
 
     public void animateMarker(final Marker marker, final LatLng toPosition, final double bearing, final boolean hideMarker, Projection projection) {
