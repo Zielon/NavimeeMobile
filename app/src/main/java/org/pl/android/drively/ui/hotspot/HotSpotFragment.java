@@ -365,14 +365,16 @@ public class HotSpotFragment extends BaseTabFragment implements
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
-        // Init GeoFire queries on the starting position
+        // Init GeoFire queries on the starting position. The listeners are init only once.
 
         this.geoFireMapPoints = new GeoFire(mHotspotPresenter.getHotSpotDatabaseReference());
         this.geoQueryMapPoints = this.geoFireMapPoints.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radiusForItems);
+        this.geoQueryMapPoints.addGeoQueryDataEventListener(mHotspotPresenter.getMapPointsListener());
 
-        this.geoFireUsersLocation = new GeoFire(mHotspotPresenter.getUsersLocationDatabaseReference());
         if (mHotspotPresenter.getShareLocalisationPreference()) {
+            this.geoFireUsersLocation = new GeoFire(mHotspotPresenter.getUsersLocationDatabaseReference());
             this.geoQueryUsersLocation = this.geoFireUsersLocation.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radiusForCars);
+            this.geoQueryUsersLocation.addGeoQueryDataEventListener(mHotspotPresenter.getUsersLocationListener());
         }
     }
 
@@ -403,31 +405,13 @@ public class HotSpotFragment extends BaseTabFragment implements
                         route(latLng, new LatLng(latNotification, lngNotification), notificationName, notificationCount, Const.HotSpotType.EVENT);
                     }
 
-                    // On each update change the listeners query positions and clear the HashMaps<>
+                    // On each update change the GeoFire position. There is no need to add new listeners.
 
-                    if(geoQueryUsersLocation != null)
-                        geoQueryUsersLocation.removeAllListeners();
+                    if (geoQueryMapPoints != null)
+                        geoQueryMapPoints.setLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radiusForItems);
 
-                    if(geoQueryMapPoints != null)
-                        geoQueryMapPoints.removeAllListeners();
-
-                    geoQueryMapPoints = geoFireMapPoints.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radiusForItems);
-                    geoQueryMapPoints.addGeoQueryDataEventListener(mHotspotPresenter.getMapPointsListener());
-
-                    if (mHotspotPresenter.getShareLocalisationPreference()) {
-                        geoQueryUsersLocation = geoFireUsersLocation.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radiusForItems);
-                        geoQueryUsersLocation.addGeoQueryDataEventListener(mHotspotPresenter.getUsersLocationListener());
-                    }
-
-                    // Clear the google map view
-
-                    eventsOnMap.clear();
-                    mClusterManager.clearItems();
-
-                    Stream.of(usersOnMap).forEach(car -> car.getValue().remove());
-                    usersOnMap.clear();
-
-                    mClusterManager.setRenderer(new MapRenderer());
+                    if (mHotspotPresenter.getShareLocalisationPreference() && geoQueryUsersLocation != null)
+                        geoQueryUsersLocation.setLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radiusForItems);
                 });
 
         activityDisposable = activityObservable
@@ -543,7 +527,7 @@ public class HotSpotFragment extends BaseTabFragment implements
     public void onEvent(NotificationEvent notificationEvent) {
         route(latLngCurrent,
                 new LatLng(notificationEvent.getLat(),
-                notificationEvent.getLng()),
+                        notificationEvent.getLng()),
                 notificationEvent.getName(),
                 notificationEvent.getCount(),
                 Const.HotSpotType.EVENT);
@@ -605,7 +589,7 @@ public class HotSpotFragment extends BaseTabFragment implements
 
         googleMap.moveCamera(center);
 
-        if(sEventType != null && sEventType.equals(Const.HotSpotType.EVENT))
+        if (sEventType != null && sEventType.equals(Const.HotSpotType.EVENT))
             rootView.findViewById(R.id.foursquare_icon).setVisibility(View.GONE);
         else
             rootView.findViewById(R.id.foursquare_icon).setVisibility(View.VISIBLE);
@@ -673,7 +657,7 @@ public class HotSpotFragment extends BaseTabFragment implements
                     new ClusterItemGoogleMap(
                             event.getId(),
                             new LatLng(event.getPlace().getLat(),
-                            event.getPlace().getLon()),
+                                    event.getPlace().getLon()),
                             event.getTitle(),
                             String.valueOf(event.getRank()),
                             event.getHotspotType(),
@@ -730,7 +714,7 @@ public class HotSpotFragment extends BaseTabFragment implements
         }
     }
 
-    private MarkerOptions getMarkerOptions(Car car){
+    private MarkerOptions getMarkerOptions(Car car) {
         GeoLocation location = car.getGeoLocation();
         MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).flat(true);
         if (car.getDriverType().contains(Const.DriverType.UBER.getName())) {
@@ -798,7 +782,7 @@ public class HotSpotFragment extends BaseTabFragment implements
     @Override
     public void removeCarFromMap(Car car) {
         directionsDelta.remove(car);
-        if(usersOnMap.containsKey(car)) {
+        if (usersOnMap.containsKey(car)) {
             usersOnMap.get(car).remove();
             usersOnMap.remove(car);
         }
@@ -806,7 +790,7 @@ public class HotSpotFragment extends BaseTabFragment implements
 
     @Override
     public void removeItemFromMap(String id) {
-        if(eventsOnMap.containsKey(id)){
+        if (eventsOnMap.containsKey(id)) {
             mClusterManager.removeItem(eventsOnMap.get(id));
             eventsOnMap.remove(id);
         }
@@ -850,13 +834,13 @@ public class HotSpotFragment extends BaseTabFragment implements
 
         mClusterManager.clearItems();
 
-        if(!itemsFiltersTypes.contains(Const.HotSpotType.FOURSQUARE_PLACE.name())){
+        if (!itemsFiltersTypes.contains(Const.HotSpotType.FOURSQUARE_PLACE.name())) {
             Stream.of(eventsOnMap)
                     .filter(item -> item.getValue().getType().equals(Const.HotSpotType.FOURSQUARE_PLACE))
                     .forEach(item -> mClusterManager.addItem(item.getValue()));
         }
 
-        if(!itemsFiltersTypes.contains(Const.HotSpotType.EVENT.name())){
+        if (!itemsFiltersTypes.contains(Const.HotSpotType.EVENT.name())) {
             Stream.of(eventsOnMap)
                     .filter(item -> item.getValue().getType().equals(Const.HotSpotType.EVENT))
                     .forEach(item -> mClusterManager.addItem(item.getValue()));

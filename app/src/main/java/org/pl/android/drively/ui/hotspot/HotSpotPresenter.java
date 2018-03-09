@@ -90,12 +90,12 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
         return mDataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.USER_LOCATION);
     }
 
-    private void updateCarView(DataSnapshot dataSnapshot, GeoLocation location){
-        if(dataSnapshot == null || !dataSnapshot.exists()) return;
+    private void updateCarView(DataSnapshot dataSnapshot, GeoLocation location) {
+        if (dataSnapshot == null || !dataSnapshot.exists()) return;
 
         Car car = mapper.convertValue(dataSnapshot.getValue(), Car.class);
         car.setGeoLocation(location);
-        if(carApplicationFilterList.contains(car.getDriverType())) return;
+        if (carApplicationFilterList.contains(car.getDriverType())) return;
         if (getMvpView() != null) {
             getMvpView().showCarOnMap(car);
         }
@@ -141,26 +141,26 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
         };
     }
 
-    private void updateMapItem(DataSnapshot dataSnapshot, GeoLocation location){
-        if(dataSnapshot == null || !dataSnapshot.exists()) return;
+    private void updateMapItem(DataSnapshot dataSnapshot, GeoLocation location) {
+        if (dataSnapshot == null || !dataSnapshot.exists()) return;
 
         HashMap<String, Object> data = ((HashMap<String, Object>) dataSnapshot.getValue());
 
-        if(!data.containsKey("hotspotType")) return;
+        if (!data.containsKey("hotspotType")) return;
 
         String type = data.get("hotspotType").toString();
 
         switch (Const.HotSpotType.valueOf(type)) {
             case EVENT:
                 Event event = mapper.convertValue(dataSnapshot.getValue(), Event.class);
-                if(mapItemFilterList.contains(Const.HotSpotType.EVENT.name())) return;
+                if (mapItemFilterList.contains(Const.HotSpotType.EVENT.name())) return;
                 if (getMvpView() != null)
                     getMvpView().showEventOnMap(event);
                 break;
 
             case FOURSQUARE_PLACE:
                 FourSquarePlace fourSquarePlace = mapper.convertValue(dataSnapshot.getValue(), FourSquarePlace.class);
-                if(mapItemFilterList.contains(Const.HotSpotType.FOURSQUARE_PLACE.name())) return;
+                if (mapItemFilterList.contains(Const.HotSpotType.FOURSQUARE_PLACE.name())) return;
                 if (getMvpView() != null)
                     getMvpView().showFoursquareOnMap(fourSquarePlace);
                 break;

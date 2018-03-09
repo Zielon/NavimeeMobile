@@ -32,7 +32,6 @@ import org.pl.android.drively.ui.base.tab.BaseTabFragment;
 import org.pl.android.drively.ui.planner.PlannerFragment;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
