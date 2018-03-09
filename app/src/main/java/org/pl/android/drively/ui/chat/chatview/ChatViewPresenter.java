@@ -2,6 +2,7 @@ package org.pl.android.drively.ui.chat.chatview;
 
 import com.google.firebase.storage.StorageReference;
 
+import org.pl.android.drively.contracts.repositories.UsersRepository;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.data.model.chat.Friend;
@@ -26,15 +27,16 @@ import static org.pl.android.drively.util.FirebasePaths.MESSAGES_GROUPS;
 import static org.pl.android.drively.util.FirebasePaths.MESSAGES_PRIVATE;
 import static org.pl.android.drively.util.ReflectionUtil.nameof;
 
-@ConfigPersistent
 public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
 
     private final DataManager mDataManager;
+    private final UsersRepository usersRepository;
     private Disposable mDisposable;
 
     @Inject
-    public ChatViewPresenter(DataManager dataManager) {
-        mDataManager = dataManager;
+    public ChatViewPresenter(DataManager dataManager, UsersRepository usersRepository) {
+        this.mDataManager = dataManager;
+        this.usersRepository = usersRepository;
     }
 
     @Override
@@ -50,28 +52,7 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
 
     public void addFriend(String idFriend) {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        Map<String, Object> friendMap = new HashMap<>();
-        try {
-            String idField = nameof(Friend.class, "id");
-            mDataManager.getFirebaseService().getFirebaseFirestore()
-                    .collection(FirebasePaths.USERS)
-                    .document(userId)
-                    .collection(FirebasePaths.FRIENDS)
-                    .whereEqualTo(idField, userId).get()
-                    .addOnSuccessListener(documentSnapshots -> {
-                        if (!documentSnapshots.isEmpty()) return;
-                        friendMap.put(idField, idFriend);
-                        mDataManager.getFirebaseService().getFirebaseFirestore()
-                                .collection(FirebasePaths.USERS)
-                                .document(userId)
-                                .collection(FirebasePaths.FRIENDS)
-                                .add(friendMap).addOnSuccessListener(documentReference -> {
-                        });
-                    });
-
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        }
+        usersRepository.addFriend(userId, idFriend);
     }
 
     public void setMessageListener(String roomId, boolean isGroupChat) {

@@ -347,12 +347,9 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                                                 checkBeforAddFriend(item.getId(), friend);
                                                 dialog.dismiss();
                                             })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    checkBeforAddFriend(item.getId(), friend);
-                                                    dialog.dismiss();
-                                                }
+                                            .addOnFailureListener(e -> {
+                                                checkBeforAddFriend(item.getId(), friend);
+                                                dialog.dismiss();
                                             });
                                 }
                             });
