@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 
 import com.google.firebase.auth.FirebaseUser;
 
+import org.pl.android.drively.contracts.repositories.UsersRepository;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.injection.ConfigPersistent;
@@ -19,15 +20,16 @@ import io.reactivex.disposables.Disposable;
 
 import static org.pl.android.drively.util.ReflectionUtil.nameof;
 
-@ConfigPersistent
 public class MainPresenter extends BasePresenter<MainMvpView> {
 
     private final DataManager mDataManager;
+    private final UsersRepository usersRepository;
     private Disposable mDisposable;
 
     @Inject
-    public MainPresenter(DataManager dataManager) {
-        mDataManager = dataManager;
+    public MainPresenter(DataManager dataManager, UsersRepository usersRepository) {
+        this.mDataManager = dataManager;
+        this.usersRepository = usersRepository;
     }
 
     @Override
@@ -43,10 +45,9 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
 
     public void updateOnlineStatus(boolean online) {
         try {
-            String isOnlineField = nameof(User.class, "online");
             String userId = mDataManager.getPreferencesHelper().getUserId();
             if (userId.equals("")) return;
-            mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).update(isOnlineField, online);
+            usersRepository.updateUserField(userId, "online", online);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }

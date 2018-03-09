@@ -148,7 +148,6 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
 
         mMainPresenter.attachView(this);
         mMainPresenter.checkVersion();
-        mMainPresenter.updateOnlineStatus(true);
 
 //        checkAppIntro();
         checkLogin();

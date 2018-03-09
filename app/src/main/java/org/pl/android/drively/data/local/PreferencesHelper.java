@@ -62,17 +62,22 @@ public class PreferencesHelper {
 
     public void clear() {
         String messagingToken = sharedPreferences.getString(Const.MESSAGING_TOKEN, "");
+        String userId = getUserId();
         int appVersion = getAppVersion();
 
         if (userListenerRegistration != null)
             userListenerRegistration.remove();
 
         sharedPreferences.edit().clear().apply();
+
+        // Restore shared preferences
         sharedPreferences.edit().putBoolean(Const.FIRST_START, false).apply();
-        StreamSupport.stream(Const.TAB_FRAGMENTS).forEach(tabFragment -> sharedPreferences.edit()
-                .putBoolean(tabFragment + Const.FIRST_START_POPUP_SUFFIX, true).apply());
         sharedPreferences.edit().putString(Const.MESSAGING_TOKEN, messagingToken).apply();
         sharedPreferences.edit().putInt(APP_VERSION, appVersion).apply();
+        sharedPreferences.edit().putString(SHARE_KEY_USER_ID, userId).apply();
+
+        StreamSupport.stream(Const.TAB_FRAGMENTS).forEach(tabFragment -> sharedPreferences.edit()
+                .putBoolean(tabFragment + Const.FIRST_START_POPUP_SUFFIX, true).apply());
     }
 
     public void unclearPopups() {

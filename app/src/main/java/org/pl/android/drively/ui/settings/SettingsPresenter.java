@@ -3,6 +3,7 @@ package org.pl.android.drively.ui.settings;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FieldValue;
 
+import org.pl.android.drively.contracts.repositories.UsersRepository;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.local.PreferencesHelper;
 import org.pl.android.drively.injection.ConfigPersistent;
@@ -20,19 +21,20 @@ import io.reactivex.disposables.Disposable;
 
 import static org.pl.android.drively.util.FirebasePaths.USERS;
 
-@ConfigPersistent
 public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
 
     private final DataManager dataManager;
+    private final UsersRepository usersRepository;
     private PreferencesHelper preferencesHelper;
     private Disposable disposable;
     private FirebaseUser firebaseUser;
 
     @Inject
-    public SettingsPresenter(DataManager dataManager, PreferencesHelper preferencesHelper) {
+    public SettingsPresenter(DataManager dataManager, PreferencesHelper preferencesHelper, UsersRepository usersRepository) {
         this.preferencesHelper = preferencesHelper;
         this.dataManager = dataManager;
         this.firebaseUser = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
+        this.usersRepository = usersRepository;
     }
 
     @Override
@@ -55,6 +57,12 @@ public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
         dataManager.getFirebaseService().getFirebaseAuth().signOut();
 
         ChatViewActivity.bitmapAvatarUser = null;
+
+        try {
+            usersRepository.updateUserField(userId, "online", false);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
 
         preferencesHelper.clear();
 
