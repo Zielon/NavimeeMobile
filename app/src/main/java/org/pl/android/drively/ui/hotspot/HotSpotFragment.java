@@ -170,8 +170,8 @@ public class HotSpotFragment extends BaseTabFragment implements
     private List<Polyline> polylineList;
     private ClusterManager<ClusterItemGoogleMap> mClusterManager;
     private ConcurrentHashMap<String, ClusterItemGoogleMap> eventsOnMap = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<Car, Marker> usersOnMap = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<Car, GeoLocation> directionsDelta = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, Car> usersOnMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, GeoLocation> directionsDelta = new ConcurrentHashMap<>();
     private View rootView;
     private Context context;
 
@@ -364,6 +364,10 @@ public class HotSpotFragment extends BaseTabFragment implements
                 .map(addresses -> addresses != null && !addresses.isEmpty() ? addresses.get(0) : null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+
+        if(!mHotspotPresenter.getShareLocalisationPreference()){
+            Stream.of(usersOnMap).forEach(car -> car.getValue().getMarker().remove());
+        }
 
         // Init GeoFire queries on the starting position. The listeners are init only once.
 
@@ -714,9 +718,10 @@ public class HotSpotFragment extends BaseTabFragment implements
         }
     }
 
-    private MarkerOptions getMarkerOptions(Car car) {
+    private Marker addMarker(Car car) {
         GeoLocation location = car.getGeoLocation();
         MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).flat(true);
+
         if (car.getDriverType().contains(Const.DriverType.UBER.getName())) {
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.uber));
         } else if (car.getDriverType().contains(Const.DriverType.ITAXI.getName())) {
@@ -728,7 +733,8 @@ public class HotSpotFragment extends BaseTabFragment implements
         } else {
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_car));
         }
-        return markerOptions;
+
+        return googleMap.addMarker(markerOptions);
     }
 
     @Override
@@ -736,17 +742,20 @@ public class HotSpotFragment extends BaseTabFragment implements
         if (car.getUserId() == null || car.getUserId().equals(mHotspotPresenter.getUid()))
             return;
 
+        String carUser = car.getUserId();
+
         GeoLocation location = car.getGeoLocation();
-        if (!usersOnMap.containsKey(car)) {
-            Marker marker = googleMap.addMarker(getMarkerOptions(car));
-            usersOnMap.put(car, marker);
-            directionsDelta.put(car, location);
+        if (!usersOnMap.containsKey(carUser)) {
+            car.setMarker(addMarker(car));
+            usersOnMap.put(carUser, car);
+            directionsDelta.put(carUser, location);
         } else {
-            GeoLocation previousLocation = directionsDelta.get(car);
+            GeoLocation previousLocation = directionsDelta.get(carUser);
+            usersOnMap.get(carUser).setGeoLocation(location);
             if (!previousLocation.equals(location)) {
                 double bearing = mHotspotPresenter.calculateBearing(previousLocation.latitude, previousLocation.longitude, location.latitude, location.longitude);
-                directionsDelta.put(car, location);
-                Marker marker = usersOnMap.get(car);
+                directionsDelta.put(carUser, location);
+                Marker marker = usersOnMap.get(carUser).getMarker();
                 mHotspotPresenter.animateMarker(marker,
                         new LatLng(location.latitude, location.longitude),
                         bearing, false, googleMap.getProjection());
@@ -781,15 +790,18 @@ public class HotSpotFragment extends BaseTabFragment implements
 
     @Override
     public void removeCarFromMap(Car car) {
-        directionsDelta.remove(car);
-        if (usersOnMap.containsKey(car)) {
-            usersOnMap.get(car).remove();
-            usersOnMap.remove(car);
+        String carUser = car.getUserId();
+        if(carUser == null) return;
+        directionsDelta.remove(carUser);
+        if (usersOnMap.containsKey(carUser)) {
+            usersOnMap.get(carUser).getMarker().remove();
+            usersOnMap.remove(carUser);
         }
     }
 
     @Override
     public void removeItemFromMap(String id) {
+        if(id == null) return;
         if (eventsOnMap.containsKey(id)) {
             mClusterManager.removeItem(eventsOnMap.get(id));
             eventsOnMap.remove(id);
@@ -798,9 +810,12 @@ public class HotSpotFragment extends BaseTabFragment implements
 
     @Override
     public void onResult(Object result) {
+
         mHotspotPresenter.clearFilters();
+
         final List<String> carsFiltersTypes = new ArrayList<>();
         final List<String> itemsFiltersTypes = new ArrayList<>();
+
         if (result.toString().equalsIgnoreCase("swiped_down")) {
 
         } else {
@@ -825,12 +840,14 @@ public class HotSpotFragment extends BaseTabFragment implements
             }
         }
 
-        Stream.of(usersOnMap).forEach(car -> car.getValue().remove());
+        // CARS
 
+        Stream.of(usersOnMap).forEach(key -> key.getValue().getMarker().setVisible(true));
         Stream.of(usersOnMap)
-                .filter(car -> !carsFiltersTypes.contains(car.getKey().getDriverType()))
-                .filter(car -> car.getValue() != null)
-                .forEach(car -> usersOnMap.put(car.getKey(), googleMap.addMarker(getMarkerOptions(car.getKey()))));
+                .filter(car -> carsFiltersTypes.contains(car.getValue().getDriverType()))
+                .forEach(key -> key.getValue().getMarker().setVisible(false));
+
+        // CLUSTERS
 
         mClusterManager.clearItems();
 

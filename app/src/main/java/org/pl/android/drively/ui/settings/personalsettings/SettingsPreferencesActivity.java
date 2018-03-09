@@ -80,9 +80,8 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
                 startService(new Intent(this, GeolocationUpdateService.class));
             }
             mainPreferenceFragment.updateDriverTypeEnableAfter();
+            EventBus.getDefault().post(new HotspotSettingsChanged(dataManager.getPreferencesHelper().getUserId(), settingsPreferencesPresenter.getShareLocalization()));
         }
-
-        EventBus.getDefault().post(new HotspotSettingsChanged(settingsPreferencesPresenter.getDriverType(), settingsPreferencesPresenter.getShareLocalization()));
     }
 
     private void showPopup(Preference preference, boolean shouldUncheckLocalization) {
