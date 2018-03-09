@@ -824,12 +824,6 @@ public class HotSpotFragment extends BaseTabFragment implements
 
         mClusterManager.clearItems();
         eventsOnMap.clear();
-
-        this.geoQueryMapPoints.removeAllListeners();
-        this.geoQueryMapPoints.addGeoQueryDataEventListener(mHotspotPresenter.getMapPointsListener());
-
-        this.geoQueryUsersLocation.removeAllListeners();
-        this.geoQueryUsersLocation.addGeoQueryDataEventListener(mHotspotPresenter.getUsersLocationListener());
     }
 
     public void route(LatLng start, LatLng end, String eventName, String eventCount, Const.HotSpotType hotSpotType) {

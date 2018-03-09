@@ -124,6 +124,7 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
 
             @Override
             public void onDataChanged(DataSnapshot dataSnapshot, GeoLocation location) {
+                updateCarView(dataSnapshot, location);
             }
 
             @Override
