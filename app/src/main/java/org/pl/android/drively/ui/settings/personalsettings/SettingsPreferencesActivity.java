@@ -74,10 +74,10 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
                 showPopup(preference, true);
             }
             if (settingsPreferencesPresenter.getShareLocalization()) {
+                startService(new Intent(this, GeolocationUpdateService.class));
+            } else {
                 Intent intentGeoService = new Intent(this, GeolocationUpdateService.class);
                 stopService(intentGeoService);
-            } else {
-                startService(new Intent(this, GeolocationUpdateService.class));
             }
             mainPreferenceFragment.updateDriverTypeEnableAfter();
             EventBus.getDefault().post(new HotspotSettingsChanged(dataManager.getPreferencesHelper().getUserId(), settingsPreferencesPresenter.getShareLocalization()));

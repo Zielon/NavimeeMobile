@@ -75,7 +75,6 @@ public class GeolocationUpdateService extends Service {
         final Handler handler = new Handler();
         handler.postDelayed(() -> {
             stopSelf();
-            geoFire.removeLocation(FIREBASE_KEY);
         }, TIME_FOR_SERVICE);
 
         User user = dataManager.getPreferencesHelper().getUserInfo();
@@ -147,7 +146,6 @@ public class GeolocationUpdateService extends Service {
             startLocationUpdates();
         }else{
             stopSelf();
-            geoFire.removeLocation(FIREBASE_KEY);
         }
     }
 
