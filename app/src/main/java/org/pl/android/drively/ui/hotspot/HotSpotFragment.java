@@ -365,6 +365,8 @@ public class HotSpotFragment extends BaseTabFragment implements
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
+        // Init GeoFire queries on the starting position
+
         this.geoFireMapPoints = new GeoFire(mHotspotPresenter.getHotSpotDatabaseReference());
         this.geoQueryMapPoints = this.geoFireMapPoints.queryAtLocation(new GeoLocation(mHotspotPresenter.getLastLat(), mHotspotPresenter.getLastLng()), radiusForItems);
 
@@ -401,6 +403,14 @@ public class HotSpotFragment extends BaseTabFragment implements
                         route(latLng, new LatLng(latNotification, lngNotification), notificationName, notificationCount, Const.HotSpotType.EVENT);
                     }
 
+                    // On each update change the listeners query positions and clear the HashMaps<>
+
+                    if(geoQueryUsersLocation != null)
+                        geoQueryUsersLocation.removeAllListeners();
+
+                    if(geoQueryMapPoints != null)
+                        geoQueryMapPoints.removeAllListeners();
+
                     geoQueryMapPoints = geoFireMapPoints.queryAtLocation(new GeoLocation(latLngCurrent.latitude, latLngCurrent.longitude), radiusForItems);
                     geoQueryMapPoints.addGeoQueryDataEventListener(mHotspotPresenter.getMapPointsListener());
 
@@ -409,8 +419,15 @@ public class HotSpotFragment extends BaseTabFragment implements
                         geoQueryUsersLocation.addGeoQueryDataEventListener(mHotspotPresenter.getUsersLocationListener());
                     }
 
+                    // Clear the google map view
+
                     eventsOnMap.clear();
                     mClusterManager.clearItems();
+
+                    Stream.of(usersOnMap).forEach(car -> car.getValue().remove());
+                    usersOnMap.clear();
+
+                    mClusterManager.setRenderer(new MapRenderer());
                 });
 
         activityDisposable = activityObservable
@@ -652,7 +669,16 @@ public class HotSpotFragment extends BaseTabFragment implements
     public void showEventOnMap(Event event) {
         Timber.d(event.getTitle());
         if (!eventsOnMap.containsKey(event.getId()) && event.getPlace() != null) {
-            ClusterItemGoogleMap clusterItemGoogleMap = new ClusterItemGoogleMap(event.getId(), new LatLng(event.getPlace().getLat(), event.getPlace().getLon()), event.getTitle(), String.valueOf(event.getRank()), event.getHotspotType(), R.drawable.hotspot_24dp);
+            ClusterItemGoogleMap clusterItemGoogleMap =
+                    new ClusterItemGoogleMap(
+                            event.getId(),
+                            new LatLng(event.getPlace().getLat(),
+                            event.getPlace().getLon()),
+                            event.getTitle(),
+                            String.valueOf(event.getRank()),
+                            event.getHotspotType(),
+                            R.drawable.hotspot_24dp);
+
             clusterItemGoogleMap.setType(Const.HotSpotType.EVENT);
             eventsOnMap.put(event.getId(), clusterItemGoogleMap);
             if (mClusterManager != null)
@@ -704,6 +730,23 @@ public class HotSpotFragment extends BaseTabFragment implements
         }
     }
 
+    private MarkerOptions getMarkerOptions(Car car){
+        GeoLocation location = car.getGeoLocation();
+        MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).flat(true);
+        if (car.getDriverType().contains(Const.DriverType.UBER.getName())) {
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.uber));
+        } else if (car.getDriverType().contains(Const.DriverType.ITAXI.getName())) {
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.itaxi));
+        } else if (car.getDriverType().contains(Const.DriverType.MY_TAXI.getName())) {
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.mytaxi));
+        } else if (car.getDriverType().contains(Const.DriverType.TAXI.getName())) {
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi2));
+        } else {
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_car));
+        }
+        return markerOptions;
+    }
+
     @Override
     public void showCarOnMap(Car car) {
         if (car.getUserId() == null || car.getUserId().equals(mHotspotPresenter.getUid()))
@@ -711,26 +754,9 @@ public class HotSpotFragment extends BaseTabFragment implements
 
         GeoLocation location = car.getGeoLocation();
         if (!usersOnMap.containsKey(car)) {
-
-            MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).flat(true);
-            if (car.getDriverType().contains(Const.DriverType.UBER.getName())) {
-                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.uber));
-            } else if (car.getDriverType().contains(Const.DriverType.ITAXI.getName())) {
-                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.itaxi));
-            } else if (car.getDriverType().contains(Const.DriverType.MY_TAXI.getName())) {
-                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.mytaxi));
-            } else if (car.getDriverType().contains(Const.DriverType.TAXI.getName())) {
-                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi2));
-            } else {
-                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_car));
-            }
-            try {
-                Marker marker = googleMap.addMarker(markerOptions);
-                usersOnMap.put(car, marker);
-                directionsDelta.put(car, location);
-            } catch (NullPointerException e) {
-                Timber.d(e);
-            }
+            Marker marker = googleMap.addMarker(getMarkerOptions(car));
+            usersOnMap.put(car, marker);
+            directionsDelta.put(car, location);
         } else {
             GeoLocation previousLocation = directionsDelta.get(car);
             if (!previousLocation.equals(location)) {
@@ -789,41 +815,55 @@ public class HotSpotFragment extends BaseTabFragment implements
     @Override
     public void onResult(Object result) {
         mHotspotPresenter.clearFilters();
-        final List<String> filtersTypes = new ArrayList<>();
+        final List<String> carsFiltersTypes = new ArrayList<>();
+        final List<String> itemsFiltersTypes = new ArrayList<>();
         if (result.toString().equalsIgnoreCase("swiped_down")) {
 
         } else {
-            if (result != null) {
-                ArrayMap<String, List<String>> applied_filters = (ArrayMap<String, List<String>>) result;
-                if (applied_filters.size() > 0) {
-                    for (Map.Entry<String, List<String>> entry : applied_filters.entrySet()) {
-                        if (entry.getValue().contains(getResources().getString(R.string.events_filtr)))
-                            mHotspotPresenter.addItemToMapItemFilterList(Const.HotSpotType.EVENT.name());
-
-                        if (entry.getValue().contains(getResources().getString(R.string.popular_places)))
-                            mHotspotPresenter.addItemToMapItemFilterList(Const.HotSpotType.FOURSQUARE_PLACE.name());
-
-                        List<String> filters = entry.getValue();
-                        List<String> applications = Stream.of(new ArrayList<>(Arrays.asList(Const.DriverType.values()))).map(Const.DriverType::getName).toList();
-                        filtersTypes.addAll(ListUtils.intersection(applications, filters));
-                        Stream.of(filtersTypes).forEach(app -> mHotspotPresenter.addCarApplicationFilterList(app));
+            ArrayMap<String, List<String>> applied_filters = (ArrayMap<String, List<String>>) result;
+            if (applied_filters.size() > 0) {
+                for (Map.Entry<String, List<String>> entry : applied_filters.entrySet()) {
+                    if (entry.getValue().contains(getResources().getString(R.string.events_filtr))) {
+                        mHotspotPresenter.addItemToMapItemFilterList(Const.HotSpotType.EVENT.name());
+                        itemsFiltersTypes.add(Const.HotSpotType.FOURSQUARE_PLACE.name());
                     }
+                    if (entry.getValue().contains(getResources().getString(R.string.popular_places))) {
+                        mHotspotPresenter.addItemToMapItemFilterList(Const.HotSpotType.FOURSQUARE_PLACE.name());
+                        itemsFiltersTypes.add(Const.HotSpotType.FOURSQUARE_PLACE.name());
+                    }
+
+                    // Cars filter types
+                    List<String> filters = entry.getValue();
+                    List<String> applications = Stream.of(new ArrayList<>(Arrays.asList(Const.DriverType.values()))).map(Const.DriverType::getName).toList();
+                    carsFiltersTypes.addAll(ListUtils.intersection(applications, filters));
+                    Stream.of(carsFiltersTypes).forEach(app -> mHotspotPresenter.addCarApplicationFilterList(app));
                 }
             }
         }
 
+        Stream.of(usersOnMap).forEach(car -> car.getValue().remove());
+
         Stream.of(usersOnMap)
-                .filter(car -> filtersTypes.contains(car.getKey().getDriverType()))
-                .map(Map.Entry::getKey)
-                .forEach(car -> {
-                    if(usersOnMap.containsKey(car)){
-                        usersOnMap.get(car).remove();
-                        usersOnMap.remove(car);
-                    }
-        });
+                .filter(car -> !carsFiltersTypes.contains(car.getKey().getDriverType()))
+                .filter(car -> car.getValue() != null)
+                .forEach(car -> usersOnMap.put(car.getKey(), googleMap.addMarker(getMarkerOptions(car.getKey()))));
 
         mClusterManager.clearItems();
-        eventsOnMap.clear();
+
+        if(!itemsFiltersTypes.contains(Const.HotSpotType.FOURSQUARE_PLACE.name())){
+            Stream.of(eventsOnMap)
+                    .filter(item -> item.getValue().getType().equals(Const.HotSpotType.FOURSQUARE_PLACE))
+                    .forEach(item -> mClusterManager.addItem(item.getValue()));
+        }
+
+        if(!itemsFiltersTypes.contains(Const.HotSpotType.EVENT.name())){
+            Stream.of(eventsOnMap)
+                    .filter(item -> item.getValue().getType().equals(Const.HotSpotType.EVENT))
+                    .forEach(item -> mClusterManager.addItem(item.getValue()));
+        }
+
+        // Try to re-render the map?
+        mClusterManager.setRenderer(new MapRenderer());
     }
 
     public void route(LatLng start, LatLng end, String eventName, String eventCount, Const.HotSpotType hotSpotType) {
