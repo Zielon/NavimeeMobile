@@ -99,6 +99,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
             holder.addButton.setTextColor(mContext.getResources().getColor(R.color.gray_font));
             holder.addButton.setText(R.string.cancel);
         } else {
+            holder.addButton.setBackgroundColor(mContext.getResources().getColor(R.color.button_background));
+            holder.addButton.setTextColor(mContext.getResources().getColor(R.color.white));
+            holder.addButton.setText(R.string.popup_events_info3_button);
             holder.addButton.setTag(3);
         }
 
