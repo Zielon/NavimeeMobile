@@ -198,7 +198,6 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     @Override
     public void onStop() {
         super.onStop();
-        mMainPresenter.updateOnlineStatus(false);
     }
 
     private void checkInternetConnectivity() {
@@ -220,6 +219,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mMainPresenter.updateOnlineStatus(false);
         mMainPresenter.detachView();
     }
 
