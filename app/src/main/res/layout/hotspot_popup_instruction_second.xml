@@ -31,29 +31,29 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:paddingEnd="24dp"
-                android:textAlignment="center"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
                 android:paddingStart="24dp"
                 android:text="@string/popup_hotspot_second_title"
+                android:textAlignment="center"
                 android:textColor="@color/md_black_1000"
                 android:textSize="18sp"
                 android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/top_space" />
 
             <TextView
                 android:id="@+id/popup_hotspot_second_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
                 android:layout_marginTop="8dp"
                 android:paddingEnd="24dp"
-                android:textAlignment="center"
                 android:paddingStart="24dp"
                 android:text="@string/popup_hotspot_second_info"
+                android:textAlignment="center"
                 android:textColor="@color/md_black_1000"
                 android:textSize="14sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/popup_hotspot_second_title" />
 
             <android.support.constraint.ConstraintLayout

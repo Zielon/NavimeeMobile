@@ -6,15 +6,15 @@
         <SwitchPreference
             android:defaultValue="false"
             android:key="shareLocalization"
-            android:title="@string/shareLocalization"
-            android:summary="@string/shareLocalization_description" />
+            android:summary="@string/shareLocalization_description"
+            android:title="@string/shareLocalization" />
 
         <ListPreference
-            android:key="driverType"
             android:entries="@array/changeApp"
             android:entryValues="@array/changeAppValues"
-            android:title="@string/change_application"
-            android:summary="@string/shareLocalization_description" />
+            android:key="driverType"
+            android:summary="@string/shareLocalization_description"
+            android:title="@string/change_application" />
 
     </PreferenceCategory>
 
@@ -23,20 +23,20 @@
         <SwitchPreference
             android:defaultValue="true"
             android:key="dayScheduleNotification"
-            android:title="@string/notifications_day_schedule"
-            android:summary="@string/notifications_day_schedule_description" />
+            android:summary="@string/notifications_day_schedule_description"
+            android:title="@string/notifications_day_schedule" />
 
         <SwitchPreference
             android:defaultValue="true"
             android:key="chatGroupNotification"
-            android:title="@string/notifications_chat_group"
-            android:summary="@string/notifications_chat_group_description"/>
+            android:summary="@string/notifications_chat_group_description"
+            android:title="@string/notifications_chat_group" />
 
         <SwitchPreference
             android:defaultValue="true"
             android:key="chatPrivateNotification"
-            android:title="@string/notifications_chat_private"
-            android:summary="@string/notifications_chat_private_description"/>
+            android:summary="@string/notifications_chat_private_description"
+            android:title="@string/notifications_chat_private" />
 
     </PreferenceCategory>
 
@@ -46,7 +46,7 @@
             android:key="version"
             android:selectable="false"
             android:summary="1.0"
-            android:title="Version"/>
+            android:title="Version" />
 
     </PreferenceCategory>
 

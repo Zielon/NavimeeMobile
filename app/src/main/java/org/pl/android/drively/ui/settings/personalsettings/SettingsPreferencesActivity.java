@@ -88,7 +88,7 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
     private void showPopup(Preference preference, boolean shouldUncheckLocalization) {
         HotspotPopupHelper.showFirstPopup(this, settingsPreferencesPresenter.getDriverType(),
                 selectedDriverType -> {
-                    settingsPreferencesPresenter.updateDriverTypeAndShareLocalisation(selectedDriverType.getName(), settingsPreferencesPresenter.getShareLocalization());
+                    settingsPreferencesPresenter.updateDriverTypeAndShareLocalization(selectedDriverType.getName(), settingsPreferencesPresenter.getShareLocalization());
 
                     // Refresh the view
                     getFragmentManager().beginTransaction().remove(mainPreferenceFragment).commit();

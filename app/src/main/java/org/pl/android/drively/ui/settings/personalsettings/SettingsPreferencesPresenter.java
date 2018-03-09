@@ -87,17 +87,15 @@ public class SettingsPreferencesPresenter extends BasePresenter<SettingsPreferen
         return dataManager.getPreferencesHelper().getValueString(Const.DRIVER_TYPE);
     }
 
-    public void updateDriverTypeAndShareLocalisation(String driverType, boolean shareLocalisation) {
+    public void updateDriverTypeAndShareLocalization(String driverType, boolean shareLocalization) {
         dataManager.getPreferencesHelper().setValue(Const.DRIVER_TYPE, driverType);
-        dataManager.getPreferencesHelper().setValue(Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION, shareLocalisation);
+        dataManager.getPreferencesHelper().setValue(Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION, shareLocalization);
         try {
             usersRepository.updateUserField(dataManager.getPreferencesHelper().getUserId(), "driverType", driverType);
-            usersRepository.updateUserField(dataManager.getPreferencesHelper().getUserId(), Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION, shareLocalisation);
+            usersRepository.updateUserField(dataManager.getPreferencesHelper().getUserId(), Const.SETTINGS_PREFERENCE_SHARE_LOCALIZATION, shareLocalization);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
-
-
     }
 
     public void bindPreferenceToValue(Preference preference) {

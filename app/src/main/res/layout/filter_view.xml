@@ -47,8 +47,8 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_alignParentBottom="true"
-            android:orientation="horizontal"
             android:backgroundTint="@color/button_background"
+            android:orientation="horizontal"
             android:weightSum="2">
 
             <ImageButton

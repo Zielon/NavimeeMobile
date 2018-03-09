@@ -10,11 +10,11 @@
         android:layout_height="match_parent">
 
         <android.support.constraint.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:layout_marginBottom="12dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:background="@drawable/rounded_corner2"
             android:paddingBottom="16dp"
@@ -27,8 +27,8 @@
                 android:layout_marginTop="16dp"
                 android:paddingEnd="24dp"
                 android:paddingStart="24dp"
-                android:textAlignment="center"
                 android:text="@string/popup_events_title"
+                android:textAlignment="center"
                 android:textColor="@color/md_black_1000"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -39,11 +39,11 @@
                 android:id="@+id/popup_events_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
                 android:layout_marginTop="12dp"
                 android:paddingEnd="20dp"
                 android:paddingStart="20dp"
                 android:text="@string/popup_events_info"
+                android:textAlignment="center"
                 android:textColor="@color/gray_font"
                 android:textSize="13sp"
                 app:layout_constraintTop_toBottomOf="@id/popup_events_title" />

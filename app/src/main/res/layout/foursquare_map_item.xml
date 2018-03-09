@@ -60,11 +60,11 @@
         android:id="@+id/place_closeBotton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="10dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:background="@null"
+        android:padding="10dp"
         android:src="@drawable/close_x_24dp" />
 
     <ImageView

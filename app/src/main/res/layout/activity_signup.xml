@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sign_up_main_layout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -85,6 +84,7 @@
             android:padding="12dp"
             android:text="@string/create_account"
             android:textSize="12sp" />
+
         <TextView
             android:id="@+id/textView"
             android:layout_width="match_parent"
@@ -95,7 +95,8 @@
             android:text="@string/continueWith"
             android:textAlignment="center"
             android:textColor="@color/white" />
-        <include layout="@layout/social_logins"/>
+
+        <include layout="@layout/social_logins" />
 
     </LinearLayout>
 

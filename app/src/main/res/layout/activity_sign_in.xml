@@ -79,7 +79,7 @@
             android:textAlignment="center"
             android:textColor="@color/white" />
 
-        <include layout="@layout/social_logins"/>
+        <include layout="@layout/social_logins" />
 
     </LinearLayout>
 
