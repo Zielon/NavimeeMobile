@@ -145,7 +145,7 @@
     <string name="network_lack">No network</string>
     <string name="check_internet">Check your network connection</string>
     <string name="close">Close</string>
-    <string name="let_us_know">Let us know Drively should be available in your place</string>
+    <string name="let_us_know">Let us know</string>
     <string name="not_available_in_city">We are not available in your city yet</string>
 
     <!--POPUPS-->

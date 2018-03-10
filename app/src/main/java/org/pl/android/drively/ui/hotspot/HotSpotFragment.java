@@ -787,10 +787,11 @@ public class HotSpotFragment extends BaseTabFragment implements
                 .backgroundColor(getResources().getColor(R.color.primary_dark))
                 .contentColor(getResources().getColor(R.color.white))
                 .positiveText(R.string.let_us_know)
-                .onPositive((MaterialDialog dialog, DialogAction which) -> {
-                    mHotspotPresenter.sendMessageWhenCityNotAvailable(city);
-                })
+                .positiveColor(getResources().getColor(R.color.button_background))
+                .negativeText(R.string.cancel)
+                .onPositive((MaterialDialog dialog, DialogAction which) -> mHotspotPresenter.sendMessageWhenCityNotAvailable(city))
                 .build();
+
         dialogAlert.show();
     }
 
