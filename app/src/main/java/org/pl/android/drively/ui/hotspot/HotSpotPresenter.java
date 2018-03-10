@@ -240,26 +240,23 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
         coordinatesRepository.updateUnavailableCity(city);
     }
 
-    public void checkAvailableCities(String countryName, String nativeCityName) {
-        Tasks.call(() -> new TranslationsServiceImpl().execute(nativeCityName).get()).addOnSuccessListener(localities -> {
-            String locality = Stream.of(localities).findFirst().get();
-            try {
-                setLastLocation(locality);
-                usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "country", countryName.toUpperCase());
-                usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "city", locality.toUpperCase());
-                coordinatesRepository.getAvailableCities(countryName).addOnSuccessListener(cities -> {
-                    if (Stream.of(cities).allMatch(city -> !city.getName().toUpperCase().equals(locality.toUpperCase()))) {
-                        CityNotAvailable cityNotAvailable = new CityNotAvailable();
-                        cityNotAvailable.setCity(locality.toUpperCase());
-                        cityNotAvailable.setCountryName(countryName.toUpperCase());
-                        if (getMvpView() != null)
-                            getMvpView().showNotAvailableCity(cityNotAvailable);
-                    }
-                });
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            }
-        }).addOnFailureListener(Throwable::printStackTrace);
+    public void checkAvailableCities(String countryName, String locality) {
+        try {
+            setLastLocation(locality);
+            usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "country", countryName.toUpperCase());
+            usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "city", locality.toUpperCase());
+            coordinatesRepository.getAvailableCities(countryName).addOnSuccessListener(cities -> {
+                if (Stream.of(cities).allMatch(city -> !city.getName().toUpperCase().equals(locality.toUpperCase()))) {
+                    CityNotAvailable cityNotAvailable = new CityNotAvailable();
+                    cityNotAvailable.setCity(locality.toUpperCase());
+                    cityNotAvailable.setCountryName(countryName.toUpperCase());
+                    if (getMvpView() != null)
+                        getMvpView().showNotAvailableCity(cityNotAvailable);
+                }
+            });
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 
     public void saveDriverType(String name) {
