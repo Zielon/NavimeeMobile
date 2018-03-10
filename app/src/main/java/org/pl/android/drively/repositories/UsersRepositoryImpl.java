@@ -89,6 +89,14 @@ public class UsersRepositoryImpl implements UsersRepository {
                 .collection(USERS).document(userId)
                 .collection(FRIENDS)
                 .document(friendId).set(map)
-                .addOnSuccessListener(success -> addFriend(friendId, userId));
+                .addOnSuccessListener(success -> {
+                    map.clear();
+                    map.put("id", userId);
+                    dataManager.getFirebaseService()
+                            .getFirebaseFirestore()
+                            .collection(USERS).document(friendId)
+                            .collection(FRIENDS)
+                            .document(userId).set(map);
+                });
     }
 }
