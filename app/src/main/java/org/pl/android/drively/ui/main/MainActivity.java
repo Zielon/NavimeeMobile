@@ -136,12 +136,11 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
 
-
         ButterKnife.bind(this);
         if (getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().get("lat") != null && getIntent().getExtras().get("lng") != null) {
             isFromNotification = true;
-            lat = Double.valueOf(getIntent().getExtras().getString("lat"));
-            lng = Double.valueOf(getIntent().getExtras().getString("lng"));
+            lat = getIntent().getExtras().getDouble("lat");
+            lng = getIntent().getExtras().getDouble("lng");
             name = getIntent().getExtras().getString("name");
             count = getIntent().getExtras().getString("count");
         }
