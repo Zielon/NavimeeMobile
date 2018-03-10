@@ -240,18 +240,18 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
         coordinatesRepository.updateUnavailableCity(city);
     }
 
-    public void checkAvailableCities(String countryName, String cityName) {
-        Tasks.call(() -> new TranslationsServiceImpl().execute(cityName).get()).addOnSuccessListener(localities -> {
+    public void checkAvailableCities(String countryName, String nativeCityName) {
+        Tasks.call(() -> new TranslationsServiceImpl().execute(nativeCityName).get()).addOnSuccessListener(localities -> {
             String locality = Stream.of(localities).findFirst().get();
             try {
                 setLastLocation(locality);
                 usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "country", countryName.toUpperCase());
                 usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "city", locality.toUpperCase());
                 coordinatesRepository.getAvailableCities(countryName).addOnSuccessListener(cities -> {
-                    if (Stream.of(cities).allMatch(city -> !city.getName().toUpperCase().equals(cityName.toUpperCase()))) {
+                    if (Stream.of(cities).allMatch(city -> !city.getName().toUpperCase().equals(locality.toUpperCase()))) {
                         CityNotAvailable cityNotAvailable = new CityNotAvailable();
-                        cityNotAvailable.setCity(cityName.toUpperCase());
-                        cityNotAvailable.setCountryName(countryName);
+                        cityNotAvailable.setCity(locality.toUpperCase());
+                        cityNotAvailable.setCountryName(countryName.toUpperCase());
                         if (getMvpView() != null)
                             getMvpView().showNotAvailableCity(cityNotAvailable);
                     }
