@@ -432,6 +432,13 @@ public class HotSpotFragment extends BaseTabFragment implements
         EventBus.getDefault().register(this);
         mMapView.onResume();
 
+        try {
+            this.geoQueryMapPoints.addGeoQueryDataEventListener(mHotspotPresenter.getMapPointsListener());
+        } catch (IllegalArgumentException exception) {
+            // Added the same listener twice to a GeoQuery!
+            exception.printStackTrace();
+        }
+
         if (!mHotspotPresenter.getShareLocalisationPreference()) {
             Stream.of(usersOnMap).forEach(key -> key.getValue().getMarker().setVisible(false));
             this.geoQueryUsersLocation.removeAllListeners();
@@ -562,6 +569,12 @@ public class HotSpotFragment extends BaseTabFragment implements
         dispose(lastKnownLocationDisposable);
         dispose(activityDisposable);
         dispose(addressDisposable);
+
+        if (this.geoQueryUsersLocation != null)
+            this.geoQueryUsersLocation.removeAllListeners();
+
+        if (this.geoQueryMapPoints != null)
+            this.geoQueryMapPoints.removeAllListeners();
     }
 
     @Override
