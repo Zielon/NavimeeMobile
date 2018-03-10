@@ -1,5 +1,8 @@
 package org.pl.android.drively.ui.settings;
 
+import android.app.Activity;
+import android.content.Intent;
+
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FieldValue;
 
@@ -54,6 +57,10 @@ public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
 
         dataManager.getFirebaseService().getFirebaseFirestore().collection(USERS).document(userId).update(updates);
         dataManager.getFirebaseService().getFirebaseAuth().signOut();
+
+        Activity activity = (Activity)getMvpView();
+        Intent intentGeoService = new Intent(activity, GeolocationUpdateService.class);
+        activity.stopService(intentGeoService);
 
         ChatViewActivity.bitmapAvatarUser = null;
 
