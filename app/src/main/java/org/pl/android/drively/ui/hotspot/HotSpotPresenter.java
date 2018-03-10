@@ -32,10 +32,12 @@ import org.pl.android.drively.util.FirebasePaths;
 import org.pl.android.drively.util.ViewUtil;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -96,8 +98,10 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
 
     private void updateCarView(DataSnapshot dataSnapshot, GeoLocation location) {
         if (dataSnapshot == null || !dataSnapshot.exists()) return;
-
-        Car car = mapper.convertValue(dataSnapshot.getValue(), Car.class);
+        String[] parts = dataSnapshot.getKey().split("_");
+        Car car = new Car();
+        car.setDriverType(parts[0]);
+        car.setUserId(parts[1]);
         car.setGeoLocation(location);
         if (carApplicationFilterList.contains(car.getDriverType())) return;
         if (getMvpView() != null) {
@@ -316,7 +320,10 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
 
         @Override
         public void onDataExited(DataSnapshot dataSnapshot) {
-            Car car = mapper.convertValue(dataSnapshot.getValue(), Car.class);
+            String[] parts = dataSnapshot.getKey().split("_");
+            Car car = new Car();
+            car.setDriverType(parts[0]);
+            car.setUserId(parts[1]);
             if (getMvpView() != null) {
                 getMvpView().removeCarFromMap(car);
             }

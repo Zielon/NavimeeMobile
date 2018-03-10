@@ -36,8 +36,8 @@ public class GeolocationUpdateService extends Service {
     private static final int LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 10f;
     private static final long TIME_FOR_SERVICE = 1800000;
-    public static String FIREBASE_KEY;
-    private static String DRIVER_TYPE;
+    public static String FIREBASE_KEY = "";
+    private static String DRIVER_TYPE = "";
     @Inject
     DataManager dataManager;
     LocationListener[] mLocationListeners = new LocationListener[]{
@@ -72,14 +72,12 @@ public class GeolocationUpdateService extends Service {
         geoFire = new GeoFire(databaseReference);
         initializeLocationManager();
         final Handler handler = new Handler();
-        handler.postDelayed(() -> {
-            stopSelf();
-        }, TIME_FOR_SERVICE);
+        handler.postDelayed(() -> stopSelf(), TIME_FOR_SERVICE);
 
         User user = dataManager.getPreferencesHelper().getUserInfo();
 
         DRIVER_TYPE = user.getDriverType();
-        FIREBASE_KEY = user.getId();
+        FIREBASE_KEY = DRIVER_TYPE + "_" + user.getId();
 
         if (!DRIVER_TYPE.isEmpty() && user.isShareLocalization()) {
             startLocationUpdates();
@@ -159,17 +157,9 @@ public class GeolocationUpdateService extends Service {
         @Override
         public void onLocationChanged(Location location) {
             mLastLocation.set(location);
-            String userId = dataManager.getFirebaseService().getFirebaseAuth().getUid();
-
-            Car car = new Car();
-            car.setDriverType(DRIVER_TYPE);
-            car.setUserId(userId);
-
-            geoFire.setLocation(userId, new GeoLocation(location.getLatitude(), location.getLongitude()),
-                    (locationKey, databaseError) -> {
-                        Map<String, Object> map = mapper.convertValue(car, Map.class);
-                        databaseReference.child(locationKey).updateChildren(map);
-                    });
+            if(!FIREBASE_KEY.isEmpty())
+                geoFire.setLocation(FIREBASE_KEY, new GeoLocation(location.getLatitude(), location.getLongitude()),
+                        (locationKey, databaseError) -> {});
         }
 
         @Override

@@ -149,8 +149,8 @@ public class HotSpotFragment extends BaseTabFragment implements
     boolean isFirstAfterPermissionGranted = true;
     int durationInSec, distanceValue;
     LatLng locationGeo;
-    int radiusForItems = 5;
-    int radiusForCars = 2;
+    int radiusForItems = 10;
+    int radiusForCars = 10;
     double latNotification;
     double lngNotification;
     boolean isFromNotification = false;

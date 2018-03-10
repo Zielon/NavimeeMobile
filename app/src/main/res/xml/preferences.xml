@@ -13,7 +13,7 @@
             android:entries="@array/changeApp"
             android:entryValues="@array/changeAppValues"
             android:key="driverType"
-            android:summary="@string/shareLocalization_description"
+            android:summary="@string/change_application_description"
             android:title="@string/change_application" />
 
     </PreferenceCategory>

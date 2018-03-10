@@ -118,6 +118,8 @@
     <string name="general">Ogólne</string>
     <string name="shareLocalization">Hospot</string>
     <string name="shareLocalization_description">Dzielenie się lokalizacją na Hotspot</string>
+    <string name="change_application">Zmień aplikację</string>
+    <string name="change_application_description">Zmień apliację którą używasz</string>
 
     <string name="notifications">Powiadomienia</string>
     <string name="notifications_day_schedule">Plan Dnia</string>
