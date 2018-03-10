@@ -5,17 +5,12 @@ import com.google.firebase.storage.StorageReference;
 import org.pl.android.drively.contracts.repositories.UsersRepository;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.User;
-import org.pl.android.drively.data.model.chat.Friend;
 import org.pl.android.drively.data.model.chat.GroupMessage;
 import org.pl.android.drively.data.model.chat.Message;
 import org.pl.android.drively.data.model.chat.PrivateMessage;
-import org.pl.android.drively.injection.ConfigPersistent;
 import org.pl.android.drively.ui.base.BasePresenter;
-import org.pl.android.drively.util.FirebasePaths;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -25,7 +20,6 @@ import timber.log.Timber;
 import static org.pl.android.drively.util.FirebasePaths.AVATARS;
 import static org.pl.android.drively.util.FirebasePaths.MESSAGES_GROUPS;
 import static org.pl.android.drively.util.FirebasePaths.MESSAGES_PRIVATE;
-import static org.pl.android.drively.util.ReflectionUtil.nameof;
 
 public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
 

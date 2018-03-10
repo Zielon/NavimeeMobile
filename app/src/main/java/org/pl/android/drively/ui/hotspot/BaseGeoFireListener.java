@@ -14,15 +14,15 @@ public abstract class BaseGeoFireListener implements GeoQueryDataEventListener {
     }
 
     @Override
-    public boolean equals(Object object){
+    public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
-        BaseGeoFireListener listener = (BaseGeoFireListener)object;
+        BaseGeoFireListener listener = (BaseGeoFireListener) object;
         return listener.getName().equals(NAME);
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         return NAME.hashCode();
     }
 }

@@ -432,13 +432,13 @@ public class HotSpotFragment extends BaseTabFragment implements
         EventBus.getDefault().register(this);
         mMapView.onResume();
 
-        if(!mHotspotPresenter.getShareLocalisationPreference()){
+        if (!mHotspotPresenter.getShareLocalisationPreference()) {
             Stream.of(usersOnMap).forEach(key -> key.getValue().getMarker().setVisible(false));
             this.geoQueryUsersLocation.removeAllListeners();
         } else {
-            try{
+            try {
                 this.geoQueryUsersLocation.addGeoQueryDataEventListener(mHotspotPresenter.getUsersLocationListener());
-            }catch (IllegalArgumentException exception){
+            } catch (IllegalArgumentException exception) {
                 // Added the same listener twice to a GeoQuery!
                 exception.printStackTrace();
             }
@@ -788,7 +788,7 @@ public class HotSpotFragment extends BaseTabFragment implements
     @Override
     public void removeCarFromMap(Car car) {
         String carUser = car.getUserId();
-        if(carUser == null) return;
+        if (carUser == null) return;
         directionsDelta.remove(carUser);
         if (usersOnMap.containsKey(carUser)) {
             usersOnMap.get(carUser).getMarker().remove();
@@ -798,7 +798,7 @@ public class HotSpotFragment extends BaseTabFragment implements
 
     @Override
     public void removeItemFromMap(String id) {
-        if(id == null) return;
+        if (id == null) return;
         if (eventsOnMap.containsKey(id)) {
             mClusterManager.removeItem(eventsOnMap.get(id));
             eventsOnMap.remove(id);

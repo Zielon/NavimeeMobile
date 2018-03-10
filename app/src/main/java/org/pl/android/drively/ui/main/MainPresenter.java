@@ -8,17 +8,12 @@ import com.google.firebase.auth.FirebaseUser;
 
 import org.pl.android.drively.contracts.repositories.UsersRepository;
 import org.pl.android.drively.data.DataManager;
-import org.pl.android.drively.data.model.User;
-import org.pl.android.drively.injection.ConfigPersistent;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.Const;
-import org.pl.android.drively.util.FirebasePaths;
 
 import javax.inject.Inject;
 
 import io.reactivex.disposables.Disposable;
-
-import static org.pl.android.drively.util.ReflectionUtil.nameof;
 
 public class MainPresenter extends BasePresenter<MainMvpView> {
 

@@ -85,8 +85,11 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             ext.betaDistributionReleaseNotesFilePath = file('../crashlytics_release_notes.txt').absolutePath
-            buildConfigField "String", "GOOGLE_DIRECTIONS_KEY", '"AIzaSyDLZ9IqdXbq5Mtn1d9ZMAu70D1PgtBa5jE"'
+
             // API KEYS
+            buildConfigField "String", "GOOGLE_DIRECTIONS_KEY", '"AIzaSyDLZ9IqdXbq5Mtn1d9ZMAu70D1PgtBa5jE"'
+            buildConfigField "String", "GOOGLE_TRANSLATIONS_KEY", '"AIzaSyB0iJZcjJFpJ_GunglechKBy6eb0K1-Pwk"'
+
             manifestPlaceholders = [
                     googleMapApi: "AIzaSyAfjQ9cZtSGJn0CPOEkwgRTq6QAUUm7R9k"
             ]
@@ -98,6 +101,8 @@ android {
 
             // API KEYS
             buildConfigField "String", "GOOGLE_DIRECTIONS_KEY", '"fake"'
+            buildConfigField "String", "GOOGLE_TRANSLATIONS_KEY", '"AIzaSyB0iJZcjJFpJ_GunglechKBy6eb0K1-Pwk"'
+
             manifestPlaceholders = [
                     googleMapApi: "AIzaSyAgXri9aa6FqmOejHuvFg_vd1TivnAkhds"
             ]

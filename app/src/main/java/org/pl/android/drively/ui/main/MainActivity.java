@@ -169,7 +169,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
                         bundle.putDouble("lng", lng);
                         bundle.putString("name", name);
                         bundle.putString("count", count);
-                        ((HotSpotFragment) selectedFragment).setArguments(bundle);
+                        selectedFragment.setArguments(bundle);
                     }
                     break;
                 case R.id.tab_chat:
@@ -218,6 +218,9 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        IS_USER_POSITION_CHECKED = false;
+
         mMainPresenter.updateOnlineStatus(false);
         mMainPresenter.detachView();
     }

@@ -17,8 +17,7 @@
         android:allowBackup="false"
         android:fullBackupOnly="false"
         android:fullBackupContent="false"
-        tools:replace="android:label,android:icon,android:name,android:allowBackup,android:fullBackupOnly,android:fullBackupContent"
-        >
+        tools:replace="android:label,android:icon,android:name,android:allowBackup,android:fullBackupOnly,android:fullBackupContent">
 
         <meta-data
             android:name="com.google.android.gms.version"

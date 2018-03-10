@@ -13,6 +13,7 @@ import com.firebase.geofire.GeoQueryDataEventListener;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,13 +21,13 @@ import com.google.firebase.database.DatabaseReference;
 
 import org.pl.android.drively.contracts.repositories.CoordinatesRepository;
 import org.pl.android.drively.contracts.repositories.UsersRepository;
-import org.pl.android.drively.contracts.services.TranslationsService;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.Car;
 import org.pl.android.drively.data.model.CityNotAvailable;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.Feedback;
 import org.pl.android.drively.data.model.FourSquarePlace;
+import org.pl.android.drively.services.TranslationsServiceImpl;
 import org.pl.android.drively.ui.base.tab.BaseTabPresenter;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
@@ -48,7 +49,6 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
 
     private final UsersRepository usersRepository;
     private final CoordinatesRepository coordinatesRepository;
-    private final TranslationsService translationsService;
     private final ObjectMapper mapper = new ObjectMapper();
 
     private Set<String> mapItemFilterList = new HashSet<>();
@@ -58,13 +58,11 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
     public HotSpotPresenter(
             DataManager dataManager,
             UsersRepository usersRepository,
-            CoordinatesRepository coordinatesRepository,
-            TranslationsService translationsService) {
+            CoordinatesRepository coordinatesRepository) {
 
         this.mDataManager = dataManager;
         this.usersRepository = usersRepository;
         this.coordinatesRepository = coordinatesRepository;
-        this.translationsService = translationsService;
     }
 
     public FirebaseUser checkLogin() {
@@ -81,7 +79,7 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
         super.detachView();
     }
 
-    public void setLastLocation(String location) {
+    private void setLastLocation(String location) {
         mDataManager.getPreferencesHelper().setValue(Const.LAST_LOCATION, ViewUtil.deAccent(location.toUpperCase()));
     }
 
@@ -115,43 +113,6 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
         return usersLocationListener;
     }
 
-    public class UsersLocationListener extends BaseGeoFireListener{
-        @Override
-        public void onDataEntered(DataSnapshot dataSnapshot, GeoLocation location) {
-            updateCarView(dataSnapshot, location);
-        }
-
-        @Override
-        public void onDataExited(DataSnapshot dataSnapshot) {
-            Car car = mapper.convertValue(dataSnapshot.getValue(), Car.class);
-            if (getMvpView() != null) {
-                getMvpView().removeCarFromMap(car);
-            }
-        }
-
-        @Override
-        public void onDataMoved(DataSnapshot dataSnapshot, GeoLocation location) {
-            updateCarView(dataSnapshot, location);
-        }
-
-        @Override
-        public void onDataChanged(DataSnapshot dataSnapshot, GeoLocation location) {
-            updateCarView(dataSnapshot, location);
-        }
-
-        @Override
-        public void onGeoQueryReady() {
-            if (getMvpView() != null) {
-                getMvpView().clusterMap();
-            }
-        }
-
-        @Override
-        public void onGeoQueryError(DatabaseError error) {
-
-        }
-    }
-
     private void updateMapItem(DataSnapshot dataSnapshot, GeoLocation location) {
         if (dataSnapshot == null || !dataSnapshot.exists()) return;
 
@@ -182,39 +143,6 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
         MapPointsListener mapPointsListener = new MapPointsListener();
         mapPointsListener.setName("MapPointsListener");
         return mapPointsListener;
-    }
-
-    public class MapPointsListener extends BaseGeoFireListener{
-        @Override
-        public void onDataEntered(DataSnapshot dataSnapshot, GeoLocation location) {
-            updateMapItem(dataSnapshot, location);
-        }
-
-        @Override
-        public void onDataExited(DataSnapshot dataSnapshot) {
-            if (getMvpView() != null)
-                getMvpView().removeItemFromMap(dataSnapshot.getKey());
-        }
-
-        @Override
-        public void onDataMoved(DataSnapshot dataSnapshot, GeoLocation location) {
-        }
-
-        @Override
-        public void onDataChanged(DataSnapshot dataSnapshot, GeoLocation location) {
-        }
-
-        @Override
-        public void onGeoQueryReady() {
-            if (getMvpView() != null) {
-                getMvpView().clusterMap();
-            }
-        }
-
-        @Override
-        public void onGeoQueryError(DatabaseError error) {
-
-        }
     }
 
     public void animateMarker(final Marker marker, final LatLng toPosition, final double bearing, final boolean hideMarker, Projection projection) {
@@ -313,23 +241,25 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
     }
 
     public void checkAvailableCities(String countryName, String cityName) {
-        String locality = translationsService.translateToEnglish(cityName);
-        setLastLocation(locality);
-        try {
-            usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "country", countryName.toUpperCase());
-            usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "city", cityName.toUpperCase());
-            coordinatesRepository.getAvailableCities(countryName).addOnSuccessListener(cities -> {
-                if (Stream.of(cities).allMatch(city -> !city.getName().toUpperCase().equals(cityName.toUpperCase()))) {
-                    CityNotAvailable cityNotAvailable = new CityNotAvailable();
-                    cityNotAvailable.setCity(cityName.toUpperCase());
-                    cityNotAvailable.setCountryName(countryName);
-                    if (getMvpView() != null)
-                        getMvpView().showNotAvailableCity(cityNotAvailable);
-                }
-            });
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        }
+        Tasks.call(() -> new TranslationsServiceImpl().execute(cityName).get()).addOnSuccessListener(localities -> {
+            String locality = Stream.of(localities).findFirst().get();
+            try {
+                setLastLocation(locality);
+                usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "country", countryName.toUpperCase());
+                usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "city", locality.toUpperCase());
+                coordinatesRepository.getAvailableCities(countryName).addOnSuccessListener(cities -> {
+                    if (Stream.of(cities).allMatch(city -> !city.getName().toUpperCase().equals(cityName.toUpperCase()))) {
+                        CityNotAvailable cityNotAvailable = new CityNotAvailable();
+                        cityNotAvailable.setCity(cityName.toUpperCase());
+                        cityNotAvailable.setCountryName(countryName);
+                        if (getMvpView() != null)
+                            getMvpView().showNotAvailableCity(cityNotAvailable);
+                    }
+                });
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+        }).addOnFailureListener(Throwable::printStackTrace);
     }
 
     public void saveDriverType(String name) {
@@ -381,5 +311,75 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
     public void clearFilters() {
         mapItemFilterList.clear();
         carApplicationFilterList.clear();
+    }
+
+    public class UsersLocationListener extends BaseGeoFireListener {
+        @Override
+        public void onDataEntered(DataSnapshot dataSnapshot, GeoLocation location) {
+            updateCarView(dataSnapshot, location);
+        }
+
+        @Override
+        public void onDataExited(DataSnapshot dataSnapshot) {
+            Car car = mapper.convertValue(dataSnapshot.getValue(), Car.class);
+            if (getMvpView() != null) {
+                getMvpView().removeCarFromMap(car);
+            }
+        }
+
+        @Override
+        public void onDataMoved(DataSnapshot dataSnapshot, GeoLocation location) {
+            updateCarView(dataSnapshot, location);
+        }
+
+        @Override
+        public void onDataChanged(DataSnapshot dataSnapshot, GeoLocation location) {
+            updateCarView(dataSnapshot, location);
+        }
+
+        @Override
+        public void onGeoQueryReady() {
+            if (getMvpView() != null) {
+                getMvpView().clusterMap();
+            }
+        }
+
+        @Override
+        public void onGeoQueryError(DatabaseError error) {
+
+        }
+    }
+
+    public class MapPointsListener extends BaseGeoFireListener {
+        @Override
+        public void onDataEntered(DataSnapshot dataSnapshot, GeoLocation location) {
+            updateMapItem(dataSnapshot, location);
+        }
+
+        @Override
+        public void onDataExited(DataSnapshot dataSnapshot) {
+            if (getMvpView() != null)
+                getMvpView().removeItemFromMap(dataSnapshot.getKey());
+        }
+
+        @Override
+        public void onDataMoved(DataSnapshot dataSnapshot, GeoLocation location) {
+        }
+
+        @Override
+        public void onDataChanged(DataSnapshot dataSnapshot, GeoLocation location) {
+        }
+
+        @Override
+        public void onGeoQueryReady() {
+            if (getMvpView() != null) {
+                getMvpView().clusterMap();
+            }
+        }
+
+        @Override
+        public void onGeoQueryError(DatabaseError error) {
+
+        }
     }
 }

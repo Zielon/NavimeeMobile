@@ -9,7 +9,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.database.Exclude;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Car implements Comparable<Car>{
+public class Car implements Comparable<Car> {
 
     private String userId;
     private String driverType;

@@ -143,7 +143,7 @@ public class GeolocationUpdateService extends Service {
         }
         if (hotspotSettingsChanged.getShareLocalization()) {
             startLocationUpdates();
-        }else{
+        } else {
             stopSelf();
         }
     }

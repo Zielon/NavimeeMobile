@@ -24,7 +24,7 @@ public class UserNameChangePresenter extends BasePresenter<UserNameChangeMvpView
 
     public String getName() {
         FirebaseUser user = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
-        if(user == null) return "An empty name!";
+        if (user == null) return "An empty name!";
         return user.getDisplayName();
     }
 
