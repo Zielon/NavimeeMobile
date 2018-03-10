@@ -8,9 +8,16 @@ import com.google.cloud.translate.Translation;
 
 import org.pl.android.drively.contracts.services.TranslationsService;
 
+import javax.inject.Inject;
+
 public class TranslationsServiceImpl implements TranslationsService {
 
-    private Translate translate = TranslateOptions.getDefaultInstance().getService();
+    private final Translate translate;
+
+    @Inject
+    public TranslationsServiceImpl(){
+        this.translate = TranslateOptions.getDefaultInstance().getService();
+    }
 
     @Override
     public String translateToEnglish(String text) {
