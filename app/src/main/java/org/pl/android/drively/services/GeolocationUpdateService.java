@@ -1,4 +1,4 @@
-package org.pl.android.drively.service;
+package org.pl.android.drively.services;
 
 import android.annotation.SuppressLint;
 import android.app.Service;
@@ -22,7 +22,6 @@ import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.Car;
 import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.data.model.eventbus.HotspotSettingsChanged;
-import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
 
 import java.util.Map;

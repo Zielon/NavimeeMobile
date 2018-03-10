@@ -11,7 +11,7 @@ import org.pl.android.drively.injection.module.RepositoriesModule;
 import org.pl.android.drively.injection.module.ServicesModule;
 import org.pl.android.drively.notifications.MyFirebaseInstanceIDService;
 import org.pl.android.drively.notifications.MyFirebaseMessagingService;
-import org.pl.android.drively.service.GeolocationUpdateService;
+import org.pl.android.drively.services.GeolocationUpdateService;
 import org.pl.android.drively.ui.settings.personalsettings.SettingsPreferencesActivity;
 
 import javax.inject.Singleton;

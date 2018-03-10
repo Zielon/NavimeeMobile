@@ -17,7 +17,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import org.pl.android.drively.R;
-import org.pl.android.drively.service.GeolocationUpdateService;
+import org.pl.android.drively.services.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.regulations.RegulationsActivity;
 import org.pl.android.drively.ui.settings.personalsettings.SettingsPreferencesActivity;

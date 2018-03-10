@@ -18,7 +18,7 @@ import org.pl.android.drively.BoilerplateApplication;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.eventbus.HotspotSettingsChanged;
-import org.pl.android.drively.service.GeolocationUpdateService;
+import org.pl.android.drively.services.GeolocationUpdateService;
 import org.pl.android.drively.ui.hotspot.HotspotPopupHelper;
 import org.pl.android.drively.util.Const;
 

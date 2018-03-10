@@ -28,5 +28,4 @@ public class BaseTabPresenter<T extends TabMvpView> extends BasePresenter<T> {
             }
         }
     }
-
 }

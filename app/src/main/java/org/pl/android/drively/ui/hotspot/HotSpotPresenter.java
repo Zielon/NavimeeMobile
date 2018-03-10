@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 
 import org.pl.android.drively.contracts.repositories.CoordinatesRepository;
 import org.pl.android.drively.contracts.repositories.UsersRepository;
+import org.pl.android.drively.contracts.services.TranslationsService;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.Car;
 import org.pl.android.drively.data.model.CityNotAvailable;
@@ -47,16 +48,23 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
 
     private final UsersRepository usersRepository;
     private final CoordinatesRepository coordinatesRepository;
-    private ObjectMapper mapper = new ObjectMapper();
+    private final TranslationsService translationsService;
+    private final ObjectMapper mapper = new ObjectMapper();
 
     private Set<String> mapItemFilterList = new HashSet<>();
     private Set<String> carApplicationFilterList = new HashSet<>();
 
     @Inject
-    public HotSpotPresenter(DataManager dataManager, UsersRepository usersRepository, CoordinatesRepository coordinatesRepository) {
+    public HotSpotPresenter(
+            DataManager dataManager,
+            UsersRepository usersRepository,
+            CoordinatesRepository coordinatesRepository,
+            TranslationsService translationsService) {
+
         this.mDataManager = dataManager;
         this.usersRepository = usersRepository;
         this.coordinatesRepository = coordinatesRepository;
+        this.translationsService = translationsService;
     }
 
     public FirebaseUser checkLogin() {
@@ -305,6 +313,8 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
     }
 
     public void checkAvailableCities(String countryName, String cityName) {
+        String locality = translationsService.translateToEnglish(cityName);
+        setLastLocation(locality);
         try {
             usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "country", countryName.toUpperCase());
             usersRepository.updateUserField(mDataManager.getPreferencesHelper().getUserId(), "city", cityName.toUpperCase());

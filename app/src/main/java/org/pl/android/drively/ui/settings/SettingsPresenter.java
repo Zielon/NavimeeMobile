@@ -6,7 +6,7 @@ import com.google.firebase.firestore.FieldValue;
 import org.pl.android.drively.contracts.repositories.UsersRepository;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.local.PreferencesHelper;
-import org.pl.android.drively.service.GeolocationUpdateService;
+import org.pl.android.drively.services.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.util.FirebasePaths;

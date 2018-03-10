@@ -154,7 +154,7 @@
             android:label="@string/title_activity_regulations"
             android:screenOrientation="portrait" />
 
-        <service android:name=".service.GeolocationUpdateService" />
+        <service android:name=".services.GeolocationUpdateService" />
     </application>
 
 </manifest>

@@ -74,7 +74,7 @@ import org.pl.android.drively.data.model.FourSquarePlace;
 import org.pl.android.drively.data.model.eventbus.HotspotSettingsChanged;
 import org.pl.android.drively.data.model.eventbus.NotificationEvent;
 import org.pl.android.drively.data.model.maps.ClusterItemGoogleMap;
-import org.pl.android.drively.service.GeolocationUpdateService;
+import org.pl.android.drively.services.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.base.tab.BaseTabFragment;
 import org.pl.android.drively.ui.main.MainActivity;
@@ -418,7 +418,6 @@ public class HotSpotFragment extends BaseTabFragment implements
 
         addressDisposable = addressObservable
                 .subscribe(address -> {
-                    mHotspotPresenter.setLastLocation(address.getLocality());
                     if (!MainActivity.IS_USER_POSITION_CHECKED) {
                         mHotspotPresenter.checkAvailableCities(address.getCountryName(), address.getLocality());
                         MainActivity.IS_USER_POSITION_CHECKED = true;
