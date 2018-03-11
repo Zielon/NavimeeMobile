@@ -88,7 +88,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (System.currentTimeMillis() - fcm.getTimestamp() > Const.TIME_TO_DROP_NOTIFICATION)
             return;
 
-        if (ChatViewActivity.ACTIVE_ROOM.equals(fcm.getIdRoom()))
+        if (ChatViewActivity.ACTIVE_ROOM.equals(fcm.getIdRoom()) || fcm.getIdRoom() == null)
             return;
 
         if (ChatViewActivity.bitmapAvatarFriends.containsKey(fcm.getIdSender()))
@@ -107,6 +107,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void sendNotificationFromChatWithIcon(MessageNotificationFCM fcm, Bitmap bitmap, boolean isGroup) {
+
         Intent intent = new Intent(this, ChatViewActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, fcm.getNameSender());

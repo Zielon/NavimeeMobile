@@ -156,8 +156,7 @@ public class GeolocationUpdateService extends Service {
             mLastLocation.set(location);
             if (!FIREBASE_KEY.isEmpty())
                 geoFire.setLocation(FIREBASE_KEY, new GeoLocation(location.getLatitude(), location.getLongitude()),
-                        (locationKey, databaseError) -> {
-                        });
+                        (locationKey, databaseError) -> {});
         }
 
         @Override
