@@ -58,7 +58,7 @@ public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
         dataManager.getFirebaseService().getFirebaseFirestore().collection(USERS).document(userId).update(updates);
         dataManager.getFirebaseService().getFirebaseAuth().signOut();
 
-        Activity activity = (Activity)getMvpView();
+        Activity activity = (Activity) getMvpView();
         Intent intentGeoService = new Intent(activity, GeolocationUpdateService.class);
         activity.stopService(intentGeoService);
 

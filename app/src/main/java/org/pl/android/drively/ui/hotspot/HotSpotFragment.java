@@ -432,6 +432,13 @@ public class HotSpotFragment extends BaseTabFragment implements
         EventBus.getDefault().register(this);
         mMapView.onResume();
 
+        try {
+            this.geoQueryMapPoints.addGeoQueryDataEventListener(mHotspotPresenter.getMapPointsListener());
+        } catch (IllegalArgumentException exception) {
+            // Added the same listener twice to a GeoQuery!
+            exception.printStackTrace();
+        }
+
         if (!mHotspotPresenter.getShareLocalisationPreference()) {
             Stream.of(usersOnMap).forEach(key -> key.getValue().getMarker().setVisible(false));
             this.geoQueryUsersLocation.removeAllListeners();
@@ -562,6 +569,12 @@ public class HotSpotFragment extends BaseTabFragment implements
         dispose(lastKnownLocationDisposable);
         dispose(activityDisposable);
         dispose(addressDisposable);
+
+        if (this.geoQueryUsersLocation != null)
+            this.geoQueryUsersLocation.removeAllListeners();
+
+        if (this.geoQueryMapPoints != null)
+            this.geoQueryMapPoints.removeAllListeners();
     }
 
     @Override
@@ -774,10 +787,11 @@ public class HotSpotFragment extends BaseTabFragment implements
                 .backgroundColor(getResources().getColor(R.color.primary_dark))
                 .contentColor(getResources().getColor(R.color.white))
                 .positiveText(R.string.let_us_know)
-                .onPositive((MaterialDialog dialog, DialogAction which) -> {
-                    mHotspotPresenter.sendMessageWhenCityNotAvailable(city);
-                })
+                .positiveColor(getResources().getColor(R.color.button_background))
+                .negativeText(R.string.cancel)
+                .onPositive((MaterialDialog dialog, DialogAction which) -> mHotspotPresenter.sendMessageWhenCityNotAvailable(city))
                 .build();
+
         dialogAlert.show();
     }
 

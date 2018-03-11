@@ -32,12 +32,10 @@ import org.pl.android.drively.util.FirebasePaths;
 import org.pl.android.drively.util.ViewUtil;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -99,6 +97,7 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
     private void updateCarView(DataSnapshot dataSnapshot, GeoLocation location) {
         if (dataSnapshot == null || !dataSnapshot.exists()) return;
         String[] parts = dataSnapshot.getKey().split("_");
+        if(parts.length < 2) return;
         Car car = new Car();
         car.setDriverType(parts[0]);
         car.setUserId(parts[1]);
@@ -321,6 +320,7 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
         @Override
         public void onDataExited(DataSnapshot dataSnapshot) {
             String[] parts = dataSnapshot.getKey().split("_");
+            if(parts.length < 2) return;
             Car car = new Car();
             car.setDriverType(parts[0]);
             car.setUserId(parts[1]);

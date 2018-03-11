@@ -19,12 +19,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.pl.android.drively.BoilerplateApplication;
 import org.pl.android.drively.data.DataManager;
-import org.pl.android.drively.data.model.Car;
 import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.data.model.eventbus.HotspotSettingsChanged;
 import org.pl.android.drively.util.FirebasePaths;
-
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -157,9 +154,10 @@ public class GeolocationUpdateService extends Service {
         @Override
         public void onLocationChanged(Location location) {
             mLastLocation.set(location);
-            if(!FIREBASE_KEY.isEmpty())
+            if (!FIREBASE_KEY.isEmpty())
                 geoFire.setLocation(FIREBASE_KEY, new GeoLocation(location.getLatitude(), location.getLongitude()),
-                        (locationKey, databaseError) -> {});
+                        (locationKey, databaseError) -> {
+                        });
         }
 
         @Override
