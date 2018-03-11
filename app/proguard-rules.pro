@@ -57,6 +57,12 @@
 -dontwarn okhttp3.**
 -dontwarn com.roughike.bottombar.**
 -dontwarn pl.charmas.**
+-dontwarn org.w3c.dom.bootstrap.**
+-dontwarn java.nio.file.**
+-dontwarn java.beans.Transient
+-dontwarn java.beans.ConstructorProperties
+-dontwarn com.google.firebase.database.DatabaseReference
+-dontwarn build.IgnoreJava8API
 
 -keep class com.google.android.gms.** { *; }
 -dontwarn com.google.android.gms.**
