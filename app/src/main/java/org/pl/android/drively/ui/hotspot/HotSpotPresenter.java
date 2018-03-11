@@ -97,7 +97,7 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
     private void updateCarView(DataSnapshot dataSnapshot, GeoLocation location) {
         if (dataSnapshot == null || !dataSnapshot.exists()) return;
         String[] parts = dataSnapshot.getKey().split("_");
-        if(parts.length < 2) return;
+        if (parts.length < 2) return;
         Car car = new Car();
         car.setDriverType(parts[0]);
         car.setUserId(parts[1]);
@@ -320,7 +320,7 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
         @Override
         public void onDataExited(DataSnapshot dataSnapshot) {
             String[] parts = dataSnapshot.getKey().split("_");
-            if(parts.length < 2) return;
+            if (parts.length < 2) return;
             Car car = new Car();
             car.setDriverType(parts[0]);
             car.setUserId(parts[1]);

@@ -217,9 +217,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         IS_USER_POSITION_CHECKED = false;
-
         mMainPresenter.updateOnlineStatus(false);
         mMainPresenter.detachView();
     }
