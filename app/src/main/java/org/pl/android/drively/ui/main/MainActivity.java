@@ -19,6 +19,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseUser;
 import com.roughike.bottombar.BottomBar;
 
@@ -100,6 +101,10 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
 
         activityComponent().inject(this);
         setContentView(R.layout.activity_main);
+
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
+
+        mFirebaseAnalytics.setUserId(mMainPresenter.getUserId());
 
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.app_bar);

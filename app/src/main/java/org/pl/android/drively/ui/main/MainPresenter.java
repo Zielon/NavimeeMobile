@@ -73,4 +73,8 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
     public void setAppIntroShowed() {
         mDataManager.getPreferencesHelper().setValue(Const.FIRST_START, false);
     }
+
+    public String getUserId(){
+        return mDataManager.getPreferencesHelper().getUserId();
+    }
 }

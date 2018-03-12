@@ -1,7 +1,10 @@
 package org.pl.android.drively.ui.signinup;
 
+import android.app.Activity;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -22,6 +25,8 @@ public class BaseSignPresenter extends BasePresenter<BaseSignMvpView> {
     protected BaseSignMvpView mMvpView;
     @Inject
     UsersRepository usersRepository;
+
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     public void attachView(BaseSignMvpView mvpView) {
