@@ -45,6 +45,7 @@ public class GeolocationUpdateService extends Service {
     private ObjectMapper mapper = new ObjectMapper();
     private DatabaseReference databaseReference;
     private LocationManager mLocationManager = null;
+    private User user;
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -71,7 +72,7 @@ public class GeolocationUpdateService extends Service {
         final Handler handler = new Handler();
         handler.postDelayed(() -> stopSelf(), TIME_FOR_SERVICE);
 
-        User user = dataManager.getPreferencesHelper().getUserInfo();
+        user = dataManager.getPreferencesHelper().getUserInfo();
 
         DRIVER_TYPE = user.getDriverType();
         FIREBASE_KEY = DRIVER_TYPE + "_" + user.getId();
@@ -136,6 +137,7 @@ public class GeolocationUpdateService extends Service {
         if (FIREBASE_KEY != null && !FIREBASE_KEY.isEmpty()) {
             databaseReference.child(FIREBASE_KEY).removeValue();
         }
+        FIREBASE_KEY = DRIVER_TYPE + "_" + user.getId();
         if (hotspotSettingsChanged.getShareLocalization()) {
             startLocationUpdates();
         } else {
