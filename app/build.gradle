@@ -65,6 +65,7 @@ android {
         release {
             signingConfig signingConfigs.release
             minifyEnabled true
+            debuggable true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             ext.betaDistributionReleaseNotesFilePath = file('../crashlytics_release_notes.txt').absolutePath
             buildConfigField "String", "GOOGLE_DIRECTIONS_KEY", '"AIzaSyDLZ9IqdXbq5Mtn1d9ZMAu70D1PgtBa5jE"'
@@ -172,9 +173,6 @@ dependencies {
 
     //event bus
     compile "org.greenrobot:eventbus:$EVENT_BUS_VERSION"
-
-    // kalman filter
-    compile group: 'org.ejml', name: 'ejml-all', version: '0.33'
 
     //firebase
     compile "com.google.firebase:firebase-auth:$FIREBASE_VERSION"
