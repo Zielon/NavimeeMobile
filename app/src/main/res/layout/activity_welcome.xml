@@ -1,58 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.pl.android.drively.ui.welcome.WelcomeActivity">
+    tools:context="org.pl.android.drively.ui.signinup.SignActivity">
 
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="115dp"
         android:gravity="center_horizontal"
         android:text="Drively"
         android:textColor="#e40455"
-        android:textSize="60sp" />
+        android:textSize="60sp"
+        app:layout_constraintBottom_toTopOf="@+id/login_buttons_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3" />
 
-    <Button
-        android:id="@+id/loginButton"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:id="@+id/login_buttons_layout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
-        android:layout_marginTop="177dp"
-        android:backgroundTint="@color/button_background_dark"
-        android:text="@string/login"
-        android:textAlignment="center"
-        android:textColor="@color/white" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintVertical_bias="0.75">
+
+        <TextView
+            android:id="@+id/login_buttons_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="32dp"
+            android:text="@string/login_buttons_label"
+            android:textColor="#e40455"
+            android:textSize="16sp" />
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_google_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/login_buttons_label"
+            android:layout_marginEnd="50dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="10dp" />
+
+        <com.facebook.login.widget.LoginButton xmlns:facebook="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/facebook_login_button"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_below="@id/sign_in_google_button"
+            android:layout_marginEnd="54dp"
+            android:layout_marginStart="54dp"
+            android:layout_marginTop="24dp"
+            android:elevation="4dp"
+            android:paddingBottom="13dp"
+            android:paddingTop="13dp"
+            facebook:com_facebook_login_text="Facebook" />
+
+        <com.rilixtech.materialfancybutton.MaterialFancyButton
+            android:id="@+id/replaced_sing_in_google_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/login_buttons_label"
+            android:layout_marginEnd="50dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="4dp"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp"
+            android:visibility="gone"
+            fancy:mfb_defaultColor="@color/white"
+            fancy:mfb_focusColor="@color/semi_transparent_black"
+            fancy:mfb_icon="@string/fawi_google_plus"
+            fancy:mfb_iconPaddingRight="32dp"
+            fancy:mfb_iconPosition="left"
+            fancy:mfb_radius="8dp"
+            fancy:mfb_text="@string/sign_in_google"
+            fancy:mfb_textColor="@color/primary_dark" />
+
+        <com.rilixtech.materialfancybutton.MaterialFancyButton
+            android:id="@+id/replaced_facebook_login_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/replaced_sing_in_google_button"
+            android:layout_marginEnd="50dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="32dp"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp"
+            android:visibility="gone"
+            fancy:mfb_defaultColor="@color/com_facebook_blue"
+            fancy:mfb_focusColor="@color/semi_transparent_white"
+            fancy:mfb_icon="@string/fawi_facebook"
+            fancy:mfb_iconPaddingRight="32dp"
+            fancy:mfb_iconPosition="left"
+            fancy:mfb_radius="8dp"
+            fancy:mfb_text="@string/sign_in_facebook"
+            fancy:mfb_textColor="@color/white" />
+    </RelativeLayout>
 
     <TextView
-        android:id="@+id/or"
+        android:id="@+id/regulation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/loginButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
-        android:gravity="center_horizontal"
-        android:text="@string/or"
-        android:textColor="#ffffff"
-        android:textSize="12sp" />
-
-    <Button
-        android:id="@+id/createAccountButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/or"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
-        android:layout_marginTop="5dp"
-        android:backgroundTint="@color/button_background"
-        android:text="@string/create_account"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"
+        android:paddingTop="30dp"
+        android:text="@string/accept_regulation"
         android:textAlignment="center"
-        android:textColor="@color/white" />
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

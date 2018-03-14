@@ -208,4 +208,6 @@
     <!--SETTINGS MAIN SCREEN-->
     <string name="choose_app">Wybierz aplikację</string>
 
+    <string name="login_buttons_label">Zaloguj się i dołącz do najlepszych!</string>
+
 </resources>

@@ -23,9 +23,7 @@ import org.pl.android.drively.ui.settings.user.email.UserEmailChangeActivity;
 import org.pl.android.drively.ui.settings.user.name.UserNameChangeActivity;
 import org.pl.android.drively.ui.settings.user.password.UserPasswordChangeActivity;
 import org.pl.android.drively.ui.settings.user.reauthenticate.ReauthenticateActivity;
-import org.pl.android.drively.ui.signinup.in.SignInActivity;
-import org.pl.android.drively.ui.signinup.up.SignUpActivity;
-import org.pl.android.drively.ui.welcome.WelcomeActivity;
+import org.pl.android.drively.ui.signinup.SignActivity;
 
 import dagger.Subcomponent;
 
@@ -45,13 +43,9 @@ public interface ActivityComponent {
 
     void inject(FriendsFragment friendsFragment);
 
-    void inject(SignInActivity signInActivity);
-
     void inject(SettingsActivity settingsActivity);
 
-    void inject(SignUpActivity signUpActivity);
-
-    void inject(WelcomeActivity welcomeActivity);
+    void inject(SignActivity welcomeActivity);
 
     void inject(UserEmailChangeActivity userEmailChangeActivity);
 
