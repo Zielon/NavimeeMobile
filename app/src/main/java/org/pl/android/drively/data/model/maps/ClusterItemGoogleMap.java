@@ -12,16 +12,26 @@ public class ClusterItemGoogleMap implements ClusterItem {
     private String count;
     private Const.HotSpotType type;
     private String id;
+    private int rank;
 
-    public ClusterItemGoogleMap(String id, LatLng position, String name, String count, Const.HotSpotType type, int pictureResource) {
+    public ClusterItemGoogleMap(String id, LatLng position, String name, String count,
+                                Const.HotSpotType type, int pictureResource, int rank) {
         this.id = id;
         mPosition = position;
         this.name = name;
         profilePhoto = pictureResource;
         this.count = count;
         this.type = type;
+        this.rank = rank;
     }
 
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
 
     @Override
     public LatLng getPosition() {

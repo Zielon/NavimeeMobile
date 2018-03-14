@@ -78,6 +78,7 @@ import org.pl.android.drively.services.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.base.tab.BaseTabFragment;
 import org.pl.android.drively.ui.main.MainActivity;
+import org.pl.android.drively.ui.planner.EventHelper;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.DetectedActivityToString;
 import org.pl.android.drively.util.DisplayTextOnViewAction;
@@ -126,9 +127,11 @@ public class HotSpotFragment extends BaseTabFragment implements
     TextView mTextPlaceTime;
     @BindView(R.id.text_place_event_name)
     TextView mTextPlaceName;
+    @BindView(R.id.rank_icon)
+    ImageView mPlaceRankIcon;
     @BindView(R.id.place_driveButton)
     FloatingActionButton mPlaceDriveButton;
-    @BindView(R.id.place_closeBotton)
+    @BindView(R.id.place_closeButton)
     ImageButton mPlaceCloseButton;
     @BindView(R.id.fab)
     FloatingActionButton filterButton;
@@ -142,6 +145,7 @@ public class HotSpotFragment extends BaseTabFragment implements
     RxPermissions rxPermissions;
     LatLng latLngCurrent, latLngEnd;
     String sEventName, sEventCount;
+    int sEventRank;
     Const.HotSpotType sEventType;
     GeoFire geoFireMapPoints, geoFireUsersLocation;
     GeoQuery geoQueryMapPoints, geoQueryUsersLocation;
@@ -399,7 +403,7 @@ public class HotSpotFragment extends BaseTabFragment implements
                     latLngCurrent = latLng;
                     if (isFromNotification) {
                         isFromNotification = false;
-                        route(latLng, new LatLng(latNotification, lngNotification), notificationName, notificationCount, Const.HotSpotType.EVENT);
+                        route(latLng, new LatLng(latNotification, lngNotification), notificationName, notificationCount, Const.HotSpotType.EVENT, 0);
                     }
 
                     // On each update change the GeoFire position. There is no need to add new listeners.
@@ -486,7 +490,8 @@ public class HotSpotFragment extends BaseTabFragment implements
                                                 clusterItemGoogleMap.getPosition(),
                                                 clusterItemGoogleMap.getName(),
                                                 clusterItemGoogleMap.getCount(),
-                                                clusterItemGoogleMap.getType());
+                                                clusterItemGoogleMap.getType(),
+                                                clusterItemGoogleMap.getRank());
                                         return false;
                                     });
                                     mClusterManager.setOnClusterClickListener(cluster -> {
@@ -545,7 +550,7 @@ public class HotSpotFragment extends BaseTabFragment implements
                         notificationEvent.getLng()),
                 notificationEvent.getName(),
                 notificationEvent.getCount(),
-                Const.HotSpotType.EVENT);
+                Const.HotSpotType.EVENT, 0);
     }
 
     @Override
@@ -631,6 +636,11 @@ public class HotSpotFragment extends BaseTabFragment implements
             distanceValue = route.get(i).getDistanceValue();
             locationGeo = route.get(i).getLatLgnBounds().getCenter();
             mTextPlaceName.setText(sEventName);
+            if (sEventRank != 0) {
+                mPlaceRankIcon.setImageResource(EventHelper.getIconResIdByRank(sEventRank));
+            } else {
+                mPlaceRankIcon.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -675,7 +685,7 @@ public class HotSpotFragment extends BaseTabFragment implements
                             event.getTitle(),
                             String.valueOf(event.getRank()),
                             event.getHotspotType(),
-                            R.drawable.hotspot_24dp);
+                            R.drawable.hotspot_24dp, event.getRank());
 
             clusterItemGoogleMap.setType(Const.HotSpotType.EVENT);
             eventsOnMap.put(event.getId(), clusterItemGoogleMap);
@@ -714,7 +724,7 @@ public class HotSpotFragment extends BaseTabFragment implements
                     fourSquarePlace.getName(),
                     String.valueOf(fourSquarePlace.getStatsVisitsCount()),
                     fourSquarePlace.getHotspotType(),
-                    picture);
+                    picture, EventHelper.convertRatingIntoRank(fourSquarePlace.getRating())); // TODO: put rank
 
             eventsOnMap.put(fourSquarePlace.getId(), clusterItemGoogleMap);
 
@@ -878,11 +888,12 @@ public class HotSpotFragment extends BaseTabFragment implements
         mClusterManager.setRenderer(new MapRenderer());
     }
 
-    public void route(LatLng start, LatLng end, String eventName, String eventCount, Const.HotSpotType hotSpotType) {
+    public void route(LatLng start, LatLng end, String eventName, String eventCount, Const.HotSpotType hotSpotType, int eventRank) {
         sEventName = eventName;
         sEventCount = eventCount;
         sEventType = hotSpotType;
         latLngEnd = end;
+        sEventRank = eventRank;
 
         if (BuildConfig.DEBUG) {
             Routing routing = new Routing.Builder()

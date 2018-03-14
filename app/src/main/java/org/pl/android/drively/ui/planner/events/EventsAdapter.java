@@ -18,6 +18,7 @@ import org.joda.time.Minutes;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.injection.ApplicationContext;
+import org.pl.android.drively.ui.planner.EventHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -78,19 +79,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
                     endDay + " " + event.getEndTime().getHours() + ":" + String.format("%02d", event.getEndTime().getMinutes()));
         }
         holder.addButton.setTag(0);
-        if (event.getRank() == 1) {
-            holder.imageCount.setImageResource(R.mipmap.ranking_1);
-        } else if (event.getRank() == 2) {
-            holder.imageCount.setImageResource(R.mipmap.ranking_2);
-        } else if (event.getRank() == 3) {
-            holder.imageCount.setImageResource(R.mipmap.ranking_3);
-        } else if (event.getRank() == 4) {
-            holder.imageCount.setImageResource(R.mipmap.ranking_4);
-        } else {
-            holder.imageCount.setImageResource(R.mipmap.ranking_5);
-        }
+        holder.imageCount.setImageResource(EventHelper.getIconResIdByRank(event.getRank()));
 
-        if (Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() < 30 && Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() > 0) {
+        if (Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() < 30
+                && Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() > 0) {
             holder.addButton.setTag(1);
             holder.addButton.setText(R.string.navigate);
         } else if (dayScheduleList != null && dayScheduleList.contains(event)) {
