@@ -173,6 +173,9 @@ dependencies {
     //event bus
     compile "org.greenrobot:eventbus:$EVENT_BUS_VERSION"
 
+    // kalman filter
+    compile group: 'org.ejml', name: 'ejml-all', version: '0.33'
+
     //firebase
     compile "com.google.firebase:firebase-auth:$FIREBASE_VERSION"
     compile "com.google.firebase:firebase-core:${FIREBASE_VERSION}"
