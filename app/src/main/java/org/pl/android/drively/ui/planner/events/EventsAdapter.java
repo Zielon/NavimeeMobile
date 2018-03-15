@@ -11,8 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.rilixtech.materialfancybutton.MaterialFancyButton;
-
 import org.joda.time.DateTime;
 import org.joda.time.Minutes;
 import org.pl.android.drively.R;
@@ -28,6 +26,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHolder> {
     DateTime currentDateTime;
@@ -92,16 +91,16 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
 
         if (Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() < 30 && Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() > 0) {
             holder.addButton.setTag(1);
-            holder.addButton.setText(R.string.navigate);
+            holder.addButton.setText(mContext.getString(R.string.navigate));
         } else if (dayScheduleList != null && dayScheduleList.contains(event)) {
             holder.addButton.setTag(2);
             holder.addButton.setBackgroundColor(mContext.getResources().getColor(R.color.colorLine));
             holder.addButton.setTextColor(mContext.getResources().getColor(R.color.gray_font));
-            holder.addButton.setText(R.string.cancel);
+            holder.addButton.setText(mContext.getString(R.string.cancel));
         } else {
             holder.addButton.setBackgroundColor(mContext.getResources().getColor(R.color.button_background));
             holder.addButton.setTextColor(mContext.getResources().getColor(R.color.white));
-            holder.addButton.setText(R.string.popup_events_info3_button);
+            holder.addButton.setText(mContext.getString(R.string.popup_events_info3_button));
             holder.addButton.setTag(3);
         }
 
@@ -118,13 +117,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
                 holder.addButton.setTag(3);
                 holder.addButton.setBackgroundColor(mContext.getResources().getColor(R.color.button_background));
                 holder.addButton.setTextColor(mContext.getResources().getColor(R.color.white));
-                holder.addButton.setText(R.string.remember_me);
+                holder.addButton.setText(mContext.getString(R.string.remember_me));
                 eventsAdapterCallback.eventsAdapterCallback(EventsAdapterAction.DELETE, event);
             } else if ((int) view.getTag() == 3) {
                 holder.addButton.setTag(2);
                 holder.addButton.setBackgroundColor(mContext.getResources().getColor(R.color.colorLine));
                 holder.addButton.setTextColor(mContext.getResources().getColor(R.color.gray_font));
-                holder.addButton.setText(R.string.cancel);
+                holder.addButton.setText(mContext.getString(R.string.cancel));
                 eventsAdapterCallback.eventsAdapterCallback(EventsAdapterAction.SAVE, event);
 
             }
@@ -183,7 +182,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         @BindView(R.id.viewTextTime)
         TextView timeTextView;
         @BindView(R.id.addButton)
-        MaterialFancyButton addButton;
+        FancyButton addButton;
 
         public EventsHolder(View itemView) {
             super(itemView);

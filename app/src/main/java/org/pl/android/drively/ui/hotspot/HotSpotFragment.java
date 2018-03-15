@@ -101,6 +101,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import java8.util.Optional;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import mehdi.sakout.fancybuttons.FancyButton;
 import pl.charmas.android.reactivelocation2.ReactiveLocationProvider;
 import timber.log.Timber;
 
@@ -132,6 +136,8 @@ public class HotSpotFragment extends BaseTabFragment implements
     ImageButton mPlaceCloseButton;
     @BindView(R.id.fab)
     FloatingActionButton filterButton;
+    @BindView(R.id.fab_filter_remove_badge)
+    FancyButton filterRemoveBadge;
     @BindView(R.id.fab_minus)
     FloatingActionButton minusButton;
     @BindView(R.id.fab_plus)
@@ -507,8 +513,15 @@ public class HotSpotFragment extends BaseTabFragment implements
                                     Timber.i("Map style was not loaded");
                             });
                         }
+                        Optional.ofNullable(((MainActivity) context).hotspotFilterBackup).ifPresent(hotspotFilterBackup -> {
+                            eventsOnMap = hotspotFilterBackup.getEventsOnMap();
+                            usersOnMap = hotspotFilterBackup.getUsersOnMap();
+                            dialogFrag.setApplied_filters(hotspotFilterBackup.getHotspotAppliedFilters());
+                            updateOnFilterChange(hotspotFilterBackup.getHotspotAppliedFilters());
+                        });
                     });
         }
+
         mMapView.onResume();
     }
 
@@ -538,6 +551,12 @@ public class HotSpotFragment extends BaseTabFragment implements
         googleMap.animateCamera(CameraUpdateFactory.zoomIn());
     }
 
+    @OnClick(R.id.fab_filter_remove_badge)
+    public void onRemoveFilterBadgeClick(View view) {
+        dialogFrag.clearFilters();
+        updateOnFilterChange(new ArrayMap<>());
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(NotificationEvent notificationEvent) {
         route(latLngCurrent,
@@ -552,6 +571,7 @@ public class HotSpotFragment extends BaseTabFragment implements
     public void onPause() {
         super.onPause();
         mMapView.onPause();
+        ((MainActivity) context).hotspotFilterBackup = new HotspotFilterBackup(dialogFrag.getApplied_filters(), eventsOnMap, usersOnMap);
     }
 
     @Override
@@ -821,17 +841,23 @@ public class HotSpotFragment extends BaseTabFragment implements
 
     @Override
     public void onResult(Object result) {
+        updateOnFilterChange(result);
+    }
+
+    private void updateOnFilterChange(Object result) {
 
         mHotspotPresenter.clearFilters();
+        filterRemoveBadge.setVisibility(View.GONE);
 
         final List<String> carsFiltersTypes = new ArrayList<>();
         final List<String> itemsFiltersTypes = new ArrayList<>();
 
-        if (result.toString().equalsIgnoreCase("swiped_down")) {
-
-        } else {
+        if (!result.toString().equalsIgnoreCase("swiped_down")) {
             ArrayMap<String, List<String>> applied_filters = (ArrayMap<String, List<String>>) result;
+            Optional.ofNullable(((MainActivity) context).hotspotFilterBackup)
+                    .ifPresent(hotspotFilterBackup -> hotspotFilterBackup.setHotspotAppliedFilters(applied_filters));
             if (applied_filters.size() > 0) {
+                filterRemoveBadge.setVisibility(View.VISIBLE);
                 for (Map.Entry<String, List<String>> entry : applied_filters.entrySet()) {
                     if (entry.getValue().contains(getResources().getString(R.string.events_filtr))) {
                         mHotspotPresenter.addItemToMapItemFilterList(Const.HotSpotType.EVENT.name());
@@ -860,22 +886,24 @@ public class HotSpotFragment extends BaseTabFragment implements
 
         // CLUSTERS
 
-        mClusterManager.clearItems();
+        Optional.ofNullable(mClusterManager).ifPresent(clusterManager -> {
+            if (!itemsFiltersTypes.contains(Const.HotSpotType.FOURSQUARE_PLACE.name())) {
+                Stream.of(eventsOnMap)
+                        .filter(item -> item.getValue().getType().equals(Const.HotSpotType.FOURSQUARE_PLACE))
+                        .forEach(item -> mClusterManager.addItem(item.getValue()));
+            }
 
-        if (!itemsFiltersTypes.contains(Const.HotSpotType.FOURSQUARE_PLACE.name())) {
-            Stream.of(eventsOnMap)
-                    .filter(item -> item.getValue().getType().equals(Const.HotSpotType.FOURSQUARE_PLACE))
-                    .forEach(item -> mClusterManager.addItem(item.getValue()));
-        }
+            if (!itemsFiltersTypes.contains(Const.HotSpotType.EVENT.name())) {
+                Stream.of(eventsOnMap)
+                        .filter(item -> item.getValue().getType().equals(Const.HotSpotType.EVENT))
+                        .forEach(item -> mClusterManager.addItem(item.getValue()));
+            }
 
-        if (!itemsFiltersTypes.contains(Const.HotSpotType.EVENT.name())) {
-            Stream.of(eventsOnMap)
-                    .filter(item -> item.getValue().getType().equals(Const.HotSpotType.EVENT))
-                    .forEach(item -> mClusterManager.addItem(item.getValue()));
-        }
+            // Try to re-render the map?
+            mClusterManager.setRenderer(new MapRenderer());
+        });
 
-        // Try to re-render the map?
-        mClusterManager.setRenderer(new MapRenderer());
+
     }
 
     public void route(LatLng start, LatLng end, String eventName, String eventCount, Const.HotSpotType hotSpotType) {
@@ -989,5 +1017,13 @@ public class HotSpotFragment extends BaseTabFragment implements
             // Always render clusters.
             return cluster.getSize() > 1;
         }
+    }
+
+    @Data
+    @AllArgsConstructor
+    public class HotspotFilterBackup {
+        private ArrayMap<String, List<String>> hotspotAppliedFilters = new ArrayMap<>();
+        private ConcurrentHashMap<String, ClusterItemGoogleMap> eventsOnMap;
+        private ConcurrentHashMap<String, Car> usersOnMap;
     }
 }

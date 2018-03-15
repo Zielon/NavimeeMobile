@@ -111,7 +111,7 @@
                 android:textColor="@color/white"
                 android:textSize="13sp" />
 
-            <com.rilixtech.materialfancybutton.MaterialFancyButton
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/addButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -121,11 +121,11 @@
                 android:layout_marginEnd="8dp"
                 android:elevation="8dp"
                 android:minWidth="76dp"
-                fancy:mfb_defaultColor="@color/button_background"
-                fancy:mfb_focusColor="@color/white"
-                fancy:mfb_radius="2dp"
-                fancy:mfb_text="@string/popup_events_info3_button"
-                fancy:mfb_textSize="11sp" />
+                fancy:fb_defaultColor="@color/button_background"
+                fancy:fb_focusColor="@color/white"
+                fancy:fb_radius="2dp"
+                fancy:fb_text="@string/popup_events_info3_button"
+                fancy:fb_textSize="11sp" />
 
             <ImageView
                 android:id="@+id/imageCount"

@@ -8,10 +8,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.rilixtech.materialfancybutton.MaterialFancyButton;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.util.Const;
+
+import mehdi.sakout.fancybuttons.FancyButton;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -39,10 +40,10 @@ public class HotspotPopupHelper {
             rootView.findViewById(driverType2.getButtonResId()).setOnClickListener(view -> {
                 for (Const.DriverType driverTypeDeselect : Const.DriverType.values()) {
                     rootView.findViewById(driverTypeDeselect.getButtonResId()).setBackgroundColor(ContextCompat.getColor(context, R.color.white));
-                    ((MaterialFancyButton) rootView.findViewById(driverTypeDeselect.getButtonResId())).setTextColor(ContextCompat.getColor(context, R.color.filters_buttons));
+                    ((FancyButton) rootView.findViewById(driverTypeDeselect.getButtonResId())).setTextColor(ContextCompat.getColor(context, R.color.filters_buttons));
                 }
                 view.setBackgroundColor(ContextCompat.getColor(context, R.color.filters_buttons));
-                ((MaterialFancyButton) view).setTextColor(ContextCompat.getColor(context, R.color.white));
+                ((FancyButton) view).setTextColor(ContextCompat.getColor(context, R.color.white));
                 selectedDriverType = driverType2;
                 rootView.findViewById(R.id.brand_error).setVisibility(View.GONE);
             });
@@ -70,11 +71,11 @@ public class HotspotPopupHelper {
             selectedDriverType = Const.DriverType.getByName(driverType);
             rootView.findViewById(Const.DriverType.getByName(driverType).getButtonResId())
                     .setBackgroundColor(ContextCompat.getColor(context, R.color.filters_buttons));
-            ((MaterialFancyButton) rootView.findViewById(Const.DriverType.getByName(driverType).getButtonResId()))
+            ((FancyButton) rootView.findViewById(Const.DriverType.getByName(driverType).getButtonResId()))
                     .setTextColor(ContextCompat.getColor(context, R.color.white));
             ((TextView) rootView.findViewById(R.id.popup_hotspot_agreement)).setText(R.string.popup_hotspot_agreement_change);
             ((TextView) rootView.findViewById(R.id.popup_hotspot_brand_question)).setText(R.string.popup_hotspot_brand_question_change);
-            ((MaterialFancyButton) rootView.findViewById(R.id.agree_button)).setText(R.string.popup_hotspot_button_agreement_change);
+            ((FancyButton) rootView.findViewById(R.id.agree_button)).setText(context.getString(R.string.popup_hotspot_button_agreement_change));
         }
     }
 

@@ -207,8 +207,8 @@ dependencies {
     }
     compile 'com.yarolegovich:lovely-dialog:1.0.7'
     compile 'de.hdodenhof:circleimageview:2.2.0'
-    compile 'com.rilixtech:materialfancybuttons:1.8.7'
     compile 'com.rm:rmswitch:1.2.2'
+    compile 'com.github.medyo:fancybuttons:1.8.4'
 
     //google map
     compile 'com.github.jd-alexander:library:1.1.0'
@@ -227,6 +227,8 @@ dependencies {
     annotationProcessor daggerCompiler
     testAnnotationProcessor daggerCompiler
     androidTestAnnotationProcessor daggerCompiler
+    compile 'org.projectlombok:lombok:1.16.20'
+    annotationProcessor 'org.projectlombok:lombok:1.16.20'
 
     // Instrumentation test dependencies
     androidTestCompile jUnit

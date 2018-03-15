@@ -124,7 +124,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/popup_events_info2_layout">
 
-                <com.rilixtech.materialfancybutton.MaterialFancyButton
+                <mehdi.sakout.fancybuttons.FancyButton
                     android:id="@+id/popup_events_info3_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -133,11 +133,11 @@
                     android:layout_marginEnd="12dp"
                     android:layout_marginTop="8dp"
                     android:elevation="8dp"
-                    fancy:mfb_defaultColor="@color/button_background"
-                    fancy:mfb_focusColor="@color/white"
-                    fancy:mfb_radius="2dp"
-                    fancy:mfb_text="@string/popup_events_info3_button"
-                    fancy:mfb_textSize="12sp" />
+                    fancy:fb_defaultColor="@color/button_background"
+                    fancy:fb_focusColor="@color/white"
+                    fancy:fb_radius="2dp"
+                    fancy:fb_text="@string/popup_events_info3_button"
+                    fancy:fb_textSize="12sp" />
 
                 <TextView
                     android:id="@+id/popup_events_info3"
@@ -164,7 +164,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/popup_events_info3_layout">
 
-                <com.rilixtech.materialfancybutton.MaterialFancyButton
+                <mehdi.sakout.fancybuttons.FancyButton
                     android:id="@+id/popup_events_info4_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -173,11 +173,11 @@
                     android:layout_marginEnd="12dp"
                     android:layout_marginTop="8dp"
                     android:elevation="8dp"
-                    fancy:mfb_defaultColor="@color/button_background"
-                    fancy:mfb_focusColor="@color/white"
-                    fancy:mfb_radius="2dp"
-                    fancy:mfb_text="@string/popup_events_info4_button"
-                    fancy:mfb_textSize="12sp" />
+                    fancy:fb_defaultColor="@color/button_background"
+                    fancy:fb_focusColor="@color/white"
+                    fancy:fb_radius="2dp"
+                    fancy:fb_text="@string/popup_events_info4_button"
+                    fancy:fb_textSize="12sp" />
 
                 <TextView
                     android:id="@+id/popup_events_info4"
@@ -260,7 +260,7 @@
 
             </RelativeLayout>
 
-            <com.rilixtech.materialfancybutton.MaterialFancyButton
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/understood_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -271,11 +271,11 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/popup_events_info6_layout"
-                fancy:mfb_defaultColor="@color/button_background"
-                fancy:mfb_focusColor="@color/white"
-                fancy:mfb_radius="2dp"
-                fancy:mfb_text="@string/popup_events_understood"
-                fancy:mfb_textSize="16sp" />
+                fancy:fb_defaultColor="@color/button_background"
+                fancy:fb_focusColor="@color/white"
+                fancy:fb_radius="2dp"
+                fancy:fb_text="@string/popup_events_understood"
+                fancy:fb_textSize="16sp" />
 
             <TextView
                 android:id="@+id/popup_hotspot_preference_info"

@@ -33,6 +33,7 @@ import java.util.Map;
 public class MyFabFragment extends AAH_FabulousFragment {
 
     ArrayMap<String, List<String>> applied_filters = new ArrayMap<>();
+
     List<TextView> textviews = new ArrayList<>();
 
     TabLayout tabs_types;
@@ -40,7 +41,6 @@ public class MyFabFragment extends AAH_FabulousFragment {
     ImageButton imgbtn_refresh, imgbtn_apply;
     SectionsPagerAdapter mAdapter;
     private DisplayMetrics metrics;
-
 
     public static MyFabFragment newInstance() {
         MyFabFragment mff = new MyFabFragment();
@@ -101,6 +101,14 @@ public class MyFabFragment extends AAH_FabulousFragment {
         super.setupDialog(dialog, style); //call super at last
     }
 
+    public ArrayMap<String, List<String>> getApplied_filters() {
+        return applied_filters;
+    }
+
+    public void setApplied_filters(ArrayMap<String, List<String>> applied_filters) {
+        this.applied_filters = applied_filters;
+    }
+
     private void inflateLayoutWithFilters(final String filter_category, FlexboxLayout fbl) {
         List<String> keys = new ArrayList<>();
 
@@ -145,6 +153,10 @@ public class MyFabFragment extends AAH_FabulousFragment {
 
             fbl.addView(subchild);
         }
+    }
+
+    public void clearFilters() {
+        applied_filters.clear();
     }
 
     private void addToSelectedMap(String key, String value) {
