@@ -23,4 +23,6 @@
     <color name="colorCardView">#f7f7f7</color>
     <color name="gray_font">#575757</color>
     <color name="transparent">#00ffffff</color>
+    <color name="semi_transparent_black">#70000000</color>
+    <color name="semi_transparent_white">#70ffffff</color>
 </resources>
