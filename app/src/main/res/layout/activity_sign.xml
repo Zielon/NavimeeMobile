@@ -83,7 +83,7 @@
             fancy:fb_focusColor="@color/semi_transparent_black"
             fancy:fb_iconPaddingRight="32dp"
             fancy:fb_iconPosition="left"
-            fancy:fb_radius="128dp"
+            fancy:fb_radius="5dp"
             fancy:fb_text="@string/sign_in_google"
             fancy:fb_textColor="@color/white" />
 
@@ -97,7 +97,7 @@
             fancy:fb_defaultColor="@color/transparent"
             fancy:fb_focusColor="@color/transparent"
             fancy:fb_fontIconResource="&#xf0d5;"
-            fancy:fb_fontIconSize="@dimen/text_small_body"
+            fancy:fb_fontIconSize="@dimen/text_body"
             fancy:fb_text=""
             fancy:fb_textColor="@color/white" />
 
@@ -117,7 +117,7 @@
             fancy:fb_focusColor="@color/semi_transparent_white"
             fancy:fb_iconPaddingRight="32dp"
             fancy:fb_iconPosition="left"
-            fancy:fb_radius="128dp"
+            fancy:fb_radius="5dp"
             fancy:fb_text="@string/sign_in_facebook"
             fancy:fb_textColor="@color/white" />
 
@@ -131,7 +131,7 @@
             fancy:fb_defaultColor="@color/transparent"
             fancy:fb_focusColor="@color/transparent"
             fancy:fb_fontIconResource="&#xf09a;"
-            fancy:fb_fontIconSize="@dimen/text_small_body"
+            fancy:fb_fontIconSize="@dimen/text_body"
             fancy:fb_text=""
             fancy:fb_textColor="@color/white" />
 
