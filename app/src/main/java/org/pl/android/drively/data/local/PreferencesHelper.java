@@ -73,14 +73,15 @@ public class PreferencesHelper {
         sharedPreferences.edit().putBoolean(Const.FIRST_START, false).apply();
         sharedPreferences.edit().putInt(APP_VERSION, appVersion).apply();
         sharedPreferences.edit().putString(SHARE_KEY_USER_ID, userId).apply();
-
         StreamSupport.stream(Const.TAB_FRAGMENTS).forEach(tabFragment -> sharedPreferences.edit()
                 .putBoolean(tabFragment + Const.FIRST_START_POPUP_SUFFIX, true).apply());
+        sharedPreferences.edit().putBoolean(Const.HOTSPOT_SECOND_POPUP_FIRST_START, true).apply();
     }
 
     public void unclearPopups() {
         StreamSupport.stream(Const.TAB_FRAGMENTS).forEach(tabFragment -> sharedPreferences.edit()
                 .putBoolean(tabFragment + Const.FIRST_START_POPUP_SUFFIX, false).apply());
+        sharedPreferences.edit().putBoolean(Const.HOTSPOT_SECOND_POPUP_FIRST_START, false).apply();
     }
 
     public boolean getValue(String name) {

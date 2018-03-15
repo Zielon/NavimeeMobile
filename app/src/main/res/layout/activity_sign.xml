@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="org.pl.android.drively.ui.signinup.SignActivity">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:text="Drively"
+        android:textColor="#e40455"
+        android:textSize="60sp"
+        app:layout_constraintBottom_toTopOf="@+id/login_buttons_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3" />
+
+    <RelativeLayout
+        android:id="@+id/login_buttons_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintVertical_bias="0.75">
+
+        <TextView
+            android:id="@+id/login_buttons_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="32dp"
+            android:text="@string/login_buttons_label"
+            android:textColor="#e2e9e9e9"
+            android:textSize="16sp" />
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_google_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/login_buttons_label"
+            android:layout_marginEnd="50dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="10dp"
+            android:visibility="gone" />
+
+        <com.facebook.login.widget.LoginButton xmlns:facebook="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/facebook_login_button"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_below="@id/sign_in_google_button"
+            android:layout_marginEnd="54dp"
+            android:layout_marginStart="54dp"
+            android:layout_marginTop="24dp"
+            android:elevation="4dp"
+            android:paddingBottom="13dp"
+            android:paddingTop="13dp"
+            android:visibility="gone"
+            facebook:com_facebook_login_text="Facebook" />
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:id="@+id/replaced_sing_in_google_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/login_buttons_label"
+            android:layout_marginEnd="50dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="4dp"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp"
+            fancy:fb_borderColor="#e40455"
+            fancy:fb_borderWidth="1dp"
+            fancy:fb_defaultColor="@color/transparent"
+            fancy:fb_focusColor="@color/semi_transparent_black"
+            fancy:fb_iconPaddingRight="32dp"
+            fancy:fb_iconPosition="left"
+            fancy:fb_radius="128dp"
+            fancy:fb_text="@string/sign_in_google"
+            fancy:fb_textColor="@color/white" />
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignBottom="@id/replaced_sing_in_google_button"
+            android:layout_alignStart="@id/replaced_sing_in_google_button"
+            android:layout_alignTop="@id/replaced_sing_in_google_button"
+            android:layout_marginStart="16dp"
+            fancy:fb_defaultColor="@color/transparent"
+            fancy:fb_focusColor="@color/transparent"
+            fancy:fb_fontIconResource="&#xf0d5;"
+            fancy:fb_fontIconSize="@dimen/text_small_body"
+            fancy:fb_text=""
+            fancy:fb_textColor="@color/white" />
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:id="@+id/replaced_facebook_login_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/replaced_sing_in_google_button"
+            android:layout_marginEnd="50dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="32dp"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp"
+            fancy:fb_borderColor="#e40455"
+            fancy:fb_borderWidth="1dp"
+            fancy:fb_defaultColor="@color/transparent"
+            fancy:fb_focusColor="@color/semi_transparent_white"
+            fancy:fb_iconPaddingRight="32dp"
+            fancy:fb_iconPosition="left"
+            fancy:fb_radius="128dp"
+            fancy:fb_text="@string/sign_in_facebook"
+            fancy:fb_textColor="@color/white" />
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignBottom="@id/replaced_facebook_login_button"
+            android:layout_alignStart="@id/replaced_facebook_login_button"
+            android:layout_alignTop="@id/replaced_facebook_login_button"
+            android:layout_marginStart="16dp"
+            fancy:fb_defaultColor="@color/transparent"
+            fancy:fb_focusColor="@color/transparent"
+            fancy:fb_fontIconResource="&#xf09a;"
+            fancy:fb_fontIconSize="@dimen/text_small_body"
+            fancy:fb_text=""
+            fancy:fb_textColor="@color/white" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/regulation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"
+        android:paddingTop="30dp"
+        android:text="@string/accept_regulation"
+        android:textAlignment="center"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

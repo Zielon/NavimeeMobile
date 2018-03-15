@@ -208,6 +208,7 @@ dependencies {
     compile 'com.yarolegovich:lovely-dialog:1.0.7'
     compile 'de.hdodenhof:circleimageview:2.2.0'
     compile 'com.rm:rmswitch:1.2.2'
+    compile 'com.rilixtech:fontawesome-typeface:4.7.0.4'
     compile 'com.github.medyo:fancybuttons:1.8.4'
 
     //google map

@@ -37,7 +37,7 @@ import timber.log.Timber;
 
 public abstract class BaseSignActivity extends BaseActivity {
 
-    private static final int RC_SIGN_IN = 9001;
+    protected static final int RC_SIGN_IN = 9001;
     private static final String TAG = "BaseSignActivity";
     private static final int REQUEST_SIGNUP = 0;
     protected ProgressDialog progressDialog;
@@ -46,7 +46,7 @@ public abstract class BaseSignActivity extends BaseActivity {
     @BindView(R.id.sign_in_google_button)
     SignInButton googleButton;
     private CallbackManager mCallbackManager;
-    private GoogleSignInClient mGoogleSignInClient;
+    protected GoogleSignInClient mGoogleSignInClient;
 
     protected abstract void onErrorFacebook();
 
