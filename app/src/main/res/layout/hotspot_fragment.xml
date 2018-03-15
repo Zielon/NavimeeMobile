@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -64,6 +65,20 @@
             app:backgroundTint="@color/primary_dark"
             app:elevation="5dp"
             app:fabSize="mini" />
+
+        <com.rilixtech.materialfancybutton.MaterialFancyButton
+            android:id="@+id/fab_filter_badge"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="8dp"
+            android:elevation="8dp"
+            android:minWidth="76dp"
+            fancy:mfb_defaultColor="@color/button_background"
+            fancy:mfb_icon="@string/fawi_plus"
+            fancy:mfb_focusColor="@color/white"
+            fancy:mfb_radius="2dp"
+            fancy:mfb_text=""
+            fancy:mfb_textSize="11sp" />
 
     </LinearLayout>
 
