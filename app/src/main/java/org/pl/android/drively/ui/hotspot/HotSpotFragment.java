@@ -389,7 +389,6 @@ public class HotSpotFragment extends BaseTabFragment implements
 
         updatableLocationDisposable = locationUpdatesObservable
                 .subscribe(location -> {
-                    Timber.d("ON LOCATION UPDATE");
                     location = KALMAN_FILTER.filter(location);
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                     mHotspotPresenter.setLastLocationLatLng(latLng);
