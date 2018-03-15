@@ -1,7 +1,6 @@
 package org.pl.android.drively.notifications;
 
-import android.util.Log;
-
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
@@ -14,8 +13,6 @@ import org.pl.android.drively.util.Const;
 import javax.inject.Inject;
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
-
-    private static final String TAG = "MyFirebaseIIDService";
 
     @Inject
     DataManager dataManager;
@@ -33,24 +30,26 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     public void onTokenRefresh() {
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         dataManager.getPreferencesHelper().setValue(Const.MESSAGING_TOKEN, refreshedToken);
-        Log.d(TAG, "Refreshed token: " + refreshedToken);
         sendRegistrationToServer(refreshedToken);
     }
 
     private void sendRegistrationToServer(String token) {
-        if (dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() != null) {
+        if (dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() == null)
+            return;
 
-            String userId = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-            String name = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getDisplayName();
-            String email = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getEmail();
+        FirebaseUser firebaseUser = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
 
-            User user = new User();
-            user.setToken(token);
-            user.setEmail(email);
-            user.setId(userId);
-            user.setName(name);
+        String userId = firebaseUser.getUid();
+        String name = firebaseUser.getDisplayName();
+        String email = firebaseUser.getEmail();
 
-            usersRepository.updateUser(user);
-        }
+        User user = new User();
+
+        user.setToken(token);
+        user.setEmail(email);
+        user.setId(userId);
+        user.setName(name);
+
+        usersRepository.updateUser(user);
     }
 }

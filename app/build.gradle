@@ -65,7 +65,6 @@ android {
         release {
             signingConfig signingConfigs.release
             minifyEnabled true
-            debuggable true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             ext.betaDistributionReleaseNotesFilePath = file('../crashlytics_release_notes.txt').absolutePath
             buildConfigField "String", "GOOGLE_DIRECTIONS_KEY", '"AIzaSyDLZ9IqdXbq5Mtn1d9ZMAu70D1PgtBa5jE"'
@@ -78,7 +77,6 @@ android {
         debug {
             versionNameSuffix " Debug"
             debuggable true
-
             // API KEYS
             buildConfigField "String", "GOOGLE_DIRECTIONS_KEY", '"fake"'
             manifestPlaceholders = [

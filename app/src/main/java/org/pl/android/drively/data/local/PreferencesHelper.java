@@ -61,7 +61,6 @@ public class PreferencesHelper {
     }
 
     public void clear() {
-        String messagingToken = sharedPreferences.getString(Const.MESSAGING_TOKEN, "");
         String userId = getUserId();
         int appVersion = getAppVersion();
 
@@ -72,7 +71,6 @@ public class PreferencesHelper {
 
         // Restore shared preferences
         sharedPreferences.edit().putBoolean(Const.FIRST_START, false).apply();
-        sharedPreferences.edit().putString(Const.MESSAGING_TOKEN, messagingToken).apply();
         sharedPreferences.edit().putInt(APP_VERSION, appVersion).apply();
         sharedPreferences.edit().putString(SHARE_KEY_USER_ID, userId).apply();
 
