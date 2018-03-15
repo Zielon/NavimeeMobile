@@ -213,6 +213,6 @@
     <!--SETTINGS MAIN SCREEN-->
     <string name="choose_app">Choose application</string>
 
-    <string name="login_buttons_label">Sign up!</string>
+    <string name="login_buttons_label">Sign up</string>
 
 </resources>

@@ -384,7 +384,7 @@ public class HotSpotFragment extends BaseTabFragment implements
                 .map(s -> new LatLng(s.getLatitude(), s.getLongitude()))
                 .subscribe(latLng -> {
                     CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 13);
-                    googleMap.animateCamera(yourLocation);
+                    googleMap.moveCamera(yourLocation);
                 }, new ErrorHandler());
 
         updatableLocationDisposable = locationUpdatesObservable
