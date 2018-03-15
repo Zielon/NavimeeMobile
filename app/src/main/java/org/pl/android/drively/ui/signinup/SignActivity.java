@@ -3,7 +3,6 @@ package org.pl.android.drively.ui.signinup;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,7 +15,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class SignActivity extends BaseSignActivity implements BaseSignMvpView {
 
@@ -31,7 +29,7 @@ public class SignActivity extends BaseSignActivity implements BaseSignMvpView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_welcome);
+        setContentView(R.layout.activity_sign);
         ButterKnife.bind(this);
         initializeSocialButtons();
 
@@ -83,16 +81,5 @@ public class SignActivity extends BaseSignActivity implements BaseSignMvpView {
     @Override
     protected void loginInWithFacebookOrGoogle(AuthCredential credential) {
         mSignPresenter.loginInWithFacebookOrGoogle(credential);
-    }
-
-    @OnClick(R.id.replaced_facebook_login_button)
-    public void performFacebookLoginButtonClick(View view) {
-        facebookButton.performClick();
-    }
-
-    @OnClick(R.id.replaced_sing_in_google_button)
-    public void performGoogleLoginButtonClick(View view) {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 }
