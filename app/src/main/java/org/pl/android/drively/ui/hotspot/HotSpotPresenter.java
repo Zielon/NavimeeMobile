@@ -98,10 +98,12 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
         if (dataSnapshot == null || !dataSnapshot.exists()) return;
         String[] parts = dataSnapshot.getKey().split("_");
         if (parts.length < 2) return;
+
         Car car = new Car();
         car.setDriverType(parts[0]);
         car.setUserId(parts[1]);
         car.setGeoLocation(location);
+
         if (carApplicationFilterList.contains(car.getDriverType())) return;
         if (getMvpView() != null) {
             getMvpView().showCarOnMap(car);
@@ -151,7 +153,7 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
         final long start = SystemClock.uptimeMillis();
         Point startPoint = projection.toScreenLocation(marker.getPosition());
         final LatLng startLatLng = projection.fromScreenLocation(startPoint);
-        final long duration = 500;
+        final long duration = 800;
 
         final Interpolator interpolator = new LinearInterpolator();
 
@@ -183,12 +185,16 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
         });
     }
 
-    public double calculateBearing(double startLat, double startLong, double endLat, double endLong) {
-        double dLon = (endLong - startLong);
-        double y = Math.sin(dLon) * Math.cos(endLat);
-        double x = Math.cos(startLat) * Math.sin(endLat) - Math.sin(startLat) * Math.cos(endLat) * Math.cos(dLon);
-        double bearing = Math.toDegrees((Math.atan2(y, x)));
-        return (360 - ((bearing + 360) % 360));
+    public double calculateBearing(GeoLocation first, GeoLocation second) {
+        double longitude1 = first.longitude;
+        double longitude2 = second.longitude;
+        double latitude1 = Math.toRadians(first.latitude);
+        double latitude2 = Math.toRadians(second.latitude);
+        double longDiff = Math.toRadians(longitude2 - longitude1);
+        double y = Math.sin(longDiff) * Math.cos(latitude2);
+        double x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(longDiff);
+
+        return (Math.toDegrees(Math.atan2(y, x)) + 360) % 360;
     }
 
     public String getUid() {

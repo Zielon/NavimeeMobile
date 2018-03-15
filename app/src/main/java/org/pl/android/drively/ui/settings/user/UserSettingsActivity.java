@@ -23,6 +23,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
@@ -193,6 +194,12 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
 
         drawerItems.add(new PrimaryDrawerItem().withName("**********")
                 .withIcon(R.drawable.password_24dp)
+                .withTextColor(getResources().getColor(R.color.white)));
+
+        drawerItems.add(new DividerDrawerItem().withEnabled(true));
+
+        drawerItems.add(new PrimaryDrawerItem().withName(R.string.delete_account)
+                .withIcon(R.drawable.close_x_24dp)
                 .withTextColor(getResources().getColor(R.color.white)));
 
         drawer = new DrawerBuilder()
