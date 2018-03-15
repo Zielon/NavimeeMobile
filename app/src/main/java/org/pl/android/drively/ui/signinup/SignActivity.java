@@ -7,7 +7,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.ui.main.MainActivity;
@@ -63,10 +62,7 @@ public class SignActivity extends BaseSignActivity implements BaseSignMvpView {
     @Override
     public void onError(Throwable throwable) {
         progressDialog.dismiss();
-        if (throwable != null && throwable instanceof FirebaseAuthUserCollisionException)
-            Toast.makeText(getBaseContext(), getResources().getString(R.string.emailAlreadyInUse), Toast.LENGTH_LONG).show();
-        else
-            Toast.makeText(getBaseContext(), getResources().getString(R.string.register_failed), Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), getResources().getString(R.string.register_failed), Toast.LENGTH_LONG).show();
         progressDialog.dismiss();
     }
 
