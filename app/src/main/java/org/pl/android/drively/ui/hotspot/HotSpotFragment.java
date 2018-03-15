@@ -503,6 +503,7 @@ public class HotSpotFragment extends BaseTabFragment implements
                                 }
                                 googleMap.setOnMarkerClickListener(mClusterManager);
                                 googleMap.setOnCameraIdleListener(mClusterManager);
+                                restoreDataFromBackup();
                             });
                         } else {
                             mMapView.getMapAsync(mMap -> {
@@ -511,18 +512,23 @@ public class HotSpotFragment extends BaseTabFragment implements
 
                                 if (!success)
                                     Timber.i("Map style was not loaded");
+                                restoreDataFromBackup();
                             });
                         }
-                        Optional.ofNullable(((MainActivity) context).hotspotFilterBackup).ifPresent(hotspotFilterBackup -> {
-                            eventsOnMap = hotspotFilterBackup.getEventsOnMap();
-                            usersOnMap = hotspotFilterBackup.getUsersOnMap();
-                            dialogFrag.setApplied_filters(hotspotFilterBackup.getHotspotAppliedFilters());
-                            updateOnFilterChange(hotspotFilterBackup.getHotspotAppliedFilters());
-                        });
                     });
         }
 
         mMapView.onResume();
+    }
+
+    private void restoreDataFromBackup() {
+        Optional.ofNullable(((MainActivity) context).hotspotFilterBackup).ifPresent(hotspotFilterBackup -> {
+            eventsOnMap = hotspotFilterBackup.getEventsOnMap();
+            usersOnMap = hotspotFilterBackup.getUsersOnMap();
+            directionsDelta = hotspotFilterBackup.getDirectionsDelta();
+            dialogFrag.setApplied_filters(hotspotFilterBackup.getHotspotAppliedFilters());
+            updateOnFilterChange(hotspotFilterBackup.getHotspotAppliedFilters());
+        });
     }
 
     @OnClick(R.id.fab)
@@ -571,7 +577,7 @@ public class HotSpotFragment extends BaseTabFragment implements
     public void onPause() {
         super.onPause();
         mMapView.onPause();
-        ((MainActivity) context).hotspotFilterBackup = new HotspotFilterBackup(dialogFrag.getApplied_filters(), eventsOnMap, usersOnMap);
+        ((MainActivity) context).hotspotFilterBackup = new HotspotFilterBackup(dialogFrag.getApplied_filters(), eventsOnMap, usersOnMap, directionsDelta);
     }
 
     @Override
@@ -742,9 +748,15 @@ public class HotSpotFragment extends BaseTabFragment implements
                 mClusterManager.addItem(clusterItemGoogleMap);
 
         } else {
-            mClusterManager.removeItem(eventsOnMap.get(fourSquarePlace.getId()));
-            eventsOnMap.get(fourSquarePlace.getId()).setPosition(new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()));
-            mClusterManager.addItem(eventsOnMap.get(fourSquarePlace.getId()));
+            Optional.ofNullable(mClusterManager).ifPresent(clusterManager -> {
+                try {
+                    clusterManager.removeItem(eventsOnMap.get(fourSquarePlace.getId()));
+                    eventsOnMap.get(fourSquarePlace.getId()).setPosition(new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()));
+                    clusterManager.addItem(eventsOnMap.get(fourSquarePlace.getId()));
+                } catch (NullPointerException e) {
+                    Timber.d(e);
+                }
+            });
         }
     }
 
@@ -1025,5 +1037,6 @@ public class HotSpotFragment extends BaseTabFragment implements
         private ArrayMap<String, List<String>> hotspotAppliedFilters = new ArrayMap<>();
         private ConcurrentHashMap<String, ClusterItemGoogleMap> eventsOnMap;
         private ConcurrentHashMap<String, Car> usersOnMap;
+        private ConcurrentHashMap<String, GeoLocation> directionsDelta;
     }
 }
