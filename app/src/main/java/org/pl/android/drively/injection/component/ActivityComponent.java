@@ -45,7 +45,7 @@ public interface ActivityComponent {
 
     void inject(SettingsActivity settingsActivity);
 
-    void inject(SignActivity welcomeActivity);
+    void inject(SignActivity signActivity);
 
     void inject(UserEmailChangeActivity userEmailChangeActivity);
 
