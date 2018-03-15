@@ -71,6 +71,7 @@ public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
         }
 
         preferencesHelper.clear();
+        preferencesHelper.unclearPopups();
 
         getMvpView().onLogout();
     }

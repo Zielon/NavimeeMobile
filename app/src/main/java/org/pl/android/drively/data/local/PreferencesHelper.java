@@ -16,6 +16,8 @@ import java.util.Locale;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import java8.util.stream.StreamSupport;
+
 import static org.pl.android.drively.util.ReflectionUtil.nameof;
 
 @Singleton
@@ -71,6 +73,13 @@ public class PreferencesHelper {
         sharedPreferences.edit().putBoolean(Const.FIRST_START, false).apply();
         sharedPreferences.edit().putInt(APP_VERSION, appVersion).apply();
         sharedPreferences.edit().putString(SHARE_KEY_USER_ID, userId).apply();
+        StreamSupport.stream(Const.TAB_FRAGMENTS).forEach(tabFragment -> sharedPreferences.edit()
+                .putBoolean(tabFragment + Const.FIRST_START_POPUP_SUFFIX, true).apply());
+    }
+
+    public void unclearPopups() {
+        StreamSupport.stream(Const.TAB_FRAGMENTS).forEach(tabFragment -> sharedPreferences.edit()
+                .putBoolean(tabFragment + Const.FIRST_START_POPUP_SUFFIX, false).apply());
     }
 
     public boolean getValue(String name) {
