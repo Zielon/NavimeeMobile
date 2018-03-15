@@ -77,7 +77,6 @@ android {
         debug {
             versionNameSuffix " Debug"
             debuggable true
-
             // API KEYS
             buildConfigField "String", "GOOGLE_DIRECTIONS_KEY", '"fake"'
             manifestPlaceholders = [

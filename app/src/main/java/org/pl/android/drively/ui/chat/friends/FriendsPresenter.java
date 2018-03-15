@@ -187,7 +187,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                     .collection(FirebasePaths.FRIENDS).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     List friends = new ArrayList<String>();
-                    if (task.getResult().size() == 0) {
+                    if (task.getResult().size() == 0 && getMvpView() != null) {
                         getMvpView().listFriendNotFound();
                         return;
                     }

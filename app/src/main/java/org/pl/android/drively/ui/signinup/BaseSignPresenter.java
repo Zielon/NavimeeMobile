@@ -1,13 +1,10 @@
 package org.pl.android.drively.ui.signinup;
 
-import android.app.Activity;
-
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.kelvinapps.rxfirebase.RxFirebaseAuth;
 import com.kelvinapps.rxfirebase.RxFirebaseUser;
 
@@ -25,8 +22,6 @@ public class BaseSignPresenter extends BasePresenter<BaseSignMvpView> {
     protected BaseSignMvpView mMvpView;
     @Inject
     UsersRepository usersRepository;
-
-    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     public void attachView(BaseSignMvpView mvpView) {
@@ -63,21 +58,28 @@ public class BaseSignPresenter extends BasePresenter<BaseSignMvpView> {
         if (mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() == null)
             return Tasks.forResult(null);
 
-        String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        String name = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getDisplayName();
-        String email = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getEmail();
-        String token = FirebaseInstanceId.getInstance().getToken();
+        FirebaseUser firebaseUser = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
+
+        String userId = firebaseUser.getUid();
+        String name = firebaseUser.getDisplayName();
+        String email = firebaseUser.getEmail();
 
         return usersRepository.getUser(userId).addOnSuccessListener(user -> {
-            user.setToken(token);
-            usersRepository.updateUser(user);
+            // A user already registered
+            firebaseUser.getIdToken(true).addOnSuccessListener(token -> {
+                user.setToken(token.getToken());
+                usersRepository.updateUser(user);
+            });
         }).addOnFailureListener(fail -> {
-            User user = new User();
-            user.setToken(token);
-            user.setEmail(email);
-            user.setId(userId);
-            user.setName(name);
-            usersRepository.updateUser(user);
+            // A new user
+            firebaseUser.getIdToken(true).addOnSuccessListener(token -> {
+                User user = new User();
+                user.setToken(token.getToken());
+                user.setEmail(email);
+                user.setId(userId);
+                user.setName(name);
+                usersRepository.updateUser(user);
+            });
         }).continueWith(result -> {
             saveUserInfo();
             return result.getResult();
