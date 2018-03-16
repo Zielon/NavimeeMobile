@@ -76,6 +76,7 @@ import org.pl.android.drively.data.model.eventbus.NotificationEvent;
 import org.pl.android.drively.data.model.eventbus.RestartServiceSignal;
 import org.pl.android.drively.data.model.maps.ClusterItemGoogleMap;
 import org.pl.android.drively.services.GeolocationUpdateService;
+import org.pl.android.drively.services.KalmanFilterService;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.base.tab.BaseTabFragment;
 import org.pl.android.drively.ui.main.MainActivity;
@@ -121,6 +122,7 @@ public class HotSpotFragment extends BaseTabFragment implements
         AAH_FabulousFragment.Callbacks {
     private static final int[] COLORS = new int[]{R.color.primary_dark, R.color.primary, R.color.primary_light, R.color.accent, R.color.primary_dark_material_light};
     private final static int REQUEST_CHECK_SETTINGS = 0;
+    private static KalmanFilterService KALMAN_FILTER = new KalmanFilterService();
     @BindView(R.id.mapView)
     MapView mMapView;
     @BindView(R.id.text_place_address)
@@ -192,10 +194,12 @@ public class HotSpotFragment extends BaseTabFragment implements
         super.onCreate(savedInstanceState);
         ((BaseActivity) getActivity()).activityComponent().inject(this);
         ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
+
         if (actionBar != null && actionBar.getCustomView() != null) {
             TextView text = (TextView) actionBar.getCustomView().findViewById(R.id.app_bar_text);
             text.setText("");
         }
+
         if (mHotspotPresenter.checkLogin() != null) {
             getActivity().startService(new Intent(getActivity(), GeolocationUpdateService.class));
         }
@@ -387,21 +391,21 @@ public class HotSpotFragment extends BaseTabFragment implements
                 .map(s -> new LatLng(s.getLatitude(), s.getLongitude()))
                 .subscribe(latLng -> {
                     CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 13);
-                    googleMap.moveCamera(yourLocation);
+                    googleMap.animateCamera(yourLocation);
                 }, new ErrorHandler());
 
         updatableLocationDisposable = locationUpdatesObservable
-                .map(s -> new LatLng(s.getLatitude(), s.getLongitude()))
-                .subscribe(latLng -> {
-                    Timber.d("ON LOCATION UPDATE");
+                .subscribe(location -> {
+                    location = KALMAN_FILTER.filter(location);
+                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                     mHotspotPresenter.setLastLocationLatLng(latLng);
                     if (isFirstAfterPermissionGranted) {
                         CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 12);
-                        googleMap.moveCamera(yourLocation);
+                        googleMap.animateCamera(yourLocation);
                         isFirstAfterPermissionGranted = false;
                     } else {
                         CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, googleMap.getCameraPosition().zoom);
-                        googleMap.moveCamera(yourLocation);
+                        googleMap.animateCamera(yourLocation);
                     }
                     latLngCurrent = latLng;
                     if (isFromNotification) {
@@ -498,7 +502,7 @@ public class HotSpotFragment extends BaseTabFragment implements
                                     });
                                     mClusterManager.setOnClusterClickListener(cluster -> {
                                         CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(cluster.getPosition(), googleMap.getCameraPosition().zoom + 1);
-                                        googleMap.moveCamera(yourLocation);
+                                        googleMap.animateCamera(yourLocation);
                                         return false;
                                     });
                                 }
@@ -586,6 +590,7 @@ public class HotSpotFragment extends BaseTabFragment implements
         super.onDestroyView();
         mMapView.onDestroy();
         mHotspotPresenter.detachView();
+        HotSpotFragment.KALMAN_FILTER = new KalmanFilterService();
     }
 
     @Override
@@ -628,7 +633,7 @@ public class HotSpotFragment extends BaseTabFragment implements
         CameraUpdate center = CameraUpdateFactory.newLatLng(latLngEnd);
         CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
 
-        googleMap.moveCamera(center);
+        googleMap.animateCamera(center);
 
         if (sEventType != null && sEventType.equals(Const.HotSpotType.EVENT))
             rootView.findViewById(R.id.foursquare_icon).setVisibility(View.GONE);
@@ -796,7 +801,7 @@ public class HotSpotFragment extends BaseTabFragment implements
             GeoLocation previousLocation = directionsDelta.get(carUser);
             usersOnMap.get(carUser).setGeoLocation(location);
             if (!previousLocation.equals(location)) {
-                double bearing = mHotspotPresenter.calculateBearing(previousLocation.latitude, previousLocation.longitude, location.latitude, location.longitude);
+                double bearing = mHotspotPresenter.calculateBearing(previousLocation, location);
                 directionsDelta.put(carUser, location);
                 Marker marker = usersOnMap.get(carUser).getMarker();
                 mHotspotPresenter.animateMarker(marker,

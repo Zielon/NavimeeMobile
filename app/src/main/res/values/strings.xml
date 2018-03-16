@@ -54,7 +54,7 @@
     <string name="popular_places">Popular places</string>
     <string name="uber_ratio">Uber surge</string>
     <string name="rate_app">Rate App</string>
-    <string name="delete_account">Delete account</string>
+    <string name="delete_account">Delete the account</string>
     <string name="no_account_yet">No account yet? Sign up</string>
     <string name="avatar_change">Click to change the avatar</string>
     <string name="avatar_max_size">(5 MB max size)</string>
@@ -212,4 +212,7 @@
 
     <!--SETTINGS MAIN SCREEN-->
     <string name="choose_app">Choose application</string>
+
+    <string name="login_buttons_label">Sign up!</string>
+
 </resources>

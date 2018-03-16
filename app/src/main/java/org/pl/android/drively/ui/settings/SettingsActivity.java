@@ -128,10 +128,10 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
 
     private void showLogoutPopup() {
         new MaterialDialog.Builder(this)
-                .backgroundColor(ContextCompat.getColor(this, R.color.white))
-                .positiveColor(ContextCompat.getColor(this, R.color.md_black_1000))
-                .negativeColor(ContextCompat.getColor(this, R.color.md_black_1000))
-                .contentColor(ContextCompat.getColor(this, R.color.md_black_1000))
+                .backgroundColor(ContextCompat.getColor(this, R.color.primary_dark))
+                .positiveColor(ContextCompat.getColor(this, R.color.white))
+                .negativeColor(ContextCompat.getColor(this, R.color.white))
+                .contentColor(ContextCompat.getColor(this, R.color.white))
                 .positiveText(R.string.logout_popup_positive)
                 .negativeText(R.string.logout_popup_negative)
                 .content(R.string.logout_popup_content)

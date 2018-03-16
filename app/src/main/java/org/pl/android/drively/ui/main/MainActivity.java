@@ -34,7 +34,7 @@ import org.pl.android.drively.ui.hotspot.HotSpotFragment;
 import org.pl.android.drively.ui.intro.IntroActivity;
 import org.pl.android.drively.ui.planner.PlannerFragment;
 import org.pl.android.drively.ui.settings.SettingsActivity;
-import org.pl.android.drively.ui.welcome.WelcomeActivity;
+import org.pl.android.drively.ui.signinup.SignActivity;
 import org.pl.android.drively.util.NetworkUtil;
 
 import javax.inject.Inject;
@@ -247,7 +247,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     private void checkLogin() {
         FirebaseUser user = mMainPresenter.checkLogin();
         if (user == null) {
-            Intent intent = new Intent(this, WelcomeActivity.class);
+            Intent intent = new Intent(this, SignActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
