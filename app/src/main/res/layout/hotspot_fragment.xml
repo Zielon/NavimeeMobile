@@ -75,27 +75,28 @@
 
         <mehdi.sakout.fancybuttons.FancyButton
             android:id="@+id/fab_filter_remove_badge"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_alignStart="@id/fab"
             android:layout_alignTop="@id/fab"
             android:layout_marginStart="-6dp"
             android:layout_marginTop="-4dp"
-            android:elevation="6dp"
+            android:padding="-4dp"
             android:visibility="gone"
-            app:layout_constraintEnd_toStartOf="@id/fab"
-            app:layout_constraintStart_toStartOf="@id/fab"
-            app:layout_constraintTop_toTopOf="@id/fab"
+            android:elevation="6dp"
             fancy:fb_borderColor="@color/button_background"
             fancy:fb_borderWidth="1dp"
             fancy:fb_defaultColor="@color/primary_dark"
             fancy:fb_focusColor="@color/white"
-            fancy:fb_fontIconResource="&#xf00d;"
-            fancy:fb_fontIconSize="10sp"
             fancy:fb_radius="16dp"
-            fancy:fb_text=""
+            fancy:fb_text="0"
             fancy:fb_textColor="@color/white"
-            fancy:fb_textSize="11sp" />
+            fancy:fb_textGravity="top"
+            fancy:fb_textSize="8sp">
+
+        </mehdi.sakout.fancybuttons.FancyButton>
+
+
 
     </RelativeLayout>
 

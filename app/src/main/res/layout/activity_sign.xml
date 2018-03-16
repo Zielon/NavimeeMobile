@@ -85,7 +85,8 @@
             fancy:fb_iconPosition="left"
             fancy:fb_radius="128dp"
             fancy:fb_text="@string/sign_in_google"
-            fancy:fb_textColor="@color/white" />
+            fancy:fb_textColor="@color/white"
+            fancy:fb_textSize="16sp" />
 
         <mehdi.sakout.fancybuttons.FancyButton
             android:layout_width="24dp"
@@ -97,9 +98,10 @@
             fancy:fb_defaultColor="@color/transparent"
             fancy:fb_focusColor="@color/transparent"
             fancy:fb_fontIconResource="&#xf0d5;"
-            fancy:fb_fontIconSize="@dimen/text_small_body"
+            fancy:fb_fontIconSize="12sp"
             fancy:fb_text=""
-            fancy:fb_textColor="@color/white" />
+            fancy:fb_textColor="@color/white"
+            fancy:fb_textSize="10sp" />
 
         <mehdi.sakout.fancybuttons.FancyButton
             android:id="@+id/replaced_facebook_login_button"
@@ -119,7 +121,8 @@
             fancy:fb_iconPosition="left"
             fancy:fb_radius="128dp"
             fancy:fb_text="@string/sign_in_facebook"
-            fancy:fb_textColor="@color/white" />
+            fancy:fb_textColor="@color/white"
+            fancy:fb_textSize="16sp" />
 
         <mehdi.sakout.fancybuttons.FancyButton
             android:layout_width="24dp"
@@ -131,9 +134,10 @@
             fancy:fb_defaultColor="@color/transparent"
             fancy:fb_focusColor="@color/transparent"
             fancy:fb_fontIconResource="&#xf09a;"
-            fancy:fb_fontIconSize="@dimen/text_small_body"
+            fancy:fb_fontIconSize="12sp"
             fancy:fb_text=""
-            fancy:fb_textColor="@color/white" />
+            fancy:fb_textColor="@color/white"
+            fancy:fb_textSize="10sp" />
 
     </RelativeLayout>
 

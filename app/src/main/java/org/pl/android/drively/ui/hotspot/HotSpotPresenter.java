@@ -41,6 +41,8 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import lombok.Getter;
+import lombok.Setter;
 import timber.log.Timber;
 
 public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
@@ -49,7 +51,9 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
     private final CoordinatesRepository coordinatesRepository;
     private final ObjectMapper mapper = new ObjectMapper();
 
+    @Getter @Setter
     private Set<String> mapItemFilterList = new HashSet<>();
+    @Getter @Setter
     private Set<String> carApplicationFilterList = new HashSet<>();
 
     @Inject

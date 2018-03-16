@@ -88,9 +88,11 @@ import org.pl.android.drively.util.ToMostProbableActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
@@ -233,6 +235,7 @@ public class HotSpotFragment extends BaseTabFragment implements
         dialogFrag = MyFabFragment.newInstance();
         dialogFrag.setParentFab(filterButton);
         dialogFrag.setCallbacks(HotSpotFragment.this);
+        restoreDataFromBackup();
         //  setCallbacks((Callbacks) getActivity());
         initListeners();
         if (mHotspotPresenter.getFeedbackBoolean()) {
@@ -508,7 +511,6 @@ public class HotSpotFragment extends BaseTabFragment implements
                                 }
                                 googleMap.setOnMarkerClickListener(mClusterManager);
                                 googleMap.setOnCameraIdleListener(mClusterManager);
-                                restoreDataFromBackup();
                             });
                         } else {
                             mMapView.getMapAsync(mMap -> {
@@ -517,7 +519,6 @@ public class HotSpotFragment extends BaseTabFragment implements
 
                                 if (!success)
                                     Timber.i("Map style was not loaded");
-                                restoreDataFromBackup();
                             });
                         }
                     });
@@ -528,9 +529,8 @@ public class HotSpotFragment extends BaseTabFragment implements
 
     private void restoreDataFromBackup() {
         Optional.ofNullable(((MainActivity) context).hotspotFilterBackup).ifPresent(hotspotFilterBackup -> {
-            eventsOnMap = hotspotFilterBackup.getEventsOnMap();
-            usersOnMap = hotspotFilterBackup.getUsersOnMap();
-            directionsDelta = hotspotFilterBackup.getDirectionsDelta();
+            mHotspotPresenter.setCarApplicationFilterList(hotspotFilterBackup.getCarApplicationFilterList());
+            mHotspotPresenter.setMapItemFilterList(hotspotFilterBackup.getMapItemFilterList());
             dialogFrag.setApplied_filters(hotspotFilterBackup.getHotspotAppliedFilters());
             updateOnFilterChange(hotspotFilterBackup.getHotspotAppliedFilters());
         });
@@ -582,7 +582,9 @@ public class HotSpotFragment extends BaseTabFragment implements
     public void onPause() {
         super.onPause();
         mMapView.onPause();
-        ((MainActivity) context).hotspotFilterBackup = new HotspotFilterBackup(dialogFrag.getApplied_filters(), eventsOnMap, usersOnMap, directionsDelta);
+        ((MainActivity) context).hotspotFilterBackup = new HotspotFilterBackup(dialogFrag.getApplied_filters(),
+                        mHotspotPresenter.getMapItemFilterList(),
+                        mHotspotPresenter.getCarApplicationFilterList());
     }
 
     @Override
@@ -876,6 +878,7 @@ public class HotSpotFragment extends BaseTabFragment implements
                     .ifPresent(hotspotFilterBackup -> hotspotFilterBackup.setHotspotAppliedFilters(applied_filters));
             if (applied_filters.size() > 0) {
                 filterRemoveBadge.setVisibility(View.VISIBLE);
+                filterRemoveBadge.setText(String.valueOf(applied_filters.get(getString(R.string.visible_on_map)).size()));
                 for (Map.Entry<String, List<String>> entry : applied_filters.entrySet()) {
                     if (entry.getValue().contains(getResources().getString(R.string.events_filtr))) {
                         mHotspotPresenter.addItemToMapItemFilterList(Const.HotSpotType.EVENT.name());
@@ -905,23 +908,23 @@ public class HotSpotFragment extends BaseTabFragment implements
         // CLUSTERS
 
         Optional.ofNullable(mClusterManager).ifPresent(clusterManager -> {
-            if (!itemsFiltersTypes.contains(Const.HotSpotType.FOURSQUARE_PLACE.name())) {
-                Stream.of(eventsOnMap)
-                        .filter(item -> item.getValue().getType().equals(Const.HotSpotType.FOURSQUARE_PLACE))
-                        .forEach(item -> mClusterManager.addItem(item.getValue()));
-            }
-
-            if (!itemsFiltersTypes.contains(Const.HotSpotType.EVENT.name())) {
-                Stream.of(eventsOnMap)
-                        .filter(item -> item.getValue().getType().equals(Const.HotSpotType.EVENT))
-                        .forEach(item -> mClusterManager.addItem(item.getValue()));
-            }
-
+            determineEventFilterNecessity(itemsFiltersTypes, Const.HotSpotType.FOURSQUARE_PLACE);
+            determineEventFilterNecessity(itemsFiltersTypes, Const.HotSpotType.EVENT);
             // Try to re-render the map?
             mClusterManager.setRenderer(new MapRenderer());
         });
 
 
+    }
+
+    private void determineEventFilterNecessity(List<String> itemsFiltersTypes, Const.HotSpotType hotSpotType) {
+        Stream<Map.Entry<String, ClusterItemGoogleMap>> filteredStream = Stream.of(eventsOnMap)
+                .filter(item -> item.getValue().getType().equals(hotSpotType));
+        if (!itemsFiltersTypes.contains(hotSpotType.name())) {
+            filteredStream.forEach(item -> mClusterManager.addItem(item.getValue()));
+        } else {
+            filteredStream.forEach(item -> mClusterManager.removeItem(item.getValue()));
+        }
     }
 
     public void route(LatLng start, LatLng end, String eventName, String eventCount, Const.HotSpotType hotSpotType) {
@@ -1041,8 +1044,7 @@ public class HotSpotFragment extends BaseTabFragment implements
     @AllArgsConstructor
     public class HotspotFilterBackup {
         private ArrayMap<String, List<String>> hotspotAppliedFilters = new ArrayMap<>();
-        private ConcurrentHashMap<String, ClusterItemGoogleMap> eventsOnMap;
-        private ConcurrentHashMap<String, Car> usersOnMap;
-        private ConcurrentHashMap<String, GeoLocation> directionsDelta;
+        private Set<String> mapItemFilterList = new HashSet<>();
+        private Set<String> carApplicationFilterList = new HashSet<>();
     }
 }
