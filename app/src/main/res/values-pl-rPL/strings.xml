@@ -89,15 +89,15 @@
     <string name="find_friends_who">Kogo szukasz?</string>
     <string name="delete_friend">Usuń użytkownika</string>
     <string name="delete_friend_sure">Czy na pewno chcesz usunąć </string>
-    <string name="deleting">Usuwanie ...</string>
+    <string name="deleting">Usuwanie…</string>
     <string name="at_least_two">Dodaj co najmniej dwie osoby, aby utworzyć grupę</string>
-    <string name="registering">Tworzenie grupy...</string>
+    <string name="registering">Tworzenie grupy…</string>
     <string name="create_group_success">Pomyślnie utworzono grupę</string>
     <string name="create_group_failure">Podczas tworzenia grupy wystąpił błąd</string>
     <string name="delete_group_failure">Podczas usuwania grupy wystąpił błąd</string>
-    <string name="get_all_friend">Pobieram kontakty...</string>
-    <string name="group_leaving">Opuść grupę....</string>
-    <string name="add_friend">Dodaj nowy kontakt....</string>
+    <string name="get_all_friend">Pobieram kontakty…</string>
+    <string name="group_leaving">Opuść grupę…</string>
+    <string name="add_friend">Dodaj nowy kontakt…</string>
     <string name="email_not_valid">Niepoprawny email</string>
     <string name="not_admin">Tylko admin ma takie uprawnienia</string>
     <string name="admin_cannot_leave">Admin nie może opuścić grupy</string>
@@ -111,7 +111,8 @@
     <string name="accept_regulation">Logując się do aplikacji akceptujesz <u>regulamin</u></string>
     <string name="send_private_message">Wyślij prywatną wiadomość</string>
 
-    <!--Settings-->
+    <!-- Start settings -->
+
     <string name="settings">Ustawienia</string>
     <string name="instruction">Instrukcja</string>
 
@@ -128,6 +129,18 @@
     <string name="notifications_chat_group_description">Notyfikacje dla czatu grupowego</string>
     <string name="notifications_chat_private">Prywatny czat</string>
     <string name="notifications_chat_private_description">Notyfikacje dla prywatnych wiadomości</string>
+
+    <string name="logout_popup_positive">Wyloguj się</string>
+    <string name="logout_popup_negative">Zostań</string>
+    <string name="logout_popup_content">Na pewno chcesz się wylogować?</string>
+
+    <string name="delete_user_popup_positive">Usuń konto</string>
+    <string name="delete_user_popup_negative">Anuluj</string>
+    <string name="delete_user_popup_content">Czy na pewno chcesz usunąć swoje konto?</string>
+
+    <string name="delete_user_deleting">Twoje konto jest usuwane…</string>
+
+    <!-- End settings -->
 
     <!--Network connection-->
     <string name="network_lack">Brak Internetu</string>
@@ -199,11 +212,6 @@
         na którym w prosty sposób dodasz swoje koszty, sprawdzisz historię wydatków,
         a także załączysz zdjęcie rachunku lub faktury. Koniec z papierkową robotą!</string>
     <string name="popup_finance_contact_us">NAPISZ CO O TYM MYŚLISZ!</string>
-
-    <!--LOGOUT-->
-    <string name="logout_popup_positive">Wyloguj się</string>
-    <string name="logout_popup_negative">Zostań</string>
-    <string name="logout_popup_content">Na pewno chcesz się wylogować?</string>
 
     <!--SETTINGS MAIN SCREEN-->
     <string name="choose_app">Wybierz aplikację</string>

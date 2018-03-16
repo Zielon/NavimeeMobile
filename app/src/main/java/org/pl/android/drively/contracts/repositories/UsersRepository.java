@@ -17,5 +17,7 @@ public interface UsersRepository {
 
     Task<Void> updateUserField(String userId, String field, Object value) throws NoSuchFieldException;
 
+    Task<Void> deleteUserField(String userId, String field) throws NoSuchFieldException;
+
     Task<Void> addFriend(String userId, String friendId);
 }

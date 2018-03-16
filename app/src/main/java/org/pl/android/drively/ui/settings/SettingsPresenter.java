@@ -1,10 +1,10 @@
 package org.pl.android.drively.ui.settings;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FieldValue;
 
 import org.pl.android.drively.contracts.repositories.UsersRepository;
 import org.pl.android.drively.data.DataManager;
@@ -14,14 +14,9 @@ import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.util.FirebasePaths;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.inject.Inject;
 
 import io.reactivex.disposables.Disposable;
-
-import static org.pl.android.drively.util.FirebasePaths.USERS;
 
 public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
 
@@ -50,13 +45,17 @@ public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
         if (disposable != null) disposable.dispose();
     }
 
+    public void deleteUser(ProgressDialog progressDialog) {
+        preferencesHelper.clear();
+        // The user node will be removed by Cloud Functions
+        firebaseUser.delete().addOnSuccessListener(result -> {
+            progressDialog.dismiss();
+            getMvpView().onLogout();
+        });
+    }
+
     public void logout() {
         String userId = firebaseUser.getUid();
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("token", FieldValue.delete());
-
-        dataManager.getFirebaseService().getFirebaseFirestore().collection(USERS).document(userId).update(updates);
-        dataManager.getFirebaseService().getFirebaseAuth().signOut();
 
         Activity activity = (Activity) getMvpView();
         Intent intentGeoService = new Intent(activity, GeolocationUpdateService.class);
@@ -66,6 +65,7 @@ public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
 
         try {
             usersRepository.updateUserField(userId, "online", false);
+            usersRepository.deleteUserField(userId, "token");
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
@@ -73,6 +73,7 @@ public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
         preferencesHelper.clear();
         preferencesHelper.unclearPopups();
 
+        dataManager.getFirebaseService().getFirebaseAuth().signOut();
         getMvpView().onLogout();
     }
 

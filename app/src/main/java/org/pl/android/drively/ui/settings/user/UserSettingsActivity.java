@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -17,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -47,7 +49,9 @@ import agency.tango.android.avatarview.views.AvatarView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
+
+import static org.pl.android.drively.util.ConstIntents.ACTION;
+import static org.pl.android.drively.util.ConstIntents.DELETE_USER;
 
 public class UserSettingsActivity extends BaseActivity implements UserSettingsChangeMvpView {
 
@@ -186,20 +190,22 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
 
         drawerItems.add(new PrimaryDrawerItem().withName(userSettingsPresenter.getName())
                 .withIcon(R.drawable.happy_user_24dp)
+                .withSelectedColor(getResources().getColor(R.color.primary))
+                .withSelectedTextColor(getResources().getColor(R.color.white))
                 .withTextColor(getResources().getColor(R.color.white)));
 
         drawerItems.add(new PrimaryDrawerItem().withName(userSettingsPresenter.getEmail())
                 .withIcon(R.drawable.email_user_24dp)
-                .withTextColor(getResources().getColor(R.color.white)));
-
-        drawerItems.add(new PrimaryDrawerItem().withName("**********")
-                .withIcon(R.drawable.password_24dp)
+                .withSelectedColor(getResources().getColor(R.color.primary))
+                .withSelectedTextColor(getResources().getColor(R.color.white))
                 .withTextColor(getResources().getColor(R.color.white)));
 
         drawerItems.add(new DividerDrawerItem().withEnabled(true));
 
         drawerItems.add(new PrimaryDrawerItem().withName(R.string.delete_account)
                 .withIcon(R.drawable.close_x_24dp)
+                .withSelectedColor(getResources().getColor(R.color.primary))
+                .withSelectedTextColor(getResources().getColor(R.color.white))
                 .withTextColor(getResources().getColor(R.color.white)));
 
         drawer = new DrawerBuilder()
@@ -208,21 +214,19 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
                 .addDrawerItems(drawerItems.toArray(new IDrawerItem[drawerItems.size()]))
                 .withSliderBackgroundColor(0)
                 .withOnDrawerItemClickListener((view, position, drawerItem) -> {
-                    if (userSettingsPresenter.isExternalProvider()) {
+                    if (userSettingsPresenter.isExternalProvider() && position < 3) {
                         drawer.setSelection(-1);
                     } else if (drawerItem instanceof Nameable) {
                         Intent intent = null;
                         if (position == 0) {
-                            Timber.d(String.valueOf(position));
                             intent = new Intent(UserSettingsActivity.this, UserNameChangeActivity.class);
                         } else if (position == 1) {
-                            Timber.d(String.valueOf(position));
                             intent = new Intent(UserSettingsActivity.this, UserEmailChangeActivity.class);
                         } else if (position == 2) {
-                            Timber.d(String.valueOf(position));
                             intent = new Intent(UserSettingsActivity.this, UserPasswordChangeActivity.class);
+                        } else if (position == 3) {
+                            showDeleteUserPopup();
                         }
-
                         if (intent != null) {
                             UserSettingsActivity.this.startActivityForResult(intent, CHANGE_SETTINGS);
                         }
@@ -238,5 +242,24 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
         ViewGroup view = (ViewGroup) findViewById(R.id.frame_container);
         view.removeAllViews();
         view.addView(drawer.getSlider());
+    }
+
+    private void showDeleteUserPopup() {
+        new MaterialDialog.Builder(this)
+                .backgroundColor(ContextCompat.getColor(this, R.color.md_red_800))
+                .positiveColor(ContextCompat.getColor(this, R.color.white))
+                .negativeColor(ContextCompat.getColor(this, R.color.white))
+                .contentColor(ContextCompat.getColor(this, R.color.white))
+                .positiveText(R.string.delete_user_popup_positive)
+                .negativeText(R.string.delete_user_popup_negative)
+                .content(R.string.delete_user_popup_content)
+                .dismissListener(dialog -> drawer.setSelection(-1))
+                .onNegative((dialog, which) -> dialog.dismiss())
+                .onPositive((dialog, which) -> {
+                    Intent intent = new Intent();
+                    intent.putExtra(ACTION, DELETE_USER);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }).show();
     }
 }

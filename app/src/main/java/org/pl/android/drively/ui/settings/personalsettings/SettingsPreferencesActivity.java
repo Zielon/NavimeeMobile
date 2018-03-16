@@ -80,7 +80,7 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
                 stopService(intentGeoService);
             }
             mainPreferenceFragment.updateDriverTypeEnableAfter();
-        } else if(preference.getKey().equals(Const.DRIVER_TYPE)) {
+        } else if (preference.getKey().equals(Const.DRIVER_TYPE)) {
             EventBus.getDefault().post(new HotspotSettingsChanged(settingsPreferencesPresenter.getDriverType(), true));
         }
     }

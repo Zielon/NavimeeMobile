@@ -113,12 +113,12 @@ public class Car implements Comparable<Car> {
         double ERROR_MEA = 50;
 
         // Reset. In the case of sudden movement changes. Otherwise a car's inertia is too big.
-        if(count > 20){
+        if (count > 20) {
             variance = -1;
             count = 0;
         }
 
-        if(variance < 0){
+        if (variance < 0) {
             // Initial state
             bearingEstimate = bearing;
             variance = Math.pow(ERROR_MEA, 2);
