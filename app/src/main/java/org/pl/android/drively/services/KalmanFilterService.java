@@ -29,11 +29,11 @@ public class KalmanFilterService {
                 time = newLocation.getTime();
             }
 
-            double k = variance / (variance + newLocation.getAccuracy() * newLocation.getAccuracy());
+            double kalmanGain = variance / (variance + newLocation.getAccuracy() * newLocation.getAccuracy());
 
-            latitude += k * (newLocation.getLatitude() - latitude);
-            longitude += k * (newLocation.getLongitude() - longitude);
-            variance = (1 - k) * variance;
+            latitude += kalmanGain * (newLocation.getLatitude() - latitude);
+            longitude += kalmanGain * (newLocation.getLongitude() - longitude);
+            variance = (1 - kalmanGain) * variance;
 
             newLocation.setLatitude(latitude);
             newLocation.setLongitude(longitude);

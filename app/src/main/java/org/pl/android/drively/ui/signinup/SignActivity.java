@@ -78,5 +78,4 @@ public class SignActivity extends BaseSignActivity implements BaseSignMvpView {
     public void replacedFacebookLoginButtonClick(View view) {
         facebookButton.performClick();
     }
-
 }
