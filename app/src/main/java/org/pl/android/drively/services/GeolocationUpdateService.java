@@ -21,6 +21,7 @@ import org.pl.android.drively.BoilerplateApplication;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.data.model.eventbus.HotspotSettingsChanged;
+import org.pl.android.drively.data.model.eventbus.RestartServiceSignal;
 import org.pl.android.drively.util.FirebasePaths;
 
 import javax.inject.Inject;
@@ -47,6 +48,9 @@ public class GeolocationUpdateService extends Service {
     private LocationManager mLocationManager = null;
     private User user;
 
+    private Runnable postDelayedRunnable;
+    Handler handler;
+
     @Override
     public IBinder onBind(Intent arg0) {
         return null;
@@ -69,8 +73,13 @@ public class GeolocationUpdateService extends Service {
         databaseReference = dataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.USER_LOCATION);
         geoFire = new GeoFire(databaseReference);
         initializeLocationManager();
-        final Handler handler = new Handler();
-        handler.postDelayed(() -> stopSelf(), TIME_FOR_SERVICE);
+        handler = new Handler();
+        postDelayedRunnable = () -> {
+            stopSelf();
+            Timber.d("GeolocationService finished.");
+        };
+        handler.postDelayed(postDelayedRunnable, TIME_FOR_SERVICE);
+        Timber.d("Starting service. Time set up: " + TIME_FOR_SERVICE);
 
         user = dataManager.getPreferencesHelper().getUserInfo();
 
@@ -122,6 +131,13 @@ public class GeolocationUpdateService extends Service {
         } catch (IllegalArgumentException ex) {
             Timber.d(TAG, "gps provider does not exist " + ex.getMessage());
         }
+    }
+
+    @Subscribe
+    public void restartServiceTimeout(RestartServiceSignal restartServiceSignal) {
+        handler.removeCallbacks(postDelayedRunnable);
+        handler.postDelayed(postDelayedRunnable, TIME_FOR_SERVICE);
+        Timber.d("Restarting GeolocationService. Time set up: " + TIME_FOR_SERVICE);
     }
 
     private void initializeLocationManager() {

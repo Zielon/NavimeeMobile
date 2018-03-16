@@ -73,6 +73,7 @@ import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.FourSquarePlace;
 import org.pl.android.drively.data.model.eventbus.HotspotSettingsChanged;
 import org.pl.android.drively.data.model.eventbus.NotificationEvent;
+import org.pl.android.drively.data.model.eventbus.RestartServiceSignal;
 import org.pl.android.drively.data.model.maps.ClusterItemGoogleMap;
 import org.pl.android.drively.services.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BaseActivity;
@@ -517,7 +518,7 @@ public class HotSpotFragment extends BaseTabFragment implements
                         }
                     });
         }
-
+        EventBus.getDefault().post(new RestartServiceSignal());
         mMapView.onResume();
     }
 
