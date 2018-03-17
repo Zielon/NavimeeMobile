@@ -905,32 +905,26 @@ public class HotSpotFragment extends BaseTabFragment implements
         }
 
         // CARS
-
         Stream.of(usersOnMap).forEach(key -> key.getValue().getMarker().setVisible(true));
         Stream.of(usersOnMap)
                 .filter(car -> carsFiltersTypes.contains(car.getValue().getDriverType()))
                 .forEach(key -> key.getValue().getMarker().setVisible(false));
 
         // CLUSTERS
-
         Optional.ofNullable(mClusterManager).ifPresent(clusterManager -> {
+            mClusterManager.clearItems();
             determineEventFilterNecessity(itemsFiltersTypes, Const.HotSpotType.FOURSQUARE_PLACE);
             determineEventFilterNecessity(itemsFiltersTypes, Const.HotSpotType.EVENT);
             // Try to re-render the map?
             mClusterManager.setRenderer(new MapRenderer());
         });
-
-
     }
 
     private void determineEventFilterNecessity(List<String> itemsFiltersTypes, Const.HotSpotType hotSpotType) {
         Stream<Map.Entry<String, ClusterItemGoogleMap>> filteredStream = Stream.of(eventsOnMap)
                 .filter(item -> item.getValue().getType().equals(hotSpotType));
-        if (!itemsFiltersTypes.contains(hotSpotType.name())) {
+        if (!itemsFiltersTypes.contains(hotSpotType.name()))
             filteredStream.forEach(item -> mClusterManager.addItem(item.getValue()));
-        } else {
-            filteredStream.forEach(item -> mClusterManager.removeItem(item.getValue()));
-        }
     }
 
     public void route(LatLng start, LatLng end, String eventName, String eventCount, Const.HotSpotType hotSpotType) {
