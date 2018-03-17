@@ -81,7 +81,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void sendNotificationFromChat(MessageNotificationFCM fcm, boolean isGroup) {
-
         if (dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() == null)
             return;
 
@@ -142,7 +141,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentIntent(navigationIntent);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(fcm.getIdRoom().hashCode(), notificationBuilder.build());
+        if(notificationManager != null)
+            notificationManager.notify(fcm.getIdRoom().hashCode(), notificationBuilder.build());
     }
 
     private void sendNotification(EventNotificationFCM fcm) {
@@ -172,6 +172,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentIntent(navigationIntent);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(fcm.getId().hashCode(), notificationBuilder.build());
+        if(notificationManager != null)
+            notificationManager.notify(fcm.getId().hashCode(), notificationBuilder.build());
     }
 }

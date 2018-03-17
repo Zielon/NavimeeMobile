@@ -52,7 +52,7 @@ public class Const {
     public static String INTENT_KEY_IS_GROUP_CHAT = "isChatGroup";
     public static long TIME_TO_REFRESH = 10 * 1000;
     public static long TIME_TO_OFFLINE = 2 * 60 * 1000;
-    public static long TIME_TO_DROP_NOTIFICATION = 2 * 60 * 1000;
+    public static long TIME_TO_DROP_NOTIFICATION = 5 * 60 * 1000;
     public static long FIVE_MEGABYTE = 5 * 1024 * 1024;
 
     public enum HotSpotType {
