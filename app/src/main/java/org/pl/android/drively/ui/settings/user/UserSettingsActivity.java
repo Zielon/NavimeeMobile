@@ -173,7 +173,7 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
     public void onError(Throwable throwable) {
         avatarLayout.setVisibility(View.VISIBLE);
         avatarProgressBar.setVisibility(View.INVISIBLE);
-        Toast.makeText(getBaseContext(), "Something went wrong!", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), R.string.error, Toast.LENGTH_LONG).show();
     }
 
     @Override
