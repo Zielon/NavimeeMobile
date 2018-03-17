@@ -20,4 +20,6 @@ public interface UsersRepository {
     Task<Void> deleteUserField(String userId, String field) throws NoSuchFieldException;
 
     Task<Void> addFriend(String userId, String friendId);
+
+    Task<Void> deleteFriend(String userId, String friendId);
 }

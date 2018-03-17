@@ -304,7 +304,7 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     context.startActivity(intent);
                 });
 
-            if (message.idSender.equals(ADMIN) || message instanceof PrivateMessage)
+            if (message.deleted || message.idSender.equals(ADMIN) || message instanceof PrivateMessage)
                 view.findViewById(R.id.sendMessage).setVisibility(View.GONE);
 
             messageHolder.timeStamp.setText(new SimpleDateFormat("EEE 'AT' HH:mm").format(message.timestamp).toUpperCase());

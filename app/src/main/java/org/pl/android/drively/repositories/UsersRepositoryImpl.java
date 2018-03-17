@@ -110,4 +110,20 @@ public class UsersRepositoryImpl implements UsersRepository {
                             .document(userId).set(map);
                 });
     }
+
+    @Override
+    public Task<Void> deleteFriend(String userId, String friendId) {
+        return dataManager.getFirebaseService()
+                .getFirebaseFirestore()
+                .collection(USERS).document(userId)
+                .collection(FRIENDS)
+                .document(friendId).delete()
+                .addOnSuccessListener(success -> {
+                    dataManager.getFirebaseService()
+                            .getFirebaseFirestore()
+                            .collection(USERS).document(friendId)
+                            .collection(FRIENDS)
+                            .document(userId).delete();
+                });
+    }
 }

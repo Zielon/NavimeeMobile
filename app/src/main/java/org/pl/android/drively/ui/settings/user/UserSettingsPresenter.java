@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -127,15 +128,15 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
         }).addOnFailureListener(task -> {
             progressDialog.dismiss();
             Activity activity = (Activity) userSettingsChangeMvpView;
-            if (!task.getMessage().contains("CREDENTIAL_TOO_OLD_LOGIN_AGAIN")) {
-                Toast.makeText(activity, activity.getResources().getString(R.string.error), Toast.LENGTH_LONG).show();
+            if (task instanceof FirebaseAuthRecentLoginRequiredException || task.getMessage().contains("CREDENTIAL_TOO_OLD_LOGIN_AGAIN")) {
+                Intent intent = new Intent(activity, SignActivity.class);
+                intent.putExtra(ACTION, REAUTHENTICATE);
+                if (firebaseUser.getProviders() != null)
+                    intent.putStringArrayListExtra(PROVIDERS, (ArrayList<String>) firebaseUser.getProviders());
+                activity.startActivityForResult(intent, 0);
                 return;
             }
-            Intent intent = new Intent(activity, SignActivity.class);
-            intent.putExtra(ACTION, REAUTHENTICATE);
-            if (firebaseUser.getProviders() != null)
-                intent.putStringArrayListExtra(PROVIDERS, (ArrayList<String>) firebaseUser.getProviders());
-            activity.startActivityForResult(intent, 0);
+            Toast.makeText(activity, activity.getResources().getString(R.string.error), Toast.LENGTH_LONG).show();
         });
     }
 }

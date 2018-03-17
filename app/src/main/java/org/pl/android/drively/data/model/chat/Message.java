@@ -7,4 +7,5 @@ public abstract class Message {
     public String nameSender;
     public String text;
     public long timestamp;
+    public boolean deleted;
 }

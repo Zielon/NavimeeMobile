@@ -13,6 +13,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.StorageReference;
 
 import org.pl.android.drively.R;
+import org.pl.android.drively.contracts.repositories.UsersRepository;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.data.model.chat.ChatUser;
@@ -28,9 +29,7 @@ import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -43,12 +42,14 @@ import static org.pl.android.drively.util.ReflectionUtil.nameof;
 public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
 
     private final DataManager mDataManager;
+    private final UsersRepository usersRepository;
     private Context mContext;
 
     @Inject
-    public FriendsPresenter(DataManager dataManager, @ActivityContext Context context) {
-        mDataManager = dataManager;
-        mContext = context;
+    public FriendsPresenter(DataManager dataManager, @ActivityContext Context context, UsersRepository usersRepository) {
+        this.mDataManager = dataManager;
+        this.mContext = context;
+        this.usersRepository = usersRepository;
     }
 
     @Override
@@ -209,51 +210,16 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         }
     }
 
-    public void addFriend(String idFriend) {
+    public void addFriend(String friendId) {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        Map<String, Object> friendMap = new HashMap<>();
-        try {
-            String idField = nameof(Friend.class, "id");
-            mDataManager.getFirebaseService().getFirebaseFirestore()
-                    .collection(FirebasePaths.USERS)
-                    .document(userId)
-                    .collection(FirebasePaths.FRIENDS)
-                    .whereEqualTo(idField, userId).get()
-                    .addOnSuccessListener(documentSnapshots -> {
-                        if (!documentSnapshots.isEmpty()) return;
-                        friendMap.put(idField, idFriend);
-                        mDataManager.getFirebaseService().getFirebaseFirestore()
-                                .collection(FirebasePaths.USERS)
-                                .document(userId)
-                                .collection(FirebasePaths.FRIENDS)
-                                .add(friendMap).addOnSuccessListener(documentReference -> {
-                            if (getMvpView() != null)
-                                getMvpView().addFriendSuccess(idFriend);
-                        }).addOnFailureListener(e -> getMvpView().addFriendFailure());
-                    });
-
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        }
+        usersRepository.addFriend(userId, friendId).addOnSuccessListener(success -> {
+            if (getMvpView() != null)
+                getMvpView().addFriendSuccess(friendId);
+        }).addOnFailureListener(error -> {
+            if (getMvpView() != null)
+                getMvpView().addFriendFailure();
+        });
     }
-
-    public void addFriendForFriendId(String idFriend) {
-        String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        Map<String, Object> friendMap = new HashMap<>();
-        try {
-            String idField = nameof(Friend.class, "id");
-            friendMap.put(idField, userId);
-            mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(idFriend).collection(FirebasePaths.FRIENDS)
-                    .add(friendMap).addOnSuccessListener(documentReference -> {
-                if (getMvpView() != null) {
-                    getMvpView().addFriendIsNotIdFriend();
-                }
-            }).addOnFailureListener(e -> getMvpView().addFriendFailure());
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     public Query getLastMessage(String idRoom) {
         try {
@@ -272,42 +238,15 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         return mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(id);
     }
 
-    public void deleteFriend(String idFriend) {
+    public void deleteFriend(String friendId) {
         String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
-        mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS).document(userId).collection(FirebasePaths.FRIENDS)
-                .whereEqualTo("id", idFriend).get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        if (task.getResult().size() == 0) {
-                            if (getMvpView() != null) {
-                                getMvpView().onFailureDeleteFriend();
-                            }
-                        }
-                        // Delete a user from the friend list of the current user.
-                        for (DocumentSnapshot document : task.getResult()) {
-                            Timber.d(document.getId() + " => " + document.getData());
-                            mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS)
-                                    .document(userId).collection(FirebasePaths.FRIENDS)
-                                    .document(document.getId()).delete()
-                                    .addOnSuccessListener(empty -> {
-                                        if (getMvpView() != null) {
-                                            getMvpView().onSuccessDeleteFriend(idFriend);
-                                        }
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Timber.w("Error deleting document", e);
-                                        if (getMvpView() != null) {
-                                            getMvpView().onFailureDeleteFriend();
-                                        }
-                                    });
-                        }
-                    } else {
-                        Timber.d("Listen failed");
-                        if (getMvpView() != null) {
-                            getMvpView().onFailureDeleteFriend();
-                        }
-                    }
-                });
+        usersRepository.deleteFriend(userId, friendId).addOnSuccessListener(success -> {
+            if (getMvpView() != null)
+                getMvpView().onSuccessDeleteFriend(friendId);
+        }).addOnFailureListener(error -> {
+            if (getMvpView() != null)
+                getMvpView().onFailureDeleteFriend();
+        });
     }
 
     public String getId() {

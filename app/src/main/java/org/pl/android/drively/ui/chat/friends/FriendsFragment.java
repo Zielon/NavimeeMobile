@@ -191,42 +191,23 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 .setTopColorRes(R.color.primary)
                 .show();
 
-        //Check xem da ton tai id trong danh sach id chua
         if (listFriendID.contains(idFriend)) {
             dialogWait.dismiss();
         } else {
-            addFriend(idFriend, true);
+            mFriendsPresenter.addFriend(idFriend);
             mUserInfo = userInfo;
             mIdFriend = idFriend;
         }
     }
 
-    private void addFriend(final String idFriend, boolean isIdFriend) {
-        if (idFriend != null) {
-            if (isIdFriend) {
-                mFriendsPresenter.addFriend(idFriend);
-            } else {
-                mFriendsPresenter.addFriendForFriendId(idFriend);
-            }
-        } else {
-            listFriendID.add(mIdFriend);
-            dataListFriend.getListFriend().add(mUserInfo);
-            Collections.sort(dataListFriend.getListFriend());
-            FriendDB.getInstance(getContext()).addFriend(mUserInfo);
-            adapter.notifyDataSetChanged();
-            dialogWait.dismiss();
-            new LovelyInfoDialog(getContext())
-                    .setTopColorRes(R.color.primary)
-                    .setIcon(R.drawable.ic_add_friend)
-                    .setTitle(getResources().getString(R.string.success))
-                    .setMessage(getResources().getString(R.string.add_friend_success))
-                    .show();
-        }
-    }
-
     @Override
     public void addFriendSuccess(String idFriend) {
-        addFriend(idFriend, false);
+        listFriendID.add(mIdFriend);
+        dataListFriend.getListFriend().add(mUserInfo);
+        Collections.sort(dataListFriend.getListFriend());
+        FriendDB.getInstance(getContext()).addFriend(mUserInfo);
+        adapter.notifyDataSetChanged();
+        dialogWait.dismiss();
     }
 
     @Override
@@ -241,24 +222,9 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
     @Override
-    public void addFriendIsNotIdFriend() {
-        addFriend(null, false);
-    }
-
-
-    @Override
     public void onSuccessDeleteFriend(String idFriend) {
         listFriendID.remove(idFriend);
         dialogWaitDeleting.dismiss();
-
-        new LovelyInfoDialog(getContext())
-                .setTopColorRes(R.color.primary)
-                .setTitle(getResources().getString(R.string.success))
-                .setIcon(getResources().getDrawable(R.drawable.ic_delete_black_24dp))
-                .setIconTintColor(getResources().getColor(R.color.white))
-                .setMessage(getResources().getString(R.string.delete_friend_success))
-                .show();
-
         Intent intentDeleted = new Intent(FriendsFragment.ACTION_DELETE_FRIEND);
         intentDeleted.putExtra("idFriend", idFriend);
         getContext().sendBroadcast(intentDeleted);
