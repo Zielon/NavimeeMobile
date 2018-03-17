@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.rilixtech.materialfancybutton.MaterialFancyButton;
-
 import org.joda.time.DateTime;
 import org.joda.time.Minutes;
 import org.pl.android.drively.R;
@@ -27,6 +25,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.DayScheduleHolder> {
     DateTime currentDateTime;
@@ -82,12 +81,12 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
 
         if (Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() < 30 && Minutes.minutesBetween(currentDateTime, new DateTime(event.getEndTime())).getMinutes() > 0) {
             holder.deleteButton.setTag(2);
-            holder.deleteButton.setText(R.string.navigate);
+            holder.deleteButton.setText(mContext.getString(R.string.navigate));
         } else {
             holder.deleteButton.setTag(1);
             holder.deleteButton.setBackgroundColor(mContext.getResources().getColor(R.color.colorLine));
             holder.deleteButton.setTextColor(mContext.getResources().getColor(R.color.gray_font));
-            holder.deleteButton.setText(R.string.cancel);
+            holder.deleteButton.setText(mContext.getString(R.string.cancel));
         }
         holder.deleteButton.setOnClickListener(view -> {
             if ((int) view.getTag() == 1) {
@@ -141,7 +140,7 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
         @BindView(R.id.viewTextTime)
         TextView timeTextView;
         @BindView(R.id.deleteButton)
-        MaterialFancyButton deleteButton;
+        FancyButton deleteButton;
 
         public DayScheduleHolder(View itemView) {
             super(itemView);

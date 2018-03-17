@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
@@ -14,7 +15,7 @@
         android:layout_height="match_parent" />
 
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/button_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,6 +23,10 @@
         android:background="@android:color/transparent"
         android:clipToPadding="false"
         android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingEnd="0dp"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
         app:layout_anchor="@id/mapView"
         app:layout_anchorGravity="center|right">
 
@@ -39,6 +44,7 @@
             android:id="@+id/fab_plus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/fab_my_location"
             android:layout_marginBottom="10dp"
             android:src="@drawable/ic_add_circle_outline_white_24dp"
             android:tint="@color/white"
@@ -49,6 +55,7 @@
             android:id="@+id/fab_minus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/fab_plus"
             android:layout_marginBottom="20dp"
             android:src="@drawable/ic_remove_circle_outline_white_24dp"
             android:tint="@color/white"
@@ -59,13 +66,39 @@
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/fab_minus"
             android:src="@drawable/ic_filter"
             android:tint="@color/white"
             app:backgroundTint="@color/primary_dark"
             app:elevation="5dp"
             app:fabSize="mini" />
 
-    </LinearLayout>
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:id="@+id/fab_filter_remove_badge"
+            android:layout_width="20dp"
+            android:layout_below="@id/fab_minus"
+            android:layout_height="20dp"
+            android:layout_alignStart="@id/fab"
+            android:layout_alignTop="@id/fab"
+            android:layout_marginStart="-6dp"
+            android:layout_marginTop="-4dp"
+            android:padding="-4dp"
+            android:elevation="6dp"
+            fancy:fb_borderColor="@color/button_background"
+            fancy:fb_borderWidth="1dp"
+            fancy:fb_defaultColor="@color/primary_dark"
+            fancy:fb_focusColor="@color/primary_dark"
+            fancy:fb_radius="16dp"
+            fancy:fb_text="0"
+            fancy:fb_textColor="@color/white"
+            fancy:fb_textGravity="top"
+            fancy:fb_textSize="8sp">
+
+        </mehdi.sakout.fancybuttons.FancyButton>
+
+
+
+    </RelativeLayout>
 
 
     <!-- Bottom Sheet Content -->

@@ -92,7 +92,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <com.rilixtech.materialfancybutton.MaterialFancyButton
+                    <mehdi.sakout.fancybuttons.FancyButton
                         android:id="@+id/uber"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -104,14 +104,14 @@
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toLeftOf="@+id/myTaxi"
                         app:layout_constraintTop_toTopOf="parent"
-                        fancy:mfb_defaultColor="@color/white"
-                        fancy:mfb_focusColor="@color/filters_buttons"
-                        fancy:mfb_radius="2dp"
-                        fancy:mfb_text="Uber"
-                        fancy:mfb_textColor="@color/button_background"
-                        fancy:mfb_textSize="14sp" />
+                        fancy:fb_defaultColor="@color/white"
+                        fancy:fb_focusColor="@color/filters_buttons"
+                        fancy:fb_radius="2dp"
+                        fancy:fb_text="Uber"
+                        fancy:fb_textColor="@color/button_background"
+                        fancy:fb_textSize="14sp" />
 
-                    <com.rilixtech.materialfancybutton.MaterialFancyButton
+                    <mehdi.sakout.fancybuttons.FancyButton
                         android:id="@+id/myTaxi"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -123,14 +123,14 @@
                         app:layout_constraintLeft_toRightOf="@id/uber"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        fancy:mfb_defaultColor="@color/white"
-                        fancy:mfb_focusColor="@color/filters_buttons"
-                        fancy:mfb_radius="2dp"
-                        fancy:mfb_text="myTaxi"
-                        fancy:mfb_textColor="@color/button_background"
-                        fancy:mfb_textSize="14sp" />
+                        fancy:fb_defaultColor="@color/white"
+                        fancy:fb_focusColor="@color/filters_buttons"
+                        fancy:fb_radius="2dp"
+                        fancy:fb_text="myTaxi"
+                        fancy:fb_textColor="@color/button_background"
+                        fancy:fb_textSize="14sp" />
 
-                    <com.rilixtech.materialfancybutton.MaterialFancyButton
+                    <mehdi.sakout.fancybuttons.FancyButton
                         android:id="@+id/iTaxi"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -140,14 +140,14 @@
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toLeftOf="@+id/Taxi"
                         app:layout_constraintTop_toBottomOf="@+id/uber"
-                        fancy:mfb_defaultColor="@color/white"
-                        fancy:mfb_focusColor="@color/filters_buttons"
-                        fancy:mfb_radius="2dp"
-                        fancy:mfb_text="iTaxi"
-                        fancy:mfb_textColor="@color/button_background"
-                        fancy:mfb_textSize="14sp" />
+                        fancy:fb_defaultColor="@color/white"
+                        fancy:fb_focusColor="@color/filters_buttons"
+                        fancy:fb_radius="2dp"
+                        fancy:fb_text="iTaxi"
+                        fancy:fb_textColor="@color/button_background"
+                        fancy:fb_textSize="14sp" />
 
-                    <com.rilixtech.materialfancybutton.MaterialFancyButton
+                    <mehdi.sakout.fancybuttons.FancyButton
                         android:id="@+id/Taxi"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -157,12 +157,12 @@
                         app:layout_constraintLeft_toRightOf="@+id/iTaxi"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/uber"
-                        fancy:mfb_defaultColor="@color/white"
-                        fancy:mfb_focusColor="@color/filters_buttons"
-                        fancy:mfb_radius="2dp"
-                        fancy:mfb_text="Taxi"
-                        fancy:mfb_textColor="@color/button_background"
-                        fancy:mfb_textSize="14sp" />
+                        fancy:fb_defaultColor="@color/white"
+                        fancy:fb_focusColor="@color/filters_buttons"
+                        fancy:fb_radius="2dp"
+                        fancy:fb_text="Taxi"
+                        fancy:fb_textColor="@color/button_background"
+                        fancy:fb_textSize="14sp" />
 
                 </android.support.constraint.ConstraintLayout>
 
@@ -184,7 +184,7 @@
 
             </android.support.constraint.ConstraintLayout>
 
-            <com.rilixtech.materialfancybutton.MaterialFancyButton
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/agree_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -195,11 +195,11 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/brand_layout"
-                fancy:mfb_defaultColor="@color/button_background"
-                fancy:mfb_focusColor="@color/white"
-                fancy:mfb_radius="2dp"
-                fancy:mfb_text="@string/popup_hotspot_button_agreement"
-                fancy:mfb_textSize="16sp" />
+                fancy:fb_defaultColor="@color/button_background"
+                fancy:fb_focusColor="@color/white"
+                fancy:fb_radius="2dp"
+                fancy:fb_text="@string/popup_hotspot_button_agreement"
+                fancy:fb_textSize="16sp" />
 
             <TextView
                 android:id="@+id/popup_hotspot_preference_info"

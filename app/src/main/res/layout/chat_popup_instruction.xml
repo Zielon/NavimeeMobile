@@ -56,7 +56,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/popup_chat_info">
 
-                <com.rilixtech.materialfancybutton.MaterialFancyButton
+                <mehdi.sakout.fancybuttons.FancyButton
                     android:id="@+id/popup_chat_info1_group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -66,11 +66,11 @@
                     android:layout_marginTop="8dp"
                     android:elevation="8dp"
                     android:minWidth="64dp"
-                    fancy:mfb_defaultColor="@color/primary"
-                    fancy:mfb_focusColor="@color/white"
-                    fancy:mfb_radius="2dp"
-                    fancy:mfb_text="@string/popup_chat_info1_button"
-                    fancy:mfb_textSize="12sp" />
+                    fancy:fb_defaultColor="@color/primary"
+                    fancy:fb_focusColor="@color/white"
+                    fancy:fb_radius="2dp"
+                    fancy:fb_text="@string/popup_chat_info1_button"
+                    fancy:fb_textSize="12sp" />
 
                 <TextView
                     android:id="@+id/popup_chat_info1"
@@ -96,7 +96,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/popup_chat_info1_layout">
 
-                <com.rilixtech.materialfancybutton.MaterialFancyButton
+                <mehdi.sakout.fancybuttons.FancyButton
                     android:id="@+id/popup_chat_info2_group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -106,11 +106,11 @@
                     android:layout_marginTop="8dp"
                     android:elevation="8dp"
                     android:minWidth="64dp"
-                    fancy:mfb_defaultColor="@color/primary"
-                    fancy:mfb_focusColor="@color/white"
-                    fancy:mfb_radius="2dp"
-                    fancy:mfb_text="@string/popup_chat_info2_button"
-                    fancy:mfb_textSize="12sp" />
+                    fancy:fb_defaultColor="@color/primary"
+                    fancy:fb_focusColor="@color/white"
+                    fancy:fb_radius="2dp"
+                    fancy:fb_text="@string/popup_chat_info2_button"
+                    fancy:fb_textSize="12sp" />
 
                 <TextView
                     android:id="@+id/popup_chat_info2"
@@ -136,7 +136,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/popup_chat_info2_layout">
 
-                <com.rilixtech.materialfancybutton.MaterialFancyButton
+                <mehdi.sakout.fancybuttons.FancyButton
                     android:id="@+id/popup_chat_info3_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -145,11 +145,11 @@
                     android:layout_marginEnd="12dp"
                     android:layout_marginTop="8dp"
                     android:elevation="8dp"
-                    fancy:mfb_defaultColor="@color/primary"
-                    fancy:mfb_focusColor="@color/white"
-                    fancy:mfb_radius="2dp"
-                    fancy:mfb_text="@string/popup_chat_info3_button"
-                    fancy:mfb_textSize="12sp" />
+                    fancy:fb_defaultColor="@color/primary"
+                    fancy:fb_focusColor="@color/white"
+                    fancy:fb_radius="2dp"
+                    fancy:fb_text="@string/popup_chat_info3_button"
+                    fancy:fb_textSize="12sp" />
 
                 <TextView
                     android:id="@+id/popup_chat_info3"
@@ -247,7 +247,7 @@
 
             </RelativeLayout>
 
-            <com.rilixtech.materialfancybutton.MaterialFancyButton
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/popup_chat_understood_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -258,11 +258,11 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/popup_chat_info5_layout"
-                fancy:mfb_defaultColor="@color/button_background"
-                fancy:mfb_focusColor="@color/white"
-                fancy:mfb_radius="2dp"
-                fancy:mfb_text="@string/popup_chat_understood"
-                fancy:mfb_textSize="16sp" />
+                fancy:fb_defaultColor="@color/button_background"
+                fancy:fb_focusColor="@color/white"
+                fancy:fb_radius="2dp"
+                fancy:fb_text="@string/popup_chat_understood"
+                fancy:fb_textSize="16sp" />
 
             <TextView
                 android:id="@+id/popup_hotspot_preference_info"

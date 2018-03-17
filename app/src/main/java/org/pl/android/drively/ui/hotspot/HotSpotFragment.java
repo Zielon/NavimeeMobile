@@ -73,6 +73,7 @@ import org.pl.android.drively.data.model.Event;
 import org.pl.android.drively.data.model.FourSquarePlace;
 import org.pl.android.drively.data.model.eventbus.HotspotSettingsChanged;
 import org.pl.android.drively.data.model.eventbus.NotificationEvent;
+import org.pl.android.drively.data.model.eventbus.RestartServiceSignal;
 import org.pl.android.drively.data.model.maps.ClusterItemGoogleMap;
 import org.pl.android.drively.services.GeolocationUpdateService;
 import org.pl.android.drively.services.KalmanFilterService;
@@ -87,9 +88,11 @@ import org.pl.android.drively.util.ToMostProbableActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
@@ -102,6 +105,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import java8.util.Optional;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import mehdi.sakout.fancybuttons.FancyButton;
 import pl.charmas.android.reactivelocation2.ReactiveLocationProvider;
 import timber.log.Timber;
 
@@ -134,6 +141,8 @@ public class HotSpotFragment extends BaseTabFragment implements
     ImageButton mPlaceCloseButton;
     @BindView(R.id.fab)
     FloatingActionButton filterButton;
+    @BindView(R.id.fab_filter_remove_badge)
+    FancyButton filterRemoveBadge;
     @BindView(R.id.fab_minus)
     FloatingActionButton minusButton;
     @BindView(R.id.fab_plus)
@@ -226,6 +235,7 @@ public class HotSpotFragment extends BaseTabFragment implements
         dialogFrag = MyFabFragment.newInstance();
         dialogFrag.setParentFab(filterButton);
         dialogFrag.setCallbacks(HotSpotFragment.this);
+        restoreDataFromBackup();
         //  setCallbacks((Callbacks) getActivity());
         initListeners();
         if (mHotspotPresenter.getFeedbackBoolean()) {
@@ -513,7 +523,17 @@ public class HotSpotFragment extends BaseTabFragment implements
                         }
                     });
         }
+        EventBus.getDefault().post(new RestartServiceSignal());
         mMapView.onResume();
+    }
+
+    private void restoreDataFromBackup() {
+        Optional.ofNullable(((MainActivity) context).hotspotFilterBackup).ifPresent(hotspotFilterBackup -> {
+            mHotspotPresenter.setCarApplicationFilterList(hotspotFilterBackup.getCarApplicationFilterList());
+            mHotspotPresenter.setMapItemFilterList(hotspotFilterBackup.getMapItemFilterList());
+            dialogFrag.setApplied_filters(hotspotFilterBackup.getHotspotAppliedFilters());
+            updateOnFilterChange(hotspotFilterBackup.getHotspotAppliedFilters());
+        });
     }
 
     @OnClick(R.id.fab)
@@ -556,6 +576,9 @@ public class HotSpotFragment extends BaseTabFragment implements
     public void onPause() {
         super.onPause();
         mMapView.onPause();
+        ((MainActivity) context).hotspotFilterBackup = new HotspotFilterBackup(dialogFrag.getApplied_filters(),
+                        mHotspotPresenter.getMapItemFilterList(),
+                        mHotspotPresenter.getCarApplicationFilterList());
     }
 
     @Override
@@ -727,9 +750,15 @@ public class HotSpotFragment extends BaseTabFragment implements
                 mClusterManager.addItem(clusterItemGoogleMap);
 
         } else {
-            mClusterManager.removeItem(eventsOnMap.get(fourSquarePlace.getId()));
-            eventsOnMap.get(fourSquarePlace.getId()).setPosition(new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()));
-            mClusterManager.addItem(eventsOnMap.get(fourSquarePlace.getId()));
+            Optional.ofNullable(mClusterManager).ifPresent(clusterManager -> {
+                try {
+                    clusterManager.removeItem(eventsOnMap.get(fourSquarePlace.getId()));
+                    eventsOnMap.get(fourSquarePlace.getId()).setPosition(new LatLng(fourSquarePlace.getLocationLat(), fourSquarePlace.getLocationLng()));
+                    clusterManager.addItem(eventsOnMap.get(fourSquarePlace.getId()));
+                } catch (NullPointerException e) {
+                    Timber.d(e);
+                }
+            });
         }
     }
 
@@ -832,17 +861,24 @@ public class HotSpotFragment extends BaseTabFragment implements
 
     @Override
     public void onResult(Object result) {
+        updateOnFilterChange(result);
+    }
+
+    private void updateOnFilterChange(Object result) {
 
         mHotspotPresenter.clearFilters();
+        filterRemoveBadge.setVisibility(View.GONE);
 
         final List<String> carsFiltersTypes = new ArrayList<>();
         final List<String> itemsFiltersTypes = new ArrayList<>();
 
-        if (result.toString().equalsIgnoreCase("swiped_down")) {
-
-        } else {
+        if (!result.toString().equalsIgnoreCase("swiped_down")) {
             ArrayMap<String, List<String>> applied_filters = (ArrayMap<String, List<String>>) result;
+            Optional.ofNullable(((MainActivity) context).hotspotFilterBackup)
+                    .ifPresent(hotspotFilterBackup -> hotspotFilterBackup.setHotspotAppliedFilters(applied_filters));
             if (applied_filters.size() > 0) {
+                filterRemoveBadge.setVisibility(View.VISIBLE);
+                filterRemoveBadge.setText(String.valueOf(applied_filters.get(getString(R.string.visible_on_map)).size()));
                 for (Map.Entry<String, List<String>> entry : applied_filters.entrySet()) {
                     if (entry.getValue().contains(getResources().getString(R.string.events_filtr))) {
                         mHotspotPresenter.addItemToMapItemFilterList(Const.HotSpotType.EVENT.name());
@@ -863,30 +899,26 @@ public class HotSpotFragment extends BaseTabFragment implements
         }
 
         // CARS
-
         Stream.of(usersOnMap).forEach(key -> key.getValue().getMarker().setVisible(true));
         Stream.of(usersOnMap)
                 .filter(car -> carsFiltersTypes.contains(car.getValue().getDriverType()))
                 .forEach(key -> key.getValue().getMarker().setVisible(false));
 
         // CLUSTERS
+        Optional.ofNullable(mClusterManager).ifPresent(clusterManager -> {
+            mClusterManager.clearItems();
+            determineEventFilterNecessity(itemsFiltersTypes, Const.HotSpotType.FOURSQUARE_PLACE);
+            determineEventFilterNecessity(itemsFiltersTypes, Const.HotSpotType.EVENT);
+            // Try to re-render the map?
+            mClusterManager.setRenderer(new MapRenderer());
+        });
+    }
 
-        mClusterManager.clearItems();
-
-        if (!itemsFiltersTypes.contains(Const.HotSpotType.FOURSQUARE_PLACE.name())) {
-            Stream.of(eventsOnMap)
-                    .filter(item -> item.getValue().getType().equals(Const.HotSpotType.FOURSQUARE_PLACE))
-                    .forEach(item -> mClusterManager.addItem(item.getValue()));
-        }
-
-        if (!itemsFiltersTypes.contains(Const.HotSpotType.EVENT.name())) {
-            Stream.of(eventsOnMap)
-                    .filter(item -> item.getValue().getType().equals(Const.HotSpotType.EVENT))
-                    .forEach(item -> mClusterManager.addItem(item.getValue()));
-        }
-
-        // Try to re-render the map?
-        mClusterManager.setRenderer(new MapRenderer());
+    private void determineEventFilterNecessity(List<String> itemsFiltersTypes, Const.HotSpotType hotSpotType) {
+        Stream<Map.Entry<String, ClusterItemGoogleMap>> filteredStream = Stream.of(eventsOnMap)
+                .filter(item -> item.getValue().getType().equals(hotSpotType));
+        if (!itemsFiltersTypes.contains(hotSpotType.name()))
+            filteredStream.forEach(item -> mClusterManager.addItem(item.getValue()));
     }
 
     public void route(LatLng start, LatLng end, String eventName, String eventCount, Const.HotSpotType hotSpotType) {
@@ -1000,5 +1032,13 @@ public class HotSpotFragment extends BaseTabFragment implements
             // Always render clusters.
             return cluster.getSize() > 1;
         }
+    }
+
+    @Data
+    @AllArgsConstructor
+    public class HotspotFilterBackup {
+        private ArrayMap<String, List<String>> hotspotAppliedFilters = new ArrayMap<>();
+        private Set<String> mapItemFilterList = new HashSet<>();
+        private Set<String> carApplicationFilterList = new HashSet<>();
     }
 }

@@ -191,7 +191,7 @@
 
             </android.support.constraint.ConstraintLayout>
 
-            <com.rilixtech.materialfancybutton.MaterialFancyButton
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/popup_hotspot_second_agree_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -202,11 +202,11 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cars_layout"
-                fancy:mfb_defaultColor="@color/button_background"
-                fancy:mfb_focusColor="@color/white"
-                fancy:mfb_radius="2dp"
-                fancy:mfb_text="@string/popup_hotspot_second_understood"
-                fancy:mfb_textSize="16sp" />
+                fancy:fb_defaultColor="@color/button_background"
+                fancy:fb_focusColor="@color/white"
+                fancy:fb_radius="2dp"
+                fancy:fb_text="@string/popup_hotspot_second_understood"
+                fancy:fb_textSize="16sp" />
 
             <TextView
                 android:id="@+id/popup_hotspot_second_preference_info"

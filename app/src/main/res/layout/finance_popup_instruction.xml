@@ -60,7 +60,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/popup_finance_info" />
 
-            <com.rilixtech.materialfancybutton.MaterialFancyButton
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/popup_finance_contact_us_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -71,11 +71,11 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/expenses_icon"
-                fancy:mfb_defaultColor="@color/button_background"
-                fancy:mfb_focusColor="@color/white"
-                fancy:mfb_radius="2dp"
-                fancy:mfb_text="@string/popup_finance_contact_us"
-                fancy:mfb_textSize="16sp" />
+                fancy:fb_defaultColor="@color/button_background"
+                fancy:fb_focusColor="@color/white"
+                fancy:fb_radius="2dp"
+                fancy:fb_text="@string/popup_finance_contact_us"
+                fancy:fb_textSize="16sp" />
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

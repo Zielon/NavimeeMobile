@@ -54,6 +54,8 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     BottomBar bottomBar;
     private BaseTabFragment selectedFragment;
 
+    public HotSpotFragment.HotspotFilterBackup hotspotFilterBackup;
+
     /**
      * Return an Intent to start this Activity.
      * triggerDataSyncOnCreate allows disabling the background sync service onCreate. Should
@@ -279,4 +281,5 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivityForResult(intent, SETTINGS_REQUEST);
     }
+
 }
