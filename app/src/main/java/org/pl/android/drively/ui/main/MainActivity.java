@@ -1,6 +1,7 @@
 package org.pl.android.drively.ui.main;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -245,6 +246,9 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
 
     private void checkLogin() {
         if (!mMainPresenter.isLogin()) {
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            if(notificationManager != null)
+                notificationManager.cancelAll();
             Intent intent = new Intent(this, SignActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
