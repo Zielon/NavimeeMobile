@@ -538,6 +538,7 @@ public class HotSpotFragment extends BaseTabFragment implements
 
     @OnClick(R.id.fab)
     public void submit(View view) {
+        filterRemoveBadge.setVisibility(View.GONE);
         if (!dialogFrag.isAdded()) {
             dialogFrag.show(getActivity().getSupportFragmentManager(), dialogFrag.getTag());
         }
