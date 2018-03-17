@@ -68,7 +68,7 @@
             facebook:com_facebook_login_text="Facebook" />
 
         <mehdi.sakout.fancybuttons.FancyButton
-            android:id="@+id/replaced_sing_in_google_button"
+            android:id="@+id/google_com"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/login_buttons_label"
@@ -83,17 +83,18 @@
             fancy:fb_focusColor="@color/semi_transparent_black"
             fancy:fb_iconPaddingRight="32dp"
             fancy:fb_iconPosition="left"
-            fancy:fb_radius="128dp"
+            fancy:fb_radius="5dp"
             fancy:fb_text="@string/sign_in_google"
             fancy:fb_textColor="@color/white"
             fancy:fb_textSize="16sp" />
 
         <mehdi.sakout.fancybuttons.FancyButton
+            android:id="@+id/google_com_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_alignBottom="@id/replaced_sing_in_google_button"
-            android:layout_alignStart="@id/replaced_sing_in_google_button"
-            android:layout_alignTop="@id/replaced_sing_in_google_button"
+            android:layout_alignBottom="@id/google_com"
+            android:layout_alignStart="@id/google_com"
+            android:layout_alignTop="@id/google_com"
             android:layout_marginStart="16dp"
             fancy:fb_defaultColor="@color/transparent"
             fancy:fb_focusColor="@color/transparent"
@@ -104,10 +105,10 @@
             fancy:fb_textSize="10sp" />
 
         <mehdi.sakout.fancybuttons.FancyButton
-            android:id="@+id/replaced_facebook_login_button"
+            android:id="@+id/facebook_com"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/replaced_sing_in_google_button"
+            android:layout_below="@id/google_com"
             android:layout_marginEnd="50dp"
             android:layout_marginStart="50dp"
             android:layout_marginTop="32dp"
@@ -119,17 +120,18 @@
             fancy:fb_focusColor="@color/semi_transparent_white"
             fancy:fb_iconPaddingRight="32dp"
             fancy:fb_iconPosition="left"
-            fancy:fb_radius="128dp"
+            fancy:fb_radius="5dp"
             fancy:fb_text="@string/sign_in_facebook"
             fancy:fb_textColor="@color/white"
             fancy:fb_textSize="16sp" />
 
         <mehdi.sakout.fancybuttons.FancyButton
+            android:id="@+id/facebook_com_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_alignBottom="@id/replaced_facebook_login_button"
-            android:layout_alignStart="@id/replaced_facebook_login_button"
-            android:layout_alignTop="@id/replaced_facebook_login_button"
+            android:layout_alignBottom="@id/facebook_com"
+            android:layout_alignStart="@id/facebook_com"
+            android:layout_alignTop="@id/facebook_com"
             android:layout_marginStart="16dp"
             fancy:fb_defaultColor="@color/transparent"
             fancy:fb_focusColor="@color/transparent"

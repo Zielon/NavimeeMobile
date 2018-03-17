@@ -1,6 +1,7 @@
 package org.pl.android.drively.ui.settings.user;
 
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -17,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -31,11 +34,10 @@ import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.local.PreferencesHelper;
 import org.pl.android.drively.data.model.User;
+import org.pl.android.drively.services.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
-import org.pl.android.drively.ui.settings.user.email.UserEmailChangeActivity;
-import org.pl.android.drively.ui.settings.user.name.UserNameChangeActivity;
-import org.pl.android.drively.ui.settings.user.password.UserPasswordChangeActivity;
+import org.pl.android.drively.ui.main.MainActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,7 +49,9 @@ import agency.tango.android.avatarview.views.AvatarView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
+
+import static org.pl.android.drively.util.ConstIntents.ACTION;
+import static org.pl.android.drively.util.ConstIntents.DELETE_USER;
 
 public class UserSettingsActivity extends BaseActivity implements UserSettingsChangeMvpView {
 
@@ -70,6 +74,7 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
     private int PICK_IMAGE_REQUEST = 1;
     private int CHANGE_SETTINGS = 2;
     private long FILE_MAX_SIZE_5_MB = 5000000;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +82,9 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
         setContentView(R.layout.activity_user_settings);
         activityComponent().inject(UserSettingsActivity.this);
         ButterKnife.bind(this);
+
+        progressDialog = new ProgressDialog(this, R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
 
         avatarLayout.setVisibility(View.INVISIBLE);
         avatarProgressBar.setVisibility(View.VISIBLE);
@@ -111,8 +119,12 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK)
-            if (requestCode == PICK_IMAGE_REQUEST && data != null && data.getData() != null) {
+        if (resultCode == RESULT_OK && data != null) {
+
+            String action = data.getStringExtra(ACTION);
+            if (action != null && action.equals(DELETE_USER)) showDeleteUserPopup();
+
+            if (requestCode == PICK_IMAGE_REQUEST && data.getData() != null) {
                 if (checkSize(data.getData())) {
                     Bitmap bitmap = null;
                     try {
@@ -134,8 +146,8 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
                 }
             } else
                 initDrawer();
-        else
-            drawer.setSelection(-1);
+        }
+        drawer.setSelection(-1);
     }
 
     private boolean checkSize(Uri returnUri) {
@@ -161,7 +173,16 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
     public void onError(Throwable throwable) {
         avatarLayout.setVisibility(View.VISIBLE);
         avatarProgressBar.setVisibility(View.INVISIBLE);
-        Toast.makeText(getBaseContext(), "Something went wrong!", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), R.string.error, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onUserDelete() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Intent intentGeoService = new Intent(this, GeolocationUpdateService.class);
+        stopService(intentGeoService);
+        startActivity(intent);
     }
 
     @Override
@@ -186,20 +207,22 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
 
         drawerItems.add(new PrimaryDrawerItem().withName(userSettingsPresenter.getName())
                 .withIcon(R.drawable.happy_user_24dp)
+                .withSelectedColor(getResources().getColor(R.color.primary))
+                .withSelectedTextColor(getResources().getColor(R.color.white))
                 .withTextColor(getResources().getColor(R.color.white)));
 
         drawerItems.add(new PrimaryDrawerItem().withName(userSettingsPresenter.getEmail())
                 .withIcon(R.drawable.email_user_24dp)
-                .withTextColor(getResources().getColor(R.color.white)));
-
-        drawerItems.add(new PrimaryDrawerItem().withName("**********")
-                .withIcon(R.drawable.password_24dp)
+                .withSelectedColor(getResources().getColor(R.color.primary))
+                .withSelectedTextColor(getResources().getColor(R.color.white))
                 .withTextColor(getResources().getColor(R.color.white)));
 
         drawerItems.add(new DividerDrawerItem().withEnabled(true));
 
         drawerItems.add(new PrimaryDrawerItem().withName(R.string.delete_account)
                 .withIcon(R.drawable.close_x_24dp)
+                .withSelectedColor(getResources().getColor(R.color.primary))
+                .withSelectedTextColor(getResources().getColor(R.color.white))
                 .withTextColor(getResources().getColor(R.color.white)));
 
         drawer = new DrawerBuilder()
@@ -208,24 +231,10 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
                 .addDrawerItems(drawerItems.toArray(new IDrawerItem[drawerItems.size()]))
                 .withSliderBackgroundColor(0)
                 .withOnDrawerItemClickListener((view, position, drawerItem) -> {
-                    if (userSettingsPresenter.isExternalProvider()) {
+                    if (position < 3) {
                         drawer.setSelection(-1);
                     } else if (drawerItem instanceof Nameable) {
-                        Intent intent = null;
-                        if (position == 0) {
-                            Timber.d(String.valueOf(position));
-                            intent = new Intent(UserSettingsActivity.this, UserNameChangeActivity.class);
-                        } else if (position == 1) {
-                            Timber.d(String.valueOf(position));
-                            intent = new Intent(UserSettingsActivity.this, UserEmailChangeActivity.class);
-                        } else if (position == 2) {
-                            Timber.d(String.valueOf(position));
-                            intent = new Intent(UserSettingsActivity.this, UserPasswordChangeActivity.class);
-                        }
-
-                        if (intent != null) {
-                            UserSettingsActivity.this.startActivityForResult(intent, CHANGE_SETTINGS);
-                        }
+                        if (position == 3) showDeleteUserPopup();
                     }
                     return false;
                 })
@@ -238,5 +247,23 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
         ViewGroup view = (ViewGroup) findViewById(R.id.frame_container);
         view.removeAllViews();
         view.addView(drawer.getSlider());
+    }
+
+    private void showDeleteUserPopup() {
+        new MaterialDialog.Builder(this)
+                .backgroundColor(ContextCompat.getColor(this, R.color.md_red_800))
+                .positiveColor(ContextCompat.getColor(this, R.color.white))
+                .negativeColor(ContextCompat.getColor(this, R.color.white))
+                .contentColor(ContextCompat.getColor(this, R.color.white))
+                .positiveText(R.string.delete_user_popup_positive)
+                .negativeText(R.string.delete_user_popup_negative)
+                .content(R.string.delete_user_popup_content)
+                .dismissListener(dialog -> drawer.setSelection(-1))
+                .onNegative((dialog, which) -> dialog.dismiss())
+                .onPositive((dialog, which) -> {
+                    progressDialog.setMessage(getResources().getString(R.string.delete_user_deleting));
+                    progressDialog.show();
+                    userSettingsPresenter.deleteUser(progressDialog);
+                }).show();
     }
 }

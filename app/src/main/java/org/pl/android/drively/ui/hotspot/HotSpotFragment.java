@@ -394,7 +394,7 @@ public class HotSpotFragment extends BaseTabFragment implements
                 .map(s -> new LatLng(s.getLatitude(), s.getLongitude()))
                 .subscribe(latLng -> {
                     CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 13);
-                    googleMap.animateCamera(yourLocation);
+                    googleMap.moveCamera(yourLocation);
                 }, new ErrorHandler());
 
         updatableLocationDisposable = locationUpdatesObservable
@@ -769,7 +769,7 @@ public class HotSpotFragment extends BaseTabFragment implements
     }
 
     private Marker addMarker(Car car) {
-        GeoLocation location = car.getGeoLocation();
+        GeoLocation location = car.getCurrentLocation();
         MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).flat(true);
 
         if (car.getDriverType().contains(Const.DriverType.UBER.getName())) {
@@ -788,26 +788,32 @@ public class HotSpotFragment extends BaseTabFragment implements
     }
 
     @Override
-    public void showCarOnMap(Car car) {
-        if (car.getUserId() == null || car.getUserId().equals(mHotspotPresenter.getUid()))
+    public void showCarOnMap(Car newCar) {
+        if (newCar.getUserId() == null || newCar.getUserId().equals(mHotspotPresenter.getUid()))
             return;
 
-        String carUser = car.getUserId();
+        String carUser = newCar.getUserId();
+        GeoLocation currentLocation = newCar.getCurrentLocation();
 
-        GeoLocation location = car.getGeoLocation();
         if (!usersOnMap.containsKey(carUser)) {
-            car.setMarker(addMarker(car));
-            usersOnMap.put(carUser, car);
-            directionsDelta.put(carUser, location);
+            newCar.setMarker(addMarker(newCar));
+            newCar.setCurrentLocation(currentLocation);
+            newCar.setPreviousLocation(currentLocation);
+            usersOnMap.put(carUser, newCar);
         } else {
-            GeoLocation previousLocation = directionsDelta.get(carUser);
-            usersOnMap.get(carUser).setGeoLocation(location);
-            if (!previousLocation.equals(location)) {
-                double bearing = mHotspotPresenter.calculateBearing(previousLocation, location);
-                directionsDelta.put(carUser, location);
-                Marker marker = usersOnMap.get(carUser).getMarker();
+
+            Car savedCar = usersOnMap.get(carUser);
+
+            GeoLocation previousLocation = savedCar.getCurrentLocation();
+
+            savedCar.setCurrentLocation(currentLocation);
+            savedCar.setPreviousLocation(previousLocation);
+
+            if (!previousLocation.equals(currentLocation)) {
+                double bearing = savedCar.getBearing();
+                Marker marker = savedCar.getMarker();
                 mHotspotPresenter.animateMarker(marker,
-                        new LatLng(location.latitude, location.longitude),
+                        new LatLng(currentLocation.latitude, currentLocation.longitude),
                         bearing, false, googleMap.getProjection());
             }
         }
@@ -827,7 +833,7 @@ public class HotSpotFragment extends BaseTabFragment implements
                 .backgroundColor(getResources().getColor(R.color.primary_dark))
                 .contentColor(getResources().getColor(R.color.white))
                 .positiveText(R.string.let_us_know)
-                .positiveColor(getResources().getColor(R.color.button_background))
+                .positiveColor(getResources().getColor(R.color.white))
                 .negativeText(R.string.cancel)
                 .onPositive((MaterialDialog dialog, DialogAction which) -> mHotspotPresenter.sendMessageWhenCityNotAvailable(city))
                 .build();

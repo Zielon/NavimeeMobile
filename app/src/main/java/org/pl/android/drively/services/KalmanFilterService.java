@@ -21,6 +21,7 @@ public class KalmanFilterService {
         if (variance < 0) {
             // Initialise the state
             setState(newLocation);
+            return newLocation;
         } else {
             long duration = newLocation.getTime() - this.time;
             if (duration > 0) {
@@ -29,11 +30,11 @@ public class KalmanFilterService {
                 time = newLocation.getTime();
             }
 
-            double k = variance / (variance + newLocation.getAccuracy() * newLocation.getAccuracy());
+            double kalmanGain = variance / (variance + newLocation.getAccuracy() * newLocation.getAccuracy());
 
-            latitude += k * (newLocation.getLatitude() - latitude);
-            longitude += k * (newLocation.getLongitude() - longitude);
-            variance = (1 - k) * variance;
+            latitude += kalmanGain * (newLocation.getLatitude() - latitude);
+            longitude += kalmanGain * (newLocation.getLongitude() - longitude);
+            variance = (1 - kalmanGain) * variance;
 
             newLocation.setLatitude(latitude);
             newLocation.setLongitude(longitude);
@@ -42,8 +43,6 @@ public class KalmanFilterService {
 
             return new Location(newLocation);
         }
-
-        return newLocation;
     }
 
     private double getSpeed(Location location) {

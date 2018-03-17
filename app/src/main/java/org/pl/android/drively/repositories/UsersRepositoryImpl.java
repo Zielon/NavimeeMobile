@@ -3,6 +3,7 @@ package org.pl.android.drively.repositories;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.SetOptions;
 
 import org.pl.android.drively.contracts.repositories.UsersRepository;
@@ -78,6 +79,16 @@ public class UsersRepositoryImpl implements UsersRepository {
                 .collection(USERS)
                 .document(userId)
                 .update(filedToUpdate, value);
+    }
+
+    @Override
+    public Task<Void> deleteUserField(String userId, String field) throws NoSuchFieldException {
+        String filedToUpdate = nameof(User.class, field);
+        return dataManager.getFirebaseService()
+                .getFirebaseFirestore()
+                .collection(USERS)
+                .document(userId)
+                .update(filedToUpdate, FieldValue.delete());
     }
 
     @Override

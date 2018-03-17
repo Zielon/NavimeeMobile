@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.auth.FirebaseUser;
 import com.roughike.bottombar.BottomBar;
 
 import org.greenrobot.eventbus.EventBus;
@@ -245,8 +244,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     }
 
     private void checkLogin() {
-        FirebaseUser user = mMainPresenter.checkLogin();
-        if (user == null) {
+        if (!mMainPresenter.isLogin()) {
             Intent intent = new Intent(this, SignActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
@@ -264,17 +262,9 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Check which request we're responding to
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SETTINGS_REQUEST) {
-            // Make sure the request was successful
-            if (resultCode == RESULT_OK) {
-                checkLogin();
-                // The user picked a contact.
-                // The Intent's data Uri identifies which contact was selected.
-
-                // Do something with the contact here (bigger example below)
-            }
+        if (resultCode == RESULT_OK) {
+            checkLogin();
         }
     }
 

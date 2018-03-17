@@ -1,8 +1,12 @@
 package org.pl.android.drively.ui.settings.user;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -10,19 +14,23 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.kelvinapps.rxfirebase.RxFirebaseStorage;
 
-import org.apache.commons.collections4.ListUtils;
+import org.pl.android.drively.R;
 import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.data.local.PreferencesHelper;
 import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.ui.base.BasePresenter;
-import org.pl.android.drively.util.ExternalProviders;
+import org.pl.android.drively.ui.signinup.SignActivity;
 import org.pl.android.drively.util.FirebasePaths;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import javax.inject.Inject;
 
+import static org.pl.android.drively.util.ConstIntents.ACTION;
+import static org.pl.android.drively.util.ConstIntents.PROVIDERS;
+import static org.pl.android.drively.util.ConstIntents.REAUTHENTICATE;
 import static org.pl.android.drively.util.FirebasePaths.AVATARS;
 import static org.pl.android.drively.util.InternalStorageManager.saveBitmap;
 
@@ -31,6 +39,7 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
     private FirebaseUser firebaseUser;
     private FirebaseStorage firebaseStorage;
     private FirebaseFirestore firebaseFirestore;
+    private PreferencesHelper preferencesHelper;
     private UserSettingsChangeMvpView userSettingsChangeMvpView;
 
     @Inject
@@ -38,6 +47,7 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
         this.firebaseUser = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
         this.firebaseStorage = dataManager.getFirebaseService().getFirebaseStorage();
         this.firebaseFirestore = dataManager.getFirebaseService().getFirebaseFirestore();
+        this.preferencesHelper = dataManager.getPreferencesHelper();
     }
 
     public static Bitmap scaleDown(Bitmap realImage, float maxImageSize, boolean filter) {
@@ -108,10 +118,24 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
         return user;
     }
 
-    public boolean isExternalProvider() {
-        List<String> actualProviders = firebaseUser.getProviders();
-        if (actualProviders == null) return false;
-
-        return ListUtils.intersection(actualProviders, ExternalProviders.getExternalProviders()).size() > 0;
+    public void deleteUser(ProgressDialog progressDialog) {
+        // The user node will be removed by Cloud Functions
+        firebaseUser.delete().addOnSuccessListener(result -> {
+            progressDialog.dismiss();
+            preferencesHelper.clear();
+            userSettingsChangeMvpView.onUserDelete();
+        }).addOnFailureListener(task -> {
+            progressDialog.dismiss();
+            Activity activity = (Activity) userSettingsChangeMvpView;
+            if (!task.getMessage().contains("CREDENTIAL_TOO_OLD_LOGIN_AGAIN")) {
+                Toast.makeText(activity, activity.getResources().getString(R.string.error), Toast.LENGTH_LONG).show();
+                return;
+            }
+            Intent intent = new Intent(activity, SignActivity.class);
+            intent.putExtra(ACTION, REAUTHENTICATE);
+            if (firebaseUser.getProviders() != null)
+                intent.putStringArrayListExtra(PROVIDERS, (ArrayList<String>) firebaseUser.getProviders());
+            activity.startActivityForResult(intent, 0);
+        });
     }
 }

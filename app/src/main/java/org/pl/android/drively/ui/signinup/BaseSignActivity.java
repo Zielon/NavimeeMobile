@@ -41,12 +41,12 @@ public abstract class BaseSignActivity extends BaseActivity {
     private static final String TAG = "BaseSignActivity";
     private static final int REQUEST_SIGNUP = 0;
     protected ProgressDialog progressDialog;
+    protected GoogleSignInClient mGoogleSignInClient;
     @BindView(R.id.facebook_login_button)
     LoginButton facebookButton;
     @BindView(R.id.sign_in_google_button)
     SignInButton googleButton;
     private CallbackManager mCallbackManager;
-    protected GoogleSignInClient mGoogleSignInClient;
 
     protected abstract void onErrorFacebook();
 

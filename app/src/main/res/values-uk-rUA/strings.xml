@@ -15,7 +15,7 @@
     <string name="save">економити</string>
     <string name="drive_now">йди вже</string>
     <string name="check_in_app">перевірити в заявці</string>
-    <string name="create_account_progress">створення рахунку..</string>
+    <string name="create_account_progress">створення рахунку…</string>
     <string name="valid_email_address">Введіть правильний електронний лист</string>
     <string name="valid_name">Назва повинна містити більше 4 символів</string>
     <string name="valid_password">Пароль повинен містити від 6 до 10 символів</string>
@@ -23,7 +23,7 @@
     <string name="save_day_schedule">додано до розкладу</string>
     <string name="delete_day_schedule">вилучено з графіка</string>
     <string name="login_failed">помилка логіну</string>
-    <string name="login_progress">Вхід в процес роботи..</string>
+    <string name="login_progress">Вхід в процес роботи…</string>
     <string name="password">пароль</string>
     <string name="create_account">Створити обліковий запис</string>
     <string name="already_member_login">Вже є аккаунт? Увійдіть</string>
@@ -83,19 +83,19 @@
     <string name="add_friend_failure">Помилка додавання користувача</string>
     <string name="delete_friend_success">Користувача було успішно видалено</string>
     <string name="delete_friend_failure">Помилка видалення користувача</string>
-    <string name="find_friends">Знайти користувачів...</string>
-    <string name="find_friends_who">Кого ти шукаєш...?</string>
+    <string name="find_friends">Знайти користувачів…</string>
+    <string name="find_friends_who">Кого ти шукаєш…</string>
     <string name="delete_friend">Видалити користувача</string>
     <string name="delete_friend_sure">Ви впевнені, що хочете видалити </string>
-    <string name="deleting">Видалення ...</string>
+    <string name="deleting">Видалення…</string>
     <string name="at_least_two">Додайте щонайменше двох людей для створення групи</string>
     <string name="registering">реєструючий....</string>
     <string name="create_group_success">Група була успішно створена</string>
     <string name="create_group_failure">Помилка створення групи</string>
     <string name="delete_group_failure">Помилка видалення групи</string>
-    <string name="get_all_friend">Завантаження користувачів ...</string>
-    <string name="group_leaving">Я йду з групи ....</string>
-    <string name="add_friend">Додає користувача....</string>
+    <string name="get_all_friend">Завантаження користувачів…</string>
+    <string name="group_leaving">Я йду з групи…</string>
+    <string name="add_friend">Додає користувача…</string>
     <string name="email_not_valid">Електронна пошта недійсна</string>
     <string name="not_admin">Nie jesteś adminem</string>
     <string name="admin_cannot_leave">Адміністратор не може залишити групу</string>
@@ -109,7 +109,8 @@
     <string name="accept_regulation">Під час входу до програми ви приймаєте <u>правила</u></string>
     <string name="send_private_message">Надіслати приватне повідомлення</string>
 
-    <!--Setting-->
+    <!-- Start settings -->
+
     <string name="settings">налаштування</string>
 
     <string name="general">Генерал</string>
@@ -123,6 +124,8 @@
     <string name="notifications_chat_group_description">Вимкнути сповіщення для групового чату</string>
     <string name="notifications_chat_private">Приватний чат</string>
     <string name="notifications_chat_private_description">Вимкніть сповіщення для приватних повідомлень</string>
+
+    <!-- End settings -->
 
     <!--Network connection-->
     <string name="network_lack">немає інтернету</string>

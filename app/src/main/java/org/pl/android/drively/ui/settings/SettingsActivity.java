@@ -31,6 +31,9 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
+import static org.pl.android.drively.util.ConstIntents.ACTION;
+import static org.pl.android.drively.util.ConstIntents.LOGOUT;
+
 public class SettingsActivity extends BaseActivity implements SettingsMvpView {
 
     private static final int REQUEST_SETTINGS = 1;
@@ -44,6 +47,7 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
         activityComponent().inject(this);
         setContentView(R.layout.activity_user);
         settingsPresenter.attachView(this);
+
         Drawable grayBackground = getResources().getDrawable(R.drawable.primary);
         ButterKnife.bind(this);
         TextView textView = (TextView) findViewById(R.id.text_user_name);
@@ -53,11 +57,15 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
         drawerItems.add(new PrimaryDrawerItem().withName(R.string.user)
                 .withIcon(R.drawable.happy_user_24dp)
                 .withIdentifier(2)
+                .withSelectedColor(getResources().getColor(R.color.primary))
+                .withSelectedTextColor(getResources().getColor(R.color.white))
                 .withTextColor(getResources().getColor(R.color.white)));
 
         drawerItems.add(new PrimaryDrawerItem().withName(R.string.settings)
                 .withIcon(R.drawable.settings_24dp)
                 .withIdentifier(0)
+                .withSelectedColor(getResources().getColor(R.color.primary))
+                .withSelectedTextColor(getResources().getColor(R.color.white))
                 .withTextColor(getResources().getColor(R.color.white)));
 
 /*        drawerItems.add(new PrimaryDrawerItem().withName("Uber")
@@ -68,6 +76,8 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
         drawerItems.add(new PrimaryDrawerItem().withName(R.string.privacy_conditions)
                 .withIcon(R.drawable.legal_privacy_24dp)
                 .withIdentifier(4)
+                .withSelectedColor(getResources().getColor(R.color.primary))
+                .withSelectedTextColor(getResources().getColor(R.color.white))
                 .withTextColor(getResources().getColor(R.color.white)));
 
         drawerItems.add(new DividerDrawerItem().withEnabled(true));
@@ -75,6 +85,8 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
         drawerItems.add(new PrimaryDrawerItem().withName(R.string.logout)
                 .withIcon(R.drawable.logout_24dp)
                 .withIdentifier(3)
+                .withSelectedColor(getResources().getColor(R.color.primary))
+                .withSelectedTextColor(getResources().getColor(R.color.white))
                 .withTextColor(getResources().getColor(R.color.white)));
 
 /*
@@ -92,7 +104,6 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
                 .withActivity(this)
                 .withTranslucentStatusBar(false)
                 .addDrawerItems(drawerItems.toArray(new IDrawerItem[drawerItems.size()]))
-                .withSliderBackgroundColor(0)
                 .withOnDrawerItemClickListener((view, position, drawerItem) -> {
                     if (drawerItem instanceof Nameable) {
                         Intent intent = null;
@@ -135,11 +146,9 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
                 .positiveText(R.string.logout_popup_positive)
                 .negativeText(R.string.logout_popup_negative)
                 .content(R.string.logout_popup_content)
+                .dismissListener(dialog -> drawer.setSelection(-1))
                 .onPositive((dialog, which) -> settingsPresenter.logout())
-                .onNegative((dialog, which) -> {
-                    dialog.dismiss();
-                    drawer.setSelection(-1);
-                }).show();
+                .onNegative((dialog, which) -> dialog.dismiss()).show();
     }
 
     @Override
@@ -154,12 +163,9 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
     @Override
     public void onLogout() {
         Intent resultInt = new Intent();
-        resultInt.putExtra("ACTION", "LOGOUT");
+        resultInt.putExtra(ACTION, LOGOUT);
         Intent intentGeoService = new Intent(this, GeolocationUpdateService.class);
         stopService(intentGeoService);
-        if (GeolocationUpdateService.FIREBASE_KEY != null && !GeolocationUpdateService.FIREBASE_KEY.isEmpty()) {
-            settingsPresenter.deleteGeolocation();
-        }
         setResult(Activity.RESULT_OK, resultInt);
         finish();
     }

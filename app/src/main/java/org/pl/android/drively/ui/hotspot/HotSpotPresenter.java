@@ -106,7 +106,7 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
         Car car = new Car();
         car.setDriverType(parts[0]);
         car.setUserId(parts[1]);
-        car.setGeoLocation(location);
+        car.setCurrentLocation(location);
 
         if (carApplicationFilterList.contains(car.getDriverType())) return;
         if (getMvpView() != null) {
@@ -187,18 +187,6 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
                 }
             }
         });
-    }
-
-    public double calculateBearing(GeoLocation first, GeoLocation second) {
-        double longitude1 = first.longitude;
-        double longitude2 = second.longitude;
-        double latitude1 = Math.toRadians(first.latitude);
-        double latitude2 = Math.toRadians(second.latitude);
-        double longDiff = Math.toRadians(longitude2 - longitude1);
-        double y = Math.sin(longDiff) * Math.cos(latitude2);
-        double x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(longDiff);
-
-        return (Math.toDegrees(Math.atan2(y, x)) + 360) % 360;
     }
 
     public String getUid() {

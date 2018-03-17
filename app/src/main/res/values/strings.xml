@@ -21,7 +21,7 @@
     <string name="save">Save</string>
     <string name="drive_now">Go now</string>
     <string name="check_in_app">Check in app</string>
-    <string name="create_account_progress">Creating Account...</string>
+    <string name="create_account_progress">Creating Account…</string>
     <string name="valid_email_address">Type a correct email address</string>
     <string name="valid_name">A name must contain more than 4 characters</string>
     <string name="valid_password">A password must contain from 6 to 10 characters</string>
@@ -29,7 +29,7 @@
     <string name="save_day_schedule">Added to the Schedule</string>
     <string name="delete_day_schedule">Removed from the Schedule</string>
     <string name="login_failed">Login failed</string>
-    <string name="login_progress">Logging in progress...</string>
+    <string name="login_progress">Logging in progress…</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="create_account">Create account</string>
@@ -104,9 +104,9 @@
     <string name="delete_group_failure">Failed to delete the group </string>
     <string name="accept_regulation">While logging to the application you accept the <u>regulations</u></string>
     <string name="title_activity_regulations">Regulations Activity</string>
-    <string name="get_all_friend">Get all friends...</string>
-    <string name="group_leaving">Leaving the group....</string>
-    <string name="add_friend">Add friend....</string>
+    <string name="get_all_friend">Get all friends…</string>
+    <string name="group_leaving">Leaving the group…</string>
+    <string name="add_friend">Add friend…</string>
     <string name="email_not_valid">Email address invalid</string>
     <string name="not_admin">Only admin can do it</string>
     <string name="admin_cannot_leave">Admin cannot leave the group</string>
@@ -123,7 +123,10 @@
     <string name="navigate">Navigate</string>
     <string name="send_private_message">Send a private message</string>
 
-    <!--Settings-->
+    <string name="error">Something has went wrong!</string>
+
+    <!-- Start settings -->
+
     <string name="settings">Settings</string>
     <string name="instruction">Instruction</string>
 
@@ -140,6 +143,18 @@
     <string name="notifications_chat_group_description">Change notifications for the group chat</string>
     <string name="notifications_chat_private">Chat private</string>
     <string name="notifications_chat_private_description">Change notifications for private conversations</string>
+
+    <string name="logout_popup_positive">Log out</string>
+    <string name="logout_popup_negative">Stay</string>
+    <string name="logout_popup_content">Are you sure you want to log out?</string>
+
+    <string name="delete_user_popup_positive">Delete the account</string>
+    <string name="delete_user_popup_negative">Cancel</string>
+    <string name="delete_user_popup_content">Do you want to delete your account?</string>
+
+    <string name="delete_user_deleting">Your account is deleting…</string>
+
+    <!-- End settings -->
 
     <!--Network connection-->
     <string name="network_lack">No network</string>
@@ -205,14 +220,9 @@
     <string name="popup_finance_info"> Here, you will be able to control all the cost you bear, so no more paper work!</string>
     <string name="popup_finance_contact_us">TELL US WHAT YOU THINK!</string>
 
-    <!--LOGOUT-->
-    <string name="logout_popup_positive">Log out</string>
-    <string name="logout_popup_negative">Stay</string>
-    <string name="logout_popup_content">Are you sure you want to log out?</string>
-
     <!--SETTINGS MAIN SCREEN-->
     <string name="choose_app">Choose application</string>
 
-    <string name="login_buttons_label">Sign up!</string>
+    <string name="login_buttons_label">Sign up</string>
 
 </resources>

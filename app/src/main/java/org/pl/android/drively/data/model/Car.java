@@ -1,5 +1,6 @@
 package org.pl.android.drively.data.model;
 
+import android.location.Location;
 import android.support.annotation.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -8,17 +9,23 @@ import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.database.Exclude;
 
+import org.pl.android.drively.services.KalmanFilterService;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Car implements Comparable<Car> {
 
     private String userId;
     private String driverType;
+    private KalmanFilterService kalmanFilter = new KalmanFilterService();
+
+    @JsonIgnore
+    private GeoLocation currentLocation;
+
+    @JsonIgnore
+    private GeoLocation previousLocation;
 
     @JsonIgnore
     private Marker marker;
-
-    @JsonIgnore
-    private GeoLocation geoLocation;
 
     public String getUserId() {
         return userId;
@@ -34,16 +41,6 @@ public class Car implements Comparable<Car> {
 
     public void setDriverType(String driverType) {
         this.driverType = driverType;
-    }
-
-    @Exclude
-    public GeoLocation getGeoLocation() {
-        return geoLocation;
-    }
-
-    @Exclude
-    public void setGeoLocation(GeoLocation geoLocation) {
-        this.geoLocation = geoLocation;
     }
 
     @Exclude
@@ -74,5 +71,48 @@ public class Car implements Comparable<Car> {
     @Override
     public int hashCode() {
         return userId != null ? userId.hashCode() : 0;
+    }
+
+    @Exclude
+    public GeoLocation getCurrentLocation() {
+        return currentLocation;
+    }
+
+    @Exclude
+    public void setCurrentLocation(GeoLocation currentLocation) {
+
+        Location location = new Location("" /* ignore */);
+
+        location.setLatitude(currentLocation.latitude);
+        location.setLongitude(currentLocation.longitude);
+        location.setAccuracy(20);
+        location.setTime(System.currentTimeMillis());
+
+        location = kalmanFilter.filter(location);
+
+        this.currentLocation = new GeoLocation(location.getLatitude(), location.getLongitude());
+    }
+
+    @Exclude
+    public GeoLocation getPreviousLocation() {
+        return previousLocation;
+    }
+
+    @Exclude
+    public void setPreviousLocation(GeoLocation previousLocation) {
+        this.previousLocation = previousLocation;
+    }
+
+    @Exclude
+    public double getBearing() {
+        double longitude1 = previousLocation.longitude;
+        double longitude2 = currentLocation.longitude;
+        double latitude1 = Math.toRadians(previousLocation.latitude);
+        double latitude2 = Math.toRadians(currentLocation.latitude);
+        double longDiff = Math.toRadians(longitude2 - longitude1);
+        double y = Math.sin(longDiff) * Math.cos(latitude2);
+        double x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(longDiff);
+
+        return (Math.toDegrees(Math.atan2(y, x)) + 360) % 360;
     }
 }

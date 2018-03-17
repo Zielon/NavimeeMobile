@@ -5,6 +5,7 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.kelvinapps.rxfirebase.RxFirebaseAuth;
 import com.kelvinapps.rxfirebase.RxFirebaseUser;
 
@@ -40,7 +41,10 @@ public class BaseSignPresenter extends BasePresenter<BaseSignMvpView> {
     }
 
     public void saveUserInfo() {
-        String userId = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid();
+        FirebaseUser firebaseUser = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
+        if (firebaseUser == null) return;
+
+        String userId = firebaseUser.getUid();
         usersRepository.getUser(userId).addOnSuccessListener(user -> mDataManager.getPreferencesHelper().saveUserInfo(user));
 
         // Mainly for a remote update of a user entity.
@@ -55,31 +59,26 @@ public class BaseSignPresenter extends BasePresenter<BaseSignMvpView> {
     }
 
     public Task<User> registerUser() {
-        if (mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() == null)
-            return Tasks.forResult(null);
-
         FirebaseUser firebaseUser = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
+        if (firebaseUser == null) return Tasks.forResult(null);
 
         String userId = firebaseUser.getUid();
         String name = firebaseUser.getDisplayName();
         String email = firebaseUser.getEmail();
+        String token = FirebaseInstanceId.getInstance().getToken();
 
         return usersRepository.getUser(userId).addOnSuccessListener(user -> {
             // A user already registered
-            firebaseUser.getIdToken(true).addOnSuccessListener(token -> {
-                user.setToken(token.getToken());
-                usersRepository.updateUser(user);
-            });
+            user.setToken(token);
+            usersRepository.updateUser(user);
         }).addOnFailureListener(fail -> {
             // A new user
-            firebaseUser.getIdToken(true).addOnSuccessListener(token -> {
-                User user = new User();
-                user.setToken(token.getToken());
-                user.setEmail(email);
-                user.setId(userId);
-                user.setName(name);
-                usersRepository.updateUser(user);
-            });
+            User user = new User();
+            user.setToken(token);
+            user.setEmail(email);
+            user.setId(userId);
+            user.setName(name);
+            usersRepository.updateUser(user);
         }).continueWith(result -> {
             saveUserInfo();
             return result.getResult();

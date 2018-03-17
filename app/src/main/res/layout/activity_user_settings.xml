@@ -25,9 +25,9 @@
         android:id="@+id/avatar_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
         android:layout_below="@+id/frame_container"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp">
 
         <agency.tango.android.avatarview.views.AvatarView
             android:id="@+id/avatar"
