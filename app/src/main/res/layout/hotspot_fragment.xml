@@ -83,6 +83,7 @@
             android:layout_marginStart="-6dp"
             android:layout_marginTop="-4dp"
             android:padding="-4dp"
+            android:visibility="gone"
             android:elevation="6dp"
             fancy:fb_borderColor="@color/button_background"
             fancy:fb_borderWidth="1dp"
