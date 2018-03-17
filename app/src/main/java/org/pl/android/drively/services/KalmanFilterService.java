@@ -21,6 +21,7 @@ public class KalmanFilterService {
         if (variance < 0) {
             // Initialise the state
             setState(newLocation);
+            return newLocation;
         } else {
             long duration = newLocation.getTime() - this.time;
             if (duration > 0) {
@@ -42,8 +43,6 @@ public class KalmanFilterService {
 
             return new Location(newLocation);
         }
-
-        return newLocation;
     }
 
     private double getSpeed(Location location) {

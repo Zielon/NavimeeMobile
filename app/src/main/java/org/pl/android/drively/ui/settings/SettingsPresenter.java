@@ -1,18 +1,13 @@
 package org.pl.android.drively.ui.settings;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Intent;
-
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import org.pl.android.drively.contracts.repositories.UsersRepository;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.local.PreferencesHelper;
-import org.pl.android.drively.services.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
-import org.pl.android.drively.util.FirebasePaths;
 
 import javax.inject.Inject;
 
@@ -45,35 +40,25 @@ public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
         if (disposable != null) disposable.dispose();
     }
 
-    public void deleteUser(ProgressDialog progressDialog) {
-        preferencesHelper.clear();
-        // The user node will be removed by Cloud Functions
-        firebaseUser.delete().addOnSuccessListener(result -> {
-            progressDialog.dismiss();
-            getMvpView().onLogout();
-        });
-    }
-
     public void logout() {
-        String userId = firebaseUser.getUid();
-
-        Activity activity = (Activity) getMvpView();
-        Intent intentGeoService = new Intent(activity, GeolocationUpdateService.class);
-        activity.stopService(intentGeoService);
-
         ChatViewActivity.bitmapAvatarUser = null;
 
         try {
+            String userId = firebaseUser.getUid();
             usersRepository.updateUserField(userId, "online", false);
             usersRepository.deleteUserField(userId, "token");
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            // A user is already deleted
         }
 
         preferencesHelper.clear();
         preferencesHelper.unclearPopups();
 
-        dataManager.getFirebaseService().getFirebaseAuth().signOut();
+        FirebaseAuth firebaseAuth = dataManager.getFirebaseService().getFirebaseAuth();
+        if (firebaseAuth != null) firebaseAuth.signOut();
+
         getMvpView().onLogout();
     }
 
@@ -83,11 +68,5 @@ public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
 
     public String getEmail() {
         return firebaseUser.getEmail();
-    }
-
-    public void deleteGeolocation() {
-        dataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.USER_LOCATION)
-                .child(GeolocationUpdateService.FIREBASE_KEY).removeValue();
-
     }
 }

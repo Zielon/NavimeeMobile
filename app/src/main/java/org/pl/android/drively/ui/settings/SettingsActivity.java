@@ -1,7 +1,6 @@
 package org.pl.android.drively.ui.settings;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -33,7 +32,6 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 
 import static org.pl.android.drively.util.ConstIntents.ACTION;
-import static org.pl.android.drively.util.ConstIntents.DELETE_USER;
 import static org.pl.android.drively.util.ConstIntents.LOGOUT;
 
 public class SettingsActivity extends BaseActivity implements SettingsMvpView {
@@ -42,7 +40,6 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
     @Inject
     SettingsPresenter settingsPresenter;
     private Drawer drawer = null;
-    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,8 +47,6 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
         activityComponent().inject(this);
         setContentView(R.layout.activity_user);
         settingsPresenter.attachView(this);
-        progressDialog = new ProgressDialog(this, R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
 
         Drawable grayBackground = getResources().getDrawable(R.drawable.primary);
         ButterKnife.bind(this);
@@ -162,16 +157,6 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            if (data != null) {
-                String action = data.getStringExtra(ACTION);
-                if (action.equals(DELETE_USER)) {
-                    progressDialog.setMessage(getResources().getString(R.string.delete_user_deleting));
-                    progressDialog.show();
-                    settingsPresenter.deleteUser(progressDialog);
-                }
-            }
-        }
         drawer.setSelection(-1);
     }
 
@@ -181,9 +166,6 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
         resultInt.putExtra(ACTION, LOGOUT);
         Intent intentGeoService = new Intent(this, GeolocationUpdateService.class);
         stopService(intentGeoService);
-        if (GeolocationUpdateService.FIREBASE_KEY != null && !GeolocationUpdateService.FIREBASE_KEY.isEmpty()) {
-            settingsPresenter.deleteGeolocation();
-        }
         setResult(Activity.RESULT_OK, resultInt);
         finish();
     }

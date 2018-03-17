@@ -16,7 +16,7 @@
     <string name="delete">Usuń</string>
     <string name="drive_now">Jedź teraz</string>
     <string name="check_in_app">Sprawdź w aplikacji</string>
-    <string name="create_account_progress">Tworzenie konta trwa..</string>
+    <string name="create_account_progress">Tworzenie konta trwa…</string>
     <string name="valid_email_address">Wprowadź poprawny adres email</string>
     <string name="valid_name">Imię musi zawierać wiecej niż 4 znaki</string>
     <string name="valid_password">Hasło musi zawierać od 6 do 10 znaków</string>
@@ -24,7 +24,7 @@
     <string name="save_day_schedule">Dodano do Planu Dnia</string>
     <string name="delete_day_schedule">Usunięto z Planu Dnia</string>
     <string name="login_failed">Logowanie nie powiodło się</string>
-    <string name="login_progress">Logowanie trwa..</string>
+    <string name="login_progress">Logowanie trwa…</string>
     <string name="password">Hasło</string>
     <string name="create_account">Utwórz konto</string>
     <string name="already_member_login">Masz już konto? Zaloguj się</string>
@@ -110,6 +110,8 @@
     <string name="leave_group">Opuść grupę</string>
     <string name="accept_regulation">Logując się do aplikacji akceptujesz <u>regulamin</u></string>
     <string name="send_private_message">Wyślij prywatną wiadomość</string>
+
+    <string name="error">Coś poszło nie tak!</string>
 
     <!-- Start settings -->
 

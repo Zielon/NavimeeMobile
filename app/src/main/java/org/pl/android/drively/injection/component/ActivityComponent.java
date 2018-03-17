@@ -19,10 +19,6 @@ import org.pl.android.drively.ui.planner.dayschedule.DayScheduleFragment;
 import org.pl.android.drively.ui.planner.events.EventsFragment;
 import org.pl.android.drively.ui.settings.SettingsActivity;
 import org.pl.android.drively.ui.settings.user.UserSettingsActivity;
-import org.pl.android.drively.ui.settings.user.email.UserEmailChangeActivity;
-import org.pl.android.drively.ui.settings.user.name.UserNameChangeActivity;
-import org.pl.android.drively.ui.settings.user.password.UserPasswordChangeActivity;
-import org.pl.android.drively.ui.settings.user.reauthenticate.ReauthenticateActivity;
 import org.pl.android.drively.ui.signinup.SignActivity;
 
 import dagger.Subcomponent;
@@ -47,15 +43,7 @@ public interface ActivityComponent {
 
     void inject(SignActivity signActivity);
 
-    void inject(UserEmailChangeActivity userEmailChangeActivity);
-
-    void inject(ReauthenticateActivity reauthenticateActivity);
-
     void inject(UserSettingsActivity userSettingsActivity);
-
-    void inject(UserNameChangeActivity userNameChangeActivity);
-
-    void inject(UserPasswordChangeActivity userPasswordChangeActivity);
 
     void inject(ChatFragment chatFragment);
 

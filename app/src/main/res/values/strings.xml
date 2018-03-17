@@ -123,6 +123,8 @@
     <string name="navigate">Navigate</string>
     <string name="send_private_message">Send a private message</string>
 
+    <string name="error">Something has went wrong!</string>
+
     <!-- Start settings -->
 
     <string name="settings">Settings</string>

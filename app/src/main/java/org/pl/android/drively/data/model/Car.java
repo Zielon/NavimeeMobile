@@ -1,5 +1,6 @@
 package org.pl.android.drively.data.model;
 
+import android.location.Location;
 import android.support.annotation.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -8,26 +9,20 @@ import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.database.Exclude;
 
+import org.pl.android.drively.services.KalmanFilterService;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Car implements Comparable<Car> {
 
     private String userId;
     private String driverType;
-
-    @JsonIgnore
-    private double bearingEstimate;
-
-    @JsonIgnore
-    private double variance = -1;
+    private KalmanFilterService kalmanFilter = new KalmanFilterService();
 
     @JsonIgnore
     private GeoLocation currentLocation;
 
     @JsonIgnore
     private GeoLocation previousLocation;
-
-    @JsonIgnore
-    private int count = 0;
 
     @JsonIgnore
     private Marker marker;
@@ -85,7 +80,17 @@ public class Car implements Comparable<Car> {
 
     @Exclude
     public void setCurrentLocation(GeoLocation currentLocation) {
-        this.currentLocation = currentLocation;
+
+        Location location = new Location("" /* ignore */);
+
+        location.setLatitude(currentLocation.latitude);
+        location.setLongitude(currentLocation.longitude);
+        location.setAccuracy(20);
+        location.setTime(System.currentTimeMillis());
+
+        location = kalmanFilter.filter(location);
+
+        this.currentLocation = new GeoLocation(location.getLatitude(), location.getLongitude());
     }
 
     @Exclude
@@ -108,27 +113,6 @@ public class Car implements Comparable<Car> {
         double y = Math.sin(longDiff) * Math.cos(latitude2);
         double x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(longDiff);
 
-        double bearing = (Math.toDegrees(Math.atan2(y, x)) + 360) % 360;
-
-        double ERROR_MEA = 50;
-
-        // Reset. In the case of sudden movement changes. Otherwise a car's inertia is too big.
-        if (count > 20) {
-            variance = -1;
-            count = 0;
-        }
-
-        if (variance < 0) {
-            // Initial state
-            bearingEstimate = bearing;
-            variance = Math.pow(ERROR_MEA, 2);
-        } else {
-            double kalmanGain = variance / (variance + ERROR_MEA);
-            bearingEstimate = bearingEstimate + kalmanGain * (bearing - bearingEstimate);
-            variance = (1 - kalmanGain) * variance;
-            count++;
-        }
-
-        return bearingEstimate;
+        return (Math.toDegrees(Math.atan2(y, x)) + 360) % 360;
     }
 }

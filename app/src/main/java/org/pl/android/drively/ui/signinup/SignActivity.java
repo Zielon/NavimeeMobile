@@ -3,20 +3,35 @@ package org.pl.android.drively.ui.signinup;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.annimon.stream.Stream;
 import com.google.firebase.auth.AuthCredential;
 
+import org.apache.commons.collections4.ListUtils;
 import org.pl.android.drively.R;
 import org.pl.android.drively.ui.main.MainActivity;
+import org.pl.android.drively.ui.settings.user.UserSettingsActivity;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import mehdi.sakout.fancybuttons.FancyButton;
+
+import static org.pl.android.drively.util.ConstIntents.ACTION;
+import static org.pl.android.drively.util.ConstIntents.DELETE_USER;
+import static org.pl.android.drively.util.ConstIntents.PROVIDERS;
+import static org.pl.android.drively.util.ConstIntents.REAUTHENTICATE;
 
 public class SignActivity extends BaseSignActivity implements BaseSignMvpView {
 
@@ -25,6 +40,26 @@ public class SignActivity extends BaseSignActivity implements BaseSignMvpView {
 
     @BindView(R.id.title)
     TextView titleTextView;
+
+    @BindView(R.id.login_buttons_label)
+    TextView buttonLabel;
+
+    @BindView(R.id.regulation)
+    TextView regulation;
+
+    @BindView(R.id.facebook_com)
+    FancyButton facebookReplacedButton;
+
+    @BindView(R.id.facebook_com_icon)
+    FancyButton facebookReplacedButtonIcon;
+
+    @BindView(R.id.google_com)
+    FancyButton googleReplacedButton;
+
+    @BindView(R.id.google_com_icon)
+    FancyButton googleReplacedButtonIcon;
+
+    private boolean reauthenticate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +71,29 @@ public class SignActivity extends BaseSignActivity implements BaseSignMvpView {
         progressDialog.setMessage(getResources().getString(R.string.login_progress));
         titleTextView.setTypeface(Typeface.createFromAsset(getAssets(), "NexaBold.ttf"));
         initializeSocialButtons();
-    }
 
+        Map<String, Pair<FancyButton, FancyButton>> buttons = new HashMap<>();
+
+        buttons.put("google.com", new Pair<>(googleReplacedButton, googleReplacedButtonIcon));
+        buttons.put("facebook.com", new Pair<>(facebookReplacedButton, facebookReplacedButtonIcon));
+
+        // In the case of reauthentication from the delete account menu
+        String action = getIntent().getStringExtra(ACTION);
+        if(action != null && action.equals(REAUTHENTICATE)){
+            buttonLabel.setText(R.string.reauthenticate);
+            regulation.setVisibility(View.GONE);
+            reauthenticate = true;
+
+            List<String> providers = getIntent().getStringArrayListExtra(PROVIDERS);
+            List<String> availableButtons = new ArrayList<>(buttons.keySet());
+            Stream.of(ListUtils.subtract(availableButtons, providers))
+                    .forEach(provider -> {
+                        Pair<FancyButton, FancyButton> pair = buttons.get(provider);
+                        pair.first.setVisibility(View.GONE);
+                        pair.second.setVisibility(View.GONE);
+                    });
+        }
+    }
 
     @Override
     protected void onErrorFacebook() {
@@ -52,6 +108,15 @@ public class SignActivity extends BaseSignActivity implements BaseSignMvpView {
 
     @Override
     public void onSuccess() {
+        if(reauthenticate){
+            progressDialog.dismiss();
+            Intent intent = new Intent();
+            intent.putExtra(ACTION, DELETE_USER);
+            setResult(RESULT_OK, intent);
+            this.finish();
+            return;
+        }
+
         mSignPresenter.registerUser().addOnCompleteListener(user -> {
             progressDialog.dismiss();
             setResult(RESULT_OK, null);
@@ -64,17 +129,15 @@ public class SignActivity extends BaseSignActivity implements BaseSignMvpView {
     @Override
     public void onError(Throwable throwable) {
         progressDialog.dismiss();
-        Toast.makeText(getBaseContext(), getResources().getString(R.string.register_failed), Toast.LENGTH_LONG).show();
-        progressDialog.dismiss();
     }
 
-    @OnClick(R.id.replaced_sing_in_google_button)
+    @OnClick(R.id.google_com)
     public void replacedSignInGoogleButtonClick(View view) {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-    @OnClick(R.id.replaced_facebook_login_button)
+    @OnClick(R.id.facebook_com)
     public void replacedFacebookLoginButtonClick(View view) {
         facebookButton.performClick();
     }
