@@ -562,12 +562,6 @@ public class HotSpotFragment extends BaseTabFragment implements
         googleMap.animateCamera(CameraUpdateFactory.zoomIn());
     }
 
-    @OnClick(R.id.fab_filter_remove_badge)
-    public void onRemoveFilterBadgeClick(View view) {
-        dialogFrag.clearFilters();
-        updateOnFilterChange(new ArrayMap<>());
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(NotificationEvent notificationEvent) {
         route(latLngCurrent,
