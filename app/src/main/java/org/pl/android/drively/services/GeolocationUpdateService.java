@@ -99,7 +99,9 @@ public class GeolocationUpdateService extends Service {
         GeolocationUpdateService.KALMAN_FILTER = new KalmanFilterService();
 
         if (FIREBASE_KEY != null && !FIREBASE_KEY.isEmpty())
-            databaseReference.child(FIREBASE_KEY).removeValue();
+            databaseReference.child(FIREBASE_KEY).removeValue()
+                    .addOnSuccessListener(success -> Timber.i(FIREBASE_KEY + " has been deleted!"))
+                    .addOnFailureListener(Throwable::printStackTrace);
 
         if (mLocationManager != null) {
             for (LocationListener mLocationListener : mLocationListeners)

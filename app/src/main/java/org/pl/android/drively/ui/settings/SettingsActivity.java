@@ -164,8 +164,6 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
     public void onLogout() {
         Intent resultInt = new Intent();
         resultInt.putExtra(ACTION, LOGOUT);
-        Intent intentGeoService = new Intent(this, GeolocationUpdateService.class);
-        stopService(intentGeoService);
         setResult(Activity.RESULT_OK, resultInt);
         finish();
     }

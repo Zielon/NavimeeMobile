@@ -206,9 +206,9 @@ public class HotSpotFragment extends BaseTabFragment implements
             getActivity().startService(new Intent(getActivity(), GeolocationUpdateService.class));
         }
 
+        verifyFirstStartSecondHotspotPopup();
         initGeolocation();
         context = this.getContext();
-        verifyFirstStartSecondHotspotPopup();
     }
 
     private void verifyFirstStartSecondHotspotPopup() {
@@ -455,6 +455,7 @@ public class HotSpotFragment extends BaseTabFragment implements
 
         if (!mHotspotPresenter.getShareLocalisationPreference()) {
             Stream.of(usersOnMap).forEach(key -> key.getValue().getMarker().setVisible(false));
+            usersOnMap.clear();
             this.geoQueryUsersLocation.removeAllListeners();
         } else {
             try {

@@ -19,6 +19,7 @@ import org.pl.android.drively.R;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.local.PreferencesHelper;
 import org.pl.android.drively.data.model.User;
+import org.pl.android.drively.services.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.ui.signinup.SignActivity;
 import org.pl.android.drively.util.FirebasePaths;
@@ -120,6 +121,11 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
     }
 
     public void deleteUser(ProgressDialog progressDialog) {
+
+        Activity activity = (Activity)userSettingsChangeMvpView;
+        Intent intentGeoService = new Intent(activity, GeolocationUpdateService.class);
+        activity.stopService(intentGeoService);
+
         // The user node will be removed by Cloud Functions
         firebaseUser.delete().addOnSuccessListener(result -> {
             progressDialog.dismiss();
@@ -127,7 +133,6 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
             userSettingsChangeMvpView.onUserDelete();
         }).addOnFailureListener(task -> {
             progressDialog.dismiss();
-            Activity activity = (Activity) userSettingsChangeMvpView;
             if (task instanceof FirebaseAuthRecentLoginRequiredException || task.getMessage().contains("CREDENTIAL_TOO_OLD_LOGIN_AGAIN")) {
                 Intent intent = new Intent(activity, SignActivity.class);
                 intent.putExtra(ACTION, REAUTHENTICATE);

@@ -180,8 +180,6 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
     public void onUserDelete() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        Intent intentGeoService = new Intent(this, GeolocationUpdateService.class);
-        stopService(intentGeoService);
         startActivity(intent);
     }
 
