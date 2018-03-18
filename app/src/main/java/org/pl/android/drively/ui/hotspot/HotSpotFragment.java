@@ -206,12 +206,12 @@ public class HotSpotFragment extends BaseTabFragment implements
             getActivity().startService(new Intent(getActivity(), GeolocationUpdateService.class));
         }
 
-        verifyFirstStartSecondHotspotPopup();
         initGeolocation();
+        verifyFirstStartSecondHotspotPopup(this.getContext());
         context = this.getContext();
     }
 
-    private void verifyFirstStartSecondHotspotPopup() {
+    private void verifyFirstStartSecondHotspotPopup(Context context) {
         if (mHotspotPresenter.getHotspotSecondPopupFirstStart() && !TextUtils.isEmpty(mHotspotPresenter.getDriverType())) {
             HotspotPopupHelper.showSecondPopup(context);
             mHotspotPresenter.setHotspotSecondPopupFirstStart(false);
