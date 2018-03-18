@@ -1,63 +1,12 @@
 <resources>
+    <!-- App name -->
     <string name="app_name">Drively</string>
-    <string name="dialog_action_ok">Ok</string>
-    <string name="dialog_error_title">Przepraszamy</string>
-    <string name="events">Kalendarz</string>
-    <string name="day_schedule">Plan Dnia</string>
-    <string name="hotspot">Hotspot</string>
-    <string name="finance">Wydatki</string>
-    <string name="save">Zapisz</string>
-    <string name="user">Użytkownik</string>
-    <string name="user_exists">Taki użytkownik już istnieje</string>
+
+    <!-- Register -->
     <string name="sign_in_facebook">Kontynuuj z Facebook</string>
     <string name="sign_in_google">Kontynuuj z Google</string>
-    <string name="logout_text">Wyloguj się</string>
-    <string name="add">Dodaj do Planu Dnia</string>
-    <string name="delete">Usuń</string>
-    <string name="drive_now">Jedź teraz</string>
-    <string name="check_in_app">Sprawdź w aplikacji</string>
-    <string name="create_account_progress">Tworzenie konta trwa…</string>
-    <string name="valid_email_address">Wprowadź poprawny adres email</string>
-    <string name="valid_name">Imię musi zawierać wiecej niż 4 znaki</string>
-    <string name="valid_password">Hasło musi zawierać od 6 do 10 znaków</string>
-    <string name="register_failed">Rejestracja nie powiodła się</string>
-    <string name="save_day_schedule">Dodano do Planu Dnia</string>
-    <string name="delete_day_schedule">Usunięto z Planu Dnia</string>
-    <string name="login_failed">Logowanie nie powiodło się</string>
-    <string name="login_progress">Logowanie trwa…</string>
-    <string name="password">Hasło</string>
-    <string name="create_account">Utwórz konto</string>
-    <string name="already_member_login">Masz już konto? Zaloguj się</string>
-    <string name="login">Zaloguj się</string>
-    <string name="logout">Wyloguj się</string>
-    <string name="change_email">Zmień email</string>
-    <string name="change_email_failed">Zmiana email nie powiodła się!</string>
-    <string name="change_email_succeed">Zmiana email powiodła się!</string>
-    <string name="change_password">Zmień hasło</string>
-    <string name="change_name">Zmień imię</string>
-    <string name="change_name_failed">Zmiana imienia nie powiodła się</string>
-    <string name="change_name_succeed">Zmiana imienia powiodła się</string>
-    <string name="reauthenticate">Zaloguj się ponownie</string>
-    <string name="privacy_conditions">Polityka Prywatności</string>
-    <string name="help">Pomoc</string>
-    <string name="visible_on_map">Filtruj na mapie</string>
-    <string name="radius">Promień</string>
-    <string name="events_filtr">Kończące się wydarzenia</string>
-    <string name="popular_places">Popularne miejsca</string>
-    <string name="uber_ratio">Mnożnik Ubera</string>
-    <string name="rate_app">Oceń aplikację</string>
-    <string name="delete_account">Usuń konto</string>
-    <string name="yes_work">Tak, udało się</string>
-    <string name="no_work">Nie udało się</string>
-    <string name="no_drive">Nie pojechałem tam</string>
-    <string name="email">Email</string>
-    <string name="no_account_yet">Nie masz jeszcze konta? Stwórz konto</string>
-    <string name="avatar_change">Kliknij żeby zmienieć avatar</string>
-    <string name="avatar_max_size">(5 MB max rozmiaru)</string>
-    <string name="feedback">Twoja ocena</string>
-    <string name="feeback_custom_text">Hej %1$s, udało Ci się złapać klienta po dotarciu do %2$s?</string>
-    <string name="feeback_normal_text">Twoja odpowiedź sprawi, że aplikacja będzie działać coraz lepiej!</string>
-    <string name="notification_time">Czas zakończenia %1$d:%2$s</string>
+
+    <!-- onboarding (it's turned off) -->
     <string name="onboarding_1_title">Hej!</string>
     <string name="onboarding_1_body">To pierwszy krok do większych zysków, zapnij pasy i zaczynamy!</string>
     <string name="onboarding_2_title">Kalendarz</string>
@@ -68,14 +17,87 @@
     <string name="onboarding_4_body">Koniec z przełączaniem się między aplikacjami, w Drively zobaczysz wszystkich kierowców!</string>
     <string name="onboarding_5_title">Czat</string>
     <string name="onboarding_5_body">Dołącz do grup, zadawaj pytania i korzystaj z cennych porad innych kierowców. </string>
-    <string name="or">lub</string>
-    <string name="name">Imię</string>
-    <string name="continueWith">lub kontynuuj z</string>
-    <string name="emailAlreadyInUse">Podany adres e-mail jest już używany przez inne konto.</string>
+
+    <!-- Push notification -->
+    <string name="check_in_app">Sprawdź w aplikacji</string>
+
+    <!-- Start settings -->
+
+    <string name="settings">Ustawienia</string>
+    <string name="user">Użytkownik</string>
+    <string name="logout">Wyloguj się</string>
+    <string name="privacy_conditions">Polityka Prywatności</string>
+    <string name="instruction">Instrukcja</string>
+
+    <string name="general">Hotspot</string>
+    <string name="shareLocalization">Mapa</string>
+    <string name="shareLocalization_description">Dzielenie się lokalizacją na Hotspot</string>
+    <string name="change_application">Główna aplikacja</string>
+    <string name="change_application_description">Wybierz aplikację, na której jeździsz najczęściej</string>
+
+    <string name="notifications">Powiadomienia</string>
+    <string name="notifications_day_schedule">Plan Dnia</string>
+    <string name="notifications_day_schedule_description">Powiadomienia o kończących się wydarzeniach z Planu Dnia</string>
+    <string name="notifications_chat_group">Czat grupowy</string>
+    <string name="notifications_chat_group_description">Notyfikacje dla czatu grupowego</string>
+    <string name="notifications_chat_private">Czat prywatny</string>
+    <string name="notifications_chat_private_description">Notyfikacje dla prywatnych wiadomości</string>
+
+    <string name="avatar_change">Kliknij żeby zmienieć avatar</string>
+    <string name="avatar_max_size">(5 MB max rozmiaru)</string>
+
+    <string name="logout_popup_positive">Wyloguj się</string>
+    <string name="logout_popup_negative">Zostań</string>
+    <string name="logout_popup_content">Na pewno chcesz się wylogować?</string>
+
+    <string name="delete_user_popup_positive">Usuń konto</string>
+    <string name="delete_user_popup_negative">Anuluj</string>
+    <string name="delete_user_popup_content">Czy na pewno chcesz usunąć swoje konto?</string>
+
+    <string name="delete_user_deleting">Twoje konto zostanie usunięte…</string>
+
+    <!-- End settings -->
+
+    <!--Network connection-->
+    <string name="network_lack">Brak Internetu</string>
+    <string name="check_internet">Ustawienia sieci</string>
+    <string name="close">Zamknij</string>
+    <string name="let_us_know">Daj nam znać</string>
+    <string name="not_available_in_city">Nie jesteśmy dostępni w Twoim mieście</string>
+
+    <!--HOTSPOT: filtr-->
+    <string name="visible_on_map">Filtruj na mapie</string>
+    <string name="radius">Promień</string>
+    <string name="events_filtr">Kończące się wydarzenia</string>
+    <string name="popular_places">Popularne miejsca</string>
+    <string name="uber_ratio">Mnożnik Ubera</string>
+
+    <!-- Feedback -->
+    <string name="yes_work">Tak, udało się</string>
+    <string name="no_work">Nie udało się</string>
+    <string name="no_drive">Nie pojechałem tam</string>
+    <string name="feedback">Twoja ocena</string>
+    <string name="feeback_custom_text">Hej %1$s, udało Ci się złapać klienta po dotarciu do %2$s?</string>
+    <string name="feeback_normal_text">Twoja odpowiedź sprawi, że aplikacja będzie działać coraz lepiej!</string>
+    <string name="notification_time">Czas zakończenia %1$d:%2$s</string>
+
+    <!-- Calendar buttons -->
+    <string name="your_plan">Twój plan</string>
+    <string name="remember_me">Przypomnij mi</string>
+    <string name="cancel">Anuluj</string>
+    <string name="navigate">Nawiguj</string>
+
+    <!-- Empty Calendar/Schedule -->
     <string name="events_empty_text">Wygląda na to, że w tym dniu nie ma żadnego wydarzenia.</string>
     <string name="events_check_another_date">Sprawdź inny dzień</string>
     <string name="day_schedule_text">Dodaj wydarzenia do Planu Dnia i łap nowych klientów.</string>
     <string name="day_schedule_events_route">Przejdź do Kalendarza</string>
+
+    <!-- Calendar toasts -->
+    <string name="save_day_schedule">Dodano do Planu Dnia</string>
+    <string name="delete_day_schedule">Usunięto z Planu Dnia</string>
+
+    <!-- Chat -->
     <string name="chat">Czat</string>
     <string name="enter_group_name">Podaj nazwę grupy</string>
     <string name="create_group">Stwórz grupę</string>
@@ -108,53 +130,9 @@
     <string name="success_leaveing_group">Opuściłeś grupę pomyślnie</string>
     <string name="delete_group">Usuń grupę</string>
     <string name="leave_group">Opuść grupę</string>
-    <string name="accept_regulation">Logując się do aplikacji akceptujesz <u>regulamin</u></string>
+
     <string name="send_private_message">Wyślij prywatną wiadomość</string>
-
     <string name="error">Coś poszło nie tak!</string>
-
-    <!-- Start settings -->
-
-    <string name="settings">Ustawienia</string>
-    <string name="instruction">Instrukcja</string>
-
-    <string name="general">Ogólne</string>
-    <string name="shareLocalization">Hospot</string>
-    <string name="shareLocalization_description">Dzielenie się lokalizacją na Hotspot</string>
-    <string name="change_application">Zmień aplikację</string>
-    <string name="change_application_description">Zmień apliację którą używasz</string>
-
-    <string name="notifications">Powiadomienia</string>
-    <string name="notifications_day_schedule">Plan Dnia</string>
-    <string name="notifications_day_schedule_description">Powiadomienia o kończących się wydarzeniach z Planu Dnia</string>
-    <string name="notifications_chat_group">Czat grupowy</string>
-    <string name="notifications_chat_group_description">Notyfikacje dla czatu grupowego</string>
-    <string name="notifications_chat_private">Prywatny czat</string>
-    <string name="notifications_chat_private_description">Notyfikacje dla prywatnych wiadomości</string>
-
-    <string name="logout_popup_positive">Wyloguj się</string>
-    <string name="logout_popup_negative">Zostań</string>
-    <string name="logout_popup_content">Na pewno chcesz się wylogować?</string>
-
-    <string name="delete_user_popup_positive">Usuń konto</string>
-    <string name="delete_user_popup_negative">Anuluj</string>
-    <string name="delete_user_popup_content">Czy na pewno chcesz usunąć swoje konto?</string>
-
-    <string name="delete_user_deleting">Twoje konto jest usuwane…</string>
-
-    <!-- End settings -->
-
-    <!--Network connection-->
-    <string name="network_lack">Brak Internetu</string>
-    <string name="check_internet">Ustawienia sieci</string>
-    <string name="close">Zamknij</string>
-    <string name="let_us_know">Daj nam znać</string>
-    <string name="not_available_in_city">Nie jesteśmy dostępni w Twoim mieście</string>
-
-    <string name="your_plan">Twój plan</string>
-    <string name="remember_me">Przypomnij mi</string>
-    <string name="cancel">Anuluj</string>
-    <string name="navigate">Nawiguj</string>
 
     <!--POPUPS-->
     <!--HOTSPOT-->
@@ -173,14 +151,14 @@
     <string name="brand_not_chose">Wybierz aplikację!</string>
 
     <!--HOTSPOT SECOND-->
-    <string name="popup_hotspot_second_title">WSZYSTKO JAK NA DŁONI!</string>
+    <string name="popup_hotspot_second_title">IKONY NA MAPIE</string>
     <string name="popup_hotspot_second_info">Zobacz poniżej jakimi kolorami oznaczano samochody</string>
     <string name="popup_hotspot_second_info2">Zmień widok na mapie!</string>
     <string name="popup_hotspot_second_understood">ROZUMIEM</string>
     <string name="popup_hotspot_second_preference_info">Hotspot można włączyć i wyłączyć w Ustawieniach</string>
 
     <!--CALENDAR-->
-    <string name="popup_events_title">WSZYSTKIE IMPREZY W JEDNYM MIEJSCU</string>
+    <string name="popup_events_title">WSZYSTKO W JEDNYM MIEJSCU</string>
     <string name="popup_events_info"> Zobacz kiedy i gdzie odbywaja się imprezy, koncerty i inne duże wydarzenia. Zaplanuj swój czas i nie przegap kolejnych okazji do złapania klientów.</string>
     <string name="popup_events_info1">Lista miejsc i wydarzeń w twoim mieście</string>
     <string name="popup_events_info2">Plan Dnia: wydarzenia, o których dostaniesz przypomnienie kiedy będą się kończyć</string>
@@ -193,6 +171,7 @@
     <string name="popup_events_understood">ROZUMIEM</string>
     <string name="popup_events_preference_info">Przypomnienia możesz wyłączyć w Ustawieniach</string>
 
+
     <!--CHAT-->
     <string name="popup_chat_title">Pytaj, odpowiadaj, dziel się!</string>
     <string name="popup_chat_info">Grupy dostępne na czacie:</string>
@@ -201,7 +180,7 @@
     <string name="popup_chat_info2">Blisko Ciebie</string>
     <string name="popup_chat_info2_button">Warszawa</string>
     <string name="popup_chat_info3">Oferty i ogłoszenia</string>
-    <string name="popup_chat_info3_button">Ogłoszenia</string>
+    <string name="popup_chat_info3_button">Oferty</string>
     <string name="popup_chat_info4">Znajdź więcej grup</string>
     <string name="popup_chat_question">Chcesz być na bieżąco?</string>
     <string name="popup_chat_question_explanation">Wiadomości otrzymasz jako powiadomienia</string>
@@ -219,5 +198,53 @@
     <string name="choose_app">Wybierz aplikację</string>
 
     <string name="login_buttons_label">Zarejestruj się</string>
+    <string name="accept_regulation">Logując się do aplikacji akceptujesz <u>regulamin</u></string>
+
+    <!--To be grouped -->
+    <string name="logout_text">Wyloguj się</string>
+    <string name="add">Dodaj do Planu Dnia</string>
+    <string name="delete">Usuń</string>
+    <string name="drive_now">Jedź teraz</string>
+
+    <string name="create_account_progress">Tworzenie konta trwa…</string>
+    <string name="valid_email_address">Wprowadź poprawny adres email</string>
+    <string name="valid_name">Imię musi zawierać wiecej niż 4 znaki</string>
+    <string name="valid_password">Hasło musi zawierać od 6 do 10 znaków</string>
+    <string name="register_failed">Rejestracja nie powiodła się</string>
+
+    <string name="login_failed">Logowanie nie powiodło się</string>
+    <string name="login_progress">Logowanie trwa…</string>
+    <string name="password">Hasło</string>
+    <string name="create_account">Utwórz konto</string>
+    <string name="already_member_login">Masz już konto? Zaloguj się</string>
+    <string name="login">Zaloguj się</string>
+    <string name="change_email">Zmień email</string>
+    <string name="change_email_failed">Zmiana email nie powiodła się!</string>
+    <string name="change_email_succeed">Zmiana email powiodła się!</string>
+    <string name="change_password">Zmień hasło</string>
+    <string name="change_name">Zmień imię</string>
+    <string name="change_name_failed">Zmiana imienia nie powiodła się</string>
+    <string name="change_name_succeed">Zmiana imienia powiodła się</string>
+    <string name="reauthenticate">Zaloguj się ponownie</string>
+    <string name="help">Pomoc</string>
+    <string name="rate_app">Oceń aplikację</string>
+    <string name="delete_account">Usuń konto</string>
+    <string name="email">Email</string>
+    <string name="no_account_yet">Nie masz jeszcze konta? Stwórz konto</string>
+    <string name="dialog_action_ok">Ok</string>
+    <string name="dialog_error_title">Przepraszamy</string>
+
+    <string name="events">Kalendarz</string>
+    <string name="day_schedule">Plan Dnia</string>
+    <string name="hotspot">Hotspot</string>
+    <string name="finance">Wydatki</string>
+    <string name="save">Zapisz</string>
+
+    <string name="user_exists">Taki użytkownik już istnieje</string>
+
+    <string name="or">lub</string>
+    <string name="name">Imię</string>
+    <string name="continueWith">lub kontynuuj z</string>
+    <string name="emailAlreadyInUse">Podany adres e-mail jest już używany przez inne konto.</string>
 
 </resources>

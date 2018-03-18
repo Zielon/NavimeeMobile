@@ -4,67 +4,9 @@
     <string name="fb_login_protocol_scheme">fb490316121339159</string>
 
     <!-- Translations -->
+    <!-- App name -->
     <string name="app_name">Drively</string>
-    <string name="dialog_action_ok">Ok</string>
-    <string name="dialog_error_title">Sorry</string>
-    <string name="events">Calendar</string>
-    <string name="finance">Expenses</string>
-    <string name="day_schedule">Schedule</string>
-    <string name="hotspot">Hotspot</string>
-    <string name="user">User</string>
-    <string name="user_exists">User already logged in</string>
-    <string name="sign_in_facebook">Log in with Facebook</string>
-    <string name="sign_in_google">Log in with Google</string>
-    <string name="logout_text">Log out</string>
-    <string name="add">Add to Schedule</string>
-    <string name="delete">Delete</string>
-    <string name="save">Save</string>
-    <string name="drive_now">Go now</string>
-    <string name="check_in_app">Check in app</string>
-    <string name="create_account_progress">Creating Account…</string>
-    <string name="valid_email_address">Type a correct email address</string>
-    <string name="valid_name">A name must contain more than 4 characters</string>
-    <string name="valid_password">A password must contain from 6 to 10 characters</string>
-    <string name="register_failed">Registration failed</string>
-    <string name="save_day_schedule">Added to the Schedule</string>
-    <string name="delete_day_schedule">Removed from the Schedule</string>
-    <string name="login_failed">Login failed</string>
-    <string name="login_progress">Logging in progress…</string>
-    <string name="email">Email</string>
-    <string name="password">Password</string>
-    <string name="create_account">Create account</string>
-    <string name="already_member_login">Already have an account? Login in</string>
-    <string name="login">Log in</string>
-    <string name="logout">Sign out</string>
-    <string name="change_email">Change email</string>
-    <string name="change_email_failed">Failed to change your email!</string>
-    <string name="change_email_succeed">Your email was changed successfully!</string>
-    <string name="change_password">Change password</string>
-    <string name="change_password_failed">Failed to change your password!</string>
-    <string name="change_password_succeed">Your password was changed successfully!</string>
-    <string name="change_name">Change name</string>
-    <string name="change_name_failed">Failed to change your name!</string>
-    <string name="change_name_succeed">Your name was changed successfully!</string>
-    <string name="reauthenticate">Reauthenticate</string>
-    <string name="privacy_conditions">Privacy Policy</string>
-    <string name="help">Help</string>
-    <string name="visible_on_map">Filter on map</string>
-    <string name="radius">Radius</string>
-    <string name="events_filtr">Ending Events</string>
-    <string name="popular_places">Popular places</string>
-    <string name="uber_ratio">Uber surge</string>
-    <string name="rate_app">Rate App</string>
-    <string name="delete_account">Delete the account</string>
-    <string name="no_account_yet">No account yet? Sign up</string>
-    <string name="avatar_change">Click to change the avatar</string>
-    <string name="avatar_max_size">(5 MB max size)</string>
-    <string name="yes_work">Yes, I did!</string>
-    <string name="no_work">No, I did not</string>
-    <string name="no_drive">I did not drive there</string>
-    <string name="feedback">Feedback</string>
-    <string name="feeback_custom_text">Hi %1$s, did you manage to find a passenger near to %2$s?</string>
-    <string name="feeback_normal_text">Your feedback will improve your app and it will get better everyday!</string>
-    <string name="notification_time">End time %1$d:%2$s</string>
+    <!-- onboarding (it's turned off) -->
     <string name="onboarding_1_title">Hi!</string>
     <string name="onboarding_1_body">You are on the right way to rise your profit. Fasten your sit belts and start off</string>
     <string name="onboarding_2_title">Events</string>
@@ -75,14 +17,85 @@
     <string name="onboarding_4_body"> All popular and crowded place are now available on the map.</string>
     <string name="onboarding_5_title">Chat</string>
     <string name="onboarding_5_body">Join groups, ask questions, get valuable insights from other drivers.</string>
-    <string name="or">or</string>
-    <string name="name">Name</string>
-    <string name="continueWith">or continue with</string>
-    <string name="emailAlreadyInUse">The email address is already in use by another account.</string>
-    <string name="events_empty_text">It looks like there is no event on this day.</string>
+
+    <!-- Push notification -->
+    <string name="check_in_app">Check in app</string>
+
+    <!-- Start settings -->
+
+    <string name="user">User</string>
+    <string name="settings">Settings</string>
+    <string name="privacy_conditions">Privacy Policy</string>
+    <string name="logout">Sign out</string>
+    <string name="instruction">Instruction</string>
+
+    <string name="avatar_change">Click to change the avatar</string>
+    <string name="avatar_max_size">(5 MB max size)</string>
+
+    <string name="general">Hotspot</string>
+    <string name="shareLocalization">Map</string>
+    <string name="shareLocalization_description">Share your location to see other drivers</string>
+    <string name="change_application">Main app</string>
+    <string name="change_application_description">Select app you use most</string>
+
+    <string name="notifications">Notifications</string>
+    <string name="notifications_day_schedule">Calendar</string>
+    <string name="notifications_day_schedule_description">Notify me before an event from the Calendar ends up</string>
+    <string name="notifications_chat_group">Group chat</string>
+    <string name="notifications_chat_group_description">Change notifications for the group chats</string>
+    <string name="notifications_chat_private">Private chat</string>
+    <string name="notifications_chat_private_description">Change notifications for private conversations</string>
+
+    <string name="logout_popup_positive">Log out</string>
+    <string name="logout_popup_negative">Stay</string>
+    <string name="logout_popup_content">Are you sure you want to log out?</string>
+
+    <string name="delete_user_popup_positive">Delete the account</string>
+    <string name="delete_user_popup_negative">Cancel</string>
+    <string name="delete_user_popup_content">Do you want to delete your account?</string>
+
+    <string name="delete_user_deleting">Your account will be deleted…</string>
+
+    <!-- End settings -->
+
+    <!--Network connection-->
+    <string name="network_lack">No access to the Internet</string>
+    <string name="check_internet">Check your network connection</string>
+    <string name="close">Close</string>
+    <string name="let_us_know">Let us know</string>
+    <string name="not_available_in_city">We are not available in this city yet</string>
+
+    <!--HOTSPOT: filtr-->
+    <string name="visible_on_map">Filter on map</string>
+    <string name="radius">Radius</string>
+    <string name="events_filtr">Ending Events</string>
+    <string name="popular_places">Popular Places</string>
+    <string name="uber_ratio">Uber surge</string>
+
+    <!-- Feedback -->
+    <string name="yes_work">Yes, I did</string>
+    <string name="no_work">No, I did not</string>
+    <string name="no_drive">I did not drive there</string>
+    <string name="feedback">Feedback</string>
+    <string name="feeback_custom_text">Hi %1$s, did you manage to find a passenger near to %2$s?</string>
+    <string name="feeback_normal_text">Your feedback will improve your app and it will get better everyday!</string>
+    <string name="notification_time">End time %1$d:%2$s</string>
+
+
+    <!-- Calendar buttons -->
+    <string name="your_plan">Your plan</string>
+    <string name="remember_me">Remind me</string>
+    <string name="cancel">Cancel</string>
+    <string name="navigate">Navigate</string>
+
+
+    <!-- Empty Calendar/Schedule -->
+    <string name="events_empty_text">It seems there is no event on this day.</string>
     <string name="events_check_another_date">Check another date</string>
-    <string name="day_schedule_text">Add events to the Day Plan and catch new customers.</string>
-    <string name="day_schedule_events_route">Go to Events</string>
+    <string name="day_schedule_text">Add events to the Schedule and get more pings.</string>
+    <string name="day_schedule_events_route">Go to the Events</string>
+
+    <!-- Chat -->
     <string name="chat">Chat</string>
     <string name="enter_group_name">Enter group name</string>
     <string name="create_group">Create group</string>
@@ -90,19 +103,19 @@
     <string name="add_friend_success">Contact has been successfully added</string>
     <string name="failure">Failure</string>
     <string name="add_friend_failure">Error while adding contact</string>
-    <string name="delete_friend_success">The user has been successfully removed</string>
+    <string name="delete_friend_success">The user has been deleted</string>
     <string name="delete_friend_failure">Error while deleting the user</string>
     <string name="find_friends">Find your friends</string>
     <string name="find_friends_who">Who are you looking for?</string>
     <string name="delete_friend">Delete contact</string>
     <string name="delete_friend_sure">Are you sure want to delete?</string>
     <string name="deleting">Deleting...</string>
-    <string name="at_least_two">Add at lease two people to create a group</string>
+    <string name="at_least_two">Add at least two people to create a group</string>
     <string name="registering">Registering....</string>
     <string name="create_group_success">Your group is created!</string>
     <string name="create_group_failure">Failed to create the group</string>
     <string name="delete_group_failure">Failed to delete the group </string>
-    <string name="accept_regulation">While logging to the application you accept the <u>regulations</u></string>
+
     <string name="title_activity_regulations">Regulations Activity</string>
     <string name="get_all_friend">Get all friends…</string>
     <string name="group_leaving">Leaving the group…</string>
@@ -117,51 +130,11 @@
     <string name="success_leaveing_group">You left this group</string>
     <string name="delete_group">Delete group</string>
     <string name="leave_group">Leave group</string>
-    <string name="your_plan">Your plan</string>
-    <string name="remember_me">Remind me</string>
-    <string name="cancel">Cancel</string>
-    <string name="navigate">Navigate</string>
+
     <string name="send_private_message">Send a private message</string>
 
     <string name="error">Something has went wrong!</string>
 
-    <!-- Start settings -->
-
-    <string name="settings">Settings</string>
-    <string name="instruction">Instruction</string>
-
-    <string name="general">General</string>
-    <string name="shareLocalization">Hotspot</string>
-    <string name="shareLocalization_description">Share you location to see the other drivers</string>
-    <string name="change_application">Change application</string>
-    <string name="change_application_description">Change your application</string>
-
-    <string name="notifications">Notifications</string>
-    <string name="notifications_day_schedule">Calendar</string>
-    <string name="notifications_day_schedule_description">Notify me before an event from the Calendar ends up</string>
-    <string name="notifications_chat_group">Chat group</string>
-    <string name="notifications_chat_group_description">Change notifications for the group chat</string>
-    <string name="notifications_chat_private">Chat private</string>
-    <string name="notifications_chat_private_description">Change notifications for private conversations</string>
-
-    <string name="logout_popup_positive">Log out</string>
-    <string name="logout_popup_negative">Stay</string>
-    <string name="logout_popup_content">Are you sure you want to log out?</string>
-
-    <string name="delete_user_popup_positive">Delete the account</string>
-    <string name="delete_user_popup_negative">Cancel</string>
-    <string name="delete_user_popup_content">Do you want to delete your account?</string>
-
-    <string name="delete_user_deleting">Your account is deleting…</string>
-
-    <!-- End settings -->
-
-    <!--Network connection-->
-    <string name="network_lack">No network</string>
-    <string name="check_internet">Check your network connection</string>
-    <string name="close">Close</string>
-    <string name="let_us_know">Let us know</string>
-    <string name="not_available_in_city">We are not available in your city yet</string>
 
     <!--POPUPS-->
     <!--HOTSPOT-->
@@ -169,28 +142,28 @@
         which agreed to the terms may see the location of other users.</string>
     <string name="popup_hotspot_brand_question_change">Do you want to change application?</string>
     <string name="popup_hotspot_button_agreement_change">CHANGE</string>
-    <string name="popup_hotspot_title">Hotspot lets you see where the other drivers are in the real time!</string>
+    <string name="popup_hotspot_title">Hotspot lets you see where other drivers are in the real time!</string>
     <string name="popup_hotspot_agreement">I voluntarily agree to anonymously share my location only within the Drively application. Your location will not be shared anywhere else. Only users who agreed on the terms may see the others.</string>
-    <string name="popup_hotspot_brand_question">Select services you are working mostly</string>
+    <string name="popup_hotspot_brand_question">Select app you use most</string>
     <string name="popup_hotspot_button_agreement">I AGREE</string>
     <string name="popup_hotspot_preference_info">Your preferences can be changed in the Settings</string>
     <string name="popup_hotspot_localisation_info">The sharing will stop automatically in 30 minutes since the last use.</string>
-    <string name="brand_not_chose">You did not choose any app!</string>
+    <string name="brand_not_chose">Select an app!</string>
 
 
     <!--HOTSPOT SECOND-->
-    <string name="popup_hotspot_second_title">Here you go!</string>
-    <string name="popup_hotspot_second_info">See which car is mapping to which service</string>
+    <string name="popup_hotspot_second_title">ICONS ON THE MAP</string>
+    <string name="popup_hotspot_second_info">See which car is mapped to which service</string>
     <string name="popup_hotspot_second_info2">Change your view on the map!</string>
     <string name="popup_hotspot_second_understood">GOT IT</string>
     <string name="popup_hotspot_second_preference_info">Hotspot can be turned on and off in the Settings</string>
 
     <!--CALENDAR-->
     <string name="popup_events_title">ALL YOU NEED IN ONE PLACE</string>
-    <string name="popup_events_info">As first, you will see crowded venues and then locations where big
-        events are happening such as parties, concerts and conferences. At the bottom, upcoming events are listed.</string>
+    <string name="popup_events_info">Here you can see all venues, where big
+        events happen such as parties, concerts and conferences. See what is happening now and check the upcoming events.</string>
     <string name="popup_events_info1">List of venues and events in your city</string>
-    <string name="popup_events_info2">Schedule: events added from the list, you will be notified 30 min. before they end up.</string>
+    <string name="popup_events_info2">Schedule: events added from the List. You will be notified 30 min before they end up.</string>
     <string name="popup_events_info3">Add an event to your Schedule</string>
     <string name="popup_events_info3_button">Remind me</string>
     <string name="popup_events_info4">Go to GPS navigation</string>
@@ -198,7 +171,7 @@
     <string name="popup_events_info5">Big event</string>
     <string name="popup_events_info6">A party for ca. 150 people</string>
     <string name="popup_events_understood">GOT IT</string>
-    <string name="popup_events_preference_info">Notifications can be turned off in the Settings</string>
+    <string name="popup_events_preference_info">Notifications can be changed in the Settings</string>
 
     <!--CHAT-->
     <string name="popup_chat_title">Ask, answer, share!</string>
@@ -217,12 +190,65 @@
 
     <!--FINANCE-->
     <string name="popup_finance_title">New feature on its way! Now, all your expenses become manageable in one place!</string>
-    <string name="popup_finance_info"> Here, you will be able to control all the cost you bear, so no more paper work!</string>
-    <string name="popup_finance_contact_us">TELL US WHAT YOU THINK!</string>
+    <string name="popup_finance_info"> Here, you will be able to control all the costs and expenses you bear, so no more paper work!</string>
+    <string name="popup_finance_contact_us">TELL US WHAT YOU THINK</string>
 
     <!--SETTINGS MAIN SCREEN-->
     <string name="choose_app">Choose application</string>
 
     <string name="login_buttons_label">Sign up</string>
+    <string name="accept_regulation">While logging to the application you accept the <u>Terms and Conditions</u></string>
+
+    <!--To be grouped -->
+    <string name="dialog_action_ok">Ok</string>
+    <string name="dialog_error_title">Sorry</string>
+    <string name="events">Calendar</string>
+    <string name="finance">Expenses</string>
+    <string name="day_schedule">Schedule</string>
+    <string name="hotspot">Hotspot</string>
+
+    <string name="user_exists">User already logged in</string>
+    <string name="sign_in_facebook">Log in with Facebook</string>
+    <string name="sign_in_google">Log in with Google</string>
+    <string name="logout_text">Log out</string>
+    <string name="add">Add to Schedule</string>
+    <string name="delete">Delete</string>
+    <string name="save">Save</string>
+    <string name="drive_now">Go now</string>
+
+    <string name="create_account_progress">Creating Account…</string>
+    <string name="valid_email_address">Type a correct email address</string>
+    <string name="valid_name">A name must contain more than 4 characters</string>
+    <string name="valid_password">A password must contain from 6 to 10 characters</string>
+    <string name="register_failed">Registration failed</string>
+    <string name="save_day_schedule">Added to the Schedule</string>
+    <string name="delete_day_schedule">Removed from the Schedule</string>
+    <string name="login_failed">Login failed</string>
+    <string name="login_progress">Logging in progress…</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="create_account">Create account</string>
+    <string name="already_member_login">Already have an account? Login in</string>
+    <string name="login">Log in</string>
+
+    <string name="change_email">Change email</string>
+    <string name="change_email_failed">Failed to change your email!</string>
+    <string name="change_email_succeed">Your email was changed successfully!</string>
+    <string name="change_password">Change password</string>
+    <string name="change_password_failed">Failed to change your password!</string>
+    <string name="change_password_succeed">Your password was changed successfully!</string>
+    <string name="change_name">Change name</string>
+    <string name="change_name_failed">Failed to change your name!</string>
+    <string name="change_name_succeed">Your name was changed successfully!</string>
+    <string name="reauthenticate">Reauthenticate</string>
+    <string name="help">Help</string>
+    <string name="rate_app">Rate App</string>
+    <string name="delete_account">Delete the account</string>
+    <string name="no_account_yet">No account yet? Sign up</string>
+    <string name="or">or</string>
+    <string name="name">Name</string>
+    <string name="continueWith">or continue with</string>
+    <string name="emailAlreadyInUse">The email address is already in use by another account.</string>
+
 
 </resources>
