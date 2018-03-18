@@ -199,7 +199,7 @@ public class EventsFragment extends BaseTabFragment implements EventsMvpView {
         double latitude = mEventsPresenter.getLastLat();
         double longitude = mEventsPresenter.getLastLng();
 
-        geoQuery = geoFire.queryAtLocation(new GeoLocation(latitude, longitude), 16);
+        geoQuery = geoFire.queryAtLocation(new GeoLocation(latitude, longitude), 10);
         geoQuery.addGeoQueryDataEventListener(new GeoQueryDataEventListener() {
 
             @Override

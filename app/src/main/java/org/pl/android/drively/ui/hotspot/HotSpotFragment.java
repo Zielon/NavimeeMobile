@@ -161,7 +161,7 @@ public class HotSpotFragment extends BaseTabFragment implements
     int durationInSec, distanceValue;
     LatLng locationGeo;
     int radiusForItems = 10;
-    int radiusForCars = 10;
+    int radiusForCars = 5;
     double latNotification;
     double lngNotification;
     boolean isFromNotification = false;
@@ -578,8 +578,8 @@ public class HotSpotFragment extends BaseTabFragment implements
         super.onPause();
         mMapView.onPause();
         ((MainActivity) context).hotspotFilterBackup = new HotspotFilterBackup(dialogFrag.getApplied_filters(),
-                        mHotspotPresenter.getMapItemFilterList(),
-                        mHotspotPresenter.getCarApplicationFilterList());
+                mHotspotPresenter.getMapItemFilterList(),
+                mHotspotPresenter.getCarApplicationFilterList());
     }
 
     @Override
@@ -765,7 +765,8 @@ public class HotSpotFragment extends BaseTabFragment implements
 
     private Marker addMarker(Car car) {
         GeoLocation location = car.getCurrentLocation();
-        MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).flat(true);
+        MarkerOptions markerOptions = new MarkerOptions()
+                .position(new LatLng(location.latitude, location.longitude)).flat(false);
 
         if (car.getDriverType().contains(Const.DriverType.UBER.getName())) {
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.uber));
@@ -791,14 +792,14 @@ public class HotSpotFragment extends BaseTabFragment implements
         GeoLocation currentLocation = newCar.getCurrentLocation();
 
         if (!usersOnMap.containsKey(carUser)) {
-            newCar.setMarker(addMarker(newCar));
+            Marker marker = addMarker(newCar);
+            marker.setVisible(false);
+            newCar.setMarker(marker);
             newCar.setCurrentLocation(currentLocation);
             newCar.setPreviousLocation(currentLocation);
             usersOnMap.put(carUser, newCar);
         } else {
-
             Car savedCar = usersOnMap.get(carUser);
-
             GeoLocation previousLocation = savedCar.getCurrentLocation();
 
             savedCar.setCurrentLocation(currentLocation);
@@ -807,6 +808,8 @@ public class HotSpotFragment extends BaseTabFragment implements
             if (!previousLocation.equals(currentLocation)) {
                 double bearing = savedCar.getBearing();
                 Marker marker = savedCar.getMarker();
+                if(!marker.isVisible())
+                    marker.setVisible(true);
                 mHotspotPresenter.animateMarker(marker,
                         new LatLng(currentLocation.latitude, currentLocation.longitude),
                         bearing, false, googleMap.getProjection());
