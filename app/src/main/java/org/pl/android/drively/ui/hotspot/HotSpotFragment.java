@@ -808,11 +808,9 @@ public class HotSpotFragment extends BaseTabFragment implements
             if (!previousLocation.equals(currentLocation)) {
                 double bearing = savedCar.getBearing();
                 Marker marker = savedCar.getMarker();
-                if(!marker.isVisible())
-                    marker.setVisible(true);
                 mHotspotPresenter.animateMarker(marker,
                         new LatLng(currentLocation.latitude, currentLocation.longitude),
-                        bearing, false, googleMap.getProjection());
+                        bearing, googleMap.getProjection());
             }
         }
     }

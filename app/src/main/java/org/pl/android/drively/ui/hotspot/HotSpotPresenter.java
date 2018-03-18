@@ -157,7 +157,7 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
         return mapPointsListener;
     }
 
-    public void animateMarker(final Marker marker, final LatLng toPosition, final double bearing, final boolean hideMarker, Projection projection) {
+    public void animateMarker(final Marker marker, final LatLng toPosition, final double bearing, Projection projection) {
         final Handler handler = new Handler();
         final long start = SystemClock.uptimeMillis();
         Point startPoint = projection.toScreenLocation(marker.getPosition());
@@ -180,16 +180,11 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
                 marker.setPosition(new LatLng(lat, lng));
                 marker.setRotation((float) bearing);
 
-                if (t < 1.0) {
-                    // Post again 16ms later.
+                if (t < 1.0)
                     handler.postDelayed(this, 16);
-                } else {
-                    if (hideMarker) {
-                        marker.setVisible(false);
-                    } else {
-                        marker.setVisible(true);
-                    }
-                }
+
+                if(!marker.isVisible())
+                    marker.setVisible(true);
             }
         });
     }
