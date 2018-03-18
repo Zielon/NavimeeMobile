@@ -156,7 +156,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         mMainPresenter.checkVersion();
 
 //        checkAppIntro();
-        checkLogin();
+        if(!isLogin()) return;
 
         bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setOnTabSelectListener(tabId -> {
@@ -244,7 +244,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         t.start();
     }
 
-    private void checkLogin() {
+    private boolean isLogin() {
         if (!mMainPresenter.isLogin()) {
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             if(notificationManager != null)
@@ -252,7 +252,9 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
             Intent intent = new Intent(this, SignActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
+            return false;
         }
+        return true;
     }
 
     @Override
@@ -268,7 +270,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            checkLogin();
+            isLogin();
         }
     }
 
