@@ -452,7 +452,10 @@ public class HotSpotFragment extends BaseTabFragment implements
             // Added the same listener twice to a GeoQuery!
             exception.printStackTrace();
         }
+        determineNecessityAndHandleGeoListeners();
+    }
 
+    private void determineNecessityAndHandleGeoListeners() {
         if (!mHotspotPresenter.getShareLocalisationPreference()) {
             Stream.of(usersOnMap).forEach(key -> key.getValue().getMarker().setVisible(false));
             this.geoQueryUsersLocation.removeAllListeners();
@@ -469,6 +472,13 @@ public class HotSpotFragment extends BaseTabFragment implements
     @Override
     public void onResume() {
         super.onResume();
+        backupData();
+        onResumeRestore();
+        EventBus.getDefault().post(new RestartServiceSignal());
+        mMapView.onResume();
+    }
+
+    private void onResumeRestore() {
         if (mHotspotPresenter.checkLogin() != null) {
             rxPermissions
                     .request(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -523,8 +533,6 @@ public class HotSpotFragment extends BaseTabFragment implements
                         }
                     });
         }
-        EventBus.getDefault().post(new RestartServiceSignal());
-        mMapView.onResume();
     }
 
     private void restoreDataFromBackup() {
@@ -577,6 +585,10 @@ public class HotSpotFragment extends BaseTabFragment implements
     public void onPause() {
         super.onPause();
         mMapView.onPause();
+        backupData();
+    }
+
+    private void backupData() {
         ((MainActivity) context).hotspotFilterBackup = new HotspotFilterBackup(dialogFrag.getApplied_filters(),
                 mHotspotPresenter.getMapItemFilterList(),
                 mHotspotPresenter.getCarApplicationFilterList());
@@ -960,6 +972,9 @@ public class HotSpotFragment extends BaseTabFragment implements
                         EventBus.getDefault().post(new HotspotSettingsChanged(selectedDriverType.getName(), true));
                         HotspotPopupHelper.showSecondPopup(context);
                         mHotspotPresenter.setHotspotSecondPopupFirstStart(false);
+                        determineNecessityAndHandleGeoListeners();
+                        restoreDataFromBackup();
+                        onResumeRestore();
                     }, () -> Timber.d("Dismissed"));
         } else {
             HotspotPopupHelper.showSecondPopup(context);
