@@ -14,7 +14,6 @@ import com.google.firebase.auth.AuthCredential;
 import org.apache.commons.collections4.ListUtils;
 import org.pl.android.drively.R;
 import org.pl.android.drively.ui.main.MainActivity;
-import org.pl.android.drively.ui.settings.user.UserSettingsActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -124,6 +123,10 @@ public class SignActivity extends BaseSignActivity implements BaseSignMvpView {
             startActivity(intent);
             this.finish();
         });
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 
     @Override
