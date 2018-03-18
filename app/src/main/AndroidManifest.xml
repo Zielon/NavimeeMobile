@@ -97,34 +97,6 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name="org.pl.android.drively.ui.settings.user.password.UserPasswordChangeActivity"
-            android:label="@string/change_password"
-            android:launchMode="singleTop"
-            android:parentActivityName="org.pl.android.drively.ui.settings.user.UserSettingsActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name="org.pl.android.drively.ui.settings.user.email.UserEmailChangeActivity"
-            android:label="@string/change_email"
-            android:launchMode="singleTop"
-            android:parentActivityName="org.pl.android.drively.ui.settings.user.UserSettingsActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name="org.pl.android.drively.ui.settings.user.name.UserNameChangeActivity"
-            android:label="@string/change_name"
-            android:launchMode="singleTop"
-            android:parentActivityName="org.pl.android.drively.ui.settings.user.UserSettingsActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name="org.pl.android.drively.ui.settings.user.reauthenticate.ReauthenticateActivity"
-            android:label="@string/reauthenticate"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
-
-        <activity
             android:name="org.pl.android.drively.ui.chat.chatview.ChatViewActivity"
             android:parentActivityName="org.pl.android.drively.ui.main.MainActivity"
             android:screenOrientation="portrait" />
