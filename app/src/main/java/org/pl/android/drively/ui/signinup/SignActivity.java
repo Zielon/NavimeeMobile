@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.annimon.stream.Stream;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 import org.apache.commons.collections4.ListUtils;
 import org.pl.android.drively.R;
@@ -132,6 +133,8 @@ public class SignActivity extends BaseSignActivity implements BaseSignMvpView {
     @Override
     public void onError(Throwable throwable) {
         progressDialog.dismiss();
+        if (throwable instanceof FirebaseAuthUserCollisionException)
+            Toast.makeText(getBaseContext(), getResources().getString(R.string.emailAlreadyInUse), Toast.LENGTH_LONG).show();
     }
 
     @OnClick(R.id.google_com)
