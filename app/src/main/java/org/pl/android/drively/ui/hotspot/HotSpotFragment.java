@@ -344,10 +344,10 @@ public class HotSpotFragment extends BaseTabFragment implements
                 .observeOn(AndroidSchedulers.mainThread());
 
         final LocationRequest locationRequest = LocationRequest.create()
-                .setSmallestDisplacement(100)
+                .setSmallestDisplacement(30)
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setFastestInterval(1000 * 2) //Do not receive the updated any frequent than 10 sec
-                .setInterval(1000 * 4); // Receive location update every 20 sec
+                .setFastestInterval(1000 * 2) //Do not receive the updated any frequent than 2 sec
+                .setInterval(1000 * 2); // Receive location update every 2 sec
 
         locationUpdatesObservable = locationProvider
                 .checkLocationSettings(
