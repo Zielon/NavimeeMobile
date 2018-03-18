@@ -206,9 +206,9 @@ public class HotSpotFragment extends BaseTabFragment implements
             getActivity().startService(new Intent(getActivity(), GeolocationUpdateService.class));
         }
 
+        verifyFirstStartSecondHotspotPopup();
         initGeolocation();
         context = this.getContext();
-        verifyFirstStartSecondHotspotPopup();
     }
 
     private void verifyFirstStartSecondHotspotPopup() {
@@ -458,6 +458,7 @@ public class HotSpotFragment extends BaseTabFragment implements
     private void determineNecessityAndHandleGeoListeners() {
         if (!mHotspotPresenter.getShareLocalisationPreference()) {
             Stream.of(usersOnMap).forEach(key -> key.getValue().getMarker().setVisible(false));
+            usersOnMap.clear();
             this.geoQueryUsersLocation.removeAllListeners();
         } else {
             try {
@@ -820,11 +821,9 @@ public class HotSpotFragment extends BaseTabFragment implements
             if (!previousLocation.equals(currentLocation)) {
                 double bearing = savedCar.getBearing();
                 Marker marker = savedCar.getMarker();
-                if(!marker.isVisible())
-                    marker.setVisible(true);
                 mHotspotPresenter.animateMarker(marker,
                         new LatLng(currentLocation.latitude, currentLocation.longitude),
-                        bearing, false, googleMap.getProjection());
+                        bearing, googleMap.getProjection());
             }
         }
     }

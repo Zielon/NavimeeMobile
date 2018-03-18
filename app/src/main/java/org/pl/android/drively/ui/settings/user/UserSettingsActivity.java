@@ -38,6 +38,7 @@ import org.pl.android.drively.services.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.ui.main.MainActivity;
+import org.pl.android.drively.ui.signinup.SignActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -178,10 +179,8 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
 
     @Override
     public void onUserDelete() {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, SignActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        Intent intentGeoService = new Intent(this, GeolocationUpdateService.class);
-        stopService(intentGeoService);
         startActivity(intent);
     }
 
