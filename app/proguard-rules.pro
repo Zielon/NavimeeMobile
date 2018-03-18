@@ -63,6 +63,7 @@
 -dontwarn java.beans.ConstructorProperties
 -dontwarn com.google.firebase.database.DatabaseReference
 -dontwarn build.IgnoreJava8API
+-dontwarn lombok.**
 
 -keepattributes *Annotation*,EnclosingMethod,Signature
 -keepnames class com.fasterxml.jackson.** { *; }
