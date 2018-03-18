@@ -51,9 +51,11 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
     private final CoordinatesRepository coordinatesRepository;
     private final ObjectMapper mapper = new ObjectMapper();
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private Set<String> mapItemFilterList = new HashSet<>();
-    @Getter @Setter
+    @Getter
+    @Setter
     private Set<String> carApplicationFilterList = new HashSet<>();
 
     @Inject
@@ -108,7 +110,10 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
         car.setUserId(parts[1]);
         car.setCurrentLocation(location);
 
-        if (carApplicationFilterList.contains(car.getDriverType())) return;
+        String userId = mDataManager.getPreferencesHelper().getUserId();
+
+        if (car.getUserId().equals(userId) || carApplicationFilterList.contains(car.getDriverType()))
+            return;
         if (getMvpView() != null) {
             getMvpView().showCarOnMap(car);
         }
