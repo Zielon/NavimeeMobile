@@ -3,6 +3,7 @@ package org.pl.android.drively.util;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
@@ -10,34 +11,30 @@ import android.graphics.Rect;
 public class BitmapUtils {
 
     public static Bitmap getCircular(Bitmap bitmap) {
-        Bitmap output;
-
-        if (bitmap.getWidth() > bitmap.getHeight()) {
-            output = Bitmap.createBitmap(bitmap.getHeight(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        } else {
-            output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getWidth(), Bitmap.Config.ARGB_8888);
-        }
-
-        Canvas canvas = new Canvas(output);
-
+        final int targetWidth = bitmap.getWidth();
+        final int targetHeight = bitmap.getHeight();
         final int color = 0xff424242;
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
 
-        float r = 0;
+        Bitmap targetBitmap = Bitmap.createBitmap(targetWidth,
+                targetHeight,Bitmap.Config.ARGB_8888);
 
-        if (bitmap.getWidth() > bitmap.getHeight()) {
-            r = bitmap.getHeight() / 2;
-        } else {
-            r = bitmap.getWidth() / 2;
-        }
+        Canvas canvas = new Canvas(targetBitmap);
+        Path path = new Path();
+        path.addCircle(((float) targetWidth - 1) / 2,
+                ((float) targetHeight - 1) / 2,
+                (Math.min(((float) targetWidth),
+                        ((float) targetHeight)) / 2),
+                Path.Direction.CCW);
 
-        paint.setAntiAlias(true);
-        canvas.drawARGB(0, 0, 0, 0);
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(color);
-        canvas.drawCircle(r, r, r, paint);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, rect, rect, paint);
-        return output;
+
+        canvas.clipPath(path);
+        canvas.drawBitmap(bitmap,
+                new Rect(0, 0, bitmap.getWidth(),
+                        bitmap.getHeight()),
+                new Rect(0, 0, targetWidth,
+                        targetHeight), paint);
+        return targetBitmap;
     }
 }

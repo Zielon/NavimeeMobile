@@ -117,7 +117,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, fcm.getIdRoom());
         intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_NAME, fcm.getRoomName());
         intent.putExtra(Const.INTENT_KEY_IS_GROUP_CHAT, isGroup);
-        ChatViewActivity.bitmapAvatarFriends.put(fcm.getIdSender(), avatar);
+        ChatViewActivity.bitmapAvatarFriends.put(fcm.getIdSender(), bitmap);
 
         PendingIntent navigationIntent = TaskStackBuilder.create(this)
                 .addParentStack(ChatViewActivity.class)
