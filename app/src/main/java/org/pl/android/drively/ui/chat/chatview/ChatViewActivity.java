@@ -313,6 +313,8 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 messageHolder.avatar.setImageBitmap(currentAvatar);
                 ((CircleImageView) view.findViewById(R.id.avatar)).setImageBitmap(currentAvatar);
             } else {
+                messageHolder.avatar.setImageResource(R.drawable.default_avatar);
+                // Details images
                 if (message.idSender.equals(ADMIN)) {
                     ((CircleImageView) view.findViewById(R.id.avatar)).setImageResource(R.drawable.drively);
                     messageHolder.avatar.setImageResource(R.drawable.drively);
@@ -326,6 +328,8 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             messageHolder.timeStamp.setText(time);
             if (bitmapAvatarUser != null)
                 messageHolder.avatar.setImageBitmap(bitmapAvatarUser);
+            else
+                messageHolder.avatar.setImageResource(R.drawable.default_avatar);
         }
 
         groupMessages(position, (MessageHolder) holder);
