@@ -1,5 +1,6 @@
 package org.pl.android.drively.ui.chat.chatview;
 
+import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.StorageReference;
 
 import org.pl.android.drively.contracts.repositories.UsersRepository;
@@ -23,9 +24,12 @@ import static org.pl.android.drively.util.FirebasePaths.MESSAGES_PRIVATE;
 
 public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
 
+    public static final int MESSAGES_SLICE_QUANTITY = 20;
+
     private final DataManager mDataManager;
     private final UsersRepository usersRepository;
     private Disposable mDisposable;
+    private Query messagesQuery;
 
     @Inject
     public ChatViewPresenter(DataManager dataManager, UsersRepository usersRepository) {
@@ -51,21 +55,22 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
 
     public void setMessageListener(String roomId, boolean isGroupChat) {
         String messagePath = isGroupChat ? MESSAGES_GROUPS : MESSAGES_PRIVATE;
-        mDataManager.getFirebaseService().getFirebaseFirestore()
+        messagesQuery = mDataManager.getFirebaseService().getFirebaseFirestore()
                 .collection(messagePath)
                 .document(mDataManager.getPreferencesHelper().getCountry())
                 .collection(roomId)
                 .orderBy("timestamp")
-                .addSnapshotListener((value, e) -> {
-                    if (e != null) {
-                        Timber.w("Listen failed.", e);
-                        return;
-                    }
-                    List messageList = isGroupChat ? value.toObjects(GroupMessage.class) : value.toObjects(PrivateMessage.class);
-                    if (getMvpView() != null) {
-                        getMvpView().roomChangesListerSet(messageList);
-                    }
-                });
+                .limit(MESSAGES_SLICE_QUANTITY * getMvpView().getScrollBottomCounter());
+        messagesQuery.addSnapshotListener((value, e) -> {
+            if (e != null) {
+                Timber.w("Listen failed.", e);
+                return;
+            }
+            List messageList = isGroupChat ? value.toObjects(GroupMessage.class) : value.toObjects(PrivateMessage.class);
+            if (ChatViewPresenter.this.getMvpView() != null) {
+                ChatViewPresenter.this.getMvpView().roomChangesListerSet(messageList);
+            }
+        });
     }
 
     public void addMessage(String roomId, Message newMessage) {

@@ -211,6 +211,9 @@ dependencies {
     compile 'com.rilixtech:fontawesome-typeface:4.7.0.4'
     compile 'com.github.medyo:fancybuttons:1.8.4'
     compile 'com.rilixtech:materialfancybuttons:1.8.7'
+    compile 'com.willowtreeapps.spruce:spruce-android:1.0.1'
+    compile 'com.github.markomilos:paginate:0.5.1'
+
 
     //google map
     compile 'com.github.jd-alexander:library:1.1.0'

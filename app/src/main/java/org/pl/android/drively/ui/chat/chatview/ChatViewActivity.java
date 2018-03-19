@@ -1,5 +1,6 @@
 package org.pl.android.drively.ui.chat.chatview;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,6 +17,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.paginate.Paginate;
+import com.willowtreeapps.spruce.Spruce;
+import com.willowtreeapps.spruce.animation.DefaultAnimations;
+import com.willowtreeapps.spruce.sort.DefaultSort;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.chat.Conversation;
@@ -34,7 +39,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import lombok.Getter;
 
+import static org.pl.android.drively.ui.chat.chatview.ChatViewPresenter.MESSAGES_SLICE_QUANTITY;
 import static org.pl.android.drively.util.Const.ADMIN;
 
 interface MessageHolder {
@@ -70,6 +77,15 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
     private LinearLayoutManager linearLayoutManager;
     private Boolean isGroupChat;
 
+    @Getter
+    private int scrollBottomCounter = 1;
+
+    private boolean wasScrooledToEnd = false;
+
+    private boolean loadingInProgress = true;
+
+    private boolean hasLoadedAllItems;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,7 +110,18 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         else
             getSupportActionBar().setTitle(roomName);
 
-        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false) {
+            @Override
+            public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+                super.onLayoutChildren(recycler, state);
+                new Spruce
+                        .SpruceBuilder(recyclerChat)
+                        .sortWith(new DefaultSort(100))
+                        .animateWith(DefaultAnimations.shrinkAnimator(recyclerChat, 800),
+                                ObjectAnimator.ofFloat(recyclerChat, "translationX", -recyclerChat.getWidth(), 0f).setDuration(800))
+                        .start();
+            }
+        };
         recyclerChat = (RecyclerView) findViewById(R.id.recyclerChat);
         recyclerChat.setLayoutManager(linearLayoutManager);
 
@@ -105,8 +132,15 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
                 bitmapAvatarUser,
                 mChatViewPresenter);
 
+
         mChatViewPresenter.setMessageListener(roomId, isGroupChat);
         recyclerChat.setAdapter(adapter);
+
+        Paginate.with(recyclerChat, getPaginationCallbacks())
+                .setLoadingTriggerThreshold(2)
+                .addLoadingListItem(true)
+                .build();
+
         recyclerChat.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
             if (bottom < oldBottom) {
                 recyclerChat.postDelayed(() -> {
@@ -118,12 +152,37 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         });
     }
 
+    private Paginate.Callbacks getPaginationCallbacks() {
+        return new Paginate.Callbacks() {
+            @Override
+            public void onLoadMore() {
+                loadingInProgress = true;
+                mChatViewPresenter.setMessageListener(roomId, isGroupChat);
+                scrollBottomCounter++;
+            }
+
+            @Override
+            public boolean isLoading() {
+                return loadingInProgress;
+            }
+
+            @Override
+            public boolean hasLoadedAllItems() {
+                return hasLoadedAllItems;
+            }
+        };
+    }
+
     @Override
     public void roomChangesListerSet(List<Message> message) {
-        conversation.getListMessageData().clear();
-        conversation.getListMessageData().addAll(message);
-        adapter.notifyDataSetChanged();
-        linearLayoutManager.scrollToPosition(conversation.getListMessageData().size() - 1);
+        if (message.size() % MESSAGES_SLICE_QUANTITY != 0 || message.size() == 0) {
+            hasLoadedAllItems = true;
+        }
+            loadingInProgress = false;
+            conversation.getListMessageData().clear();
+            conversation.getListMessageData().addAll(message);
+            adapter.notifyDataSetChanged();
+//        linearLayoutManager.scrollToPosition(conversation.getListMessageData().size() - 1);
     }
 
     @Override
