@@ -4,12 +4,15 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.annimon.stream.Stream;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import org.pl.android.drively.R;
@@ -34,7 +37,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import ir.mirrajabi.searchdialog.core.BaseFilter;
-import timber.log.Timber;
 
 import static org.pl.android.drively.util.FirebasePaths.AVATARS;
 import static org.pl.android.drively.util.ReflectionUtil.nameof;
@@ -63,17 +65,22 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
     }
 
     public void findFriend(BaseFilter baseFilter, FriendSearchDialogCompat searchDialogCompat, String stringQuery, List friendList) {
+        if(stringQuery == null || stringQuery.length() < 3) {
+            searchDialogCompat.getItems().clear();
+            return;
+        }
+
         CollectionReference usersReference = mDataManager.getFirebaseService().getFirebaseFirestore().collection(FirebasePaths.USERS);
         friendList.add(getId());
         baseFilter.doBeforeFiltering();
-        int strlength = stringQuery.length();
+        int length = stringQuery.length();
         String endcode = "";
         String upperCase = "";
         String encodeUpperCase = "";
 
-        if (strlength > 0) {
-            String strFrontCode = stringQuery.substring(0, strlength - 1);
-            String strEndCode = stringQuery.substring(strlength - 1, strlength);
+        if (length > 0) {
+            String strFrontCode = stringQuery.substring(0, length - 1);
+            String strEndCode = stringQuery.substring(length - 1, length);
 
             endcode = strFrontCode + Character.toString((char) (strEndCode.charAt(0) + 1));
             upperCase = stringQuery.substring(0, 1).toUpperCase() + stringQuery.substring(1);
@@ -85,6 +92,7 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
 
         ArrayList<FriendModel> result = new ArrayList<>();
         searchDialogCompat.getItems().clear();
+        searchDialogCompat.setLoading(true);
 
         String finalUpperCase = upperCase;
         String finalEncodeUpperCase = encodeUpperCase;
@@ -92,52 +100,39 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
         try {
             String nameField = nameof(User.class, "name");
             String emailField = nameof(User.class, "email");
-            usersReference
-                    .whereGreaterThanOrEqualTo(nameField, stringQuery).whereLessThan(nameField, finalEndcode).get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            for (DocumentSnapshot document : task.getResult()) {
-                                FriendModel friend = new FriendModel(document.toObject(ChatUser.class));
-                                if (!result.contains(friend) && !friendList.contains(friend.getId())) {
-                                    result.add(friend);
-                                }
-                            }
-                        } else {
-                            Timber.w("Error getting documents: ", task.getException());
+            List<Task<QuerySnapshot>> tasks = new ArrayList<>();
+
+            tasks.add(usersReference.whereGreaterThanOrEqualTo(nameField, stringQuery).whereLessThan(nameField, finalEndcode).get());
+            tasks.add(usersReference.whereGreaterThanOrEqualTo(nameField, finalUpperCase).whereLessThan(nameField, finalEncodeUpperCase).get());
+            tasks.add(usersReference.whereGreaterThanOrEqualTo(emailField, stringQuery).whereLessThan(emailField, finalEndcode).get());
+
+            Tasks.whenAllComplete(tasks).addOnSuccessListener(queries -> {
+                for (Task task : queries) {
+                    QuerySnapshot query = (QuerySnapshot)task.getResult();
+                    for (DocumentSnapshot document : query.getDocuments()) {
+                        FriendModel friend = new FriendModel(document.toObject(ChatUser.class));
+                        if (!result.contains(friend) && !friendList.contains(friend.getId())) {
+                            result.add(friend);
                         }
+                    }
+                }
 
-                        usersReference.whereGreaterThanOrEqualTo(nameField, finalUpperCase).whereLessThan(nameField, finalEncodeUpperCase).get()
-                                .addOnCompleteListener(upperTask -> {
-                                    if (upperTask.isSuccessful()) {
-                                        for (DocumentSnapshot document : upperTask.getResult()) {
-                                            FriendModel friend = new FriendModel(document.toObject(ChatUser.class));
-                                            if (!result.contains(friend) && !friendList.contains(friend.getId())) {
-                                                result.add(friend);
-                                            }
-                                        }
-                                    } else {
-                                        Timber.w("Error getting documents: ", upperTask.getException());
-                                    }
+                List<Task<byte[]>> avatars = Stream.of(result).filter(user -> !user.getAvatar().equals(Const.STR_DEFAULT_AVATAR))
+                        .map(user -> FirebaseStorage.getInstance().getReference("AVATARS/" + user.getAvatar())
+                            .getBytes(Const.FIVE_MEGABYTE)
+                            .addOnSuccessListener(bytes -> {
+                                Bitmap avatar = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                user.setAvatarImage(avatar);
+                        })).toList();
 
-                                    usersReference.whereGreaterThanOrEqualTo(emailField, stringQuery).whereLessThan(emailField, finalEndcode).get()
-                                            .addOnCompleteListener(stringTask -> {
-                                                if (stringTask.isSuccessful()) {
-                                                    for (DocumentSnapshot document : stringTask.getResult()) {
-                                                        FriendModel friend = new FriendModel(document.toObject(ChatUser.class));
-                                                        if (!result.contains(friend) && !friendList.contains(friend.getId())) {
-                                                            result.add(friend);
-                                                        }
-                                                    }
-                                                } else {
-                                                    Timber.w("Error getting documents: ", stringTask.getException());
-                                                }
+                Tasks.whenAllComplete(avatars).addOnSuccessListener(bytes -> {
+                    searchDialogCompat.getFilterResultListener().onFilter(result);
+                    searchDialogCompat.setLoading(false);
+                    baseFilter.doAfterFiltering();
+                }).addOnFailureListener(failure -> searchDialogCompat.dismiss());
 
-                                                searchDialogCompat.getFilterResultListener().onFilter(result);
-                                                baseFilter.doAfterFiltering();
-                                            });
-                                });
+            }).addOnFailureListener(failure -> searchDialogCompat.dismiss());
 
-                    });
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
@@ -163,13 +158,13 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                     }));
         }
 
-        Tasks.whenAll(tasks).addOnSuccessListener(friends -> {
+        Tasks.whenAllComplete(tasks).addOnSuccessListener(friends -> {
             List<Task<Friend>> friendsTasks = new ArrayList<>();
             for (Task<Task<Friend>> task : tasks)
                 if (task.isSuccessful() && task.getResult() != null)
                     friendsTasks.add(task.getResult());
 
-            Tasks.whenAll(friendsTasks).addOnSuccessListener(avatars -> {
+            Tasks.whenAllComplete(friendsTasks).addOnSuccessListener(avatars -> {
                 for (Task<Friend> task : friendsTasks)
                     if (task.isSuccessful() && task.getResult() != null && getMvpView() != null)
                         getMvpView().addFriendInfo(task.getResult());

@@ -105,13 +105,13 @@ public class GroupPresenter extends BasePresenter<GroupMvpView> {
                     }));
         }
 
-        Tasks.whenAll(tasks).addOnSuccessListener(friends -> {
+        Tasks.whenAllComplete(tasks).addOnSuccessListener(friends -> {
             List<Task<Room>> friendsTasks = new ArrayList<>();
             for (Task<Task<Room>> task : tasks)
                 if (task.isSuccessful() && task.getResult() != null)
                     friendsTasks.add(task.getResult());
 
-            Tasks.whenAll(friendsTasks).addOnSuccessListener(avatars -> {
+            Tasks.whenAllComplete(friendsTasks).addOnSuccessListener(avatars -> {
                 List<Room> rooms = new ArrayList<>();
                 for (Task<Room> task : friendsTasks)
                     if (task.isSuccessful() && task.getResult() != null && getMvpView() != null)

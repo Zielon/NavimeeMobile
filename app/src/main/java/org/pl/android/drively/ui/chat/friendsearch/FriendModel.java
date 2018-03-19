@@ -1,15 +1,20 @@
 package org.pl.android.drively.ui.chat.friendsearch;
 
+import android.graphics.Bitmap;
+
+import com.google.firebase.firestore.IgnoreExtraProperties;
+
 import org.pl.android.drively.data.model.chat.ChatUser;
 
 import ir.mirrajabi.searchdialog.core.Searchable;
 
+@IgnoreExtraProperties
 public class FriendModel implements Searchable {
     private String name;
     private String email;
     private String id;
     private String avatar;
-
+    private Bitmap avatarImage;
 
     public FriendModel(ChatUser chatUser) {
         name = chatUser.name;
@@ -57,5 +62,13 @@ public class FriendModel implements Searchable {
         result = 31 * result + (email != null ? email.hashCode() : 0);
         result = 31 * result + (id != null ? id.hashCode() : 0);
         return result;
+    }
+
+    public Bitmap getAvatarImage() {
+        return avatarImage;
+    }
+
+    public void setAvatarImage(Bitmap avatarImage) {
+        this.avatarImage = avatarImage;
     }
 }

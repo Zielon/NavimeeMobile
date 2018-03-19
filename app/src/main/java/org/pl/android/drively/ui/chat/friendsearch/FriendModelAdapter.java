@@ -101,19 +101,12 @@ public class FriendModelAdapter extends RecyclerView.Adapter<FriendModelAdapter.
         LinearLayout root = holder.getViewById(R.id.root);
         TextView nameText = holder.getViewById(R.id.name);
         TextView emailText = holder.getViewById(R.id.email);
-
         CircleImageView avatar = holder.getViewById(R.id.image);
 
-        if (object.getAvatar().equals(Const.STR_DEFAULT_AVATAR)) {
+        if (object.getAvatar().equals(Const.STR_DEFAULT_AVATAR))
             avatar.setImageResource(R.drawable.default_avatar);
-        } else {
-            FirebaseStorage.getInstance().getReference("AVATARS/" + object.getAvatar())
-                    .getBytes(Const.FIVE_MEGABYTE)
-                    .addOnSuccessListener(bytes -> {
-                        Bitmap src = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        avatar.setImageBitmap(src);
-                    }).addOnFailureListener(exception -> avatar.setImageResource(R.drawable.default_avatar));
-        }
+        else
+            avatar.setImageBitmap(object.getAvatarImage());
 
         nameText.setText(object.getName());
         emailText.setText(object.getEmail());
