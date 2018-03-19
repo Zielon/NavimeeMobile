@@ -178,10 +178,11 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
     }
 
     @Override
-    public void onUserDelete() {
-        Intent intent = new Intent(this, SignActivity.class);
+    public void onUserDeleted() {
+        Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+        finish();
     }
 
     @Override

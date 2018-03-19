@@ -162,9 +162,10 @@ public class SettingsActivity extends BaseActivity implements SettingsMvpView {
 
     @Override
     public void onLogout() {
-        Intent resultInt = new Intent();
-        resultInt.putExtra(ACTION, LOGOUT);
-        setResult(Activity.RESULT_OK, resultInt);
+        Intent intent = new Intent();
+        intent.putExtra(ACTION, LOGOUT);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        setResult(Activity.RESULT_OK, intent);
         finish();
     }
 

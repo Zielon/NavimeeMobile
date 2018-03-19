@@ -47,6 +47,7 @@ public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
     public void logout() {
         ChatViewActivity.bitmapAvatarUser = null;
 
+        // The service has to delete the user location for Firebase. Therefore, a user has to be login.
         Activity activity = (Activity)getMvpView();
         Intent intentGeoService = new Intent(activity, GeolocationUpdateService.class);
         activity.stopService(intentGeoService);

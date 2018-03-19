@@ -26,6 +26,7 @@ import com.roughike.bottombar.BottomBar;
 import org.greenrobot.eventbus.EventBus;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.eventbus.NotificationEvent;
+import org.pl.android.drively.services.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BaseActivityFragment;
 import org.pl.android.drively.ui.base.tab.BaseTabFragment;
 import org.pl.android.drively.ui.chat.ChatFragment;
@@ -245,16 +246,18 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     }
 
     private boolean isLogin() {
-        if (!mMainPresenter.isLogin()) {
-            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            if(notificationManager != null)
-                notificationManager.cancelAll();
-            Intent intent = new Intent(this, SignActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            return false;
-        }
-        return true;
+        if (mMainPresenter.isLogin()) return true;
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if(notificationManager != null)
+            notificationManager.cancelAll();
+
+        Intent intent = new Intent(this, SignActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+
+        return false;
     }
 
     @Override
@@ -287,5 +290,4 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivityForResult(intent, SETTINGS_REQUEST);
     }
-
 }

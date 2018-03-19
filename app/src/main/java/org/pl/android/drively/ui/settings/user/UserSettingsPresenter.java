@@ -121,7 +121,7 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
     }
 
     public void deleteUser(ProgressDialog progressDialog) {
-
+        // The service has to delete the user location for Firebase. Therefore, a user has to be login.
         Activity activity = (Activity)userSettingsChangeMvpView;
         Intent intentGeoService = new Intent(activity, GeolocationUpdateService.class);
         activity.stopService(intentGeoService);
@@ -130,7 +130,7 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
         firebaseUser.delete().addOnSuccessListener(result -> {
             progressDialog.dismiss();
             preferencesHelper.clear();
-            userSettingsChangeMvpView.onUserDelete();
+            userSettingsChangeMvpView.onUserDeleted();
         }).addOnFailureListener(task -> {
             progressDialog.dismiss();
             if (task instanceof FirebaseAuthRecentLoginRequiredException || task.getMessage().contains("CREDENTIAL_TOO_OLD_LOGIN_AGAIN")) {
@@ -139,9 +139,8 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
                 if (firebaseUser.getProviders() != null)
                     intent.putStringArrayListExtra(PROVIDERS, (ArrayList<String>) firebaseUser.getProviders());
                 activity.startActivityForResult(intent, 0);
-                return;
-            }
-            Toast.makeText(activity, activity.getResources().getString(R.string.error), Toast.LENGTH_LONG).show();
+            } else
+                Toast.makeText(activity, activity.getResources().getString(R.string.error), Toast.LENGTH_LONG).show();
         });
     }
 }

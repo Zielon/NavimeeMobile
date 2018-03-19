@@ -7,7 +7,7 @@ public interface UserSettingsChangeMvpView extends MvpView {
 
     void onError(Throwable throwable);
 
-    void onUserDelete();
+    void onUserDeleted();
 
     void reloadAvatar();
 }
