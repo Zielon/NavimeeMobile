@@ -108,7 +108,7 @@
     <string name="delete_friend_success">Pomyślnie usunięto użytkownika</string>
     <string name="delete_friend_failure">Poodczas usuwania użytkownika wystąpił błąd</string>
     <string name="find_friends">Dodaj znajomego</string>
-    <string name="find_friends_who">Kogo szukasz?</string>
+    <string name="find_friends_who">Wpisz co najmniej 3 znaki…</string>
     <string name="delete_friend">Usuń użytkownika</string>
     <string name="delete_friend_sure">Czy na pewno chcesz usunąć </string>
     <string name="deleting">Usuwanie…</string>

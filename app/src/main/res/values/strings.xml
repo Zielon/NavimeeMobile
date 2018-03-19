@@ -106,12 +106,12 @@
     <string name="delete_friend_success">The user has been deleted</string>
     <string name="delete_friend_failure">Error while deleting the user</string>
     <string name="find_friends">Find your friends</string>
-    <string name="find_friends_who">Who are you looking for?</string>
+    <string name="find_friends_who">Type at least 3 chars to start…</string>
     <string name="delete_friend">Delete contact</string>
     <string name="delete_friend_sure">Are you sure want to delete?</string>
-    <string name="deleting">Deleting...</string>
+    <string name="deleting">Deleting…</string>
     <string name="at_least_two">Add at least two people to create a group</string>
-    <string name="registering">Registering....</string>
+    <string name="registering">Registering…</string>
     <string name="create_group_success">Your group is created!</string>
     <string name="create_group_failure">Failed to create the group</string>
     <string name="delete_group_failure">Failed to delete the group </string>

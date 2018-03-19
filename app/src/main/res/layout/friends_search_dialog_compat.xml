@@ -2,8 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="top"
-    android:padding="20dp">
+    android:gravity="top">
 
     <View
         android:id="@+id/dummy_background"
@@ -58,7 +57,7 @@
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="16dp"
                 android:src="@drawable/search_dialog_ic_search"
-                android:tint="@color/white" />
+                android:tint="@color/button_background" />
         </LinearLayout>
 
         <View
