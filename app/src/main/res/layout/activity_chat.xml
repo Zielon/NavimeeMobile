@@ -25,11 +25,17 @@
         android:layout_above="@id/btnSend"
         android:tint="@color/white" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerChat"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/line" />
+        android:layout_above="@id/line">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerChat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <EditText
         android:id="@+id/editWriteMessage"

@@ -9,5 +9,4 @@ public interface ChatViewMvpView extends MvpView {
 
     void roomChangesListerSet(List<Message> message);
     int getScrollBottomCounter();
-
 }

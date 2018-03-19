@@ -1,10 +1,10 @@
 package org.pl.android.drively.ui.chat.chatview;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,10 +17,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.paginate.Paginate;
-import com.willowtreeapps.spruce.Spruce;
-import com.willowtreeapps.spruce.animation.DefaultAnimations;
-import com.willowtreeapps.spruce.sort.DefaultSort;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.chat.Conversation;
@@ -38,6 +34,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import lombok.Getter;
 
@@ -56,7 +54,7 @@ interface MessageHolder {
     RecyclerView.ViewHolder getViewHolder();
 }
 
-public class ChatViewActivity extends BaseActivity implements View.OnClickListener, ChatViewMvpView {
+public class ChatViewActivity extends BaseActivity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, ChatViewMvpView {
     public static final int VIEW_TYPE_USER_MESSAGE = 0;
     public static final int VIEW_TYPE_FRIEND_MESSAGE = 1;
     public static HashMap<String, Bitmap> bitmapAvatarFriends = new HashMap<>();
@@ -77,6 +75,9 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
     private LinearLayoutManager linearLayoutManager;
     private Boolean isGroupChat;
 
+    @BindView(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
+
     @Getter
     private int scrollBottomCounter = 1;
 
@@ -91,6 +92,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         activityComponent().inject(this);
         setContentView(R.layout.activity_chat);
+        ButterKnife.bind(this);
         mChatViewPresenter.attachView(this);
         Intent intentData = getIntent();
         idFriend = intentData.getCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID);
@@ -110,18 +112,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         else
             getSupportActionBar().setTitle(roomName);
 
-        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false) {
-            @Override
-            public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
-                super.onLayoutChildren(recycler, state);
-                new Spruce
-                        .SpruceBuilder(recyclerChat)
-                        .sortWith(new DefaultSort(100))
-                        .animateWith(DefaultAnimations.shrinkAnimator(recyclerChat, 800),
-                                ObjectAnimator.ofFloat(recyclerChat, "translationX", -recyclerChat.getWidth(), 0f).setDuration(800))
-                        .start();
-            }
-        };
+        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerChat = (RecyclerView) findViewById(R.id.recyclerChat);
         recyclerChat.setLayoutManager(linearLayoutManager);
 
@@ -132,14 +123,10 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
                 bitmapAvatarUser,
                 mChatViewPresenter);
 
-
         mChatViewPresenter.setMessageListener(roomId, isGroupChat);
         recyclerChat.setAdapter(adapter);
 
-        Paginate.with(recyclerChat, getPaginationCallbacks())
-                .setLoadingTriggerThreshold(2)
-                .addLoadingListItem(true)
-                .build();
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         recyclerChat.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
             if (bottom < oldBottom) {
@@ -150,27 +137,15 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
                 }, 100);
             }
         });
+        swipeRefreshLayout.setRefreshing(true);
     }
 
-    private Paginate.Callbacks getPaginationCallbacks() {
-        return new Paginate.Callbacks() {
-            @Override
-            public void onLoadMore() {
-                loadingInProgress = true;
-                mChatViewPresenter.setMessageListener(roomId, isGroupChat);
-                scrollBottomCounter++;
-            }
-
-            @Override
-            public boolean isLoading() {
-                return loadingInProgress;
-            }
-
-            @Override
-            public boolean hasLoadedAllItems() {
-                return hasLoadedAllItems;
-            }
-        };
+    public void toggleRefresh() {
+        if (swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        } else {
+            swipeRefreshLayout.setRefreshing(true);
+        }
     }
 
     @Override
@@ -178,11 +153,13 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         if (message.size() % MESSAGES_SLICE_QUANTITY != 0 || message.size() == 0) {
             hasLoadedAllItems = true;
         }
-            loadingInProgress = false;
-            conversation.getListMessageData().clear();
-            conversation.getListMessageData().addAll(message);
-            adapter.notifyDataSetChanged();
-//        linearLayoutManager.scrollToPosition(conversation.getListMessageData().size() - 1);
+        conversation.getListMessageData().clear();
+        conversation.getListMessageData().addAll(message);
+        adapter.notifyDataSetChanged();
+        toggleRefresh();
+        if (scrollBottomCounter == 1) {
+            linearLayoutManager.scrollToPosition(conversation.getListMessageData().size() - 1);
+        }
     }
 
     @Override
@@ -240,8 +217,16 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
                 newMessage.timestamp = System.currentTimeMillis();
 
                 mChatViewPresenter.addMessage(roomId, newMessage);
+                linearLayoutManager.scrollToPosition(conversation.getListMessageData().size() - 1);
+                swipeRefreshLayout.setRefreshing(false);
             }
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        scrollBottomCounter++;
+        mChatViewPresenter.setMessageListener(roomId, isGroupChat);
     }
 }
 

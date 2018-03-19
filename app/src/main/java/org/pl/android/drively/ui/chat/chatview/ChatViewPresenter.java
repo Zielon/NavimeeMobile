@@ -16,6 +16,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.disposables.Disposable;
+import java8.util.stream.Collectors;
+import java8.util.stream.StreamSupport;
 import timber.log.Timber;
 
 import static org.pl.android.drively.util.FirebasePaths.AVATARS;
@@ -59,16 +61,18 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
                 .collection(messagePath)
                 .document(mDataManager.getPreferencesHelper().getCountry())
                 .collection(roomId)
-                .orderBy("timestamp")
+                .orderBy("timestamp", Query.Direction.DESCENDING)
                 .limit(MESSAGES_SLICE_QUANTITY * getMvpView().getScrollBottomCounter());
         messagesQuery.addSnapshotListener((value, e) -> {
             if (e != null) {
                 Timber.w("Listen failed.", e);
                 return;
             }
-            List messageList = isGroupChat ? value.toObjects(GroupMessage.class) : value.toObjects(PrivateMessage.class);
+            List<? extends Message> messageList = isGroupChat ? value.toObjects(GroupMessage.class) : value.toObjects(PrivateMessage.class);
             if (ChatViewPresenter.this.getMvpView() != null) {
-                ChatViewPresenter.this.getMvpView().roomChangesListerSet(messageList);
+                ChatViewPresenter.this.getMvpView()
+                        .roomChangesListerSet(StreamSupport.stream(messageList).sorted((message1, message2) ->
+                                Integer.valueOf((int)message1.timestamp).compareTo((int)message2.timestamp)).collect(Collectors.toList()));
             }
         });
     }
