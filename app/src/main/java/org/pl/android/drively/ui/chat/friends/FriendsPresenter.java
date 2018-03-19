@@ -15,6 +15,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.pl.android.drively.R;
 import org.pl.android.drively.contracts.repositories.UsersRepository;
 import org.pl.android.drively.data.DataManager;
@@ -32,7 +33,9 @@ import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.TreeSet;
 
 import javax.inject.Inject;
 
@@ -65,8 +68,9 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
     }
 
     public void findFriend(BaseFilter baseFilter, FriendSearchDialogCompat searchDialogCompat, String stringQuery, List friendList) {
-        if(stringQuery == null || stringQuery.length() < 3) {
+        if (stringQuery == null || stringQuery.length() < 3) {
             searchDialogCompat.getItems().clear();
+            searchDialogCompat.getFilterResultListener().onFilter(new ArrayList<>());
             return;
         }
 
@@ -107,23 +111,24 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
             tasks.add(usersReference.whereGreaterThanOrEqualTo(emailField, stringQuery).whereLessThan(emailField, finalEndcode).get());
 
             Tasks.whenAllComplete(tasks).addOnSuccessListener(queries -> {
-                for (Task task : queries) {
-                    QuerySnapshot query = (QuerySnapshot)task.getResult();
-                    for (DocumentSnapshot document : query.getDocuments()) {
-                        FriendModel friend = new FriendModel(document.toObject(ChatUser.class));
-                        if (!result.contains(friend) && !friendList.contains(friend.getId())) {
-                            result.add(friend);
-                        }
-                    }
-                }
+
+                HashSet<FriendModel> friendsSet = Stream.of(queries).map(task -> (QuerySnapshot) task.getResult())
+                        .reduce(new HashSet<FriendModel>(), (friends, snapshot) -> {
+                            List<FriendModel> models = Stream.of(snapshot.getDocuments())
+                                    .map(document -> new FriendModel(document.toObject(ChatUser.class))).toList();
+                            friends.addAll(models);
+                            return friends;
+                        });
+
+                result.addAll(Stream.of(new ArrayList<>(friendsSet)).filter(friend -> !friendList.contains(friend.getId())).toList());
 
                 List<Task<byte[]>> avatars = Stream.of(result).filter(user -> !user.getAvatar().equals(Const.STR_DEFAULT_AVATAR))
                         .map(user -> FirebaseStorage.getInstance().getReference("AVATARS/" + user.getAvatar())
-                            .getBytes(Const.FIVE_MEGABYTE)
-                            .addOnSuccessListener(bytes -> {
-                                Bitmap avatar = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                user.setAvatarImage(avatar);
-                        })).toList();
+                                .getBytes(Const.FIVE_MEGABYTE)
+                                .addOnSuccessListener(bytes -> {
+                                    Bitmap avatar = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                    user.setAvatarImage(avatar);
+                                })).toList();
 
                 Tasks.whenAllComplete(avatars).addOnSuccessListener(bytes -> {
                     searchDialogCompat.getFilterResultListener().onFilter(result);
