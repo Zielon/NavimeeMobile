@@ -89,6 +89,7 @@ public class DayScheduleAdapter extends RecyclerView.Adapter<DayScheduleAdapter.
             holder.deleteButton.setText(mContext.getString(R.string.cancel));
         }
         holder.deleteButton.setOnClickListener(view -> {
+            mDaySchedulePresenter.logAnalytics(holder.deleteButton.getText().toString(), this.getClass().getSimpleName(), event);
             if ((int) view.getTag() == 1) {
                 mDaySchedulePresenter.deleteEvent(event);
             } else if ((int) view.getTag() == 2) {

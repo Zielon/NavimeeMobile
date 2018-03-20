@@ -26,7 +26,6 @@ import com.roughike.bottombar.BottomBar;
 import org.greenrobot.eventbus.EventBus;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.eventbus.NotificationEvent;
-import org.pl.android.drively.services.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BaseActivityFragment;
 import org.pl.android.drively.ui.base.tab.BaseTabFragment;
 import org.pl.android.drively.ui.chat.ChatFragment;
@@ -36,6 +35,7 @@ import org.pl.android.drively.ui.intro.IntroActivity;
 import org.pl.android.drively.ui.planner.PlannerFragment;
 import org.pl.android.drively.ui.settings.SettingsActivity;
 import org.pl.android.drively.ui.signinup.SignActivity;
+import org.pl.android.drively.util.FirebaseAnalyticsConst;
 import org.pl.android.drively.util.NetworkUtil;
 
 import javax.inject.Inject;
@@ -185,8 +185,8 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
                 case R.id.tab_finance:
                     selectedFragment = FinanceFragment.newInstance();
                     break;
-
             }
+            mMainPresenter.logAnalytics(FirebaseAnalyticsConst.TAB_CHANGED, selectedFragment.getClass().getSimpleName(), null);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frame_layout, selectedFragment);
             transaction.commitAllowingStateLoss();
