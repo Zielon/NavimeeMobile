@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import org.pl.android.drively.contracts.repositories.UsersRepository;
 import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.data.remote.FirebaseAnalyticsService;
 import org.pl.android.drively.services.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.Const;
@@ -21,12 +22,15 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
 
     private final DataManager mDataManager;
     private final UsersRepository usersRepository;
+    private final FirebaseAnalyticsService firebaseAnalyticsService;
     private Disposable mDisposable;
 
     @Inject
-    public MainPresenter(DataManager dataManager, UsersRepository usersRepository) {
+    public MainPresenter(DataManager dataManager, UsersRepository usersRepository,
+                         FirebaseAnalyticsService firebaseAnalyticsService) {
         this.mDataManager = dataManager;
         this.usersRepository = usersRepository;
+        this.firebaseAnalyticsService = firebaseAnalyticsService;
     }
 
     @Override
@@ -88,5 +92,9 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
 
     public String getUserId() {
         return mDataManager.getPreferencesHelper().getUserId();
+    }
+
+    public void logAnalytics(String id, String name, Object content) {
+        firebaseAnalyticsService.reportEvent(id, name, content);
     }
 }

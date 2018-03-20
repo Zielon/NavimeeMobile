@@ -9,6 +9,7 @@ import org.joda.time.DateTime;
 import org.pl.android.drively.contracts.repositories.NotificationsRepository;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.Event;
+import org.pl.android.drively.data.remote.FirebaseAnalyticsService;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.FirebasePaths;
 
@@ -26,13 +27,16 @@ import static org.pl.android.drively.util.ReflectionUtil.nameof;
 
 public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
     private final DataManager mDataManager;
+    private final FirebaseAnalyticsService firebaseAnalyticsService;
     private ListenerRegistration mListener;
     private NotificationsRepository notificationsRepository;
 
     @Inject
-    public DaySchedulePresenter(DataManager dataManager, NotificationsRepository notificationsRepository) {
+    public DaySchedulePresenter(DataManager dataManager, NotificationsRepository notificationsRepository,
+                                FirebaseAnalyticsService firebaseAnalyticsService) {
         this.mDataManager = dataManager;
         this.notificationsRepository = notificationsRepository;
+        this.firebaseAnalyticsService = firebaseAnalyticsService;
     }
 
     @Override
@@ -117,5 +121,9 @@ public class DaySchedulePresenter extends BasePresenter<DayScheduleMvpView> {
                 getMvpView().onSuccessDelete(event);
         }).addOnFailureListener(e -> {
         });
+    }
+
+    public void logAnalytics(String id, String name, Object content) {
+        firebaseAnalyticsService.reportEvent(id, name, content);
     }
 }

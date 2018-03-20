@@ -15,6 +15,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Minutes;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.Event;
+import org.pl.android.drively.data.remote.FirebaseAnalyticsService;
 import org.pl.android.drively.injection.ApplicationContext;
 
 import java.text.SimpleDateFormat;
@@ -29,6 +30,7 @@ import butterknife.ButterKnife;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHolder> {
+    private final FirebaseAnalyticsService firebaseAnalyticsService;
     DateTime currentDateTime;
     private List<Event> mEvents;
     private Context mContext;
@@ -39,9 +41,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
     private EventsAdapterCallback eventsAdapterCallback;
 
     @Inject
-    public EventsAdapter(@ApplicationContext Context context) {
+    public EventsAdapter(@ApplicationContext Context context, FirebaseAnalyticsService firebaseAnalyticsService) {
         this.mEvents = new ArrayList<>();
         this.mContext = context;
+        this.firebaseAnalyticsService = firebaseAnalyticsService;
         currentDateTime = new DateTime(Calendar.getInstance().getTime());
     }
 
@@ -105,6 +108,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         }
 
         holder.addButton.setOnClickListener(view -> {
+            firebaseAnalyticsService.reportEvent(holder.addButton.getText().toString(), this.getClass().getSimpleName(), event);
             if ((int) view.getTag() == 1) {
                 Uri gmmIntentUri = Uri.parse("google.navigation:q=" + String.valueOf(event.getPlace().getLat()) + "," +
                         String.valueOf(event.getPlace().getLon()));
@@ -162,7 +166,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
 
     enum EventsAdapterAction {
         SAVE,
-        DELETE
+        DELETE,
+        LOG_ANALYTICS
     }
 
     interface EventsAdapterCallback {
