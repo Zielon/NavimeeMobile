@@ -60,7 +60,7 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
 
     public boolean isLogin() {
         FirebaseUser user = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
-        if(user == null){
+        if (user == null) {
             if (GeolocationUpdateService.FIREBASE_KEY != null && !GeolocationUpdateService.FIREBASE_KEY.isEmpty())
                 mDataManager.getFirebaseService()
                         .getFirebaseDatabase()

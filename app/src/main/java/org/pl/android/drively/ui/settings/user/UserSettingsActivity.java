@@ -34,11 +34,9 @@ import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.local.PreferencesHelper;
 import org.pl.android.drively.data.model.User;
-import org.pl.android.drively.services.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.ui.main.MainActivity;
-import org.pl.android.drively.ui.signinup.SignActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;

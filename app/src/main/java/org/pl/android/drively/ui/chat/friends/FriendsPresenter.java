@@ -15,7 +15,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.pl.android.drively.R;
 import org.pl.android.drively.contracts.repositories.UsersRepository;
 import org.pl.android.drively.data.DataManager;
@@ -35,7 +34,6 @@ import org.pl.android.drively.util.FirebasePaths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.TreeSet;
 
 import javax.inject.Inject;
 

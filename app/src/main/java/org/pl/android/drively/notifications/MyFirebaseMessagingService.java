@@ -141,7 +141,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentIntent(navigationIntent);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if(notificationManager != null)
+        if (notificationManager != null)
             notificationManager.notify(fcm.getIdRoom().hashCode(), notificationBuilder.build());
     }
 
@@ -172,7 +172,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentIntent(navigationIntent);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if(notificationManager != null)
+        if (notificationManager != null)
             notificationManager.notify(fcm.getId().hashCode(), notificationBuilder.build());
     }
 }

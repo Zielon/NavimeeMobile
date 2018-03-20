@@ -48,6 +48,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     private static final String EXTRA_TRIGGER_SYNC_FLAG =
             "uk.co.ribot.androidboilerplate.ui.main.MainActivity.EXTRA_TRIGGER_SYNC_FLAG";
     public static boolean IS_USER_POSITION_CHECKED = false;
+    public HotSpotFragment.HotspotFilterBackup hotspotFilterBackup;
     @Inject
     MainPresenter mMainPresenter;
     boolean isFromNotification = false;
@@ -55,8 +56,6 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     String name, count;
     BottomBar bottomBar;
     private BaseTabFragment selectedFragment;
-
-    public HotSpotFragment.HotspotFilterBackup hotspotFilterBackup;
 
     /**
      * Return an Intent to start this Activity.
@@ -157,7 +156,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         mMainPresenter.checkVersion();
 
 //        checkAppIntro();
-        if(!isLogin()) return;
+        if (!isLogin()) return;
 
         bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setOnTabSelectListener(tabId -> {
@@ -249,7 +248,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         if (mMainPresenter.isLogin()) return true;
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if(notificationManager != null)
+        if (notificationManager != null)
             notificationManager.cancelAll();
 
         Intent intent = new Intent(this, SignActivity.class);

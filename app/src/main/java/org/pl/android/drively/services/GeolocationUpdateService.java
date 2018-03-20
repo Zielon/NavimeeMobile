@@ -38,6 +38,7 @@ public class GeolocationUpdateService extends Service {
     private static KalmanFilterService KALMAN_FILTER = new KalmanFilterService();
     @Inject
     DataManager dataManager;
+    Handler handler;
     private GeoFire geoFire;
     private DatabaseReference databaseReference;
     private LocationManager mLocationManager = null;
@@ -46,9 +47,7 @@ public class GeolocationUpdateService extends Service {
             new LocationListener(LocationManager.GPS_PROVIDER),
             new LocationListener(LocationManager.NETWORK_PROVIDER)
     };
-
     private Runnable postDelayedRunnable;
-    Handler handler;
 
     @Override
     public IBinder onBind(Intent arg0) {
