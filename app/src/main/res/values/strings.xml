@@ -63,7 +63,7 @@
     <string name="check_internet">Check your network connection</string>
     <string name="close">Close</string>
     <string name="let_us_know">Let us know</string>
-    <string name="not_available_in_city">We are not available in this city yet</string>
+    <string name="not_available_in_city">We are not available in %1$s</string>
 
     <!--HOTSPOT: filtr-->
     <string name="visible_on_map">Filter on map</string>
