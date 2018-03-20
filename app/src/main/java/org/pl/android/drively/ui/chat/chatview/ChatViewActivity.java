@@ -81,11 +81,15 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
     @Getter
     private int scrollBottomCounter = 1;
 
+    private int refreshState;
+
     private boolean wasScrooledToEnd = false;
 
     private boolean loadingInProgress = true;
 
     private boolean hasLoadedAllItems;
+
+    private int lastSize;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,27 +129,20 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
 
         mChatViewPresenter.setMessageListener(roomId, isGroupChat);
         recyclerChat.setAdapter(adapter);
+        recyclerChat.setHasFixedSize(true);
 
         swipeRefreshLayout.setOnRefreshListener(this);
 
-        recyclerChat.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
-            if (bottom < oldBottom) {
-                recyclerChat.postDelayed(() -> {
-                    if (recyclerChat.getAdapter().getItemCount() > 0)
-                        recyclerChat.smoothScrollToPosition(
-                                recyclerChat.getAdapter().getItemCount() - 1);
-                }, 100);
-            }
-        });
+//        recyclerChat.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+//            if (bottom < oldBottom) {
+//                recyclerChat.postDelayed(() -> {
+//                    if (recyclerChat.getAdapter().getItemCount() > 0)
+//                        recyclerChat.smoothScrollToPosition(
+//                                recyclerChat.getAdapter().getItemCount() - 1);
+//                }, 100);
+//            }
+//        });
         swipeRefreshLayout.setRefreshing(true);
-    }
-
-    public void toggleRefresh() {
-        if (swipeRefreshLayout.isRefreshing()) {
-            swipeRefreshLayout.setRefreshing(false);
-        } else {
-            swipeRefreshLayout.setRefreshing(true);
-        }
     }
 
     @Override
@@ -155,11 +152,15 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         }
         conversation.getListMessageData().clear();
         conversation.getListMessageData().addAll(message);
-        adapter.notifyDataSetChanged();
-        toggleRefresh();
-        if (scrollBottomCounter == 1) {
+        runOnUiThread(() -> adapter.notifyDataSetChanged());
+//        runOnUiThread(() -> adapter.notifyItemRangeInserted(currentSize, message.size()));
+        swipeRefreshLayout.setRefreshing(false);
+        if(scrollBottomCounter == 1) {
             linearLayoutManager.scrollToPosition(conversation.getListMessageData().size() - 1);
+        } else {
+            linearLayoutManager.scrollToPosition(lastSize);
         }
+        lastSize = adapter.getItemCount();
     }
 
     @Override
@@ -217,7 +218,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
                 newMessage.timestamp = System.currentTimeMillis();
 
                 mChatViewPresenter.addMessage(roomId, newMessage);
-                linearLayoutManager.scrollToPosition(conversation.getListMessageData().size() - 1);
+//                linearLayoutManager.scrollToPosition(conversation.getListMessageData().size() - 1);
                 swipeRefreshLayout.setRefreshing(false);
             }
         }
@@ -225,8 +226,13 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     public void onRefresh() {
-        scrollBottomCounter++;
-        mChatViewPresenter.setMessageListener(roomId, isGroupChat);
+        if (!hasLoadedAllItems) {
+            scrollBottomCounter++;
+            mChatViewPresenter.setMessageListener(roomId, isGroupChat);
+            refreshState = recyclerChat.getScrollState();
+        } else {
+            swipeRefreshLayout.setRefreshing(false);
+        }
     }
 }
 
