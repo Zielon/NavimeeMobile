@@ -63,7 +63,7 @@
     <string name="check_internet">Ustawienia sieci</string>
     <string name="close">Zamknij</string>
     <string name="let_us_know">Daj nam znać</string>
-    <string name="not_available_in_city">Nie jesteśmy dostępni w Twoim mieście</string>
+    <string name="not_available_in_city">Nie jesteśmy dostępni w %1$s</string>
 
     <!--HOTSPOT: filtr-->
     <string name="visible_on_map">Filtruj na mapie</string>

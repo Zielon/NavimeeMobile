@@ -837,8 +837,10 @@ public class HotSpotFragment extends BaseTabFragment implements
 
     @Override
     public void showNotAvailableCity(CityNotAvailable city) {
+        String title = getResources().getString(R.string.not_available_in_city, city.getCity());
+        city.setCity(city.getCity().toUpperCase());
         MaterialDialog dialogAlert = new MaterialDialog.Builder(getActivity())
-                .title(R.string.not_available_in_city)
+                .title(title)
                 .backgroundColor(getResources().getColor(R.color.primary_dark))
                 .contentColor(getResources().getColor(R.color.white))
                 .positiveText(R.string.let_us_know)
