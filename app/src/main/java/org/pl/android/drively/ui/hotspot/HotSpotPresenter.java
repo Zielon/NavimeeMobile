@@ -247,7 +247,7 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
             coordinatesRepository.getAvailableCities(countryName).addOnSuccessListener(cities -> {
                 if (Stream.of(cities).allMatch(city -> !city.getName().toUpperCase().equals(locality.toUpperCase()))) {
                     CityNotAvailable cityNotAvailable = new CityNotAvailable();
-                    cityNotAvailable.setCity(locality.toUpperCase());
+                    cityNotAvailable.setCity(locality);
                     cityNotAvailable.setCountryName(countryName.toUpperCase());
                     if (getMvpView() != null)
                         getMvpView().showNotAvailableCity(cityNotAvailable);
