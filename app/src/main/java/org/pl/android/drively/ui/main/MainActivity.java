@@ -185,7 +185,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
                     selectedFragment = FinanceFragment.newInstance();
                     break;
             }
-            mMainPresenter.logAnalytics(FirebaseAnalyticsConst.TAB_CHANGED, selectedFragment.getClass().getSimpleName(), null);
+            mMainPresenter.logAnalytics(selectedFragment.getClass().getSimpleName(), FirebaseAnalyticsConst.TAB_CHANGED, null);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frame_layout, selectedFragment);
             transaction.commitAllowingStateLoss();
