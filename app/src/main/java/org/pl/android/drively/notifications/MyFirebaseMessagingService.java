@@ -145,6 +145,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                 .setSummaryText(fcm.getRoomName()))
                         .setGroup(fcm.getIdRoom())
                         .setGroupSummary(true)
+                        .setAutoCancel(true)
                         .build();
 
         notificationManager.notify(fcm.getIdRoom().hashCode(), summary);
