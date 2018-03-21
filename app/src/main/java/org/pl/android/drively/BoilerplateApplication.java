@@ -45,4 +45,5 @@ public class BoilerplateApplication extends Application {
     public void setComponent(ApplicationComponent applicationComponent) {
         mApplicationComponent = applicationComponent;
     }
+
 }
