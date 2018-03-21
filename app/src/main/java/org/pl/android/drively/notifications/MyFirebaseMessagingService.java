@@ -81,14 +81,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void sendNotificationFromChat(MessageNotificationFCM fcm, boolean isGroup) {
-        if (dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() == null)
-            return;
-
-        if (System.currentTimeMillis() - fcm.getTimestamp() > Const.TIME_TO_DROP_NOTIFICATION)
-            return;
-
-        if (ChatViewActivity.ACTIVE_ROOM.equals(fcm.getIdRoom()) || fcm.getIdRoom() == null)
-            return;
+        if (dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() == null) return;
+        if (System.currentTimeMillis() - fcm.getTimestamp() > Const.TIME_TO_DROP_NOTIFICATION) return;
+        if (ChatViewActivity.ACTIVE_ROOM.equals(fcm.getIdRoom()) || fcm.getIdRoom() == null) return;
+        if (fcm.getIdSender().equals(dataManager.getPreferencesHelper().getUserId())) return;
 
         if (ChatViewActivity.bitmapAvatarFriends.containsKey(fcm.getIdSender()))
             sendNotificationFromChatWithIcon(fcm, ChatViewActivity.bitmapAvatarFriends.get(fcm.getIdSender()), isGroup);
@@ -126,23 +122,33 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-        String nameSender = isGroup ? fcm.getNameSender() + " (" + fcm.getRoomName() + ")" : fcm.getNameSender();
-
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+        Notification message = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.notification_d)
                 .setColor(getResources().getColor(R.color.primary_dark))
                 .setLargeIcon(avatar)
-                .setContentTitle(nameSender)
+                .setContentTitle(fcm.getNameSender())
                 .setContentText(fcm.getText())
                 .setAutoCancel(true)
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setSound(defaultSoundUri)
+                .setGroup(fcm.getIdRoom())
                 .addAction(R.drawable.ic_action_whatshot, getResources().getString(R.string.check_in_app), navigationIntent)
-                .setContentIntent(navigationIntent);
+                .setContentIntent(navigationIntent).build();
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (notificationManager != null)
-            notificationManager.notify(fcm.getIdRoom().hashCode(), notificationBuilder.build());
+        if (notificationManager == null) return;
+
+        Notification summary =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.notification_d)
+                        .setStyle(new NotificationCompat.InboxStyle()
+                                .setSummaryText(fcm.getRoomName()))
+                        .setGroup(fcm.getIdRoom())
+                        .setGroupSummary(true)
+                        .build();
+
+        notificationManager.notify(fcm.getIdRoom().hashCode(), summary);
+        notificationManager.notify((fcm.getIdSender() + fcm.getIdRoom() + fcm.getNameSender()).hashCode(), message);
     }
 
     private void sendNotification(EventNotificationFCM fcm) {
