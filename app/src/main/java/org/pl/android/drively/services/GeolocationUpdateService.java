@@ -1,6 +1,8 @@
 package org.pl.android.drively.services;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -8,9 +10,12 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.Process;
 import android.text.format.DateUtils;
 
+import com.annimon.stream.Stream;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.google.firebase.database.DatabaseReference;
@@ -22,6 +27,7 @@ import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.data.model.eventbus.HotspotSettingsChanged;
 import org.pl.android.drively.data.model.eventbus.RestartServiceSignal;
+import org.pl.android.drively.ui.main.MainActivity;
 import org.pl.android.drively.util.FirebasePaths;
 
 import javax.inject.Inject;
@@ -30,34 +36,56 @@ import timber.log.Timber;
 
 public class GeolocationUpdateService extends Service {
 
-    private static final String TAG = "GeolocationUpdateService".toUpperCase();
-    private static final int LOCATION_INTERVAL = 900;
-    private static final float LOCATION_DISTANCE = 5f;
-    private static final long TIME_FOR_SERVICE = DateUtils.MINUTE_IN_MILLIS * 10;
-    public static String FIREBASE_KEY = "";
-    private static String DRIVER_TYPE = "";
-    private static KalmanFilterService KALMAN_FILTER = new KalmanFilterService();
     @Inject
     DataManager dataManager;
-    Handler handler;
+    private static final String TAG = "GeolocationUpdateService".toUpperCase();
+    private static final int LOCATION_INTERVAL = 800;
+    private static final float LOCATION_DISTANCE = 2.5f;
+    private static final long TIME_FOR_SERVICE_SHUTDOWN = DateUtils.HOUR_IN_MILLIS;
+    public static String FIREBASE_KEY = "";
+    private static KalmanFilterService KALMAN_FILTER = new KalmanFilterService();
+    private Handler handler;
     private GeoFire geoFire;
     private DatabaseReference databaseReference;
     private LocationManager mLocationManager = null;
-    private User user;
+    private Runnable stopRunning;
+    private Runnable updatesRunnable;
     private LocationListener[] mLocationListeners = new LocationListener[]{
             new LocationListener(LocationManager.GPS_PROVIDER),
             new LocationListener(LocationManager.NETWORK_PROVIDER)
     };
-    private Runnable postDelayedRunnable;
+
+    public static void startService() {
+        if (MainActivity.getActivity() == null) return;
+        Intent intentGeoService = new Intent(MainActivity.getActivity(), GeolocationUpdateService.class);
+        MainActivity.getActivity().startService(intentGeoService);
+    }
+
+    public static void stopService() {
+        if (MainActivity.getActivity() == null) return;
+        Intent intentGeoService = new Intent(MainActivity.getActivity(), GeolocationUpdateService.class);
+        MainActivity.getActivity().stopService(intentGeoService);
+    }
+
+    public static boolean isServiceRunning(Activity activity) {
+        ActivityManager manager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
+        if(manager == null) return false;
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (GeolocationUpdateService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     @Override
-    public IBinder onBind(Intent arg0) {
+    public IBinder onBind(Intent intent) {
+        /* Ignore binding */
         return null;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Timber.e("onStartCommand");
         super.onStartCommand(intent, flags, startId);
         return START_STICKY;
     }
@@ -68,25 +96,22 @@ public class GeolocationUpdateService extends Service {
         super.onCreate();
         BoilerplateApplication.get(this).getComponent().inject(this);
         EventBus.getDefault().register(this);
-        databaseReference = dataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.USER_LOCATION);
-        geoFire = new GeoFire(databaseReference);
+
+        HandlerThread thread = new HandlerThread(TAG, Process.THREAD_PRIORITY_BACKGROUND);
+        thread.start();
+
         initializeLocationManager();
-        handler = new Handler();
-        postDelayedRunnable = () -> {
-            stopSelf();
-            Timber.d("GeolocationService finished.");
-        };
-        handler.postDelayed(postDelayedRunnable, TIME_FOR_SERVICE);
-        Timber.d("Starting service. Time set up: %d", TIME_FOR_SERVICE);
+        this.databaseReference = dataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.USER_LOCATION);
+        this.geoFire = new GeoFire(databaseReference);
+        this.handler = new Handler(thread.getLooper());
+        this.stopRunning = this::stopSelf;
+        this.updatesRunnable = this::startLocationUpdates;
 
-        user = dataManager.getPreferencesHelper().getUserInfo();
+        // Register runnables
+        this.handler.postDelayed(this.stopRunning, TIME_FOR_SERVICE_SHUTDOWN);
+        this.handler.post(this.updatesRunnable);
 
-        DRIVER_TYPE = user.getDriverType();
-        FIREBASE_KEY = DRIVER_TYPE + "_" + user.getId();
-
-        if (!DRIVER_TYPE.isEmpty() && user.isShareLocalization()) {
-            startLocationUpdates();
-        }
+        this.setFirebaseKey();
     }
 
     @SuppressLint("TimberArgCount")
@@ -97,6 +122,8 @@ public class GeolocationUpdateService extends Service {
 
         // Reset the covariance matrix.
         GeolocationUpdateService.KALMAN_FILTER = new KalmanFilterService();
+
+        this.handler.removeCallbacksAndMessages(null);
 
         if (FIREBASE_KEY != null && !FIREBASE_KEY.isEmpty())
             databaseReference.child(FIREBASE_KEY).removeValue()
@@ -111,70 +138,66 @@ public class GeolocationUpdateService extends Service {
 
     @SuppressLint("TimberArgCount")
     private void startLocationUpdates() {
-        try {
-            mLocationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
-                    mLocationListeners[1]);
-        } catch (java.lang.SecurityException ex) {
-            Timber.e("fail to request location update, ignore, %s", ex.getMessage());
-        } catch (IllegalArgumentException ex) {
-            Timber.d("network provider does not exist, %s", ex.getMessage());
-        }
-
-        try {
-            mLocationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
-                    mLocationListeners[0]);
-        } catch (java.lang.SecurityException ex) {
-            Timber.i(TAG, "fail to request location update, ignore %s", ex.getMessage());
-        } catch (IllegalArgumentException ex) {
-            Timber.d(TAG, "gps provider does not exist %s", ex.getMessage());
-        }
+        Stream.of(mLocationListeners).forEach(listener -> {
+            try {
+                mLocationManager.requestLocationUpdates(listener.getProvider(), LOCATION_INTERVAL, LOCATION_DISTANCE, listener, this.handler.getLooper());
+            } catch (java.lang.SecurityException ex) {
+                Timber.e("Fail to request location update. %s", ex.getMessage());
+            } catch (IllegalArgumentException ex) {
+                Timber.d("%s does not exist. %s", listener.getProvider(), ex.getMessage());
+            }
+        });
     }
 
     @Subscribe
     public void restartServiceTimeout(RestartServiceSignal restartServiceSignal) {
         // On HotSpotFragment onResume() refresh the delay session
-        handler.removeCallbacks(postDelayedRunnable);
-        handler.postDelayed(postDelayedRunnable, TIME_FOR_SERVICE);
-        Timber.d("Restarting GeolocationService. Time set up: %d", TIME_FOR_SERVICE);
-    }
-
-    private void initializeLocationManager() {
-        if (mLocationManager == null) {
-            mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        }
+        handler.removeCallbacks(this.stopRunning);
+        handler.postDelayed(this.stopRunning, TIME_FOR_SERVICE_SHUTDOWN);
+        Timber.d("Restarting GeolocationService. Time set up: %d", TIME_FOR_SERVICE_SHUTDOWN);
     }
 
     @Subscribe
     public void onDriverTypeChanged(HotspotSettingsChanged hotspotSettingsChanged) {
-        DRIVER_TYPE = hotspotSettingsChanged.getDriverType();
-
-        if (FIREBASE_KEY != null && !FIREBASE_KEY.isEmpty()) {
+        if (FIREBASE_KEY != null && !FIREBASE_KEY.isEmpty())
             databaseReference.child(FIREBASE_KEY).removeValue();
-        }
 
-        FIREBASE_KEY = DRIVER_TYPE + "_" + user.getId();
+        setFirebaseKey();
 
         if (hotspotSettingsChanged.getShareLocalization()) {
-            startLocationUpdates();
-        } else {
-            stopSelf();
+            handler.removeCallbacks(this.updatesRunnable);
+            handler.post(this.updatesRunnable);
         }
+        else
+            stopSelf();
+    }
+
+    private void initializeLocationManager() {
+        if (mLocationManager == null)
+            mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+    }
+
+    private void setFirebaseKey() {
+        User user = dataManager.getPreferencesHelper().getUserInfo();
+        String DRIVER_TYPE = user.getDriverType();
+        FIREBASE_KEY = DRIVER_TYPE + "_" + user.getId();
     }
 
     private class LocationListener implements android.location.LocationListener {
-        Location mLastLocation;
+        private Location mLastLocation;
+        private String provider;
 
         public LocationListener(String provider) {
-            mLastLocation = new Location(provider);
+            this.provider = provider;
+            this.mLastLocation = new Location(provider);
         }
 
         @Override
         public void onLocationChanged(Location location) {
             // On each location update refresh the delay session
-            handler.removeCallbacks(postDelayedRunnable);
-            handler.postDelayed(postDelayedRunnable, TIME_FOR_SERVICE);
+            handler.removeCallbacks(GeolocationUpdateService.this.stopRunning);
+            handler.postDelayed(GeolocationUpdateService.this.stopRunning, TIME_FOR_SERVICE_SHUTDOWN);
+            Timber.d("Location has changed: %s", location.toString());
 
             location = KALMAN_FILTER.filter(location);
             mLastLocation.set(location);
@@ -194,6 +217,10 @@ public class GeolocationUpdateService extends Service {
 
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+
+        public String getProvider() {
+            return provider;
         }
     }
 }

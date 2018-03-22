@@ -94,6 +94,10 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
         return mDataManager.getPreferencesHelper().getUserId();
     }
 
+    public boolean updateUserLocation(){
+        return mDataManager.getPreferencesHelper().getUserInfo().isShareLocalization();
+    }
+
     public void logAnalytics(String id, String name, Object content) {
         firebaseAnalyticsService.reportEvent(id, name, content);
     }

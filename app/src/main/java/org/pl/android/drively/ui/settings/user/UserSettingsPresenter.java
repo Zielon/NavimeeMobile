@@ -122,9 +122,9 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
 
     public void deleteUser(ProgressDialog progressDialog) {
         // The service has to delete the user location for Firebase. Therefore, a user has to be login.
+        GeolocationUpdateService.stopService();
+
         Activity activity = (Activity) userSettingsChangeMvpView;
-        Intent intentGeoService = new Intent(activity, GeolocationUpdateService.class);
-        activity.stopService(intentGeoService);
 
         // The user node will be removed by Cloud Functions
         firebaseUser.delete().addOnSuccessListener(result -> {

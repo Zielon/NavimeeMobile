@@ -26,6 +26,7 @@ import com.roughike.bottombar.BottomBar;
 import org.greenrobot.eventbus.EventBus;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.eventbus.NotificationEvent;
+import org.pl.android.drively.services.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BaseActivityFragment;
 import org.pl.android.drively.ui.base.tab.BaseTabFragment;
 import org.pl.android.drively.ui.chat.ChatFragment;
@@ -45,8 +46,7 @@ import butterknife.ButterKnife;
 public class MainActivity extends BaseActivityFragment implements MainMvpView {
 
     static final int SETTINGS_REQUEST = 1;  // The request code
-    private static final String EXTRA_TRIGGER_SYNC_FLAG =
-            "uk.co.ribot.androidboilerplate.ui.main.MainActivity.EXTRA_TRIGGER_SYNC_FLAG";
+    private static final String EXTRA_TRIGGER_SYNC_FLAG ="uk.co.ribot.androidboilerplate.ui.main.MainActivity.EXTRA_TRIGGER_SYNC_FLAG";
     public static boolean IS_USER_POSITION_CHECKED = false;
     public HotSpotFragment.HotspotFilterBackup hotspotFilterBackup;
     @Inject
@@ -56,6 +56,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     String name, count;
     BottomBar bottomBar;
     private BaseTabFragment selectedFragment;
+    private static Activity mainActivity;
 
     /**
      * Return an Intent to start this Activity.
@@ -78,6 +79,10 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
             winParams.flags &= ~bits;
         }
         win.setAttributes(winParams);
+    }
+
+    public static Activity getActivity() {
+        return mainActivity;
     }
 
     public BaseTabFragment getSelectedFragment() {
@@ -157,6 +162,8 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
 
 //        checkAppIntro();
         if (!isLogin()) return;
+
+        mainActivity = this;
 
         bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setOnTabSelectListener(tabId -> {

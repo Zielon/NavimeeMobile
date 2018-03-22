@@ -203,9 +203,8 @@ public class HotSpotFragment extends BaseTabFragment implements
             text.setText("");
         }
 
-        if (mHotspotPresenter.checkLogin() != null) {
-            getActivity().startService(new Intent(getActivity(), GeolocationUpdateService.class));
-        }
+        if (mHotspotPresenter.checkLogin() != null)
+            GeolocationUpdateService.startService();
 
         initGeolocation();
         verifyFirstStartSecondHotspotPopup(this.getContext());
@@ -345,7 +344,7 @@ public class HotSpotFragment extends BaseTabFragment implements
                 .observeOn(AndroidSchedulers.mainThread());
 
         final LocationRequest locationRequest = LocationRequest.create()
-                .setSmallestDisplacement(30)
+                .setSmallestDisplacement(20)
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setFastestInterval(1000 * 2) //Do not receive the updated any frequent than 2 sec
                 .setInterval(1000 * 2); // Receive location update every 2 sec
@@ -403,10 +402,8 @@ public class HotSpotFragment extends BaseTabFragment implements
                     location = KALMAN_FILTER.filter(location);
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-                    if(!isServiceRunning(GeolocationUpdateService.class) && mHotspotPresenter.getShareLocalisationPreference()){
-                        Intent intentGeoService = new Intent(getActivity(), GeolocationUpdateService.class);
-                        getActivity().startService(intentGeoService);
-                    }
+                    if(!GeolocationUpdateService.isServiceRunning(this.getActivity()) && mHotspotPresenter.getShareLocalisationPreference())
+                        GeolocationUpdateService.startService();
 
                     mHotspotPresenter.setLastLocationLatLng(latLng);
                     if (isFirstAfterPermissionGranted) {
@@ -445,17 +442,6 @@ public class HotSpotFragment extends BaseTabFragment implements
                     }
                     Timber.d("address " + address);
                 }, new ErrorHandler());
-    }
-
-    private boolean isServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
-        if(manager == null) return false;
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
