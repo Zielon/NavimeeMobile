@@ -7,17 +7,16 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationManager;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Process;
 import android.text.format.DateUtils;
 
-import com.annimon.stream.Stream;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.firebase.database.DatabaseReference;
 
 import org.greenrobot.eventbus.EventBus;
@@ -27,51 +26,53 @@ import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.data.model.eventbus.HotspotSettingsChanged;
 import org.pl.android.drively.data.model.eventbus.RestartServiceSignal;
-import org.pl.android.drively.ui.main.MainActivity;
 import org.pl.android.drively.util.FirebasePaths;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import pl.charmas.android.reactivelocation2.ReactiveLocationProvider;
 import timber.log.Timber;
 
-public class GeolocationUpdateService extends Service {
+import static org.pl.android.drively.ui.main.MainActivity.getActivity;
 
-    private static final String TAG = "GeolocationUpdateService".toUpperCase();
-    private static final int LOCATION_INTERVAL = 800;
-    private static final float LOCATION_DISTANCE = 2.5f;
+public class GeoLocationUpdateService extends Service {
+
+    private static final String TAG = "GeoLocationUpdateService".toUpperCase();
+    private static final int LOCATION_DISPLACEMENT = 5;
     private static final long TIME_FOR_SERVICE_SHUTDOWN = DateUtils.HOUR_IN_MILLIS;
     public static String FIREBASE_KEY = "";
-    private static KalmanFilterService KALMAN_FILTER = new KalmanFilterService();
     @Inject
     DataManager dataManager;
+    private KalmanFilterService kalmanFilter = new KalmanFilterService();
     private Handler handler;
     private GeoFire geoFire;
     private DatabaseReference databaseReference;
-    private LocationManager mLocationManager = null;
     private Runnable stopRunning;
-    private LocationListener[] mLocationListeners = new LocationListener[]{
-            new LocationListener(LocationManager.GPS_PROVIDER),
-            new LocationListener(LocationManager.NETWORK_PROVIDER)
-    };
+
+    private Observable<Location> locationUpdatesObservable;
+    private Disposable updatableLocationDisposable;
 
     public static void startService() {
-        if (MainActivity.getActivity() == null) return;
-        Intent intentGeoService = new Intent(MainActivity.getActivity(), GeolocationUpdateService.class);
-        MainActivity.getActivity().startService(intentGeoService);
+        if (getActivity() == null) return;
+        Intent intentGeoService = new Intent(getActivity(), GeoLocationUpdateService.class);
+        getActivity().startService(intentGeoService);
     }
 
     public static void stopService() {
-        if (MainActivity.getActivity() == null) return;
-        Intent intentGeoService = new Intent(MainActivity.getActivity(), GeolocationUpdateService.class);
-        MainActivity.getActivity().stopService(intentGeoService);
+        if (getActivity() == null) return;
+        Intent intentGeoService = new Intent(getActivity(), GeoLocationUpdateService.class);
+        getActivity().stopService(intentGeoService);
     }
 
     public static boolean isServiceRunning(Activity activity) {
-        if(activity == null) return false;
+        if (activity == null) return false;
         ActivityManager manager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
         if (manager == null) return false;
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (GeolocationUpdateService.class.getName().equals(service.service.getClassName())) {
+            if (GeoLocationUpdateService.class.getName().equals(service.service.getClassName())) {
                 return true;
             }
         }
@@ -90,7 +91,7 @@ public class GeolocationUpdateService extends Service {
         return START_STICKY;
     }
 
-    @SuppressLint("TimberArgCount")
+    @SuppressLint("MissingPermission")
     @Override
     public void onCreate() {
         super.onCreate();
@@ -100,7 +101,6 @@ public class GeolocationUpdateService extends Service {
         HandlerThread thread = new HandlerThread(TAG, Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
 
-        initializeLocationManager();
         this.databaseReference = dataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.USER_LOCATION);
         this.geoFire = new GeoFire(databaseReference);
         this.handler = new Handler(thread.getLooper());
@@ -109,10 +109,24 @@ public class GeolocationUpdateService extends Service {
         // Register runnables
         this.handler.postDelayed(this.stopRunning, TIME_FOR_SERVICE_SHUTDOWN);
 
+        this.setFirebaseKey();
+
+        ReactiveLocationProvider locationProvider = new ReactiveLocationProvider(getApplicationContext());
+
+        LocationRequest locationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setSmallestDisplacement(LOCATION_DISPLACEMENT)
+                .setFastestInterval(DateUtils.SECOND_IN_MILLIS)
+                .setInterval(DateUtils.SECOND_IN_MILLIS);
+
+        this.locationUpdatesObservable = locationProvider
+                .checkLocationSettings(new LocationSettingsRequest.Builder().addLocationRequest(locationRequest).build())
+                .flatMap(settingsResult -> locationProvider.getUpdatedLocation(locationRequest)) /* The infinite stream of location updates */
+                .subscribeOn(AndroidSchedulers.from(thread.getLooper()))
+                .observeOn(AndroidSchedulers.from(thread.getLooper()));
+
         if (dataManager.getPreferencesHelper().getUserInfo().isShareLocalization())
             this.startLocationUpdates();
-
-        this.setFirebaseKey();
     }
 
     @SuppressLint("TimberArgCount")
@@ -121,9 +135,6 @@ public class GeolocationUpdateService extends Service {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
 
-        // Reset the covariance matrix.
-        GeolocationUpdateService.KALMAN_FILTER = new KalmanFilterService();
-
         this.handler.removeCallbacksAndMessages(null);
 
         if (FIREBASE_KEY != null && !FIREBASE_KEY.isEmpty())
@@ -131,24 +142,23 @@ public class GeolocationUpdateService extends Service {
                     .addOnSuccessListener(success -> Timber.i(FIREBASE_KEY + " has been deleted!"))
                     .addOnFailureListener(Throwable::printStackTrace);
 
-        if (mLocationManager != null) {
-            for (LocationListener mLocationListener : mLocationListeners)
-                mLocationManager.removeUpdates(mLocationListener);
-        }
+        if (updatableLocationDisposable != null)
+            updatableLocationDisposable.dispose();
     }
 
     @SuppressLint("TimberArgCount")
     private void startLocationUpdates() {
-        Stream.of(mLocationListeners).forEach(listener -> {
-            try {
-                mLocationManager.removeUpdates(listener);
-                mLocationManager.requestLocationUpdates(listener.getProvider(), LOCATION_INTERVAL, LOCATION_DISTANCE, listener, this.handler.getLooper());
-            } catch (java.lang.SecurityException ex) {
-                Timber.e("Fail to request location update. %s", ex.getMessage());
-            } catch (IllegalArgumentException ex) {
-                Timber.d("%s does not exist. %s", listener.getProvider(), ex.getMessage());
-            }
-        });
+        updatableLocationDisposable = locationUpdatesObservable
+                .subscribe(location -> {
+                    // On each location update refresh the delay session
+                    handler.removeCallbacks(this.stopRunning);
+                    handler.postDelayed(this.stopRunning, TIME_FOR_SERVICE_SHUTDOWN);
+
+                    location = kalmanFilter.filter(location);
+                    GeoLocation geoLocation = new GeoLocation(location.getLatitude(), location.getLongitude());
+                    if (!FIREBASE_KEY.isEmpty())
+                        geoFire.setLocation(FIREBASE_KEY, geoLocation, (key, error) -> { /* Ignore callback */ });
+                });
     }
 
     @Subscribe
@@ -161,6 +171,7 @@ public class GeolocationUpdateService extends Service {
 
     @Subscribe
     public void onDriverTypeChanged(HotspotSettingsChanged hotspotSettingsChanged) {
+        // Remove the old key from data base and then set a new data set
         if (FIREBASE_KEY != null && !FIREBASE_KEY.isEmpty())
             databaseReference.child(FIREBASE_KEY).removeValue();
 
@@ -172,55 +183,9 @@ public class GeolocationUpdateService extends Service {
             this.stopSelf();
     }
 
-    private void initializeLocationManager() {
-        if (mLocationManager == null)
-            mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-    }
-
     private void setFirebaseKey() {
         User user = dataManager.getPreferencesHelper().getUserInfo();
         String DRIVER_TYPE = user.getDriverType();
-        FIREBASE_KEY = DRIVER_TYPE + "_" + user.getId();
-    }
-
-    private class LocationListener implements android.location.LocationListener {
-        private Location mLastLocation;
-        private String provider;
-
-        LocationListener(String provider) {
-            this.provider = provider;
-            this.mLastLocation = new Location(provider);
-        }
-
-        @Override
-        public void onLocationChanged(Location location) {
-            // On each location update refresh the delay session
-            handler.removeCallbacks(GeolocationUpdateService.this.stopRunning);
-            handler.postDelayed(GeolocationUpdateService.this.stopRunning, TIME_FOR_SERVICE_SHUTDOWN);
-            Timber.d("Location has changed: %s", location.toString());
-
-            location = KALMAN_FILTER.filter(location);
-            mLastLocation.set(location);
-            if (!FIREBASE_KEY.isEmpty())
-                geoFire.setLocation(FIREBASE_KEY, new GeoLocation(location.getLatitude(), location.getLongitude()),
-                        (locationKey, databaseError) -> {
-                        });
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
-
-        public String getProvider() {
-            return provider;
-        }
+        FIREBASE_KEY = String.format("%s_%s", DRIVER_TYPE, user.getId());
     }
 }

@@ -26,7 +26,6 @@ import com.roughike.bottombar.BottomBar;
 import org.greenrobot.eventbus.EventBus;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.eventbus.NotificationEvent;
-import org.pl.android.drively.services.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BaseActivityFragment;
 import org.pl.android.drively.ui.base.tab.BaseTabFragment;
 import org.pl.android.drively.ui.chat.ChatFragment;

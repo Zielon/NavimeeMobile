@@ -1,6 +1,5 @@
 package org.pl.android.drively.data.model;
 
-import android.location.Location;
 import android.support.annotation.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -9,14 +8,11 @@ import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.database.Exclude;
 
-import org.pl.android.drively.services.KalmanFilterService;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Car implements Comparable<Car> {
 
     private String userId;
     private String driverType;
-    private KalmanFilterService kalmanFilter = new KalmanFilterService();
 
     @JsonIgnore
     private GeoLocation currentLocation;
@@ -80,22 +76,7 @@ public class Car implements Comparable<Car> {
 
     @Exclude
     public void setCurrentLocation(GeoLocation currentLocation) {
-
-        Location location = new Location("" /* ignore */);
-
-        location.setLatitude(currentLocation.latitude);
-        location.setLongitude(currentLocation.longitude);
-        location.setAccuracy(20);
-        location.setTime(System.currentTimeMillis());
-
-        location = kalmanFilter.filter(location);
-
-        this.currentLocation = new GeoLocation(location.getLatitude(), location.getLongitude());
-    }
-
-    @Exclude
-    public GeoLocation getPreviousLocation() {
-        return previousLocation;
+        this.currentLocation = currentLocation;
     }
 
     @Exclude

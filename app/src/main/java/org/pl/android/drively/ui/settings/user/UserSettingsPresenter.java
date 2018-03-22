@@ -19,7 +19,7 @@ import org.pl.android.drively.R;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.local.PreferencesHelper;
 import org.pl.android.drively.data.model.User;
-import org.pl.android.drively.services.GeolocationUpdateService;
+import org.pl.android.drively.services.GeoLocationUpdateService;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.ui.signinup.SignActivity;
 import org.pl.android.drively.util.FirebasePaths;
@@ -122,7 +122,7 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
 
     public void deleteUser(ProgressDialog progressDialog) {
         // The service has to delete the user location for Firebase. Therefore, a user has to be login.
-        GeolocationUpdateService.stopService();
+        GeoLocationUpdateService.stopService();
 
         Activity activity = (Activity) userSettingsChangeMvpView;
 

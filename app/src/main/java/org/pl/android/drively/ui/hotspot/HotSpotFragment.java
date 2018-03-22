@@ -2,7 +2,6 @@ package org.pl.android.drively.ui.hotspot;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -76,7 +75,7 @@ import org.pl.android.drively.data.model.eventbus.HotspotSettingsChanged;
 import org.pl.android.drively.data.model.eventbus.NotificationEvent;
 import org.pl.android.drively.data.model.eventbus.RestartServiceSignal;
 import org.pl.android.drively.data.model.maps.ClusterItemGoogleMap;
-import org.pl.android.drively.services.GeolocationUpdateService;
+import org.pl.android.drively.services.GeoLocationUpdateService;
 import org.pl.android.drively.services.KalmanFilterService;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.base.tab.BaseTabFragment;
@@ -204,7 +203,7 @@ public class HotSpotFragment extends BaseTabFragment implements
         }
 
         if (mHotspotPresenter.checkLogin() != null)
-            GeolocationUpdateService.startService();
+            GeoLocationUpdateService.startService();
 
         initGeolocation();
         verifyFirstStartSecondHotspotPopup(this.getContext());
@@ -402,8 +401,8 @@ public class HotSpotFragment extends BaseTabFragment implements
                     location = KALMAN_FILTER.filter(location);
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-                    if(!GeolocationUpdateService.isServiceRunning(this.getActivity()) && mHotspotPresenter.getShareLocalisationPreference())
-                        GeolocationUpdateService.startService();
+                    if(!GeoLocationUpdateService.isServiceRunning(this.getActivity()) && mHotspotPresenter.getShareLocalisationPreference())
+                        GeoLocationUpdateService.startService();
 
                     mHotspotPresenter.setLastLocationLatLng(latLng);
                     if (isFirstAfterPermissionGranted) {
