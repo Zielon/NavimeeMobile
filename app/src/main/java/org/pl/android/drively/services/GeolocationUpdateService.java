@@ -36,20 +36,19 @@ import timber.log.Timber;
 
 public class GeolocationUpdateService extends Service {
 
-    @Inject
-    DataManager dataManager;
     private static final String TAG = "GeolocationUpdateService".toUpperCase();
     private static final int LOCATION_INTERVAL = 800;
     private static final float LOCATION_DISTANCE = 2.5f;
     private static final long TIME_FOR_SERVICE_SHUTDOWN = DateUtils.HOUR_IN_MILLIS;
     public static String FIREBASE_KEY = "";
     private static KalmanFilterService KALMAN_FILTER = new KalmanFilterService();
+    @Inject
+    DataManager dataManager;
     private Handler handler;
     private GeoFire geoFire;
     private DatabaseReference databaseReference;
     private LocationManager mLocationManager = null;
     private Runnable stopRunning;
-    private Runnable updatesRunnable;
     private LocationListener[] mLocationListeners = new LocationListener[]{
             new LocationListener(LocationManager.GPS_PROVIDER),
             new LocationListener(LocationManager.NETWORK_PROVIDER)
@@ -68,8 +67,9 @@ public class GeolocationUpdateService extends Service {
     }
 
     public static boolean isServiceRunning(Activity activity) {
+        if(activity == null) return false;
         ActivityManager manager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
-        if(manager == null) return false;
+        if (manager == null) return false;
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (GeolocationUpdateService.class.getName().equals(service.service.getClassName())) {
                 return true;
@@ -105,11 +105,12 @@ public class GeolocationUpdateService extends Service {
         this.geoFire = new GeoFire(databaseReference);
         this.handler = new Handler(thread.getLooper());
         this.stopRunning = this::stopSelf;
-        this.updatesRunnable = this::startLocationUpdates;
 
         // Register runnables
         this.handler.postDelayed(this.stopRunning, TIME_FOR_SERVICE_SHUTDOWN);
-        this.handler.post(this.updatesRunnable);
+
+        if (dataManager.getPreferencesHelper().getUserInfo().isShareLocalization())
+            this.startLocationUpdates();
 
         this.setFirebaseKey();
     }
@@ -140,6 +141,7 @@ public class GeolocationUpdateService extends Service {
     private void startLocationUpdates() {
         Stream.of(mLocationListeners).forEach(listener -> {
             try {
+                mLocationManager.removeUpdates(listener);
                 mLocationManager.requestLocationUpdates(listener.getProvider(), LOCATION_INTERVAL, LOCATION_DISTANCE, listener, this.handler.getLooper());
             } catch (java.lang.SecurityException ex) {
                 Timber.e("Fail to request location update. %s", ex.getMessage());
@@ -162,14 +164,12 @@ public class GeolocationUpdateService extends Service {
         if (FIREBASE_KEY != null && !FIREBASE_KEY.isEmpty())
             databaseReference.child(FIREBASE_KEY).removeValue();
 
-        setFirebaseKey();
+        this.setFirebaseKey();
 
-        if (hotspotSettingsChanged.getShareLocalization()) {
-            handler.removeCallbacks(this.updatesRunnable);
-            handler.post(this.updatesRunnable);
-        }
+        if (hotspotSettingsChanged.getShareLocalization())
+            this.startLocationUpdates();
         else
-            stopSelf();
+            this.stopSelf();
     }
 
     private void initializeLocationManager() {
@@ -187,7 +187,7 @@ public class GeolocationUpdateService extends Service {
         private Location mLastLocation;
         private String provider;
 
-        public LocationListener(String provider) {
+        LocationListener(String provider) {
             this.provider = provider;
             this.mLastLocation = new Location(provider);
         }
