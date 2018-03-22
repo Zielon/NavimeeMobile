@@ -2,6 +2,7 @@ package org.pl.android.drively.ui.hotspot;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -401,6 +402,12 @@ public class HotSpotFragment extends BaseTabFragment implements
                 .subscribe(location -> {
                     location = KALMAN_FILTER.filter(location);
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+                    if(!isServiceRunning(GeolocationUpdateService.class) && mHotspotPresenter.getShareLocalisationPreference()){
+                        Intent intentGeoService = new Intent(getActivity(), GeolocationUpdateService.class);
+                        getActivity().startService(intentGeoService);
+                    }
+
                     mHotspotPresenter.setLastLocationLatLng(latLng);
                     if (isFirstAfterPermissionGranted) {
                         CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 12);
@@ -438,6 +445,17 @@ public class HotSpotFragment extends BaseTabFragment implements
                     }
                     Timber.d("address " + address);
                 }, new ErrorHandler());
+    }
+
+    private boolean isServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+        if(manager == null) return false;
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

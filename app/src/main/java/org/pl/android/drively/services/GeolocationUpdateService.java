@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.text.format.DateUtils;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -29,10 +30,10 @@ import timber.log.Timber;
 
 public class GeolocationUpdateService extends Service {
 
-    private static final String TAG = "BOOMBOOMTESTGPS";
-    private static final int LOCATION_INTERVAL = 1000;
-    private static final float LOCATION_DISTANCE = 10f;
-    private static final long TIME_FOR_SERVICE = 1800000;
+    private static final String TAG = "GeolocationUpdateService".toUpperCase();
+    private static final int LOCATION_INTERVAL = 900;
+    private static final float LOCATION_DISTANCE = 5f;
+    private static final long TIME_FOR_SERVICE = DateUtils.MINUTE_IN_MILLIS * 10;
     public static String FIREBASE_KEY = "";
     private static String DRIVER_TYPE = "";
     private static KalmanFilterService KALMAN_FILTER = new KalmanFilterService();
@@ -76,7 +77,7 @@ public class GeolocationUpdateService extends Service {
             Timber.d("GeolocationService finished.");
         };
         handler.postDelayed(postDelayedRunnable, TIME_FOR_SERVICE);
-        Timber.d("Starting service. Time set up: " + TIME_FOR_SERVICE);
+        Timber.d("Starting service. Time set up: %d", TIME_FOR_SERVICE);
 
         user = dataManager.getPreferencesHelper().getUserInfo();
 
@@ -115,9 +116,9 @@ public class GeolocationUpdateService extends Service {
                     LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
                     mLocationListeners[1]);
         } catch (java.lang.SecurityException ex) {
-            Timber.e("fail to request location update, ignore", ex);
+            Timber.e("fail to request location update, ignore, %s", ex.getMessage());
         } catch (IllegalArgumentException ex) {
-            Timber.d("network provider does not exist, " + ex.getMessage());
+            Timber.d("network provider does not exist, %s", ex.getMessage());
         }
 
         try {
@@ -125,17 +126,18 @@ public class GeolocationUpdateService extends Service {
                     LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
                     mLocationListeners[0]);
         } catch (java.lang.SecurityException ex) {
-            Timber.i(TAG, "fail to request location update, ignore", ex);
+            Timber.i(TAG, "fail to request location update, ignore %s", ex.getMessage());
         } catch (IllegalArgumentException ex) {
-            Timber.d(TAG, "gps provider does not exist " + ex.getMessage());
+            Timber.d(TAG, "gps provider does not exist %s", ex.getMessage());
         }
     }
 
     @Subscribe
     public void restartServiceTimeout(RestartServiceSignal restartServiceSignal) {
+        // On HotSpotFragment onResume() refresh the delay session
         handler.removeCallbacks(postDelayedRunnable);
         handler.postDelayed(postDelayedRunnable, TIME_FOR_SERVICE);
-        Timber.d("Restarting GeolocationService. Time set up: " + TIME_FOR_SERVICE);
+        Timber.d("Restarting GeolocationService. Time set up: %d", TIME_FOR_SERVICE);
     }
 
     private void initializeLocationManager() {
@@ -170,6 +172,10 @@ public class GeolocationUpdateService extends Service {
 
         @Override
         public void onLocationChanged(Location location) {
+            // On each location update refresh the delay session
+            handler.removeCallbacks(postDelayedRunnable);
+            handler.postDelayed(postDelayedRunnable, TIME_FOR_SERVICE);
+
             location = KALMAN_FILTER.filter(location);
             mLastLocation.set(location);
             if (!FIREBASE_KEY.isEmpty())
