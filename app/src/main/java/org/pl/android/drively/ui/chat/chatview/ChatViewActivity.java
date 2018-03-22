@@ -100,6 +100,8 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
 
     protected MessagesListAdapter<Message> messagesAdapter;
 
+    String onImageLoadLastSenderId = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -204,8 +206,11 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
 
     private void initAdapter() {
         messagesAdapter = new MessagesListAdapter<>(mChatViewPresenter.getId(), (imageView, userId) -> {
+            if (!onImageLoadLastSenderId.equals(userId)) {
+                onImageLoadLastSenderId = userId;
                 mChatViewPresenter.getAvatarPathFromFirebaseByUserEmail(userId, (url, isDefault) ->
                         Glide.with(ChatViewActivity.this).load(isDefault ? R.drawable.default_avatar : url).into(imageView));
+            }
         }
         );
         messagesAdapter.enableSelectionMode(this);
