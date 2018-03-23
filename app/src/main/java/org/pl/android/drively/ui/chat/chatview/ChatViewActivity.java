@@ -38,23 +38,16 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
-import java8.util.stream.Collectors;
-import java8.util.stream.StreamSupport;
 import lombok.Getter;
-import timber.log.Timber;
 
 import static org.pl.android.drively.util.Const.ADMIN;
 
 interface MessageHolder {
-    TextView getTextContent();
-
     TextView getTimestamp();
 
     CircleImageView getAvatar();
 
     RelativeLayout getLayout();
-
-    RecyclerView.ViewHolder getViewHolder();
 }
 
 public class ChatViewActivity extends BaseActivity implements View.OnClickListener, ChatViewMvpView {
@@ -126,53 +119,35 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         recyclerChat.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                if(!allMessagesLoaded) {
+                if (!allMessagesLoaded) {
                     swipeRefreshLayout.setRefreshing(true);
                     mChatViewPresenter.getSingleBatch();
                 }
             }
         });
 
-        mChatViewPresenter.setGroupChat(isGroupChat);
-        mChatViewPresenter.setRoomId(roomId);
+        mChatViewPresenter.setIntentDataAndBuildBaseQuery(isGroupChat, roomId);
         mChatViewPresenter.getSingleBatch();
         mChatViewPresenter.updateNewMessagesListenerTimestamp(System.currentTimeMillis());
     }
 
     @Override
-    public void roomChangesListerSet(List<? extends Message> messages) {
+    public void roomChangesListerSet(List<Message> messages) {
         if (!messages.isEmpty()) {
-            messages = filterAlreadyAttachedMessages(messages);
-            try {
-                int currentSize = adapter.getItemCount();
-                adapter.addToEnd(messages);
-                adapter.notifyItemRangeInserted(currentSize, adapter.getConversation().getListMessageData().size() - 1);
-            } catch (IndexOutOfBoundsException e) {
-                Timber.d(e);
-            }
+            int currentSize = adapter.getItemCount();
+            adapter.addToEnd(messages);
+            adapter.notifyItemRangeInserted(currentSize, adapter.getConversation().getListMessageData().size() - 1);
             mChatViewPresenter.updateNewMessagesListenerTimestamp(System.currentTimeMillis());
         }
         swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
-    public void addMessagesAtTheBeginning(List<? extends Message> messages) {
-        messages = filterAlreadyAttachedMessages(messages);
-        List<? extends Message> finalMessages = messages;
-        adapter.addToStart(finalMessages);
+    public void addMessagesAtTheBeginning(List<Message> messages) {
+        adapter.addToStart(messages);
         adapter.notifyDataSetChanged();
         linearLayoutManager.scrollToPosition(0);
         mChatViewPresenter.updateNewMessagesListenerTimestamp(System.currentTimeMillis());
-    }
-
-    private List<? extends Message> filterAlreadyAttachedMessages(List<? extends Message> messageList) {
-        if (!conversation.getListMessageData().isEmpty()) {
-            return StreamSupport.stream(messageList)
-                    .filter(message -> !conversation.getListMessageData().contains(message) && message != null)
-                    .collect(Collectors.toList());
-        } else {
-            return messageList;
-        }
     }
 
     public void setAllMessagesLoaded(boolean allMessagesLoaded) {
@@ -236,7 +211,6 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
                 newMessage.timestamp = System.currentTimeMillis();
 
                 mChatViewPresenter.addMessage(roomId, newMessage);
-//                linearLayoutManager.scrollToPosition(conversation.getListMessageData().size() - 1);
                 swipeRefreshLayout.setRefreshing(false);
             }
         }
@@ -265,11 +239,11 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.chatViewPresenter = chatViewPresenter;
     }
 
-    public void addToStart(List<? extends Message> messages) {
+    public void addToStart(List<Message> messages) {
         conversation.getListMessageData().addAll(0, messages);
     }
 
-    public void addToEnd(List<? extends Message> messages) {
+    public void addToEnd(List<Message> messages) {
         conversation.getListMessageData().addAll(messages);
     }
 
@@ -426,11 +400,6 @@ class ItemMessageUserHolder extends RecyclerView.ViewHolder implements MessageHo
     }
 
     @Override
-    public TextView getTextContent() {
-        return txtContent;
-    }
-
-    @Override
     public TextView getTimestamp() {
         return timeStamp;
     }
@@ -443,11 +412,6 @@ class ItemMessageUserHolder extends RecyclerView.ViewHolder implements MessageHo
     @Override
     public RelativeLayout getLayout() {
         return layout;
-    }
-
-    @Override
-    public RecyclerView.ViewHolder getViewHolder() {
-        return this;
     }
 
 }
@@ -478,11 +442,6 @@ class ItemMessageFriendHolder extends RecyclerView.ViewHolder implements Message
     }
 
     @Override
-    public TextView getTextContent() {
-        return txtContent;
-    }
-
-    @Override
     public TextView getTimestamp() {
         return timeStamp;
     }
@@ -497,8 +456,4 @@ class ItemMessageFriendHolder extends RecyclerView.ViewHolder implements Message
         return layout;
     }
 
-    @Override
-    public RecyclerView.ViewHolder getViewHolder() {
-        return this;
-    }
 }
