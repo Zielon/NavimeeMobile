@@ -228,7 +228,7 @@
     <string name="reauthenticate">Zaloguj się ponownie</string>
     <string name="help">Pomoc</string>
     <string name="rate_app">Oceń aplikację</string>
-    <string name="delete_account">Usuń konto</string>
+    <string name="delete_account">Usuń swoje konto</string>
     <string name="email">Email</string>
     <string name="no_account_yet">Nie masz jeszcze konta? Stwórz konto</string>
     <string name="dialog_action_ok">Ok</string>

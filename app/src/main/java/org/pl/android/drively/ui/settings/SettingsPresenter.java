@@ -1,15 +1,12 @@
 package org.pl.android.drively.ui.settings;
 
-import android.app.Activity;
-import android.content.Intent;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import org.pl.android.drively.contracts.repositories.UsersRepository;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.local.PreferencesHelper;
-import org.pl.android.drively.services.GeolocationUpdateService;
+import org.pl.android.drively.services.GeoLocationUpdateService;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 
@@ -48,9 +45,7 @@ public class SettingsPresenter extends BasePresenter<SettingsMvpView> {
         ChatViewActivity.bitmapAvatarUser = null;
 
         // The service has to delete the user location for Firebase. Therefore, a user has to be login.
-        Activity activity = (Activity)getMvpView();
-        Intent intentGeoService = new Intent(activity, GeolocationUpdateService.class);
-        activity.stopService(intentGeoService);
+        GeoLocationUpdateService.stopService();
 
         try {
             String userId = firebaseUser.getUid();

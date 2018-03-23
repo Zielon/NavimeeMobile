@@ -75,7 +75,7 @@ import org.pl.android.drively.data.model.eventbus.HotspotSettingsChanged;
 import org.pl.android.drively.data.model.eventbus.NotificationEvent;
 import org.pl.android.drively.data.model.eventbus.RestartServiceSignal;
 import org.pl.android.drively.data.model.maps.ClusterItemGoogleMap;
-import org.pl.android.drively.services.GeolocationUpdateService;
+import org.pl.android.drively.services.GeoLocationUpdateService;
 import org.pl.android.drively.services.KalmanFilterService;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.base.tab.BaseTabFragment;
@@ -202,9 +202,8 @@ public class HotSpotFragment extends BaseTabFragment implements
             text.setText("");
         }
 
-        if (mHotspotPresenter.checkLogin() != null) {
-            getActivity().startService(new Intent(getActivity(), GeolocationUpdateService.class));
-        }
+        if (mHotspotPresenter.checkLogin() != null)
+            GeoLocationUpdateService.startService();
 
         initGeolocation();
         verifyFirstStartSecondHotspotPopup(this.getContext());
@@ -344,7 +343,7 @@ public class HotSpotFragment extends BaseTabFragment implements
                 .observeOn(AndroidSchedulers.mainThread());
 
         final LocationRequest locationRequest = LocationRequest.create()
-                .setSmallestDisplacement(30)
+                .setSmallestDisplacement(20)
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setFastestInterval(1000 * 2) //Do not receive the updated any frequent than 2 sec
                 .setInterval(1000 * 2); // Receive location update every 2 sec
@@ -401,6 +400,10 @@ public class HotSpotFragment extends BaseTabFragment implements
                 .subscribe(location -> {
                     location = KALMAN_FILTER.filter(location);
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+                    if(!GeoLocationUpdateService.isServiceRunning(this.getActivity()) && mHotspotPresenter.getShareLocalisationPreference())
+                        GeoLocationUpdateService.startService();
+
                     mHotspotPresenter.setLastLocationLatLng(latLng);
                     if (isFirstAfterPermissionGranted) {
                         CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 12);

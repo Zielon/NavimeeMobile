@@ -8,7 +8,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 import org.pl.android.drively.contracts.repositories.UsersRepository;
 import org.pl.android.drively.data.DataManager;
-import org.pl.android.drively.services.GeolocationUpdateService;
+import org.pl.android.drively.data.remote.FirebaseAnalyticsService;
+import org.pl.android.drively.services.GeoLocationUpdateService;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
@@ -21,12 +22,15 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
 
     private final DataManager mDataManager;
     private final UsersRepository usersRepository;
+    private final FirebaseAnalyticsService firebaseAnalyticsService;
     private Disposable mDisposable;
 
     @Inject
-    public MainPresenter(DataManager dataManager, UsersRepository usersRepository) {
+    public MainPresenter(DataManager dataManager, UsersRepository usersRepository,
+                         FirebaseAnalyticsService firebaseAnalyticsService) {
         this.mDataManager = dataManager;
         this.usersRepository = usersRepository;
+        this.firebaseAnalyticsService = firebaseAnalyticsService;
     }
 
     @Override
@@ -56,12 +60,12 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
 
     public boolean isLogin() {
         FirebaseUser user = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
-        if(user == null){
-            if (GeolocationUpdateService.FIREBASE_KEY != null && !GeolocationUpdateService.FIREBASE_KEY.isEmpty())
+        if (user == null) {
+            if (GeoLocationUpdateService.FIREBASE_KEY != null && !GeoLocationUpdateService.FIREBASE_KEY.isEmpty())
                 mDataManager.getFirebaseService()
                         .getFirebaseDatabase()
                         .getReference(FirebasePaths.USER_LOCATION)
-                        .child(GeolocationUpdateService.FIREBASE_KEY)
+                        .child(GeoLocationUpdateService.FIREBASE_KEY)
                         .removeValue();
             return false;
         }
@@ -73,7 +77,7 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
             PackageInfo packageInfo = ((Context) getMvpView()).getPackageManager().getPackageInfo(((Context) getMvpView()).getPackageName(), 0);
             int currentVersion = packageInfo.versionCode;
             int oldVersion = mDataManager.getPreferencesHelper().getAppVersion();
-            if (oldVersion < currentVersion && oldVersion != -1) {
+            if (oldVersion < currentVersion) {
                 mDataManager.getFirebaseService().getFirebaseAuth().signOut();
                 mDataManager.getPreferencesHelper().clear();
             }
@@ -88,5 +92,13 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
 
     public String getUserId() {
         return mDataManager.getPreferencesHelper().getUserId();
+    }
+
+    public boolean updateUserLocation(){
+        return mDataManager.getPreferencesHelper().getUserInfo().isShareLocalization();
+    }
+
+    public void logAnalytics(String id, String name, Object content) {
+        firebaseAnalyticsService.reportEvent(id, name, content);
     }
 }

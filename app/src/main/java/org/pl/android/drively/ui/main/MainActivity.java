@@ -26,7 +26,6 @@ import com.roughike.bottombar.BottomBar;
 import org.greenrobot.eventbus.EventBus;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.model.eventbus.NotificationEvent;
-import org.pl.android.drively.services.GeolocationUpdateService;
 import org.pl.android.drively.ui.base.BaseActivityFragment;
 import org.pl.android.drively.ui.base.tab.BaseTabFragment;
 import org.pl.android.drively.ui.chat.ChatFragment;
@@ -36,6 +35,7 @@ import org.pl.android.drively.ui.intro.IntroActivity;
 import org.pl.android.drively.ui.planner.PlannerFragment;
 import org.pl.android.drively.ui.settings.SettingsActivity;
 import org.pl.android.drively.ui.signinup.SignActivity;
+import org.pl.android.drively.util.FirebaseAnalyticsConst;
 import org.pl.android.drively.util.NetworkUtil;
 
 import javax.inject.Inject;
@@ -45,9 +45,9 @@ import butterknife.ButterKnife;
 public class MainActivity extends BaseActivityFragment implements MainMvpView {
 
     static final int SETTINGS_REQUEST = 1;  // The request code
-    private static final String EXTRA_TRIGGER_SYNC_FLAG =
-            "uk.co.ribot.androidboilerplate.ui.main.MainActivity.EXTRA_TRIGGER_SYNC_FLAG";
+    private static final String EXTRA_TRIGGER_SYNC_FLAG ="uk.co.ribot.androidboilerplate.ui.main.MainActivity.EXTRA_TRIGGER_SYNC_FLAG";
     public static boolean IS_USER_POSITION_CHECKED = false;
+    public HotSpotFragment.HotspotFilterBackup hotspotFilterBackup;
     @Inject
     MainPresenter mMainPresenter;
     boolean isFromNotification = false;
@@ -55,8 +55,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     String name, count;
     BottomBar bottomBar;
     private BaseTabFragment selectedFragment;
-
-    public HotSpotFragment.HotspotFilterBackup hotspotFilterBackup;
+    private static Activity mainActivity;
 
     /**
      * Return an Intent to start this Activity.
@@ -79,6 +78,10 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
             winParams.flags &= ~bits;
         }
         win.setAttributes(winParams);
+    }
+
+    public static Activity getActivity() {
+        return mainActivity;
     }
 
     public BaseTabFragment getSelectedFragment() {
@@ -157,7 +160,9 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         mMainPresenter.checkVersion();
 
 //        checkAppIntro();
-        if(!isLogin()) return;
+        if (!isLogin()) return;
+
+        mainActivity = this;
 
         bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setOnTabSelectListener(tabId -> {
@@ -185,8 +190,8 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
                 case R.id.tab_finance:
                     selectedFragment = FinanceFragment.newInstance();
                     break;
-
             }
+            mMainPresenter.logAnalytics(selectedFragment.getClass().getSimpleName(), FirebaseAnalyticsConst.TAB_CHANGED, null);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frame_layout, selectedFragment);
             transaction.commitAllowingStateLoss();
@@ -249,7 +254,7 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
         if (mMainPresenter.isLogin()) return true;
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if(notificationManager != null)
+        if (notificationManager != null)
             notificationManager.cancelAll();
 
         Intent intent = new Intent(this, SignActivity.class);

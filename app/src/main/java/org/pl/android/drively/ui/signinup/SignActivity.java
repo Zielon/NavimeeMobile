@@ -79,7 +79,7 @@ public class SignActivity extends BaseSignActivity implements BaseSignMvpView {
 
         // In the case of reauthentication from the delete account menu
         String action = getIntent().getStringExtra(ACTION);
-        if(action != null && action.equals(REAUTHENTICATE)){
+        if (action != null && action.equals(REAUTHENTICATE)) {
             buttonLabel.setText(R.string.reauthenticate);
             regulation.setVisibility(View.GONE);
             reauthenticate = true;
@@ -108,7 +108,7 @@ public class SignActivity extends BaseSignActivity implements BaseSignMvpView {
 
     @Override
     public void onSuccess() {
-        if(reauthenticate){
+        if (reauthenticate) {
             progressDialog.dismiss();
             Intent intent = new Intent();
             intent.putExtra(ACTION, DELETE_USER);

@@ -1,8 +1,6 @@
 package org.pl.android.drively.ui.chat.friendsearch;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
@@ -12,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.google.firebase.storage.FirebaseStorage;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.util.Const;

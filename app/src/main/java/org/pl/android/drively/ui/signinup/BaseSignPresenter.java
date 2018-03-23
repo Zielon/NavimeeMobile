@@ -51,7 +51,7 @@ public class BaseSignPresenter extends BasePresenter<BaseSignMvpView> {
         ListenerRegistration registration = mDataManager.getFirebaseService().getFirebaseFirestore()
                 .collection(USERS).document(userId)
                 .addSnapshotListener((snapshot, e) -> {
-                    if(snapshot != null && snapshot.exists()){
+                    if (snapshot != null && snapshot.exists()) {
                         User user = snapshot.toObject(User.class);
                         mDataManager.getPreferencesHelper().saveUserInfo(user);
                     }

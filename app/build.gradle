@@ -31,10 +31,9 @@ android {
         minSdkVersion 18
         targetSdkVersion 25
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        versionCode 1010
-        // Major -> Millions, Minor -> Thousands, Bugfix -> Hundreds. E.g 1.3.72 == 1,003,072
-        versionName '1.0.10'
-        multiDexEnabled true //important
+        versionCode 1012
+        versionName '1.1.1'
+        multiDexEnabled true
     }
 
     packagingOptions {

@@ -183,7 +183,7 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
                 if (t < 1.0)
                     handler.postDelayed(this, 16);
 
-                if(!marker.isVisible())
+                if (!marker.isVisible())
                     marker.setVisible(true);
             }
         });
