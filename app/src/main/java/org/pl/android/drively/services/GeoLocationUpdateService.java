@@ -51,9 +51,11 @@ public class GeoLocationUpdateService extends Service {
     private GeoFire geoFire;
     private DatabaseReference databaseReference;
     private Runnable stopRunning;
-
-    private Observable<Location> locationUpdatesObservable;
+    private Location lastKnownLocation;
     private Disposable updatableLocationDisposable;
+    private Observable<Location> locationUpdatesObservable;
+    private float coveredDistance;
+    private long time;
 
     public static void startService() {
         if (getActivity() == null) return;
@@ -120,8 +122,9 @@ public class GeoLocationUpdateService extends Service {
                 .setInterval(DateUtils.SECOND_IN_MILLIS);
 
         this.locationUpdatesObservable = locationProvider
-                .checkLocationSettings(new LocationSettingsRequest.Builder().addLocationRequest(locationRequest).build())
+                .checkLocationSettings(new LocationSettingsRequest.Builder().addLocationRequest(locationRequest).setAlwaysShow(true).build())
                 .flatMap(settingsResult -> locationProvider.getUpdatedLocation(locationRequest)) /* The infinite stream of location updates */
+                .map(location -> kalmanFilter.filter(location))
                 .subscribeOn(AndroidSchedulers.from(thread.getLooper()))
                 .observeOn(AndroidSchedulers.from(thread.getLooper()));
 
@@ -129,7 +132,6 @@ public class GeoLocationUpdateService extends Service {
             this.startLocationUpdates();
     }
 
-    @SuppressLint("TimberArgCount")
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -146,7 +148,6 @@ public class GeoLocationUpdateService extends Service {
             updatableLocationDisposable.dispose();
     }
 
-    @SuppressLint("TimberArgCount")
     private void startLocationUpdates() {
         updatableLocationDisposable = locationUpdatesObservable
                 .subscribe(location -> {
@@ -154,7 +155,14 @@ public class GeoLocationUpdateService extends Service {
                     handler.removeCallbacks(this.stopRunning);
                     handler.postDelayed(this.stopRunning, TIME_FOR_SERVICE_SHUTDOWN);
 
-                    location = kalmanFilter.filter(location);
+                    if (lastKnownLocation != null) {
+                        time += Math.abs(location.getTime() - lastKnownLocation.getTime());
+                        coveredDistance += lastKnownLocation.distanceTo(location);
+                    }
+
+                    Timber.d("Distance: %.2f m | Time: %d", coveredDistance, time / 1000);
+
+                    lastKnownLocation = location;
                     GeoLocation geoLocation = new GeoLocation(location.getLatitude(), location.getLongitude());
                     if (!FIREBASE_KEY.isEmpty())
                         geoFire.setLocation(FIREBASE_KEY, geoLocation, (key, error) -> { /* Ignore callback */ });
