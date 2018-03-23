@@ -7,5 +7,7 @@ import java.util.List;
 
 public interface ChatViewMvpView extends MvpView {
 
-    void roomChangesListerSet(List<Message> message);
+    void addNewBatch(List<Message> messages);
+    void addMessagesAtTheBeginning(List<Message> messages);
+    void setAllMessagesLoaded(boolean allMessagesLoaded);
 }
