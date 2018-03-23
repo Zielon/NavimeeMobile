@@ -1,16 +1,11 @@
 package org.pl.android.drively.data.model.chat;
 
-import com.stfalcon.chatkit.commons.models.IMessage;
-import com.stfalcon.chatkit.commons.models.IUser;
-
-import java.util.Date;
-
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public abstract class Message implements IMessage {
+public abstract class Message {
     public String idSender;
     public String idRoom;
     public String emailSender;
@@ -18,36 +13,6 @@ public abstract class Message implements IMessage {
     public String text;
     public long timestamp;
     public boolean deleted;
-
-    @Override
-    public String getId() {
-        return idRoom;
-    }
-
-    @Override
-    public IUser getUser() {
-        return new IUser() {
-            @Override
-            public String getId() {
-                return idSender;
-            }
-
-            @Override
-            public String getName() {
-                return nameSender;
-            }
-
-            @Override
-            public String getAvatar() {
-                return idSender;
-            }
-        };
-    }
-
-    @Override
-    public Date getCreatedAt() {
-        return new Date(timestamp);
-    }
 
     @Override
     public boolean equals(Object o) {

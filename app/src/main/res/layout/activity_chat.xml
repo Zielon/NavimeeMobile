@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/primary_dark"
     android:orientation="vertical">
 
@@ -32,9 +31,8 @@
         android:layout_height="match_parent"
         android:layout_above="@id/line">
 
-        <com.stfalcon.chatkit.messages.MessagesList
-            android:id="@+id/messagesList"
-            app:outcomingDefaultBubbleColor="@color/button_background"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerChat"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </android.support.v4.widget.SwipeRefreshLayout>

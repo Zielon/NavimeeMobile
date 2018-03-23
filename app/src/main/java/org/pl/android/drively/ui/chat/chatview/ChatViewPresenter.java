@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.StorageReference;
@@ -40,6 +41,8 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
     private final UsersRepository usersRepository;
     private Disposable mDisposable;
     private Query messagesQuery;
+    private DocumentSnapshot lastSnapshot;
+    private Message lastMessage;
 
     @Setter
     String roomId;
@@ -77,15 +80,24 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
                 .collection(messagePath)
                 .document(mDataManager.getPreferencesHelper().getCountry())
                 .collection(roomId)
-                .orderBy("timestamp", Query.Direction.DESCENDING)
-                .limit(MESSAGES_SLICE_QUANTITY * batchCounter);
+                .orderBy("timestamp", Query.Direction.DESCENDING);
+        if (lastSnapshot != null) {
+            messagesQuery = messagesQuery.startAfter(lastSnapshot);
+        }
+        messagesQuery = messagesQuery.limit(MESSAGES_SLICE_QUANTITY);
         messagesQuery.get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         List<? extends Message> messageList = isGroupChat ? task.getResult().toObjects(GroupMessage.class) : task.getResult().toObjects(PrivateMessage.class);
+                        int lastIndex = messageList.size() - 1;
+                        if (lastIndex == MESSAGES_SLICE_QUANTITY - 1) {
+                            lastSnapshot = task.getResult().getDocuments().get(messageList.size() - 1);
+                            lastMessage = messageList.get(messageList.size() - 1);
+                        } else {
+                            getMvpView().setAllMessagesLoaded(true);
+                        }
                         if (ChatViewPresenter.this.getMvpView() != null) {
                             ChatViewPresenter.this.getMvpView()
-                                    .roomChangesListerSet(StreamSupport.stream(messageList).sorted((message1, message2) ->
-                                            Integer.valueOf((int) message1.timestamp).compareTo((int) message2.timestamp)).collect(Collectors.toList()));
+                                    .roomChangesListerSet(messageList);
                         }
                         batchCounter++;
                     } else {

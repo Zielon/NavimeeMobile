@@ -15,14 +15,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.bumptech.glide.Glide;
-import com.stfalcon.chatkit.messages.MessagesList;
-import com.stfalcon.chatkit.messages.MessagesListAdapter;
 
 import org.pl.android.drively.R;
+import org.pl.android.drively.common.EndlessRecyclerViewScrollListener;
 import org.pl.android.drively.data.model.chat.Conversation;
 import org.pl.android.drively.data.model.chat.GroupMessage;
 import org.pl.android.drively.data.model.chat.Message;
@@ -43,6 +40,7 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import java8.util.stream.Collectors;
 import java8.util.stream.StreamSupport;
+import lombok.Getter;
 import timber.log.Timber;
 
 import static org.pl.android.drively.util.Const.ADMIN;
@@ -59,9 +57,7 @@ interface MessageHolder {
     RecyclerView.ViewHolder getViewHolder();
 }
 
-public class ChatViewActivity extends BaseActivity implements View.OnClickListener,
-        SwipeRefreshLayout.OnRefreshListener, ChatViewMvpView,
-        MessagesListAdapter.SelectionListener, MessagesListAdapter.OnLoadMoreListener {
+public class ChatViewActivity extends BaseActivity implements View.OnClickListener, ChatViewMvpView {
 
     public static final int VIEW_TYPE_USER_MESSAGE = 0;
     public static final int VIEW_TYPE_FRIEND_MESSAGE = 1;
@@ -72,7 +68,6 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
 
     @Inject
     ChatViewPresenter mChatViewPresenter;
-    private ListMessageAdapter adapter;
     private String roomId;
     private String roomName;
     private ArrayList<CharSequence> idFriend;
@@ -81,26 +76,15 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
     private EditText editWriteMessage;
     private LinearLayoutManager linearLayoutManager;
     private Boolean isGroupChat;
-
-    @BindView(R.id.messagesList)
-    MessagesList messagesList;
+    private ListMessageAdapter adapter;
 
     @BindView(R.id.swipeRefreshLayout)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    private int refreshState;
+    private boolean allMessagesLoaded;
 
-    private boolean wasScrooledToEnd = false;
-
-    private boolean loadingInProgress = true;
-
-    private boolean hasLoadedAllItems;
-
-    private int lastSize;
-
-    protected MessagesListAdapter<Message> messagesAdapter;
-
-    String onImageLoadLastSenderId = "";
+    @BindView(R.id.recyclerChat)
+    RecyclerView recyclerChat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +99,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         roomName = intentData.getStringExtra(Const.INTENT_KEY_CHAT_ROOM_NAME);
         isGroupChat = intentData.getBooleanExtra(Const.INTENT_KEY_IS_GROUP_CHAT, false);
         String nameFriend = intentData.getStringExtra(Const.INTENT_KEY_CHAT_FRIEND);
-        initAdapter();
+//        initAdapter();
         conversation = new Conversation();
         btnSend = (ImageButton) findViewById(R.id.btnSend);
         btnSend.setOnClickListener(this);
@@ -128,6 +112,8 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
             getSupportActionBar().setTitle(roomName);
 
         linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        linearLayoutManager.setReverseLayout(true);
+        recyclerChat.setLayoutManager(linearLayoutManager);
 
         adapter = new ListMessageAdapter(this,
                 conversation,
@@ -135,41 +121,51 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
                 bitmapAvatarUser,
                 mChatViewPresenter);
 
+        recyclerChat.setAdapter(adapter);
+
+        recyclerChat.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                if(!allMessagesLoaded) {
+                    swipeRefreshLayout.setRefreshing(true);
+                    mChatViewPresenter.getSingleBatch();
+                }
+            }
+        });
+
         mChatViewPresenter.setGroupChat(isGroupChat);
         mChatViewPresenter.setRoomId(roomId);
         mChatViewPresenter.getSingleBatch();
-        mChatViewPresenter.updateNewMessagesListenerTimestamp(getFirstMessageTimestamp());
-
-        swipeRefreshLayout.setOnRefreshListener(this);
+        mChatViewPresenter.updateNewMessagesListenerTimestamp(System.currentTimeMillis());
     }
 
     @Override
-    public void roomChangesListerSet(List<Message> messages) {
+    public void roomChangesListerSet(List<? extends Message> messages) {
         if (!messages.isEmpty()) {
             messages = filterAlreadyAttachedMessages(messages);
             try {
-                messagesAdapter.addToEnd(messages, true);
+                int currentSize = adapter.getItemCount();
+                adapter.addToEnd(messages);
+                adapter.notifyItemRangeInserted(currentSize, adapter.getConversation().getListMessageData().size() - 1);
             } catch (IndexOutOfBoundsException e) {
                 Timber.d(e);
             }
-            conversation.getListMessageData().addAll(messages);
-            mChatViewPresenter.updateNewMessagesListenerTimestamp(getFirstMessageTimestamp());
+            mChatViewPresenter.updateNewMessagesListenerTimestamp(System.currentTimeMillis());
         }
         swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
-    public void addMessagesAtTheBeginning(List<Message> messages) {
+    public void addMessagesAtTheBeginning(List<? extends Message> messages) {
         messages = filterAlreadyAttachedMessages(messages);
-        StreamSupport.stream(messages)
-                .forEach(message -> {
-                    messagesAdapter.addToStart(message, false);
-                    conversation.getListMessageData().add(message);
-                });
-        mChatViewPresenter.updateNewMessagesListenerTimestamp(getFirstMessageTimestamp());
+        List<? extends Message> finalMessages = messages;
+        adapter.addToStart(finalMessages);
+        adapter.notifyDataSetChanged();
+        linearLayoutManager.scrollToPosition(0);
+        mChatViewPresenter.updateNewMessagesListenerTimestamp(System.currentTimeMillis());
     }
 
-    private List<Message> filterAlreadyAttachedMessages(List<Message> messageList) {
+    private List<? extends Message> filterAlreadyAttachedMessages(List<? extends Message> messageList) {
         if (!conversation.getListMessageData().isEmpty()) {
             return StreamSupport.stream(messageList)
                     .filter(message -> !conversation.getListMessageData().contains(message) && message != null)
@@ -179,17 +175,10 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    private Long getFirstMessageTimestamp() {
-        if (!conversation.getListMessageData().isEmpty()) {
-            return StreamSupport.stream(conversation.getListMessageData())
-                    .sorted((message1, message2) ->
-                            Integer.valueOf((int) message2.timestamp).compareTo((int) message1.timestamp))
-                    .collect(Collectors.toList())
-                    .get(0)
-                    .getTimestamp() + 1;
-        } else {
-            return 0L;
-        }
+    public void setAllMessagesLoaded(boolean allMessagesLoaded) {
+        this.allMessagesLoaded = allMessagesLoaded;
+        swipeRefreshLayout.setEnabled(false);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -202,22 +191,6 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
             this.finish();
         }
         return true;
-    }
-
-    private void initAdapter() {
-        messagesAdapter = new MessagesListAdapter<>(mChatViewPresenter.getId(), (imageView, userId) -> {
-            if (!onImageLoadLastSenderId.equals(userId)) {
-                onImageLoadLastSenderId = userId;
-                mChatViewPresenter.getAvatarPathFromFirebaseByUserEmail(userId, (url, isDefault) ->
-                        Glide.with(ChatViewActivity.this).load(isDefault ? R.drawable.default_avatar : url).into(imageView));
-            }
-        }
-        );
-        messagesAdapter.enableSelectionMode(this);
-        messagesAdapter.setLoadMoreListener(this);
-        messagesAdapter.registerViewClickListener(R.id.messageUserAvatar,
-                (view, message) -> Toast.makeText(ChatViewActivity.this, "view clicked co", Toast.LENGTH_SHORT));
-        this.messagesList.setAdapter(messagesAdapter);
     }
 
     @Override
@@ -269,25 +242,12 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    @Override
-    public void onRefresh() {
-    }
-
-    @Override
-    public void onLoadMore(int page, int totalItemsCount) {
-        swipeRefreshLayout.setRefreshing(true);
-        mChatViewPresenter.getSingleBatch();
-    }
-
-    @Override
-    public void onSelectionChanged(int count) {
-
-    }
 }
 
 class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
+    @Getter
     private Conversation conversation;
     private HashMap<String, Bitmap> bitmapAvatars;
     private Bitmap bitmapAvatarUser;
@@ -303,6 +263,14 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.bitmapAvatars = bitmapAvatars;
         this.bitmapAvatarUser = bitmapAvatarUser;
         this.chatViewPresenter = chatViewPresenter;
+    }
+
+    public void addToStart(List<? extends Message> messages) {
+        conversation.getListMessageData().addAll(0, messages);
+    }
+
+    public void addToEnd(List<? extends Message> messages) {
+        conversation.getListMessageData().addAll(messages);
     }
 
     public static void setMargins(RelativeLayout layout, Integer l, Integer t, Integer r, Integer b) {
@@ -345,11 +313,11 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             setMargins(holder.getLayout(), null, 0, null, 0);
         }
 
-        if (TOP || FIRST) {
+        if (TOP || LAST) {
             holder.getAvatar().setVisibility(View.INVISIBLE);
             setMargins(holder.getLayout(), null, 0, null, 0);
         }
-        if (BOTTOM || LAST) {
+        if (BOTTOM || FIRST) {
             holder.getTimestamp().setVisibility(View.GONE);
             setMargins(holder.getLayout(), null, 0, null, 10);
         }
