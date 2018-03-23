@@ -92,11 +92,10 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         roomName = intentData.getStringExtra(Const.INTENT_KEY_CHAT_ROOM_NAME);
         isGroupChat = intentData.getBooleanExtra(Const.INTENT_KEY_IS_GROUP_CHAT, false);
         String nameFriend = intentData.getStringExtra(Const.INTENT_KEY_CHAT_FRIEND);
-//        initAdapter();
         conversation = new Conversation();
         btnSend = (ImageButton) findViewById(R.id.btnSend);
         btnSend.setOnClickListener(this);
-
+        swipeRefreshLayout.setRefreshing(true);
         editWriteMessage = (EditText) findViewById(R.id.editWriteMessage);
 
         if (!isGroupChat && nameFriend != null)
@@ -132,7 +131,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
     }
 
     @Override
-    public void roomChangesListerSet(List<Message> messages) {
+    public void addNewBatch(List<Message> messages) {
         if (!messages.isEmpty()) {
             int currentSize = adapter.getItemCount();
             adapter.addToEnd(messages);
@@ -210,7 +209,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
                 newMessage.emailSender = mChatViewPresenter.getUserInfo().getEmail();
                 newMessage.timestamp = System.currentTimeMillis();
 
-                mChatViewPresenter.addMessage(roomId, newMessage);
+                mChatViewPresenter.addMessage(newMessage);
                 swipeRefreshLayout.setRefreshing(false);
             }
         }

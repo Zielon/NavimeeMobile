@@ -25,17 +25,16 @@ import static org.pl.android.drively.util.FirebasePaths.MESSAGES_PRIVATE;
 
 public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
 
-    public static final int MESSAGES_SLICE_QUANTITY = 20;
+    private static final int MESSAGES_SLICE_QUANTITY = 20;
 
     private final DataManager mDataManager;
     private final UsersRepository usersRepository;
-    private Query messagesQuery;
     private DocumentSnapshot lastSnapshot;
 
-    String roomId;
-    boolean isGroupChat;
+    private String roomId;
 
-    Long batchCounter = 1L;
+    private boolean isGroupChat;
+
     private ListenerRegistration newMessagesListener;
 
     private Query baseQuery;
@@ -52,6 +51,8 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
     }
 
     public void setIntentDataAndBuildBaseQuery(boolean isGroupChat, String roomId) {
+        this.roomId = roomId;
+        this.isGroupChat = isGroupChat;
         String messagePath = isGroupChat ? MESSAGES_GROUPS : MESSAGES_PRIVATE;
         baseQuery = mDataManager.getFirebaseService().getFirebaseFirestore()
                 .collection(messagePath)
@@ -86,9 +87,8 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
                             getMvpView().setAllMessagesLoaded(true);
                         }
                         if (ChatViewPresenter.this.getMvpView() != null) {
-                            ChatViewPresenter.this.getMvpView().roomChangesListerSet(messageList);
+                            ChatViewPresenter.this.getMvpView().addNewBatch(messageList);
                         }
-                        batchCounter++;
                     } else {
                         Timber.d(task.getException());
                     }
@@ -98,8 +98,7 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
 
     public void updateNewMessagesListenerTimestamp(Long firstMessageTimestamp) {
         Query messagesQuery = baseQuery
-                .whereGreaterThan("timestamp", firstMessageTimestamp)
-                .limit(MESSAGES_SLICE_QUANTITY * batchCounter);
+                .whereGreaterThan("timestamp", firstMessageTimestamp);
         if (newMessagesListener != null) {
             newMessagesListener.remove();
         }
@@ -115,7 +114,7 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
         });
     }
 
-    public void addMessage(String roomId, Message newMessage) {
+    public void addMessage(Message newMessage) {
         String messagePath = newMessage instanceof PrivateMessage ? MESSAGES_PRIVATE : MESSAGES_GROUPS;
         mDataManager.getFirebaseService().getFirebaseFirestore()
                 .collection(messagePath)
