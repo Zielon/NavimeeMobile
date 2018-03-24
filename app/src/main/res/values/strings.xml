@@ -249,6 +249,7 @@
     <string name="name">Name</string>
     <string name="continueWith">or continue with</string>
     <string name="emailAlreadyInUse">The email address is already in use by another account.</string>
+    <string name="copied_message">Message copied.</string>
 
     <!--FINANCE-->
     <string name="add_finance">SAVE</string>

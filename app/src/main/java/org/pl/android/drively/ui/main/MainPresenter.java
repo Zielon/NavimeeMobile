@@ -9,7 +9,7 @@ import com.google.firebase.auth.FirebaseUser;
 import org.pl.android.drively.contracts.repositories.UsersRepository;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.remote.FirebaseAnalyticsService;
-import org.pl.android.drively.services.GeolocationUpdateService;
+import org.pl.android.drively.services.GeoLocationUpdateService;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
@@ -61,11 +61,11 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
     public boolean isLogin() {
         FirebaseUser user = mDataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
         if (user == null) {
-            if (GeolocationUpdateService.FIREBASE_KEY != null && !GeolocationUpdateService.FIREBASE_KEY.isEmpty())
+            if (GeoLocationUpdateService.FIREBASE_KEY != null && !GeoLocationUpdateService.FIREBASE_KEY.isEmpty())
                 mDataManager.getFirebaseService()
                         .getFirebaseDatabase()
                         .getReference(FirebasePaths.USER_LOCATION)
-                        .child(GeolocationUpdateService.FIREBASE_KEY)
+                        .child(GeoLocationUpdateService.FIREBASE_KEY)
                         .removeValue();
             return false;
         }
@@ -92,6 +92,10 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
 
     public String getUserId() {
         return mDataManager.getPreferencesHelper().getUserId();
+    }
+
+    public boolean updateUserLocation(){
+        return mDataManager.getPreferencesHelper().getUserInfo().isShareLocalization();
     }
 
     public void logAnalytics(String id, String name, Object content) {

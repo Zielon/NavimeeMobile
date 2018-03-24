@@ -1,5 +1,12 @@
 package org.pl.android.drively.data.model.chat;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@EqualsAndHashCode
 public abstract class Message {
     public String idSender;
     public String idRoom;

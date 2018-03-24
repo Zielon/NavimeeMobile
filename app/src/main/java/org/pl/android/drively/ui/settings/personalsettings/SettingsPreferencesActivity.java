@@ -18,7 +18,7 @@ import org.pl.android.drively.BoilerplateApplication;
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.eventbus.HotspotSettingsChanged;
-import org.pl.android.drively.services.GeolocationUpdateService;
+import org.pl.android.drively.services.GeoLocationUpdateService;
 import org.pl.android.drively.ui.hotspot.HotspotPopupHelper;
 import org.pl.android.drively.util.Const;
 
@@ -74,9 +74,9 @@ public class SettingsPreferencesActivity extends AppCompatPreferenceActivity imp
                 showPopup(preference, true);
             }
             if (settingsPreferencesPresenter.getShareLocalization()) {
-                startService(new Intent(this, GeolocationUpdateService.class));
+                startService(new Intent(this, GeoLocationUpdateService.class));
             } else {
-                Intent intentGeoService = new Intent(this, GeolocationUpdateService.class);
+                Intent intentGeoService = new Intent(this, GeoLocationUpdateService.class);
                 stopService(intentGeoService);
             }
             mainPreferenceFragment.updateDriverTypeEnableAfter();
