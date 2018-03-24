@@ -247,4 +247,13 @@
     <string name="continueWith">lub kontynuuj z</string>
     <string name="emailAlreadyInUse">Podany adres e-mail jest już używany przez inne konto.</string>
 
+    <!--FINANCE-->
+    <string name="add_finance">ZAPISZ</string>
+    <string name="no_finance_added">Nie dodano żadnych finansów.</string>
+    <string name="finance_adding">Aktualizowanie finansów.</string>
+    <string name="finance_type_label">Rodzaj finansu</string>
+    <string name="write_finance_amount">Wpisz kwotę</string>
+    <string name="finance_failed_to_add">Nie udało się dodać finansu.</string>
+    <string name="enter_category">Wprowadź kategorię</string>
+
 </resources>

@@ -1,4 +1,4 @@
-package org.pl.android.drively.ui.chat.finance;
+package org.pl.android.drively.ui.finance;
 
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
@@ -61,4 +61,8 @@ public class FinancePresenter extends BaseTabPresenter<FinanceMvpView> {
                 });
     }
 
+    public void loadFinances() {
+        //TODO: load finances from firestore
+        getMvpView().showNoDataLabel();
+    }
 }

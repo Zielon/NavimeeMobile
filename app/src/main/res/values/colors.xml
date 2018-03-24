@@ -25,4 +25,6 @@
     <color name="transparent">#00ffffff</color>
     <color name="semi_transparent_black">#70000000</color>
     <color name="semi_transparent_white">#70ffffff</color>
+    <color name="light_primary">#b53e4043</color>
+
 </resources>

@@ -13,80 +13,48 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/content_layout"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/no_data_label"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
         android:layout_height="wrap_content"
-        android:layout_below="@id/app_bar_skeleton"
-        android:layout_margin="24dp"
-        android:layout_marginBottom="12dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/rounded_corner2"
-        android:elevation="12dp"
-        android:paddingBottom="16dp"
-        android:paddingTop="16dp"
+        android:layout_margin="@dimen/base_margin"
+        android:textSize="@dimen/medium_font_size"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/app_bar_skeleton">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/white"
+        android:text="@string/no_finance_added"
+        app:layout_constraintVertical_bias="0.5" />
 
+    <mehdi.sakout.fancybuttons.FancyButton
+        android:id="@+id/add_finance_button"
+        android:layout_width="@dimen/add_finance_fab_size"
+        android:layout_height="@dimen/add_finance_fab_size"
+        android:layout_margin="@dimen/base_margin"
+        android:elevation="@dimen/base_elevation"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1"
+        fancy:fb_defaultColor="@color/button_background"
+        fancy:fb_focusColor="@color/semi_transparent_white"
+        fancy:fb_fontIconResource="&#xf067;"
+        fancy:fb_radius="@dimen/add_finance_fab_size"
+        fancy:fb_textSize="@dimen/medium_font_size"
+        fancy:fb_text=""
+        fancy:fb_textColor="@color/white" />
 
-        <TextView
-            android:id="@+id/popup_finance_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:paddingEnd="24dp"
-            android:paddingStart="24dp"
-            android:text="@string/popup_finance_title"
-            android:textAlignment="center"
-            android:textColor="@color/md_black_1000"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-
-        <TextView
-            android:id="@+id/popup_finance_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:paddingEnd="24dp"
-            android:paddingStart="24dp"
-            android:text="@string/popup_finance_info"
-            android:textAlignment="center"
-            android:textColor="@color/gray_font"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/popup_finance_title" />
-
-        <ImageView
-            android:id="@+id/expenses_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:src="@drawable/finance_24dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/popup_finance_info" />
-
-        <mehdi.sakout.fancybuttons.FancyButton
-            android:id="@+id/popup_finance_contact_us_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginTop="16dp"
-            android:elevation="8dp"
-            android:padding="12dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/expenses_icon"
-            fancy:fb_defaultColor="@color/button_background"
-            fancy:fb_focusColor="@color/white"
-            fancy:fb_radius="2dp"
-            fancy:fb_text="@string/popup_finance_contact_us"
-            fancy:fb_textSize="16sp" />
-
-    </android.support.constraint.ConstraintLayout>
+    <org.pl.android.drively.common.SheetLayout
+        android:id="@+id/reveal_animation_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:elevation="2dp"
+        app:ft_color="@color/button_background"
+        app:ft_container_gravity="center" />
 
 </android.support.constraint.ConstraintLayout>

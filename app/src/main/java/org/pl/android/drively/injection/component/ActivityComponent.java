@@ -10,9 +10,10 @@ import org.pl.android.drively.injection.module.ServicesModule;
 import org.pl.android.drively.ui.chat.ChatFragment;
 import org.pl.android.drively.ui.chat.addgroup.AddGroupActivity;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
-import org.pl.android.drively.ui.chat.finance.FinanceFragment;
 import org.pl.android.drively.ui.chat.friends.FriendsFragment;
 import org.pl.android.drively.ui.chat.group.GroupFragment;
+import org.pl.android.drively.ui.finance.FinanceFragment;
+import org.pl.android.drively.ui.finance.add.AddFinanceActivity;
 import org.pl.android.drively.ui.hotspot.HotSpotFragment;
 import org.pl.android.drively.ui.main.MainActivity;
 import org.pl.android.drively.ui.planner.dayschedule.DayScheduleFragment;
@@ -52,6 +53,8 @@ public interface ActivityComponent {
     void inject(ChatViewActivity chatViewActivity);
 
     void inject(AddGroupActivity addGroupActivity);
+
+    void inject(AddFinanceActivity addGroupActivity);
 
     @ActivityContext
     Context provideContext();

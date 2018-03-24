@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="org.pl.android.drively.ui.finance.add.AddFinanceActivity">
+
+    <com.tylersuehr.chips.ChipsInputLayout
+        android:id="@+id/category_chip_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/enter_category"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        app:chip_backgroundColor="@color/transparent"
+        app:chip_deleteIconColor="@color/white"
+        app:chip_showAvatar="true"
+        app:chip_showDelete="true"
+        app:details_backgroundColor="@color/light_primary"
+        app:details_deleteIconColor="@color/white"
+        app:details_textColor="@color/white"
+        app:filter_backgroundColor="@color/light_primary"
+        app:filter_textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/finance_amount_input_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <FrameLayout
+        android:id="@+id/finance_amount_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/base_margin"
+        android:layout_marginTop="@dimen/base_margin"
+        android:background="@color/light_primary"
+        android:paddingBottom="@dimen/base_padding"
+        android:paddingTop="@dimen/base_padding"
+        app:layout_constraintBottom_toTopOf="@+id/finance_type_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/category_chip_input">
+
+        <EditText
+            android:id="@+id/finance_amount_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:backgroundTint="@color/transparent"
+            android:hint="@string/write_finance_amount"
+            android:inputType="numberDecimal"
+            android:maxLines="1"
+            android:padding="@dimen/base_padding"
+            android:textSize="@dimen/medium_font_size"
+            app:layout_constraintBottom_toTopOf="@+id/finance_type_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/finance_type_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/medium_margin"
+        android:text="@string/finance_type_label"
+        android:textSize="@dimen/base_font_size"
+        app:layout_constraintBottom_toTopOf="@+id/finance_type_switch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/finance_amount_input_layout"
+        app:layout_constraintVertical_bias="0" />
+
+    <com.rm.rmswitch.RMSwitch
+        android:id="@+id/finance_type_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/small_margin"
+        app:checked="false"
+        app:layout_constraintBottom_toTopOf="@+id/add_finance_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/finance_type_label"
+        app:layout_constraintVertical_bias="0"
+        app:switchBkgCheckedColor="@color/md_light_green_200"
+        app:switchBkgNotCheckedColor="@color/md_red_200"
+        app:switchDesign="slim"
+        app:switchToggleCheckedColor="@color/md_light_green_500"
+        app:switchToggleCheckedImage="@drawable/ic_people_white"
+        app:switchToggleNotCheckedColor="@color/md_red_500"
+        app:switchToggleNotCheckedImage="@drawable/ic_delete_white_24dp" />
+
+    <TextView
+        android:id="@+id/date_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2018-01-01 00:00"
+        android:textSize="@dimen/medium_font_size"
+        app:layout_constraintBottom_toTopOf="@+id/add_finance_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/finance_type_switch" />
+
+    <ImageView
+        android:id="@+id/date_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/base_margin"
+        android:src="@drawable/ic_today_grey_24dp"
+        android:text="2018-01-01 00:00"
+        android:textSize="@dimen/medium_font_size"
+        app:layout_constraintBottom_toTopOf="@+id/add_finance_button"
+        app:layout_constraintStart_toEndOf="@id/date_label"
+        app:layout_constraintTop_toBottomOf="@id/finance_type_switch" />
+
+    <mehdi.sakout.fancybuttons.FancyButton
+        android:id="@+id/add_finance_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/big_margin"
+        android:layout_marginTop="@dimen/big_margin"
+        android:elevation="@dimen/base_elevation"
+        android:padding="@dimen/medium_padding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1"
+        fancy:fb_defaultColor="@color/button_background"
+        fancy:fb_focusColor="@color/semi_transparent_white"
+        fancy:fb_fontIconResource="&#xf0c7;"
+        fancy:fb_iconPaddingLeft="16dp"
+        fancy:fb_iconPosition="right"
+        fancy:fb_radius="@dimen/base_radius"
+        fancy:fb_text="@string/add_finance"
+        fancy:fb_textColor="@color/white"
+        fancy:fb_textSize="@dimen/base_font_size"
+        tools:targetApi="lollipop" />
+
+</android.support.constraint.ConstraintLayout>

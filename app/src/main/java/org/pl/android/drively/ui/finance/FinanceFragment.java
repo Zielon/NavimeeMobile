@@ -1,4 +1,4 @@
-package org.pl.android.drively.ui.chat.finance;
+package org.pl.android.drively.ui.finance;
 
 
 import android.content.Intent;
@@ -12,17 +12,21 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.pl.android.drively.R;
+import org.pl.android.drively.common.SheetLayout;
 import org.pl.android.drively.data.model.chat.Room;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.base.tab.BaseTabFragment;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
+import org.pl.android.drively.ui.finance.add.AddFinanceActivity;
 import org.pl.android.drively.ui.main.MainActivity;
 import org.pl.android.drively.util.Const;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
 
@@ -37,6 +41,15 @@ public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
         return new FinanceFragment();
     }
 
+    @BindView(R.id.no_data_label)
+    TextView noDataLabel;
+
+    @BindView(R.id.add_finance_button)
+    FancyButton addFinanceButton;
+
+    @BindView(R.id.reveal_animation_sheet)
+    SheetLayout revealAnimation;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,20 +63,32 @@ public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
     }
 
     @Override
+    public void showNoDataLabel() {
+        noDataLabel.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(R.layout.finance_fragment, container, false);
         ButterKnife.bind(this, fragmentView);
         financePresenter.attachView(this);
+        financePresenter.loadFinances();
+
+        initializeRevealAnimation();
         return fragmentView;
     }
 
-    @OnClick(R.id.popup_finance_contact_us_button)
-    public void onContanctUsClick(View view) {
-        changeTabToChat();
-        financePresenter.getDrivelyGroup();
+    private void initializeRevealAnimation() {
+        revealAnimation.setFab(addFinanceButton);
+        revealAnimation.setFabAnimationEndListener(() -> AddFinanceActivity.startActivity(context));
     }
 
+    @OnClick(R.id.add_finance_button)
+    public void addFinanceButtonClick() {
+        if(!revealAnimation.isFabExpanded())
+            revealAnimation.expandFab();
+    }
 
     @Override
     public void showInstructionPopup() {

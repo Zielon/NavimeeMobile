@@ -250,5 +250,13 @@
     <string name="continueWith">or continue with</string>
     <string name="emailAlreadyInUse">The email address is already in use by another account.</string>
 
+    <!--FINANCE-->
+    <string name="add_finance">SAVE</string>
+    <string name="no_finance_added">No finance data available.</string>
+    <string name="finance_adding">Updating your finances.</string>
+    <string name="finance_type_label">Finance type: </string>
+    <string name="write_finance_amount">Amount</string>
+    <string name="finance_failed_to_add">Adding finance failed.</string>
+    <string name="enter_category">Enter category</string>
 
 </resources>
