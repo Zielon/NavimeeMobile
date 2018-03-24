@@ -124,7 +124,7 @@ public class GeoLocationUpdateService extends Service {
         this.locationUpdatesObservable = locationProvider
                 .checkLocationSettings(new LocationSettingsRequest.Builder().addLocationRequest(locationRequest).setAlwaysShow(true).build())
                 .flatMap(settingsResult -> locationProvider.getUpdatedLocation(locationRequest)) /* The infinite stream of location updates */
-                .map(location -> kalmanFilter.filter(location))
+             //   .map(location -> kalmanFilter.filter(location))
                 .subscribeOn(AndroidSchedulers.from(thread.getLooper()))
                 .observeOn(AndroidSchedulers.from(thread.getLooper()));
 
