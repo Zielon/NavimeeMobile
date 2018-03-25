@@ -24,7 +24,6 @@ import org.pl.android.drively.util.Const;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -37,27 +36,16 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private Context context;
     @Getter
     private Conversation conversation;
-    private HashMap<String, Bitmap> bitmapAvatars;
     private Bitmap bitmapAvatarUser;
     private ChatViewPresenter chatViewPresenter;
 
     public ListMessageAdapter(Context context,
                               Conversation conversation,
-                              HashMap<String, Bitmap> bitmapAvatars,
                               Bitmap bitmapAvatarUser, ChatViewPresenter chatViewPresenter) {
         this.context = context;
         this.conversation = conversation;
-        this.bitmapAvatars = bitmapAvatars;
         this.bitmapAvatarUser = bitmapAvatarUser;
         this.chatViewPresenter = chatViewPresenter;
-    }
-
-    public void addToStart(List<Message> messages) {
-        conversation.getListMessageData().addAll(0, messages);
-    }
-
-    public void addToEnd(List<Message> messages) {
-        conversation.getListMessageData().addAll(messages);
     }
 
     public static void setMargins(RelativeLayout layout, Integer l, Integer t, Integer r, Integer b) {
@@ -74,6 +62,14 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         if (holder == null) return;
         holder.getTimestamp().setVisibility(View.VISIBLE);
         holder.getAvatar().setVisibility(View.VISIBLE);
+    }
+
+    public void addToStart(List<Message> messages) {
+        conversation.getListMessageData().addAll(0, messages);
+    }
+
+    public void addToEnd(List<Message> messages) {
+        conversation.getListMessageData().addAll(messages);
     }
 
     public void groupMessages(int position, MessageHolder holder) {
@@ -130,7 +126,7 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         if (holder instanceof ItemMessageFriendHolder) {
             ItemMessageFriendHolder messageHolder = ((ItemMessageFriendHolder) holder);
             messageHolder.txtContent.setText(message.text);
-            Bitmap currentAvatar = bitmapAvatars.get(message.idSender);
+            Bitmap currentAvatar = chatViewPresenter.getFriendAvatar(message.idSender);
 
             messageHolder.messageDialog = new MaterialDialog.Builder(context)
                     .backgroundColorRes(R.color.primary)

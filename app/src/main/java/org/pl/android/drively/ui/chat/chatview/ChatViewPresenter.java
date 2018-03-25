@@ -1,5 +1,7 @@
 package org.pl.android.drively.ui.chat.chatview;
 
+import android.graphics.Bitmap;
+
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
@@ -112,6 +114,10 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
                 ChatViewPresenter.this.getMvpView().addMessagesAtTheBeginning(newMessages);
             }
         });
+    }
+
+    public Bitmap getFriendAvatar(String friendId){
+        return mDataManager.getPreferencesHelper().getFriendAvatar(friendId);
     }
 
     public void addMessage(Message newMessage) {

@@ -392,7 +392,6 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         final String name = listFriend.getListFriend().get(position).name;
         final String id = listFriend.getListFriend().get(position).id;
         final String idRoom = listFriend.getListFriend().get(position).idRoom;
-        final String avata = listFriend.getListFriend().get(position).avatar;
         ((ItemFriendViewHolder) holder).txtName.setText(name);
 
         ((View) ((ItemFriendViewHolder) holder).txtName.getParent().getParent().getParent())
@@ -405,15 +404,6 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     idFriend.add(id);
                     intent.putCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID, idFriend);
                     intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, idRoom);
-                    ChatViewActivity.bitmapAvatarFriends = new HashMap<>();
-                    if (!avata.equals(Const.STR_DEFAULT_AVATAR)) {
-                        BitmapDrawable bitmapDrawable = (BitmapDrawable) ((ItemFriendViewHolder) holder).avata.getDrawable();
-                        if (bitmapDrawable != null)
-                            ChatViewActivity.bitmapAvatarFriends.put(id, bitmapDrawable.getBitmap());
-                    } else {
-                        ChatViewActivity.bitmapAvatarFriends.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
-                    }
-
                     mapMark.put(id, null);
                     fragment.startActivityForResult(intent, FriendsFragment.ACTION_START_CHAT);
                 });

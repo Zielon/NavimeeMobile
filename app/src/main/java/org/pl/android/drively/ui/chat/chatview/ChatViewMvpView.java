@@ -8,6 +8,8 @@ import java.util.List;
 public interface ChatViewMvpView extends MvpView {
 
     void addNewBatch(List<Message> messages);
+
     void addMessagesAtTheBeginning(List<Message> messages);
+
     void setAllMessagesLoaded(boolean allMessagesLoaded);
 }

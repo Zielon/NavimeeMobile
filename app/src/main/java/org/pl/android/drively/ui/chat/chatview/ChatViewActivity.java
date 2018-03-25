@@ -35,13 +35,15 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
 
     public static final int VIEW_TYPE_USER_MESSAGE = 0;
     public static final int VIEW_TYPE_FRIEND_MESSAGE = 1;
-    public static HashMap<String, Bitmap> bitmapAvatarFriends = new HashMap<>();
     public static Bitmap bitmapAvatarUser;
     public static String ACTIVE_ROOM = "";
-    public String UID;
 
     @Inject
     ChatViewPresenter mChatViewPresenter;
+    @BindView(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.recyclerChat)
+    RecyclerView recyclerChat;
     private String roomId;
     private String roomName;
     private ArrayList<CharSequence> idFriend;
@@ -51,14 +53,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
     private LinearLayoutManager linearLayoutManager;
     private Boolean isGroupChat;
     private ListMessageAdapter adapter;
-
-    @BindView(R.id.swipeRefreshLayout)
-    SwipeRefreshLayout swipeRefreshLayout;
-
     private boolean allMessagesLoaded;
-
-    @BindView(R.id.recyclerChat)
-    RecyclerView recyclerChat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +84,6 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
 
         adapter = new ListMessageAdapter(this,
                 conversation,
-                bitmapAvatarFriends,
                 bitmapAvatarUser,
                 mChatViewPresenter);
 

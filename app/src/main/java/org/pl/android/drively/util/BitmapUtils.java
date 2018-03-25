@@ -8,9 +8,10 @@ import android.graphics.Rect;
 
 public class BitmapUtils {
 
-    public static Bitmap getCircular(Bitmap bitmap) {
-        final int targetWidth = bitmap.getWidth();
-        final int targetHeight = bitmap.getHeight();
+    public static Bitmap getCircular(Bitmap bitmap, int width, int height) {
+        if(bitmap == null) return null;
+        final int targetWidth = width;
+        final int targetHeight = height;
         final int color = 0xff424242;
 
         Bitmap targetBitmap = Bitmap.createBitmap(targetWidth,

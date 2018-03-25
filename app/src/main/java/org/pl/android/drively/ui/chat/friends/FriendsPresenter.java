@@ -113,7 +113,8 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                 HashSet<FriendModel> friendsSet = Stream.of(queries).map(task -> (QuerySnapshot) task.getResult())
                         .reduce(new HashSet<FriendModel>(), (friends, snapshot) -> {
                             List<FriendModel> models = Stream.of(snapshot.getDocuments())
-                                    .map(document -> new FriendModel(document.toObject(ChatUser.class))).toList();
+                                    .map(document -> new FriendModel(document.toObject(ChatUser.class)))
+                                    .filter(friend -> !friend.getId().equals(mDataManager.getPreferencesHelper().getUserId())).toList();
                             friends.addAll(models);
                             return friends;
                         });
@@ -151,9 +152,11 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                             Friend friend = snapshot.toObject(Friend.class);
                             friend.idRoom = ChatUtils.getRoomId(friend.id, getId());
                             return getStorageReference(friend.avatar).getBytes(Const.FIVE_MEGABYTE).continueWith(avatar -> {
-                                if (avatar.isSuccessful())
+                                if (avatar.isSuccessful()){
                                     friend.avatarBytes = avatar.getResult();
-
+                                    mDataManager.getPreferencesHelper()
+                                            .setFriendAvatar(friend.id, BitmapFactory.decodeByteArray(friend.avatarBytes, 0, friend.avatarBytes.length));
+                                }
                                 return friend;
                             });
                         }

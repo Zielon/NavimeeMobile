@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 
 import com.google.firebase.firestore.ListenerRegistration;
 
@@ -11,6 +14,7 @@ import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.injection.ApplicationContext;
 import org.pl.android.drively.util.Const;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -23,8 +27,7 @@ import static org.pl.android.drively.util.ReflectionUtil.nameof;
 @Singleton
 public class PreferencesHelper {
 
-    public static final String PREF_FILE_NAME = "android_boilerplate_pref_file";
-    private static String SHARE_USER_INFO = "userinfo";
+    public static final String PREF_FILE_NAME = "PreferencesHelperDrively";
     private static String SHARE_KEY_NAME = "name";
     private static String SHARE_KEY_EMAIL = "email";
     private static String SHARE_KEY_AVATAR = "avatar";
@@ -34,6 +37,7 @@ public class PreferencesHelper {
     private static String DRIVER_TYPE = Const.DRIVER_TYPE;
     private static String USER_CITY = "user_city";
     private static String IS_ONLINE = "is_online";
+    private static String FRIEND_AVATAR_KEY = "FRIEND_AVATAR_";
 
     private static String DAY_SCHEDULE_NOTIFICATION;
     private static String BIG_EVENTS_NOTIFICATION;
@@ -110,6 +114,22 @@ public class PreferencesHelper {
         SharedPreferences.Editor e = sharedPreferences.edit();
         e.putString(name, value);
         e.apply();
+    }
+
+    public void setFriendAvatar(String friendId, Bitmap bitmap) {
+        SharedPreferences.Editor e = sharedPreferences.edit();
+        ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayStream);
+        String encoded = Base64.encodeToString(byteArrayStream.toByteArray(), Base64.DEFAULT);
+        e.putString(FRIEND_AVATAR_KEY + friendId, encoded);
+        e.apply();
+    }
+
+    public Bitmap getFriendAvatar(String friendId) {
+        String encoded = sharedPreferences.getString(FRIEND_AVATAR_KEY + friendId, "");
+        if (encoded.equals("")) return null;
+        byte[] byteArray = Base64.decode(encoded.getBytes(), Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
     }
 
     public void setValueFloat(String name, float value) {
