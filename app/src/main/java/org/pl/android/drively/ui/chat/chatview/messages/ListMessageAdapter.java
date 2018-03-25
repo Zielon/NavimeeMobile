@@ -82,17 +82,16 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         if (messages.size() <= 0) return;
 
-        // Starts from the bottom.
         Message current = messages.get(position);
         Message next = messages.size() > 1 && position > 0 ? messages.get(position - 1) : null;
         Message previous = position + 1 < messages.size() ? messages.get(position + 1) : null;
 
         // The screen oriented position
         boolean BETWEEN = previous != null && next != null && previous.idSender.equals(current.idSender) && next.idSender.equals(current.idSender);
-        boolean TOP = previous != null && next != null && !next.idSender.equals(current.idSender) && previous.idSender.equals(current.idSender);
-        boolean BOTTOM = next != null && previous != null && !previous.idSender.equals(current.idSender) && next.idSender.equals(current.idSender);
-        boolean LAST = next != null && position == messages.size() - 1 && next.idSender.equals(current.idSender);
-        boolean FIRST = previous != null && position == 0 && previous.idSender.equals(current.idSender);
+        boolean BOTTOM = previous != null && next != null && !next.idSender.equals(current.idSender) && previous.idSender.equals(current.idSender);
+        boolean TOP = next != null && previous != null && !previous.idSender.equals(current.idSender) && next.idSender.equals(current.idSender);
+        boolean LAST = previous != null && position == 0 && previous.idSender.equals(current.idSender);
+        boolean FIRST = next != null && position == messages.size() - 1 && next.idSender.equals(current.idSender);
 
         if (BETWEEN) {
             holder.getAvatar().setVisibility(View.INVISIBLE);
@@ -100,11 +99,12 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             setMargins(holder.getLayout(), null, 0, null, 0);
         }
 
-        if (TOP || LAST) {
+        if (TOP || FIRST) {
             holder.getAvatar().setVisibility(View.INVISIBLE);
             setMargins(holder.getLayout(), null, 0, null, 0);
         }
-        if (BOTTOM || FIRST) {
+
+        if (BOTTOM || LAST) {
             holder.getTimestamp().setVisibility(View.GONE);
             setMargins(holder.getLayout(), null, 0, null, 10);
         }

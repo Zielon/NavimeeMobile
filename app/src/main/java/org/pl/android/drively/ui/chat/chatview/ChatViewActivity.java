@@ -84,8 +84,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         else
             getSupportActionBar().setTitle(roomName);
 
-        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true);
         recyclerChat.setLayoutManager(linearLayoutManager);
 
         adapter = new ListMessageAdapter(this,
