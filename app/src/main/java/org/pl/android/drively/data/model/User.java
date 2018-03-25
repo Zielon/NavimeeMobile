@@ -7,12 +7,10 @@ import com.google.firebase.firestore.IgnoreExtraProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 
-    public static final String DEFAULT_AVATAR = "DEFAULT";
     private String email;
     private String id;
     private boolean online;
     private String name;
-    private String avatar;
     private String token;
     private String city;
     private String country;
@@ -26,7 +24,6 @@ public class User {
     private String driverType;
 
     public User() {
-        this.avatar = DEFAULT_AVATAR;
         this.dayScheduleNotification = true;
         this.bigEventsNotification = true;
         this.chatGroupNotification = true;
@@ -72,14 +69,6 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getAvatar() {
-        return avatar == null ? DEFAULT_AVATAR : avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
     }
 
     public String getToken() {

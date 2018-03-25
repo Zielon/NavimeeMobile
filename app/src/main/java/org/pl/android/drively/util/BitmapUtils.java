@@ -1,15 +1,19 @@
 package org.pl.android.drively.util;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+
 public class BitmapUtils {
 
     public static Bitmap getCircular(Bitmap bitmap, int width, int height) {
-        if(bitmap == null) return null;
+        if (bitmap == null) return null;
         final int targetWidth = width;
         final int targetHeight = height;
         final int color = 0xff424242;
@@ -35,5 +39,14 @@ public class BitmapUtils {
                 new Rect(0, 0, targetWidth,
                         targetHeight), paint);
         return targetBitmap;
+    }
+
+    public static Bitmap scaleDown(Bitmap realImage, float maxImageSize, int quality) {
+        float ratio = Math.min(maxImageSize / realImage.getWidth(), maxImageSize / realImage.getHeight());
+        int width = Math.round(ratio * realImage.getWidth());
+        int height = Math.round(ratio * realImage.getHeight());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Bitmap.createScaledBitmap(realImage, width, height, true).compress(Bitmap.CompressFormat.PNG, quality, out);
+        return BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
     }
 }

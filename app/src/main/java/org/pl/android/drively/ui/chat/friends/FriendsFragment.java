@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -302,9 +301,8 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                                     friend.name = item.getName();
                                     friend.email = item.getEmail();
                                     friend.id = item.getId();
-                                    friend.avatar = item.getAvatar();
                                     friend.idRoom = ChatUtils.getRoomId(item.getId(), mFriendsPresenter.getId());
-                                    mFriendsPresenter.getStorageReference(friend.avatar)
+                                    mFriendsPresenter.getStorageReference(friend.id)
                                             .getBytes(Const.FIVE_MEGABYTE)
                                             .addOnSuccessListener(bytes -> {
                                                 friend.avatarBytes = bytes;
@@ -481,7 +479,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 mapMark.put(id, true);
             }
         }
-        if (listFriend.getListFriend().get(position).avatar.equals(Const.STR_DEFAULT_AVATAR) || listFriend.getListFriend().get(position).avatarBytes == null) {
+        if (listFriend.getListFriend().get(position).avatarBytes == null) {
             ((ItemFriendViewHolder) holder).avata.setImageResource(R.drawable.default_avatar);
         } else {
             Bitmap src = BitmapFactory.decodeByteArray(listFriend.getListFriend().get(position).avatarBytes, 0, listFriend.getListFriend().get(position).avatarBytes.length);

@@ -22,7 +22,6 @@ import org.pl.android.drively.ui.chat.chatview.messages.ListMessageAdapter;
 import org.pl.android.drively.util.Const;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;

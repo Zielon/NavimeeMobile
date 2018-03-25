@@ -31,6 +31,7 @@ import org.pl.android.drively.util.ChatUtils;
 import org.pl.android.drively.util.Const;
 import org.pl.android.drively.util.FirebasePaths;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -39,6 +40,7 @@ import javax.inject.Inject;
 
 import ir.mirrajabi.searchdialog.core.BaseFilter;
 
+import static org.pl.android.drively.util.Const.DEFAULT_AVATAR;
 import static org.pl.android.drively.util.FirebasePaths.AVATARS;
 import static org.pl.android.drively.util.ReflectionUtil.nameof;
 
@@ -121,13 +123,12 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
 
                 result.addAll(Stream.of(new ArrayList<>(friendsSet)).filter(friend -> !friendList.contains(friend.getId())).toList());
 
-                List<Task<byte[]>> avatars = Stream.of(result).filter(user -> !user.getAvatar().equals(Const.STR_DEFAULT_AVATAR))
-                        .map(user -> FirebaseStorage.getInstance().getReference("AVATARS/" + user.getAvatar())
-                                .getBytes(Const.FIVE_MEGABYTE)
-                                .addOnSuccessListener(bytes -> {
-                                    Bitmap avatar = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                    user.setAvatarImage(avatar);
-                                })).toList();
+                List<Task<byte[]>> avatars = Stream.of(result).map(user -> FirebaseStorage.getInstance().getReference("AVATARS/" + user.getId())
+                        .getBytes(Const.FIVE_MEGABYTE)
+                        .addOnSuccessListener(bytes -> {
+                            Bitmap avatar = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            user.setAvatarImage(avatar);
+                        }).addOnFailureListener(failure -> user.setAvatarImage(DEFAULT_AVATAR))).toList();
 
                 Tasks.whenAllComplete(avatars).addOnSuccessListener(bytes -> {
                     searchDialogCompat.getFilterResultListener().onFilter(result);
@@ -151,11 +152,13 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
                         if (snapshot != null && snapshot.exists()) {
                             Friend friend = snapshot.toObject(Friend.class);
                             friend.idRoom = ChatUtils.getRoomId(friend.id, getId());
-                            return getStorageReference(friend.avatar).getBytes(Const.FIVE_MEGABYTE).continueWith(avatar -> {
-                                if (avatar.isSuccessful()){
+                            return getStorageReference(friend.id).getBytes(Const.FIVE_MEGABYTE).continueWith(avatar -> {
+                                if (avatar.isSuccessful())
                                     friend.avatarBytes = avatar.getResult();
-                                    mDataManager.getPreferencesHelper()
-                                            .setFriendAvatar(friend.id, BitmapFactory.decodeByteArray(friend.avatarBytes, 0, friend.avatarBytes.length));
+                                else {
+                                    ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
+                                    DEFAULT_AVATAR.compress(Bitmap.CompressFormat.PNG, 100, byteArrayStream);
+                                    friend.avatarBytes = byteArrayStream.toByteArray();
                                 }
                                 return friend;
                             });
@@ -259,18 +262,16 @@ public class FriendsPresenter extends BasePresenter<FriendsMvpView> {
     }
 
     public void getUserAvatar() {
-        String avatarPath = mDataManager.getPreferencesHelper().getUserInfo().getAvatar();
+        String avatarPath = mDataManager.getPreferencesHelper().getUserInfo().getId();
         if (avatarPath.equals(Const.STR_DEFAULT_AVATAR)) {
             ChatViewActivity.bitmapAvatarUser = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.default_avatar);
         } else {
             mDataManager.getFirebaseService().getFirebaseStorage().getReference(String.format("%s/%s", AVATARS, avatarPath))
                     .getBytes(Const.FIVE_MEGABYTE)
                     .addOnSuccessListener(bytes -> {
-                        Bitmap src = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        ChatViewActivity.bitmapAvatarUser = src;
-                    }).addOnFailureListener(exception -> {
-                ChatViewActivity.bitmapAvatarUser = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.default_avatar);
-            });
+                        ChatViewActivity.bitmapAvatarUser = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    }).addOnFailureListener(exception ->
+                    ChatViewActivity.bitmapAvatarUser = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.default_avatar));
         }
     }
 }

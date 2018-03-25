@@ -13,14 +13,12 @@ public class FriendModel implements Searchable {
     private String name;
     private String email;
     private String id;
-    private String avatar;
     private Bitmap avatarImage;
 
     public FriendModel(ChatUser chatUser) {
         name = chatUser.name;
         email = chatUser.email;
         id = chatUser.id;
-        avatar = chatUser.avatar;
     }
 
     @Override
@@ -38,10 +36,6 @@ public class FriendModel implements Searchable {
 
     public String getId() {
         return id;
-    }
-
-    public String getAvatar() {
-        return avatar;
     }
 
     @Override

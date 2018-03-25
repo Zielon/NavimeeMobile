@@ -20,10 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -33,12 +29,10 @@ import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.data.local.PreferencesHelper;
-import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.ui.main.MainActivity;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +65,6 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
     private Drawer drawer = null;
     private Bundle savedInstanceState;
     private int PICK_IMAGE_REQUEST = 1;
-    private int CHANGE_SETTINGS = 2;
     private long FILE_MAX_SIZE_5_MB = 5000000;
     private ProgressDialog progressDialog;
 
@@ -91,57 +84,31 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
         userSettingsPresenter.attachView(this);
         this.savedInstanceState = savedInstanceState;
 
-        loadAvatar();
+        avatarView.setImageResource(R.drawable.default_avatar);
+        userSettingsPresenter.loadAvatar();
         initDrawer();
-    }
-
-    private void loadAvatar() {
-        Glide.with(this)
-                .using(new FirebaseImageLoader())
-                .load(userSettingsPresenter.getStorageReference(preferencesHelper.getUserInfo().getAvatar()))
-                .asBitmap()
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap avatar, GlideAnimation<? super Bitmap> glideAnimation) {
-                        onSuccess();
-                        avatarView.setImageBitmap(avatar);
-                        avatarView.refreshDrawableState();
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
-                        onError(e);
-                    }
-                });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && data != null) {
-
             String action = data.getStringExtra(ACTION);
             if (action != null && action.equals(DELETE_USER)) showDeleteUserPopup();
-
             if (requestCode == PICK_IMAGE_REQUEST && data.getData() != null) {
                 if (checkSize(data.getData())) {
-                    Bitmap bitmap = null;
                     try {
-                        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
-                    } catch (IOException e) {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
+                        if (bitmap == null) {
+                            Toast.makeText(getBaseContext(), "An incorrect file!", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        avatarLayout.setVisibility(View.INVISIBLE);
+                        avatarProgressBar.setVisibility(View.VISIBLE);
+                        ChatViewActivity.bitmapAvatarUser = bitmap;
+                        userSettingsPresenter.setNewAvatar(bitmap);
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-
-                    if (bitmap == null) {
-                        Toast.makeText(getBaseContext(), "An incorrect file!", Toast.LENGTH_LONG).show();
-                        return;
-                    }
-
-                    avatarLayout.setVisibility(View.INVISIBLE);
-                    avatarProgressBar.setVisibility(View.VISIBLE);
-                    ChatViewActivity.bitmapAvatarUser = bitmap;
-                    User user = userSettingsPresenter.setNewAvatar(bitmap, preferencesHelper.getUserInfo(), this);
-                    preferencesHelper.saveUserInfo(user);
                 }
             } else
                 initDrawer();
@@ -184,8 +151,10 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
     }
 
     @Override
-    public void reloadAvatar() {
-        loadAvatar();
+    public void reloadAvatar(Bitmap avatar) {
+        avatarView.setImageBitmap(avatar);
+        avatarView.refreshDrawableState();
+        onSuccess();
     }
 
     @OnClick(R.id.avatar_layout)

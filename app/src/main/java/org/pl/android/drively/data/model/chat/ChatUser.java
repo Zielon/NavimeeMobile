@@ -4,7 +4,6 @@ public class ChatUser {
 
     public String name;
     public String email;
-    public String avatar;
     public String id;
     public Status status;
     public Message message;
@@ -13,6 +12,5 @@ public class ChatUser {
         status = new Status();
         status.online = false;
         status.timestamp = 0;
-        avatar = "DEFAULT";
     }
 }

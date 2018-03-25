@@ -2,17 +2,14 @@ package org.pl.android.drively.ui.settings.user;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
+import android.graphics.BitmapFactory;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.kelvinapps.rxfirebase.RxFirebaseStorage;
 
 import org.pl.android.drively.R;
@@ -22,25 +19,23 @@ import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.services.GeoLocationUpdateService;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.ui.signinup.SignActivity;
-import org.pl.android.drively.util.FirebasePaths;
+import org.pl.android.drively.util.Const;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 import javax.inject.Inject;
 
+import static org.pl.android.drively.util.BitmapUtils.scaleDown;
 import static org.pl.android.drively.util.ConstIntents.ACTION;
 import static org.pl.android.drively.util.ConstIntents.PROVIDERS;
 import static org.pl.android.drively.util.ConstIntents.REAUTHENTICATE;
 import static org.pl.android.drively.util.FirebasePaths.AVATARS;
-import static org.pl.android.drively.util.InternalStorageManager.saveBitmap;
 
 public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpView> {
 
     private FirebaseUser firebaseUser;
     private FirebaseStorage firebaseStorage;
-    private FirebaseFirestore firebaseFirestore;
     private PreferencesHelper preferencesHelper;
     private UserSettingsChangeMvpView userSettingsChangeMvpView;
 
@@ -48,20 +43,7 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
     public UserSettingsPresenter(DataManager dataManager) {
         this.firebaseUser = dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser();
         this.firebaseStorage = dataManager.getFirebaseService().getFirebaseStorage();
-        this.firebaseFirestore = dataManager.getFirebaseService().getFirebaseFirestore();
         this.preferencesHelper = dataManager.getPreferencesHelper();
-    }
-
-    public static Bitmap scaleDown(Bitmap realImage, float maxImageSize, boolean filter) {
-
-        float ratio = Math.min(
-                maxImageSize / realImage.getWidth(),
-                maxImageSize / realImage.getHeight());
-
-        int width = Math.round(ratio * realImage.getWidth());
-        int height = Math.round(ratio * realImage.getHeight());
-
-        return Bitmap.createScaledBitmap(realImage, width, height, filter);
     }
 
     @Override
@@ -82,42 +64,31 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
         return firebaseUser.getDisplayName();
     }
 
-    public StorageReference getStorageReference(String avatar) {
-        return firebaseStorage.getReference().child(String.format("%s/%s", AVATARS, avatar));
+    public void loadAvatar() {
+        User user = preferencesHelper.getUserInfo();
+        FirebaseStorage.getInstance().getReference(String.format("%s/%s", AVATARS, user.getId()))
+                .getBytes(Const.FIVE_MEGABYTE)
+                .addOnSuccessListener(bytes -> {
+                    Bitmap avatar = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    userSettingsChangeMvpView.reloadAvatar(avatar);
+                }).addOnFailureListener(failure -> userSettingsChangeMvpView.onSuccess() /* show the default avatar */);
     }
 
-    public User setNewAvatar(Bitmap bitmap, User user, Context context) {
-        String path = String.format("%s/%s", AVATARS, user.getAvatar());
-        if (!user.getAvatar().equals(User.DEFAULT_AVATAR))
-            RxFirebaseStorage.delete(firebaseStorage.getReference().child(path)).subscribe(success -> {
-            }, throwable -> userSettingsChangeMvpView.onError(throwable));
+    public void setNewAvatar(Bitmap bitmap) {
+        User user = preferencesHelper.getUserInfo();
+        String path = String.format("%s/%s", AVATARS, user.getId());
 
-        Date currentTime = Calendar.getInstance().getTime();
-        String avatar = this.firebaseUser.getEmail().replace('.', '_') + "_" + currentTime.getTime();
-        path = String.format("%s/%s", AVATARS, avatar);
+        RxFirebaseStorage.delete(firebaseStorage.getReference().child(path)).subscribe(
+                success -> { /* ignore */ },
+                throwable -> { /* ignore */ });
 
-        bitmap = scaleDown(bitmap, 200, true);
+        Bitmap scaledBitmap = scaleDown(bitmap, 200, 100);
+        ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
+        scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayStream);
 
-        Uri uri;
-
-        try {
-            uri = saveBitmap(user.getId(), bitmap, context);
-        } catch (Exception e) {
-            userSettingsChangeMvpView.onError(e);
-            return user;
-        }
-
-        user.setAvatar(avatar);
-
-        RxFirebaseStorage.putFile(firebaseStorage.getReference().child(path), uri)
-                .subscribe(
-                        sub -> firebaseFirestore.collection(FirebasePaths.USERS)
-                                .document(user.getId()).update("avatar", user.getAvatar())
-                                .addOnSuccessListener(task -> userSettingsChangeMvpView.reloadAvatar())
-                                .addOnFailureListener(throwable -> userSettingsChangeMvpView.onError(throwable)),
-                        throwable -> userSettingsChangeMvpView.onError(throwable));
-
-        return user;
+        RxFirebaseStorage.putBytes(firebaseStorage.getReference().child(path), byteArrayStream.toByteArray()).subscribe(
+                success -> userSettingsChangeMvpView.reloadAvatar(bitmap),
+                throwable -> userSettingsChangeMvpView.onError(throwable));
     }
 
     public void deleteUser(ProgressDialog progressDialog) {

@@ -29,7 +29,6 @@ import org.pl.android.drively.data.model.chat.RoomMember;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.chat.data.FriendDB;
 import org.pl.android.drively.ui.chat.data.GroupDB;
-import org.pl.android.drively.util.Const;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -293,10 +292,8 @@ class ListPeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ((ItemFriendHolder) holder).txtName.setText(listFriend.getListFriend().get(position).name);
         ((ItemFriendHolder) holder).txtEmail.setText(listFriend.getListFriend().get(position).email);
-        String avata = listFriend.getListFriend().get(position).avatar;
         final String id = listFriend.getListFriend().get(position).id;
-        if (!avata.equals(Const.STR_DEFAULT_AVATAR) && listFriend.getListFriend().get(position).avatarBytes != null) {
-
+        if (listFriend.getListFriend().get(position).avatarBytes != null) {
             Bitmap src = BitmapFactory.decodeByteArray(listFriend.getListFriend().get(position).avatarBytes, 0, listFriend.getListFriend().get(position).avatarBytes.length);
             ((ItemFriendHolder) holder).avatar.setImageBitmap(src);
         } else {

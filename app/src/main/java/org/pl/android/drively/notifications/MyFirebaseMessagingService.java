@@ -82,25 +82,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private void sendNotificationFromChat(MessageNotificationFCM fcm, boolean isGroup) {
         if (dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() == null) return;
-        if (System.currentTimeMillis() - fcm.getTimestamp() > Const.TIME_TO_DROP_NOTIFICATION) return;
+        if (System.currentTimeMillis() - fcm.getTimestamp() > Const.TIME_TO_DROP_NOTIFICATION)
+            return;
         if (ChatViewActivity.ACTIVE_ROOM.equals(fcm.getIdRoom()) || fcm.getIdRoom() == null) return;
         if (fcm.getIdSender().equals(dataManager.getPreferencesHelper().getUserId())) return;
 
-        Bitmap avatar = dataManager.getPreferencesHelper().getFriendAvatar(fcm.getIdSender());
-
-        if (avatar != null)
-            sendNotificationFromChatWithIcon(fcm, avatar, isGroup);
-        else
-            dataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + fcm.getAvatar())
-                    .getBytes(Const.FIVE_MEGABYTE)
-                    .addOnSuccessListener(bytes -> {
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        dataManager.getPreferencesHelper().setFriendAvatar(fcm.getIdSender(), bitmap);
-                        sendNotificationFromChatWithIcon(fcm, bitmap, isGroup);
-                    }).addOnFailureListener(exception -> {
-                Bitmap bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.default_avatar);
-                sendNotificationFromChatWithIcon(fcm, bitmap, isGroup);
-            });
+        dataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + fcm.getIdSender())
+                .getBytes(Const.FIVE_MEGABYTE)
+                .addOnSuccessListener(bytes -> {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    sendNotificationFromChatWithIcon(fcm, bitmap, isGroup);
+                }).addOnFailureListener(exception -> {
+            Bitmap bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.default_avatar);
+            sendNotificationFromChatWithIcon(fcm, bitmap, isGroup);
+        });
     }
 
     private void sendNotificationFromChatWithIcon(MessageNotificationFCM fcm, Bitmap bitmap, boolean isGroup) {

@@ -86,7 +86,7 @@ public class Car implements Comparable<Car> {
 
     @Exclude
     public double getBearing() {
-        if(previousLocation == null || currentLocation == null) return 0.0;
+        if (previousLocation == null || currentLocation == null) return 0.0;
 
         double longitude1 = previousLocation.longitude;
         double longitude2 = currentLocation.longitude;

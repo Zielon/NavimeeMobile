@@ -45,8 +45,9 @@ import butterknife.ButterKnife;
 public class MainActivity extends BaseActivityFragment implements MainMvpView {
 
     static final int SETTINGS_REQUEST = 1;  // The request code
-    private static final String EXTRA_TRIGGER_SYNC_FLAG ="uk.co.ribot.androidboilerplate.ui.main.MainActivity.EXTRA_TRIGGER_SYNC_FLAG";
+    private static final String EXTRA_TRIGGER_SYNC_FLAG = "uk.co.ribot.androidboilerplate.ui.main.MainActivity.EXTRA_TRIGGER_SYNC_FLAG";
     public static boolean IS_USER_POSITION_CHECKED = false;
+    private static Activity mainActivity;
     public HotSpotFragment.HotspotFilterBackup hotspotFilterBackup;
     @Inject
     MainPresenter mMainPresenter;
@@ -55,7 +56,6 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     String name, count;
     BottomBar bottomBar;
     private BaseTabFragment selectedFragment;
-    private static Activity mainActivity;
 
     /**
      * Return an Intent to start this Activity.
