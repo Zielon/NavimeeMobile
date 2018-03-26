@@ -79,16 +79,15 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
         String path = String.format("%s/%s", AVATARS, user.getId());
 
         RxFirebaseStorage.delete(firebaseStorage.getReference().child(path)).subscribe(
-                success -> { /* ignore */ },
+                success -> {
+                    Bitmap scaledBitmap = scaleDown(bitmap, 100, 100);
+                    ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
+                    scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayStream);
+                    RxFirebaseStorage.putBytes(firebaseStorage.getReference().child(path), byteArrayStream.toByteArray()).subscribe(
+                            ready -> userSettingsChangeMvpView.reloadAvatar(bitmap),
+                            throwable -> userSettingsChangeMvpView.onError(throwable));
+                },
                 throwable -> { /* ignore */ });
-
-        Bitmap scaledBitmap = scaleDown(bitmap, 200, 100);
-        ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
-        scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayStream);
-
-        RxFirebaseStorage.putBytes(firebaseStorage.getReference().child(path), byteArrayStream.toByteArray()).subscribe(
-                success -> userSettingsChangeMvpView.reloadAvatar(bitmap),
-                throwable -> userSettingsChangeMvpView.onError(throwable));
     }
 
     public void deleteUser(ProgressDialog progressDialog) {

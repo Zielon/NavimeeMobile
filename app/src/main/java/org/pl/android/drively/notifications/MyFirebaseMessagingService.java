@@ -104,7 +104,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, fcm.getNameSender());
         ArrayList<CharSequence> idFriend = new ArrayList<>();
-        Bitmap avatar = getCircular(bitmap, 200, 200);
+        Bitmap avatar = getCircular(bitmap, 100, 100);
         idFriend.add(fcm.getIdSender());
 
         intent.putCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID, idFriend);
