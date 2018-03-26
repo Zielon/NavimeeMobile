@@ -77,17 +77,15 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsChangeMvpVi
     public void setNewAvatar(Bitmap bitmap) {
         User user = preferencesHelper.getUserInfo();
         String path = String.format("%s/%s", AVATARS, user.getId());
-
-        RxFirebaseStorage.delete(firebaseStorage.getReference().child(path)).subscribe(
-                success -> {
-                    Bitmap scaledBitmap = scaleDown(bitmap, 100, 100);
+        FirebaseStorage.getInstance().getReference(String.format("%s/%s", AVATARS, user.getId())).delete()
+                .addOnCompleteListener(task -> {
+                    Bitmap scaledBitmap = scaleDown(bitmap, 200, 100);
                     ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
                     scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayStream);
                     RxFirebaseStorage.putBytes(firebaseStorage.getReference().child(path), byteArrayStream.toByteArray()).subscribe(
-                            ready -> userSettingsChangeMvpView.reloadAvatar(bitmap),
+                            ready -> userSettingsChangeMvpView.reloadAvatar(scaledBitmap),
                             throwable -> userSettingsChangeMvpView.onError(throwable));
-                },
-                throwable -> { /* ignore */ });
+                });
     }
 
     public void deleteUser(ProgressDialog progressDialog) {
