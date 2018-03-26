@@ -58,7 +58,6 @@ public class Const {
     public static long TIME_TO_OFFLINE = 2 * 60 * 1000;
     public static long TIME_TO_DROP_NOTIFICATION = 5 * 60 * 1000;
     public static long FIVE_MEGABYTE = 5 * 1024 * 1024;
-    public static Bitmap DEFAULT_AVATAR = BitmapFactory.decodeResource(MainActivity.getActivity().getResources(), R.drawable.default_avatar);
 
     public enum HotSpotType {
         EVENT,

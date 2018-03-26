@@ -40,7 +40,7 @@ import javax.inject.Inject;
 
 import ir.mirrajabi.searchdialog.core.BaseFilter;
 
-import static org.pl.android.drively.util.Const.DEFAULT_AVATAR;
+import static org.pl.android.drively.ui.main.MainActivity.DEFAULT_AVATAR;
 import static org.pl.android.drively.util.FirebasePaths.AVATARS;
 import static org.pl.android.drively.util.ReflectionUtil.nameof;
 

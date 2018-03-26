@@ -202,12 +202,12 @@ public class HotSpotFragment extends BaseTabFragment implements
             text.setText("");
         }
 
-        if (mHotspotPresenter.checkLogin() != null)
-            GeoLocationUpdateService.startService();
-
         initGeolocation();
         verifyFirstStartSecondHotspotPopup(this.getContext());
         context = this.getContext();
+
+        if (mHotspotPresenter.checkLogin() != null)
+            GeoLocationUpdateService.startService();
     }
 
     private void verifyFirstStartSecondHotspotPopup(Context context) {

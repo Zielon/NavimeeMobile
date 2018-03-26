@@ -28,7 +28,7 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-import static org.pl.android.drively.util.Const.DEFAULT_AVATAR;
+import static org.pl.android.drively.ui.main.MainActivity.DEFAULT_AVATAR;
 import static org.pl.android.drively.util.FirebasePaths.AVATARS;
 import static org.pl.android.drively.util.FirebasePaths.MESSAGES_GROUPS;
 import static org.pl.android.drively.util.FirebasePaths.MESSAGES_PRIVATE;
