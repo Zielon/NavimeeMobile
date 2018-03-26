@@ -203,7 +203,7 @@
     <string name="dialog_action_ok">Ok</string>
     <string name="dialog_error_title">Sorry</string>
     <string name="events">Calendar</string>
-    <string name="finance">Expenses</string>
+    <string name="finance">Finances</string>
     <string name="day_schedule">Schedule</string>
     <string name="hotspot">Hotspot</string>
 
@@ -259,5 +259,13 @@
     <string name="write_finance_amount">Amount</string>
     <string name="finance_failed_to_add">Adding finance failed.</string>
     <string name="enter_category">Enter category</string>
-
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="amount_label">Amount</string>
+    <string name="category_label">Category</string>
+    <string name="description_label">Description</string>
+    <string name="note_label">Note</string>
+    <string name="attachment_label">Attachment</string>
+    <string name="add_attachment">Add attachment</string>
+    <string name="no_category_selected">No category selected</string>
 </resources>

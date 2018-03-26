@@ -1,8 +1,6 @@
 package org.pl.android.drively.contracts.repositories;
 
-/**
- * Created by Szczypiorek on 24.03.2018.
- */
+import org.pl.android.drively.data.model.Income;
 
-public class IncomeRepository {
+public interface IncomeRepository extends FinanceRepository<Income>{
 }

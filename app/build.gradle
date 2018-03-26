@@ -102,6 +102,9 @@ android {
         targetCompatibility 1.8
         sourceCompatibility 1.8
     }
+    dataBinding {
+        enabled = true
+    }
 }
 
 play {
@@ -216,14 +219,13 @@ dependencies {
     compile 'com.github.OpenCraft:AnimatedExpandableEditText:-SNAPSHOT'
     compile 'com.github.tylersuehr7:chips-input-layout:2.2'
     compile 'com.wdullaer:materialdatetimepicker:3.5.1'
-
+    compile 'com.zaihuishou:expandablerecycleradapter-databinding:1.0.0'
     //google map
     compile 'com.github.jd-alexander:library:1.1.0'
     compile 'com.google.maps.android:android-maps-utils:0.4+'
-
     //facebook
     compile 'com.facebook.android:facebook-login:[4,5)'
-
+    compile 'com.github.BlacKCaT27:CurrencyEditText:2.0.2'
     // Google Sign In SDK (only required for Google Sign In)
     compile "com.google.android.gms:play-services-auth:$PLAY_SERVICES_VERSION"
 

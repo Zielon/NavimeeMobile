@@ -1,6 +1,5 @@
 package org.pl.android.drively.ui.base.progress;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -48,7 +47,7 @@ public class BaseProgressActivity extends BaseActivity implements BaseProgressMv
 
     @Override
     public void hideProgressDialog() {
-        Optional.ofNullable(progressDialog).ifPresent(Dialog::hide);
+        Optional.ofNullable(progressDialog).ifPresent(SweetAlertDialog::dismissWithAnimation);
     }
 
     @Override

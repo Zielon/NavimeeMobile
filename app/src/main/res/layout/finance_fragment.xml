@@ -13,6 +13,15 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/finance_recycler_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar_skeleton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp" />
+
     <TextView
         android:id="@+id/no_data_label"
         android:layout_width="wrap_content"
@@ -44,7 +53,7 @@
         fancy:fb_focusColor="@color/semi_transparent_white"
         fancy:fb_fontIconResource="&#xf067;"
         fancy:fb_radius="@dimen/add_finance_fab_size"
-        fancy:fb_textSize="@dimen/medium_font_size"
+        fancy:fb_fontIconSize="@dimen/medium_font_size"
         fancy:fb_text=""
         fancy:fb_textColor="@color/white" />
 

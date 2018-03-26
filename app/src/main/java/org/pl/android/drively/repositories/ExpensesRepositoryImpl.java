@@ -1,24 +1,20 @@
 package org.pl.android.drively.repositories;
 
-import com.google.android.gms.tasks.Task;
+import org.pl.android.drively.contracts.repositories.ExpenseRepository;
+import org.pl.android.drively.data.DataManager;
+import org.pl.android.drively.data.model.Expense;
+import org.pl.android.drively.util.FirebasePaths;
 
-import org.pl.android.drively.contracts.repositories.ExpensesRepository;
-import org.pl.android.drively.data.model.expenses.ExpenseBase;
+import javax.inject.Inject;
 
 
-public class ExpensesRepositoryImpl implements ExpensesRepository {
-    @Override
-    public <T extends ExpenseBase> Task<Void> addExpense(T expense) {
-        return null;
+public class ExpensesRepositoryImpl extends FinanceRepositoryImpl<Expense> implements ExpenseRepository {
+
+    @Inject
+    public ExpensesRepositoryImpl(DataManager dataManager) {
+        super(dataManager);
+        this.baseFirestorePath = FirebasePaths.EXPENSES;
+        setCollectionReference();
     }
 
-    @Override
-    public <T extends ExpenseBase> Task<Void> removeExpense(T expense) {
-        return null;
-    }
-
-    @Override
-    public <T extends ExpenseBase> Task<Void> editExpense(T expense) {
-        return null;
-    }
 }

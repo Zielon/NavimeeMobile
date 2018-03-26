@@ -237,7 +237,7 @@
     <string name="events">Kalendarz</string>
     <string name="day_schedule">Plan Dnia</string>
     <string name="hotspot">Hotspot</string>
-    <string name="finance">Wydatki</string>
+    <string name="finance">Finanse</string>
     <string name="save">Zapisz</string>
 
     <string name="user_exists">Taki użytkownik już istnieje</string>
@@ -255,5 +255,13 @@
     <string name="write_finance_amount">Wpisz kwotę</string>
     <string name="finance_failed_to_add">Nie udało się dodać finansu.</string>
     <string name="enter_category">Wprowadź kategorię</string>
-
+    <string name="date">Data</string>
+    <string name="time">Czas</string>
+    <string name="amount_label">Kwota</string>
+    <string name="category_label">Kategoria</string>
+    <string name="description_label">Opis</string>
+    <string name="note_label">Notatka</string>
+    <string name="attachment_label">Załącznik</string>
+    <string name="add_attachment">Dodaj załącznik</string>
+    <string name="no_category_selected">Nie wybrano jeszcze kategorii.</string>
 </resources>
