@@ -10,7 +10,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import org.apache.commons.collections4.ListUtils;
 import org.pl.android.drively.contracts.repositories.UsersRepository;
@@ -101,7 +100,7 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
                             List<String> missing = ListUtils.subtract(sendersAvatars, new ArrayList<>(friendsAvatars.keySet()));
 
                             List<Task<byte[]>> tasks = Stream.of(missing).map(avatar ->
-                                    FirebaseStorage.getInstance().getReference("AVATARS/" + avatar).getBytes(Const.FIVE_MEGABYTE)
+                                    FirebaseStorage.getInstance().getReference(getPath(avatar)).getBytes(Const.FIVE_MEGABYTE)
                                             .addOnSuccessListener(bytes -> friendsAvatars.put(avatar, BitmapFactory.decodeByteArray(bytes, 0, bytes.length)))
                                             .addOnFailureListener(failure -> friendsAvatars.put(avatar, DEFAULT_AVATAR))).toList();
 
@@ -153,7 +152,7 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
         return mDataManager.getPreferencesHelper().getUserInfo();
     }
 
-    public StorageReference getStorageReference(String avatar) {
-        return mDataManager.getFirebaseService().getFirebaseStorage().getReference(String.format("%s/%s", AVATARS, avatar));
+    public String getPath(String avatar) {
+        return String.format("%s/%s", AVATARS, avatar);
     }
 }
