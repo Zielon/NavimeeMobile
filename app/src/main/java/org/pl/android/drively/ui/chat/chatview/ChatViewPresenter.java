@@ -120,7 +120,8 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
                 );
     }
 
-    public void setNewMessagesListenerTimestamp(Long firstMessageTimestamp) {
+    public void setNewMessagesListenerTimestamp() {
+        Long firstMessageTimestamp = System.currentTimeMillis();
         Query messagesQuery = baseQuery.whereGreaterThanOrEqualTo("timestamp", firstMessageTimestamp);
 
         if (newMessagesListener != null) newMessagesListener.remove();

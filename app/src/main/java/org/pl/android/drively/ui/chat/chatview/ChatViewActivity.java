@@ -100,7 +100,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
 
         mChatViewPresenter.setIntentDataAndBuildBaseQuery(isGroupChat, roomId);
         mChatViewPresenter.getSingleBatch();
-        mChatViewPresenter.setNewMessagesListenerTimestamp(System.currentTimeMillis());
+        mChatViewPresenter.setNewMessagesListenerTimestamp();
     }
 
     @Override
