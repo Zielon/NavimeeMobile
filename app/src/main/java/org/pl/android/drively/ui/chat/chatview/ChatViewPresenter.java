@@ -19,13 +19,17 @@ import org.pl.android.drively.data.model.chat.Message;
 import org.pl.android.drively.data.model.chat.PrivateMessage;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.Const;
+import org.pl.android.drively.util.rx.SchedulerProvider;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+import io.reactivex.disposables.CompositeDisposable;
 import timber.log.Timber;
 
 import static org.pl.android.drively.ui.main.MainActivity.DEFAULT_AVATAR;
@@ -48,12 +52,19 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
 
     private ListenerRegistration newMessagesListener;
 
+    private SchedulerProvider schedulerProvider;
+
+    private CompositeDisposable compositeDisposable;
+
     private Query baseQuery;
 
     @Inject
-    public ChatViewPresenter(DataManager dataManager, UsersRepository usersRepository) {
+    public ChatViewPresenter(DataManager dataManager, UsersRepository usersRepository,
+                             CompositeDisposable compositeDisposable, SchedulerProvider schedulerProvider) {
         this.mDataManager = dataManager;
         this.usersRepository = usersRepository;
+        this.compositeDisposable = compositeDisposable;
+        this.schedulerProvider = schedulerProvider;
     }
 
     @Override
@@ -94,17 +105,7 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
         messagesQuery.limit(MESSAGES_SLICE_QUANTITY).get()
                 .addOnSuccessListener(snapshot -> {
                             List<Message> messageList = snapshot.toObjects(Message.class);
-                            List<String> sendersAvatars = Stream.of(messageList)
-                                    .map(message -> message.idSender)
-                                    .filter(id -> !id.equals(getUserInfo().getId())).distinct().toList();
-                            List<String> missing = ListUtils.subtract(sendersAvatars, new ArrayList<>(friendsAvatars.keySet()));
-
-                            List<Task<byte[]>> tasks = Stream.of(missing).map(avatar ->
-                                    FirebaseStorage.getInstance().getReference(getPath(avatar)).getBytes(Const.FIVE_MEGABYTE)
-                                            .addOnSuccessListener(bytes -> friendsAvatars.put(avatar, BitmapFactory.decodeByteArray(bytes, 0, bytes.length)))
-                                            .addOnFailureListener(failure -> friendsAvatars.put(avatar, DEFAULT_AVATAR))).toList();
-
-                            Tasks.whenAllComplete(tasks).addOnSuccessListener(success -> {
+                            checkNecessityAndGetMissingAvatarTasks(messageList).addOnSuccessListener(success -> {
                                 int lastIndex = messageList.size() - 1;
                                 if (lastIndex == MESSAGES_SLICE_QUANTITY - 1) {
                                     lastSnapshot = snapshot.getDocuments().get(messageList.size() - 1);
@@ -112,13 +113,14 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
                                     getMvpView().setAllMessagesLoaded(true);
                                 }
                                 if (this.getMvpView() != null)
-                                    this.getMvpView().addNewBatch(messageList);
+                                    filterAndSortDataBeforeAdding(messageList, false);
                             });
                         }
                 );
     }
 
-    public void updateNewMessagesListenerTimestamp(Long firstMessageTimestamp) {
+    public void setNewMessagesListenerTimestamp() {
+        Long firstMessageTimestamp = System.currentTimeMillis();
         Query messagesQuery = baseQuery.whereGreaterThanOrEqualTo("timestamp", firstMessageTimestamp);
 
         if (newMessagesListener != null) newMessagesListener.remove();
@@ -129,10 +131,39 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
                 return;
             }
             List<Message> newMessages = result.toObjects(Message.class);
-            if (this.getMvpView() != null && !newMessages.isEmpty())
-                this.getMvpView().addMessagesAtTheBeginning(newMessages);
+            checkNecessityAndGetMissingAvatarTasks(newMessages).addOnSuccessListener(success -> {
+                if (this.getMvpView() != null && !newMessages.isEmpty())
+                    filterAndSortDataBeforeAdding(newMessages, true);
+            });
         });
     }
+
+    private Task<List<Task<?>>> checkNecessityAndGetMissingAvatarTasks(List<Message> messageList) {
+        List<String> sendersAvatars = Stream.of(messageList)
+                .map(message -> message.idSender)
+                .filter(id -> !id.equals(getUserInfo().getId())).distinct().toList();
+        List<String> missing = ListUtils.subtract(sendersAvatars, new ArrayList<>(friendsAvatars.keySet()));
+        return Tasks.whenAllComplete(Stream.of(missing).map(avatar ->
+                FirebaseStorage.getInstance().getReference(getPath(avatar)).getBytes(Const.FIVE_MEGABYTE)
+                        .addOnSuccessListener(bytes -> friendsAvatars.put(avatar, BitmapFactory.decodeByteArray(bytes, 0, bytes.length)))
+                        .addOnFailureListener(failure -> friendsAvatars.put(avatar, DEFAULT_AVATAR))).toList());
+    }
+
+    private void filterAndSortDataBeforeAdding(List<Message> messages, boolean isNewMessages) {
+        compositeDisposable.add(Observable.fromIterable(messages)
+                .filter(message -> !getMvpView().getConversation().getListMessageData().contains(message))
+                .sorted((message1, message2) -> Long.valueOf(message2.getTimestamp()).compareTo(message1.getTimestamp()))
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe(message -> {
+                    if (isNewMessages) {
+                        getMvpView().addMessagesAtTheBeginning(Collections.singletonList(message));
+                    } else {
+                        getMvpView().addNewBatch(Collections.singletonList(message));
+                    }
+                }));
+    }
+
 
     public void addMessage(Message newMessage) {
         String messagePath = newMessage instanceof PrivateMessage ? MESSAGES_PRIVATE : MESSAGES_GROUPS;
