@@ -1,5 +1,6 @@
 package org.pl.android.drively.ui.chat.chatview;
 
+import org.pl.android.drively.data.model.chat.Conversation;
 import org.pl.android.drively.data.model.chat.Message;
 import org.pl.android.drively.ui.base.MvpView;
 
@@ -12,4 +13,6 @@ public interface ChatViewMvpView extends MvpView {
     void addMessagesAtTheBeginning(List<Message> messages);
 
     void setAllMessagesLoaded(boolean allMessagesLoaded);
+
+    Conversation getConversation();
 }

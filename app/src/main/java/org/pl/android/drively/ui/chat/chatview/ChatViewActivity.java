@@ -100,7 +100,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
 
         mChatViewPresenter.setIntentDataAndBuildBaseQuery(isGroupChat, roomId);
         mChatViewPresenter.getSingleBatch();
-        mChatViewPresenter.updateNewMessagesListenerTimestamp(System.currentTimeMillis());
+        mChatViewPresenter.setNewMessagesListenerTimestamp(System.currentTimeMillis());
     }
 
     @Override
@@ -109,7 +109,6 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
             int currentSize = adapter.getItemCount();
             adapter.addToEnd(messages);
             adapter.notifyItemRangeInserted(currentSize, adapter.getConversation().getListMessageData().size() - 1);
-            mChatViewPresenter.updateNewMessagesListenerTimestamp(System.currentTimeMillis());
         }
         swipeRefreshLayout.setRefreshing(false);
     }
@@ -119,13 +118,17 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         adapter.addToStart(messages);
         adapter.notifyDataSetChanged();
         linearLayoutManager.scrollToPosition(0);
-        mChatViewPresenter.updateNewMessagesListenerTimestamp(System.currentTimeMillis());
     }
 
     public void setAllMessagesLoaded(boolean allMessagesLoaded) {
         this.allMessagesLoaded = allMessagesLoaded;
         swipeRefreshLayout.setEnabled(false);
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public Conversation getConversation() {
+        return adapter.getConversation();
     }
 
     @Override

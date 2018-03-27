@@ -19,13 +19,17 @@ import org.pl.android.drively.data.model.chat.Message;
 import org.pl.android.drively.data.model.chat.PrivateMessage;
 import org.pl.android.drively.ui.base.BasePresenter;
 import org.pl.android.drively.util.Const;
+import org.pl.android.drively.util.rx.SchedulerProvider;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+import io.reactivex.disposables.CompositeDisposable;
 import timber.log.Timber;
 
 import static org.pl.android.drively.ui.main.MainActivity.DEFAULT_AVATAR;
@@ -48,12 +52,19 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
 
     private ListenerRegistration newMessagesListener;
 
+    private SchedulerProvider schedulerProvider;
+
+    private CompositeDisposable compositeDisposable;
+
     private Query baseQuery;
 
     @Inject
-    public ChatViewPresenter(DataManager dataManager, UsersRepository usersRepository) {
+    public ChatViewPresenter(DataManager dataManager, UsersRepository usersRepository,
+                             CompositeDisposable compositeDisposable, SchedulerProvider schedulerProvider) {
         this.mDataManager = dataManager;
         this.usersRepository = usersRepository;
+        this.compositeDisposable = compositeDisposable;
+        this.schedulerProvider = schedulerProvider;
     }
 
     @Override
@@ -112,13 +123,28 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
                                     getMvpView().setAllMessagesLoaded(true);
                                 }
                                 if (this.getMvpView() != null)
-                                    this.getMvpView().addNewBatch(messageList);
+                                    filterAndSortDataBeforeAdding(messageList, false);
                             });
                         }
                 );
     }
 
-    public void updateNewMessagesListenerTimestamp(Long firstMessageTimestamp) {
+    private void filterAndSortDataBeforeAdding(List<Message> messages, boolean isNewMessages) {
+        compositeDisposable.add(Observable.fromIterable(messages)
+                .filter(message -> !getMvpView().getConversation().getListMessageData().contains(message))
+                .sorted((message1, message2) -> Long.valueOf(message1.getTimestamp()).compareTo(message2.getTimestamp()))
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe(message -> {
+                    if (isNewMessages) {
+                        getMvpView().addMessagesAtTheBeginning(Collections.singletonList(message));
+                    } else {
+                        getMvpView().addNewBatch(Collections.singletonList(message));
+                    }
+                }));
+    }
+
+    public void setNewMessagesListenerTimestamp(Long firstMessageTimestamp) {
         Query messagesQuery = baseQuery.whereGreaterThanOrEqualTo("timestamp", firstMessageTimestamp);
 
         if (newMessagesListener != null) newMessagesListener.remove();
@@ -130,7 +156,7 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
             }
             List<Message> newMessages = result.toObjects(Message.class);
             if (this.getMvpView() != null && !newMessages.isEmpty())
-                this.getMvpView().addMessagesAtTheBeginning(newMessages);
+                filterAndSortDataBeforeAdding(newMessages, true);
         });
     }
 
