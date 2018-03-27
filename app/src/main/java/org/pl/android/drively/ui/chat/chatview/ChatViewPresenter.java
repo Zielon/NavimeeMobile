@@ -105,8 +105,7 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
         messagesQuery.limit(MESSAGES_SLICE_QUANTITY).get()
                 .addOnSuccessListener(snapshot -> {
                             List<Message> messageList = snapshot.toObjects(Message.class);
-                            List<Task<byte[]>> tasks = checkNecessityAndGetMissingAvatarTasks(messageList);
-                            Tasks.whenAllComplete(tasks).addOnSuccessListener(success -> {
+                            checkNecessityAndGetMissingAvatarTasks(messageList).addOnSuccessListener(success -> {
                                 int lastIndex = messageList.size() - 1;
                                 if (lastIndex == MESSAGES_SLICE_QUANTITY - 1) {
                                     lastSnapshot = snapshot.getDocuments().get(messageList.size() - 1);
@@ -132,23 +131,22 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
                 return;
             }
             List<Message> newMessages = result.toObjects(Message.class);
-            List<Task<byte[]>> tasks = checkNecessityAndGetMissingAvatarTasks(newMessages);
-            Tasks.whenAllComplete(tasks).addOnSuccessListener(success -> {
+            checkNecessityAndGetMissingAvatarTasks(newMessages).addOnSuccessListener(success -> {
                 if (this.getMvpView() != null && !newMessages.isEmpty())
                     filterAndSortDataBeforeAdding(newMessages, true);
             });
         });
     }
 
-    private List<Task<byte[]>> checkNecessityAndGetMissingAvatarTasks(List<Message> messageList) {
+    private Task<List<Task<?>>> checkNecessityAndGetMissingAvatarTasks(List<Message> messageList) {
         List<String> sendersAvatars = Stream.of(messageList)
                 .map(message -> message.idSender)
                 .filter(id -> !id.equals(getUserInfo().getId())).distinct().toList();
         List<String> missing = ListUtils.subtract(sendersAvatars, new ArrayList<>(friendsAvatars.keySet()));
-        return Stream.of(missing).map(avatar ->
+        return Tasks.whenAllComplete(Stream.of(missing).map(avatar ->
                 FirebaseStorage.getInstance().getReference(getPath(avatar)).getBytes(Const.FIVE_MEGABYTE)
                         .addOnSuccessListener(bytes -> friendsAvatars.put(avatar, BitmapFactory.decodeByteArray(bytes, 0, bytes.length)))
-                        .addOnFailureListener(failure -> friendsAvatars.put(avatar, DEFAULT_AVATAR))).toList();
+                        .addOnFailureListener(failure -> friendsAvatars.put(avatar, DEFAULT_AVATAR))).toList());
     }
 
     private void filterAndSortDataBeforeAdding(List<Message> messages, boolean isNewMessages) {
