@@ -105,16 +105,7 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
         messagesQuery.limit(MESSAGES_SLICE_QUANTITY).get()
                 .addOnSuccessListener(snapshot -> {
                             List<Message> messageList = snapshot.toObjects(Message.class);
-                            List<String> sendersAvatars = Stream.of(messageList)
-                                    .map(message -> message.idSender)
-                                    .filter(id -> !id.equals(getUserInfo().getId())).distinct().toList();
-                            List<String> missing = ListUtils.subtract(sendersAvatars, new ArrayList<>(friendsAvatars.keySet()));
-
-                            List<Task<byte[]>> tasks = Stream.of(missing).map(avatar ->
-                                    FirebaseStorage.getInstance().getReference(getPath(avatar)).getBytes(Const.FIVE_MEGABYTE)
-                                            .addOnSuccessListener(bytes -> friendsAvatars.put(avatar, BitmapFactory.decodeByteArray(bytes, 0, bytes.length)))
-                                            .addOnFailureListener(failure -> friendsAvatars.put(avatar, DEFAULT_AVATAR))).toList();
-
+                            List<Task<byte[]>> tasks = checkNecessityAndGetMissingAvatarTasks(messageList);
                             Tasks.whenAllComplete(tasks).addOnSuccessListener(success -> {
                                 int lastIndex = messageList.size() - 1;
                                 if (lastIndex == MESSAGES_SLICE_QUANTITY - 1) {
@@ -127,6 +118,36 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
                             });
                         }
                 );
+    }
+
+    public void setNewMessagesListenerTimestamp(Long firstMessageTimestamp) {
+        Query messagesQuery = baseQuery.whereGreaterThanOrEqualTo("timestamp", firstMessageTimestamp);
+
+        if (newMessagesListener != null) newMessagesListener.remove();
+
+        newMessagesListener = messagesQuery.addSnapshotListener((result, e) -> {
+            if (e != null) {
+                Timber.d(e);
+                return;
+            }
+            List<Message> newMessages = result.toObjects(Message.class);
+            List<Task<byte[]>> tasks = checkNecessityAndGetMissingAvatarTasks(newMessages);
+            Tasks.whenAllComplete(tasks).addOnSuccessListener(success -> {
+                if (this.getMvpView() != null && !newMessages.isEmpty())
+                    filterAndSortDataBeforeAdding(newMessages, true);
+            });
+        });
+    }
+
+    private List<Task<byte[]>> checkNecessityAndGetMissingAvatarTasks(List<Message> messageList) {
+        List<String> sendersAvatars = Stream.of(messageList)
+                .map(message -> message.idSender)
+                .filter(id -> !id.equals(getUserInfo().getId())).distinct().toList();
+        List<String> missing = ListUtils.subtract(sendersAvatars, new ArrayList<>(friendsAvatars.keySet()));
+        return Stream.of(missing).map(avatar ->
+                FirebaseStorage.getInstance().getReference(getPath(avatar)).getBytes(Const.FIVE_MEGABYTE)
+                        .addOnSuccessListener(bytes -> friendsAvatars.put(avatar, BitmapFactory.decodeByteArray(bytes, 0, bytes.length)))
+                        .addOnFailureListener(failure -> friendsAvatars.put(avatar, DEFAULT_AVATAR))).toList();
     }
 
     private void filterAndSortDataBeforeAdding(List<Message> messages, boolean isNewMessages) {
@@ -144,21 +165,6 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
                 }));
     }
 
-    public void setNewMessagesListenerTimestamp(Long firstMessageTimestamp) {
-        Query messagesQuery = baseQuery.whereGreaterThanOrEqualTo("timestamp", firstMessageTimestamp);
-
-        if (newMessagesListener != null) newMessagesListener.remove();
-
-        newMessagesListener = messagesQuery.addSnapshotListener((result, e) -> {
-            if (e != null) {
-                Timber.d(e);
-                return;
-            }
-            List<Message> newMessages = result.toObjects(Message.class);
-            if (this.getMvpView() != null && !newMessages.isEmpty())
-                filterAndSortDataBeforeAdding(newMessages, true);
-        });
-    }
 
     public void addMessage(Message newMessage) {
         String messagePath = newMessage instanceof PrivateMessage ? MESSAGES_PRIVATE : MESSAGES_GROUPS;
