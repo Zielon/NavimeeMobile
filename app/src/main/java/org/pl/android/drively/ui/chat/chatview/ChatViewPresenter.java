@@ -132,7 +132,7 @@ public class ChatViewPresenter extends BasePresenter<ChatViewMvpView> {
     private void filterAndSortDataBeforeAdding(List<Message> messages, boolean isNewMessages) {
         compositeDisposable.add(Observable.fromIterable(messages)
                 .filter(message -> !getMvpView().getConversation().getListMessageData().contains(message))
-                .sorted((message1, message2) -> Long.valueOf(message1.getTimestamp()).compareTo(message2.getTimestamp()))
+                .sorted((message1, message2) -> Long.valueOf(message2.getTimestamp()).compareTo(message1.getTimestamp()))
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
                 .subscribe(message -> {
