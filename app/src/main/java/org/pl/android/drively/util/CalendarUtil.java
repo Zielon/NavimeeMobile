@@ -57,14 +57,14 @@ public class CalendarUtil {
     public static String determineWeekString(Date date, Date firstDay, Date lastDay) {
         SimpleDateFormat dayAndMonthFormatter = new SimpleDateFormat("dd.MM", Locale.getDefault());
         LocalDate firstDayLocalDate = LocalDate.fromDateFields(firstDay);
-        LocalDate rangeEnd = LocalDate.fromDateFields(firstDay).plusDays(7);
+        LocalDate rangeEnd = LocalDate.fromDateFields(firstDay).plusDays(6);
         while (!firstDayLocalDate.isEqual(LocalDate.fromDateFields(lastDay))) {
             if (isBetween(LocalDate.fromDateFields(date), firstDayLocalDate, rangeEnd)) {
                 return dayAndMonthFormatter.format(firstDayLocalDate.toDate())
                         + " ~ "
                         + dayAndMonthFormatter.format(rangeEnd.toDate());
             } else {
-                firstDayLocalDate = rangeEnd;
+                firstDayLocalDate = rangeEnd.plusDays(1);
                 rangeEnd = rangeEnd.plusDays(7);
             }
         }

@@ -163,7 +163,7 @@ public abstract class BaseFinanceFormActivity extends BaseProgressActivity imple
 
     @Override
     public void finishActivity() {
-        finish();
+        onBackPressed();
     }
 
     @OnClick(R.id.finance_photo)

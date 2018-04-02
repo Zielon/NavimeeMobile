@@ -9,6 +9,8 @@ import org.pl.android.drively.util.rx.SchedulerProvider;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -36,7 +38,27 @@ public class WeeklyPresenter extends BaseFinancePresenter<WeeklyMvpView> {
                         StreamSupport.stream(entry.getValue()).mapToDouble(Finance::getAmountWithoutCurrency).sum()));
         Map<String, Double> parsedMonthlyFinances = new TreeMap<>(Collections.reverseOrder());
         parsedMonthlyFinances.putAll(monthlyFinances);
+        parsedMonthlyFinances = sortByWeek(parsedMonthlyFinances);
         return parsedMonthlyFinances;
+    }
+
+    private Map<String, Double> sortByWeek(Map<String, Double> unsortedMap) {
+        List<Map.Entry<String, Double>> list =
+                new LinkedList<>(unsortedMap.entrySet());
+        Collections.sort(list,
+                (o1, o2) -> (getDateValueFromWeeklyString(o1.getKey())
+                        .compareTo(getDateValueFromWeeklyString(o2.getKey()))));
+
+        Map<String, Double> sortedMap = new LinkedHashMap<>();
+        for (Map.Entry<String, Double> entry : list) {
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }
+        return sortedMap;
+    }
+
+    public static Date getDateValueFromWeeklyString(String key) {
+        String[] splittedDayAndMonth = key.split("~")[0].trim().split("\\.");
+        return new Date(0, Integer.valueOf(splittedDayAndMonth[1]) - 1, Integer.valueOf(splittedDayAndMonth[0]));
     }
 
     @Override

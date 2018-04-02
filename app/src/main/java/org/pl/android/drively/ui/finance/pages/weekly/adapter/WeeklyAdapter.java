@@ -16,6 +16,8 @@ import java8.util.stream.Collectors;
 import java8.util.stream.StreamSupport;
 import lombok.Getter;
 
+import static org.pl.android.drively.ui.finance.pages.weekly.WeeklyPresenter.getDateValueFromWeeklyString;
+
 public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.MyViewHolder> {
 
     @Getter
@@ -38,10 +40,11 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.MyViewHold
         this.updateData(finances);
     }
 
-    private void updateData(Map<String, Double> monthlyFinances) {
-        this.weeklyFinances = monthlyFinances;
-        this.weeklyKeys = StreamSupport.stream(monthlyFinances.entrySet())
+    private void updateData(Map<String, Double> weeklyFinances) {
+        this.weeklyFinances = weeklyFinances;
+        this.weeklyKeys = StreamSupport.stream(weeklyFinances.entrySet())
                 .map(Map.Entry::getKey)
+                .sorted((key1, key2) -> getDateValueFromWeeklyString(key1).compareTo(getDateValueFromWeeklyString(key2)))
                 .collect(Collectors.toList());
     }
 
