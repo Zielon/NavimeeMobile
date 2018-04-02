@@ -3,10 +3,8 @@ package org.pl.android.drively.data.remote;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.gson.Gson;
 
 import org.pl.android.drively.injection.ApplicationContext;
 

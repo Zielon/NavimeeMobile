@@ -29,17 +29,20 @@ import org.pl.android.drively.ui.main.MainActivity;
 import org.pl.android.drively.util.Const;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
 import static org.pl.android.drively.util.BitmapUtils.getCircular;
+import static org.pl.android.drively.util.FirebasePaths.AVATARS;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
-    private static final String TAG = "MyFirebaseMsgService";
-
     @Inject
     DataManager dataManager;
+
+    // The cashing is performed only in the life time of the service
+    private HashMap<String, Bitmap> avatars = new HashMap<>();
 
     @Override
     public void onCreate() {
@@ -48,56 +51,70 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     @Override
-    public void onMessageReceived(RemoteMessage remoteMessage) {
+    public void onDestroy() {
+        super.onDestroy();
+    }
 
-        Const.NotificationsType type = Const.NotificationsType.valueOf(remoteMessage.getData().get("type"));
-        final ObjectMapper mapper = new ObjectMapper();
-        switch (type) {
-            case FEEDBACK:
-                final FeedbackNotificationFCM feedbackNotification = mapper.convertValue(remoteMessage.getData(), FeedbackNotificationFCM.class);
-                dataManager.getPreferencesHelper().setValue(Const.IS_FEEDBACK, true);
-                dataManager.getPreferencesHelper().setValue(Const.LOCATION_NAME, feedbackNotification.getLocationName());
-                dataManager.getPreferencesHelper().setValue(Const.NAME, feedbackNotification.getName());
-                dataManager.getPreferencesHelper().setValue(Const.LOCATION_ADDRESS, feedbackNotification.getLocationAddress());
-                dataManager.getPreferencesHelper().setValue(Const.FEEDBACK_ID, feedbackNotification.getId());
-                break;
-            case SCHEDULED_EVENT:
-                final EventNotificationFCM eventNotificationScheduled = mapper.convertValue(remoteMessage.getData(), EventNotificationFCM.class);
-                sendNotification(eventNotificationScheduled);
-                break;
-            case BIG_EVENT:
-                final EventNotificationFCM eventNotificationBig = mapper.convertValue(remoteMessage.getData(), EventNotificationFCM.class);
-                sendNotification(eventNotificationBig);
-                break;
-            case MESSAGE_PRIVATE:
-                final MessageNotificationFCM messageNotificationPrivate = mapper.convertValue(remoteMessage.getData(), MessageNotificationFCM.class);
-                sendNotificationFromChat(messageNotificationPrivate, false);
-                break;
-            case MESSAGE_GROUP:
-                final MessageNotificationGroupFCM messageNotificationGroup = mapper.convertValue(remoteMessage.getData(), MessageNotificationGroupFCM.class);
-                sendNotificationFromChat(messageNotificationGroup, true);
-                break;
+    @Override
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        try {
+            Const.NotificationsType type = Const.NotificationsType.valueOf(remoteMessage.getData().get("type"));
+            final ObjectMapper mapper = new ObjectMapper();
+            switch (type) {
+                case FEEDBACK:
+                    final FeedbackNotificationFCM feedback = mapper.convertValue(remoteMessage.getData(), FeedbackNotificationFCM.class);
+                    setFeedback(feedback);
+                    break;
+                case SCHEDULED_EVENT:
+                    final EventNotificationFCM event = mapper.convertValue(remoteMessage.getData(), EventNotificationFCM.class);
+                    sendNotification(event);
+                    break;
+                case BIG_EVENT:
+                    final EventNotificationFCM eventBig = mapper.convertValue(remoteMessage.getData(), EventNotificationFCM.class);
+                    sendNotification(eventBig);
+                    break;
+                case MESSAGE_PRIVATE:
+                    final MessageNotificationFCM privateMessage = mapper.convertValue(remoteMessage.getData(), MessageNotificationFCM.class);
+                    sendNotificationFromChat(privateMessage, false);
+                    break;
+                case MESSAGE_GROUP:
+                    final MessageNotificationGroupFCM groupMessage = mapper.convertValue(remoteMessage.getData(), MessageNotificationGroupFCM.class);
+                    sendNotificationFromChat(groupMessage, true);
+                    break;
+            }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
         }
+    }
+
+    private void setFeedback(FeedbackNotificationFCM feedbackNotification) {
+        dataManager.getPreferencesHelper().setValue(Const.IS_FEEDBACK, true);
+        dataManager.getPreferencesHelper().setValue(Const.LOCATION_NAME, feedbackNotification.getLocationName());
+        dataManager.getPreferencesHelper().setValue(Const.NAME, feedbackNotification.getName());
+        dataManager.getPreferencesHelper().setValue(Const.LOCATION_ADDRESS, feedbackNotification.getLocationAddress());
+        dataManager.getPreferencesHelper().setValue(Const.FEEDBACK_ID, feedbackNotification.getId());
     }
 
     private void sendNotificationFromChat(MessageNotificationFCM fcm, boolean isGroup) {
         if (dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser() == null) return;
-        if (System.currentTimeMillis() - fcm.getTimestamp() > Const.TIME_TO_DROP_NOTIFICATION) return;
         if (ChatViewActivity.ACTIVE_ROOM.equals(fcm.getIdRoom()) || fcm.getIdRoom() == null) return;
         if (fcm.getIdSender().equals(dataManager.getPreferencesHelper().getUserId())) return;
+        if (System.currentTimeMillis() - fcm.getTimestamp() > Const.TIME_TO_DROP_NOTIFICATION)
+            return;
 
-        if (ChatViewActivity.bitmapAvatarFriends.containsKey(fcm.getIdSender()))
-            sendNotificationFromChatWithIcon(fcm, ChatViewActivity.bitmapAvatarFriends.get(fcm.getIdSender()), isGroup);
+        if (avatars.containsKey(fcm.getIdSender()))
+            sendNotificationFromChatWithIcon(fcm, avatars.get(fcm.getIdSender()), isGroup);
         else
-            dataManager.getFirebaseService().getFirebaseStorage().getReference("AVATARS/" + fcm.getAvatar())
+            dataManager.getFirebaseService().getFirebaseStorage().getReference(AVATARS + "/" + fcm.getIdSender())
                     .getBytes(Const.FIVE_MEGABYTE)
                     .addOnSuccessListener(bytes -> {
                         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        avatars.put(fcm.getIdSender(), bitmap);
                         sendNotificationFromChatWithIcon(fcm, bitmap, isGroup);
-
                     }).addOnFailureListener(exception -> {
-                Bitmap bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.default_avatar);
-                sendNotificationFromChatWithIcon(fcm, bitmap, isGroup);
+                        Bitmap bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.default_avatar);
+                        avatars.put(fcm.getIdSender(), bitmap);
+                        sendNotificationFromChatWithIcon(fcm, bitmap, isGroup);
             });
     }
 
@@ -107,13 +124,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(Const.INTENT_KEY_CHAT_FRIEND, fcm.getNameSender());
         ArrayList<CharSequence> idFriend = new ArrayList<>();
-        Bitmap avatar = getCircular(bitmap);
+        Bitmap avatar = getCircular(bitmap, 200, 200);
         idFriend.add(fcm.getIdSender());
+
         intent.putCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID, idFriend);
         intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, fcm.getIdRoom());
         intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_NAME, fcm.getRoomName());
         intent.putExtra(Const.INTENT_KEY_IS_GROUP_CHAT, isGroup);
-        ChatViewActivity.bitmapAvatarFriends.put(fcm.getIdSender(), bitmap);
 
         PendingIntent navigationIntent = TaskStackBuilder.create(this)
                 .addParentStack(ChatViewActivity.class)

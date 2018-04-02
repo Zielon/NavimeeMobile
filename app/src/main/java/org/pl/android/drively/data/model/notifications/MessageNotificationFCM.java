@@ -4,7 +4,6 @@ public class MessageNotificationFCM extends NotificationFCM {
     private String nameSender;
     private String idSender;
     private String text;
-    private String avatar;
     private String idRoom;
     private String roomName;
     private long timestamp;
@@ -34,14 +33,6 @@ public class MessageNotificationFCM extends NotificationFCM {
 
     public void setText(String text) {
         this.text = text;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
     }
 
     public String getIdRoom() {

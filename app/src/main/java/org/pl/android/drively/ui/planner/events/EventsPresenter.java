@@ -110,7 +110,7 @@ public class EventsPresenter extends BaseTabPresenter<EventsMvpView> {
                             Timber.e("Listen failed.", parse);
                         }
                     });
-        } catch (NoSuchFieldException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

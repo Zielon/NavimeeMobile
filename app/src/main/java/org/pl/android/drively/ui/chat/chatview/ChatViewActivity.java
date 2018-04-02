@@ -22,7 +22,6 @@ import org.pl.android.drively.ui.chat.chatview.messages.ListMessageAdapter;
 import org.pl.android.drively.util.Const;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -35,13 +34,15 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
 
     public static final int VIEW_TYPE_USER_MESSAGE = 0;
     public static final int VIEW_TYPE_FRIEND_MESSAGE = 1;
-    public static HashMap<String, Bitmap> bitmapAvatarFriends = new HashMap<>();
     public static Bitmap bitmapAvatarUser;
     public static String ACTIVE_ROOM = "";
-    public String UID;
 
     @Inject
     ChatViewPresenter mChatViewPresenter;
+    @BindView(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.recyclerChat)
+    RecyclerView recyclerChat;
     private String roomId;
     private String roomName;
     private ArrayList<CharSequence> idFriend;
@@ -51,14 +52,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
     private LinearLayoutManager linearLayoutManager;
     private Boolean isGroupChat;
     private ListMessageAdapter adapter;
-
-    @BindView(R.id.swipeRefreshLayout)
-    SwipeRefreshLayout swipeRefreshLayout;
-
     private boolean allMessagesLoaded;
-
-    @BindView(R.id.recyclerChat)
-    RecyclerView recyclerChat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,13 +78,11 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         else
             getSupportActionBar().setTitle(roomName);
 
-        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true);
         recyclerChat.setLayoutManager(linearLayoutManager);
 
         adapter = new ListMessageAdapter(this,
                 conversation,
-                bitmapAvatarFriends,
                 bitmapAvatarUser,
                 mChatViewPresenter);
 
@@ -108,7 +100,7 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
 
         mChatViewPresenter.setIntentDataAndBuildBaseQuery(isGroupChat, roomId);
         mChatViewPresenter.getSingleBatch();
-        mChatViewPresenter.updateNewMessagesListenerTimestamp(System.currentTimeMillis());
+        mChatViewPresenter.setNewMessagesListenerTimestamp();
     }
 
     @Override
@@ -117,7 +109,6 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
             int currentSize = adapter.getItemCount();
             adapter.addToEnd(messages);
             adapter.notifyItemRangeInserted(currentSize, adapter.getConversation().getListMessageData().size() - 1);
-            mChatViewPresenter.updateNewMessagesListenerTimestamp(System.currentTimeMillis());
         }
         swipeRefreshLayout.setRefreshing(false);
     }
@@ -127,13 +118,17 @@ public class ChatViewActivity extends BaseActivity implements View.OnClickListen
         adapter.addToStart(messages);
         adapter.notifyDataSetChanged();
         linearLayoutManager.scrollToPosition(0);
-        mChatViewPresenter.updateNewMessagesListenerTimestamp(System.currentTimeMillis());
     }
 
     public void setAllMessagesLoaded(boolean allMessagesLoaded) {
         this.allMessagesLoaded = allMessagesLoaded;
         swipeRefreshLayout.setEnabled(false);
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public Conversation getConversation() {
+        return adapter.getConversation();
     }
 
     @Override

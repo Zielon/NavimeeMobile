@@ -100,25 +100,6 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
         return mDataManager.getFirebaseService().getFirebaseDatabase().getReference(FirebasePaths.USER_LOCATION);
     }
 
-    private void updateCarView(DataSnapshot dataSnapshot, GeoLocation location) {
-        if (dataSnapshot == null || !dataSnapshot.exists()) return;
-        String[] parts = dataSnapshot.getKey().split("_");
-        if (parts.length < 2) return;
-
-        Car car = new Car();
-        car.setDriverType(parts[0]);
-        car.setUserId(parts[1]);
-        car.setCurrentLocation(location);
-
-        String userId = mDataManager.getPreferencesHelper().getUserId();
-
-        if (car.getUserId().equals(userId) || carApplicationFilterList.contains(car.getDriverType()))
-            return;
-        if (getMvpView() != null) {
-            getMvpView().showCarOnMap(car);
-        }
-    }
-
     public GeoQueryDataEventListener getUsersLocationListener() {
         UsersLocationListener usersLocationListener = new UsersLocationListener();
         usersLocationListener.setName("UsersLocationListener");
@@ -309,6 +290,34 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
         carApplicationFilterList.clear();
     }
 
+    private void updateCarView(DataSnapshot dataSnapshot, GeoLocation location) {
+        if (dataSnapshot == null || !dataSnapshot.exists()) return;
+        String[] parts = dataSnapshot.getKey().split("_");
+        if (parts.length < 2 || parts.length > 2) return;
+
+        Car car = new Car();
+        car.setDriverType(parts[0].trim());
+        car.setUserId(parts[1].trim());
+        car.setCurrentLocation(location);
+        car.setPreviousLocation(location);
+
+        String userId = mDataManager.getPreferencesHelper().getUserId();
+
+        if (car.getUserId().equals(userId) || carApplicationFilterList.contains(car.getDriverType()))
+            return;
+        if (getMvpView() != null) getMvpView().showCarOnMap(car);
+    }
+
+    private void removeCarView(DataSnapshot dataSnapshot) {
+        String[] parts = dataSnapshot.getKey().split("_");
+        if (parts.length < 2 || parts.length > 2) return;
+
+        Car car = new Car();
+        car.setDriverType(parts[0].trim());
+        car.setUserId(parts[1].trim());
+        if (getMvpView() != null) getMvpView().removeCarFromMap(car);
+    }
+
     public class UsersLocationListener extends BaseGeoFireListener {
         @Override
         public void onDataEntered(DataSnapshot dataSnapshot, GeoLocation location) {
@@ -317,14 +326,7 @@ public class HotSpotPresenter extends BaseTabPresenter<HotSpotMvpView> {
 
         @Override
         public void onDataExited(DataSnapshot dataSnapshot) {
-            String[] parts = dataSnapshot.getKey().split("_");
-            if (parts.length < 2) return;
-            Car car = new Car();
-            car.setDriverType(parts[0]);
-            car.setUserId(parts[1]);
-            if (getMvpView() != null) {
-                getMvpView().removeCarFromMap(car);
-            }
+            removeCarView(dataSnapshot);
         }
 
         @Override

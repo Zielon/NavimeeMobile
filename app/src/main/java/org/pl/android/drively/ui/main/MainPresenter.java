@@ -94,7 +94,7 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
         return mDataManager.getPreferencesHelper().getUserId();
     }
 
-    public boolean updateUserLocation(){
+    public boolean updateUserLocation() {
         return mDataManager.getPreferencesHelper().getUserInfo().isShareLocalization();
     }
 

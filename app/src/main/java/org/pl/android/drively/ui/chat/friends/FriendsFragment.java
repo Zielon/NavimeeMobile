@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -302,9 +301,8 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                                     friend.name = item.getName();
                                     friend.email = item.getEmail();
                                     friend.id = item.getId();
-                                    friend.avatar = item.getAvatar();
                                     friend.idRoom = ChatUtils.getRoomId(item.getId(), mFriendsPresenter.getId());
-                                    mFriendsPresenter.getStorageReference(friend.avatar)
+                                    mFriendsPresenter.getStorageReference(friend.id)
                                             .getBytes(Const.FIVE_MEGABYTE)
                                             .addOnSuccessListener(bytes -> {
                                                 friend.avatarBytes = bytes;
@@ -392,7 +390,6 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         final String name = listFriend.getListFriend().get(position).name;
         final String id = listFriend.getListFriend().get(position).id;
         final String idRoom = listFriend.getListFriend().get(position).idRoom;
-        final String avata = listFriend.getListFriend().get(position).avatar;
         ((ItemFriendViewHolder) holder).txtName.setText(name);
 
         ((View) ((ItemFriendViewHolder) holder).txtName.getParent().getParent().getParent())
@@ -405,15 +402,6 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     idFriend.add(id);
                     intent.putCharSequenceArrayListExtra(Const.INTENT_KEY_CHAT_ID, idFriend);
                     intent.putExtra(Const.INTENT_KEY_CHAT_ROOM_ID, idRoom);
-                    ChatViewActivity.bitmapAvatarFriends = new HashMap<>();
-                    if (!avata.equals(Const.STR_DEFAULT_AVATAR)) {
-                        BitmapDrawable bitmapDrawable = (BitmapDrawable) ((ItemFriendViewHolder) holder).avata.getDrawable();
-                        if (bitmapDrawable != null)
-                            ChatViewActivity.bitmapAvatarFriends.put(id, bitmapDrawable.getBitmap());
-                    } else {
-                        ChatViewActivity.bitmapAvatarFriends.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar));
-                    }
-
                     mapMark.put(id, null);
                     fragment.startActivityForResult(intent, FriendsFragment.ACTION_START_CHAT);
                 });
@@ -491,7 +479,7 @@ class ListFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 mapMark.put(id, true);
             }
         }
-        if (listFriend.getListFriend().get(position).avatar.equals(Const.STR_DEFAULT_AVATAR) || listFriend.getListFriend().get(position).avatarBytes == null) {
+        if (listFriend.getListFriend().get(position).avatarBytes == null) {
             ((ItemFriendViewHolder) holder).avata.setImageResource(R.drawable.default_avatar);
         } else {
             Bitmap src = BitmapFactory.decodeByteArray(listFriend.getListFriend().get(position).avatarBytes, 0, listFriend.getListFriend().get(position).avatarBytes.length);

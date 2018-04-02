@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
@@ -44,9 +46,11 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivityFragment implements MainMvpView {
 
-    static final int SETTINGS_REQUEST = 1;  // The request code
-    private static final String EXTRA_TRIGGER_SYNC_FLAG ="uk.co.ribot.androidboilerplate.ui.main.MainActivity.EXTRA_TRIGGER_SYNC_FLAG";
+    static final int SETTINGS_REQUEST = 1;
+    private static final String EXTRA_TRIGGER_SYNC_FLAG = "MainActivity.EXTRA_TRIGGER_SYNC_FLAG";
+    public static Bitmap DEFAULT_AVATAR = null;
     public static boolean IS_USER_POSITION_CHECKED = false;
+    private static Activity mainActivity;
     public HotSpotFragment.HotspotFilterBackup hotspotFilterBackup;
     @Inject
     MainPresenter mMainPresenter;
@@ -55,7 +59,6 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
     String name, count;
     BottomBar bottomBar;
     private BaseTabFragment selectedFragment;
-    private static Activity mainActivity;
 
     /**
      * Return an Intent to start this Activity.
@@ -107,6 +110,8 @@ public class MainActivity extends BaseActivityFragment implements MainMvpView {
 
         activityComponent().inject(this);
         setContentView(R.layout.activity_main);
+
+        DEFAULT_AVATAR = BitmapFactory.decodeResource(getResources(), R.drawable.default_avatar);
 
         FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
 

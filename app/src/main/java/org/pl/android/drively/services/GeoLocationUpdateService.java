@@ -1,16 +1,19 @@
 package org.pl.android.drively.services;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Process;
+import android.support.v4.app.ActivityCompat;
 import android.text.format.DateUtils;
 
 import com.firebase.geofire.GeoFire;
@@ -93,7 +96,6 @@ public class GeoLocationUpdateService extends Service {
         return START_STICKY;
     }
 
-    @SuppressLint("MissingPermission")
     @Override
     public void onCreate() {
         super.onCreate();
@@ -121,10 +123,16 @@ public class GeoLocationUpdateService extends Service {
                 .setFastestInterval(DateUtils.SECOND_IN_MILLIS)
                 .setInterval(DateUtils.SECOND_IN_MILLIS);
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            stopSelf();
+            return;
+        }
+
         this.locationUpdatesObservable = locationProvider
                 .checkLocationSettings(new LocationSettingsRequest.Builder().addLocationRequest(locationRequest).setAlwaysShow(true).build())
                 .flatMap(settingsResult -> locationProvider.getUpdatedLocation(locationRequest)) /* The infinite stream of location updates */
-                .map(location -> kalmanFilter.filter(location))
+                //   .map(location -> kalmanFilter.filter(location))
                 .subscribeOn(AndroidSchedulers.from(thread.getLooper()))
                 .observeOn(AndroidSchedulers.from(thread.getLooper()));
 

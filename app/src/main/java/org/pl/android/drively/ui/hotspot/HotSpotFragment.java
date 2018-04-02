@@ -203,12 +203,12 @@ public class HotSpotFragment extends BaseTabFragment implements
             actionBar.show();
         }
 
-        if (mHotspotPresenter.checkLogin() != null)
-            GeoLocationUpdateService.startService();
-
         initGeolocation();
         verifyFirstStartSecondHotspotPopup(this.getContext());
         context = this.getContext();
+
+        if (mHotspotPresenter.checkLogin() != null)
+            GeoLocationUpdateService.startService();
     }
 
     private void verifyFirstStartSecondHotspotPopup(Context context) {
@@ -399,10 +399,9 @@ public class HotSpotFragment extends BaseTabFragment implements
 
         updatableLocationDisposable = locationUpdatesObservable
                 .subscribe(location -> {
-                    location = KALMAN_FILTER.filter(location);
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-                    if(!GeoLocationUpdateService.isServiceRunning(this.getActivity()) && mHotspotPresenter.getShareLocalisationPreference())
+                    if (!GeoLocationUpdateService.isServiceRunning(this.getActivity()) && mHotspotPresenter.getShareLocalisationPreference())
                         GeoLocationUpdateService.startService();
 
                     mHotspotPresenter.setLastLocationLatLng(latLng);
@@ -785,17 +784,16 @@ public class HotSpotFragment extends BaseTabFragment implements
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(new LatLng(location.latitude, location.longitude)).flat(false);
 
-        if (car.getDriverType().contains(Const.DriverType.UBER.getName())) {
+        if (car.getDriverType().equals(Const.DriverType.UBER.getName())) {
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.uber));
-        } else if (car.getDriverType().contains(Const.DriverType.ITAXI.getName())) {
+        } else if (car.getDriverType().equals(Const.DriverType.ITAXI.getName())) {
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.itaxi));
-        } else if (car.getDriverType().contains(Const.DriverType.MY_TAXI.getName())) {
+        } else if (car.getDriverType().equals(Const.DriverType.MY_TAXI.getName())) {
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.mytaxi));
-        } else if (car.getDriverType().contains(Const.DriverType.TAXI.getName())) {
+        } else if (car.getDriverType().equals(Const.DriverType.TAXI.getName())) {
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi2));
-        } else {
-            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_car));
-        }
+        } else
+            return null;
 
         return googleMap.addMarker(markerOptions);
     }
@@ -805,26 +803,32 @@ public class HotSpotFragment extends BaseTabFragment implements
         if (newCar.getUserId() == null || newCar.getUserId().equals(mHotspotPresenter.getUid()))
             return;
 
-        String carUser = newCar.getUserId();
-        GeoLocation currentLocation = newCar.getCurrentLocation();
+        String carUserId = newCar.getUserId();
 
-        if (!usersOnMap.containsKey(carUser)) {
+        if (!usersOnMap.containsKey(carUserId)) {
             Marker marker = addMarker(newCar);
+            if (marker == null) return;
             marker.setVisible(false);
             newCar.setMarker(marker);
-            newCar.setCurrentLocation(currentLocation);
-            newCar.setPreviousLocation(currentLocation);
-            usersOnMap.put(carUser, newCar);
+            usersOnMap.put(carUserId, newCar);
         } else {
-            Car savedCar = usersOnMap.get(carUser);
+            Car savedCar = usersOnMap.get(carUserId);
+            GeoLocation currentLocation = newCar.getCurrentLocation();
             GeoLocation previousLocation = savedCar.getCurrentLocation();
 
             savedCar.setCurrentLocation(currentLocation);
             savedCar.setPreviousLocation(previousLocation);
 
+            double bearing = savedCar.getBearing();
+            Marker marker = savedCar.getMarker();
+
+            if (!savedCar.getDriverType().equals(newCar.getDriverType())) {
+                marker.remove();
+                usersOnMap.remove(carUserId);
+                return;
+            }
+
             if (!previousLocation.equals(currentLocation)) {
-                double bearing = savedCar.getBearing();
-                Marker marker = savedCar.getMarker();
                 mHotspotPresenter.animateMarker(marker,
                         new LatLng(currentLocation.latitude, currentLocation.longitude),
                         bearing, googleMap.getProjection());

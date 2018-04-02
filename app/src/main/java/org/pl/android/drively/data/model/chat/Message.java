@@ -1,5 +1,9 @@
 package org.pl.android.drively.data.model.chat;
 
+import android.support.annotation.NonNull;
+
+import java.util.Comparator;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode
-public abstract class Message {
+public class Message implements Comparator<Message>, Comparable<Message> {
     public String idSender;
     public String idRoom;
     public String emailSender;
@@ -15,4 +19,14 @@ public abstract class Message {
     public String text;
     public long timestamp;
     public boolean deleted;
+
+    @Override
+    public int compare(Message a, Message b) {
+        return (int) (a.timestamp - b.timestamp);
+    }
+
+    @Override
+    public int compareTo(@NonNull Message message) {
+        return (int) (this.timestamp - message.timestamp);
+    }
 }

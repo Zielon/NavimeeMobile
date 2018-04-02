@@ -26,13 +26,4 @@ public class ListFriend {
         }
         return null;
     }
-
-    public String getAvataById(String id) {
-        for (Friend friend : listFriend) {
-            if (id.equals(friend.id)) {
-                return friend.avatar;
-            }
-        }
-        return "";
-    }
 }

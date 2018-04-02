@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.pl.android.drively.R;
-import org.pl.android.drively.util.Const;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,7 +98,7 @@ public class FriendModelAdapter extends RecyclerView.Adapter<FriendModelAdapter.
         TextView emailText = holder.getViewById(R.id.email);
         CircleImageView avatar = holder.getViewById(R.id.image);
 
-        if (object.getAvatar().equals(Const.STR_DEFAULT_AVATAR))
+        if (object.getAvatarImage() == null)
             avatar.setImageResource(R.drawable.default_avatar);
         else
             avatar.setImageBitmap(object.getAvatarImage());

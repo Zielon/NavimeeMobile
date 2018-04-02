@@ -1,5 +1,7 @@
 package org.pl.android.drively.ui.settings.user;
 
+import android.graphics.Bitmap;
+
 import org.pl.android.drively.ui.base.MvpView;
 
 public interface UserSettingsChangeMvpView extends MvpView {
@@ -9,5 +11,5 @@ public interface UserSettingsChangeMvpView extends MvpView {
 
     void onUserDeleted();
 
-    void reloadAvatar();
+    void reloadAvatar(Bitmap bitmap);
 }

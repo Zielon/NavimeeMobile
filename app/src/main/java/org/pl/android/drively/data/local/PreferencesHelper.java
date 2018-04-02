@@ -23,11 +23,9 @@ import static org.pl.android.drively.util.ReflectionUtil.nameof;
 @Singleton
 public class PreferencesHelper {
 
-    public static final String PREF_FILE_NAME = "android_boilerplate_pref_file";
-    private static String SHARE_USER_INFO = "userinfo";
+    public static final String PREF_FILE_NAME = "PreferencesHelperDrively";
     private static String SHARE_KEY_NAME = "name";
     private static String SHARE_KEY_EMAIL = "email";
-    private static String SHARE_KEY_AVATAR = "avatar";
     private static String SHARE_KEY_USER_ID = "id";
     private static String APP_VERSION = "app_version";
     private static String USER_COUNTRY = "user_country";
@@ -136,7 +134,6 @@ public class PreferencesHelper {
 
         e.putString(SHARE_KEY_NAME, user.getName());
         e.putString(SHARE_KEY_EMAIL, user.getEmail());
-        e.putString(SHARE_KEY_AVATAR, user.getAvatar());
         e.putString(SHARE_KEY_USER_ID, user.getId());
         e.putString(USER_CITY, user.getCity());
         e.putString(USER_COUNTRY, user.getCountry());
@@ -176,7 +173,6 @@ public class PreferencesHelper {
         user.setCountry(sharedPreferences.getString(USER_COUNTRY, ""));
         user.setName(sharedPreferences.getString(SHARE_KEY_NAME, ""));
         user.setEmail(sharedPreferences.getString(SHARE_KEY_EMAIL, ""));
-        user.setAvatar(sharedPreferences.getString(SHARE_KEY_AVATAR, "DEFAULT"));
         user.setId(sharedPreferences.getString(SHARE_KEY_USER_ID, ""));
         user.setToken(sharedPreferences.getString(Const.MESSAGING_TOKEN, ""));
         user.setOnline(getValue(IS_ONLINE));
