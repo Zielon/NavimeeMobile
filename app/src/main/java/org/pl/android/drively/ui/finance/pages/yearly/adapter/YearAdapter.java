@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.pl.android.drively.R;
+import org.pl.android.drively.util.DoubleUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -59,7 +60,7 @@ public class YearAdapter extends RecyclerView.Adapter<YearAdapter.MyViewHolder> 
     public void onBindViewHolder(YearAdapter.MyViewHolder holder, int position) {
         String categoryKey = categoryKeys.get(position);
         holder.infoLabel.setText(categoryKey);
-        holder.amountLabel.setText(String.valueOf(yearlyFinances.get(categoryKey)));
+        holder.amountLabel.setText(DoubleUtil.getStringWithCurrencyFromDouble(yearlyFinances.get(categoryKey)));
     }
 
     @Override

@@ -9,7 +9,12 @@ import android.view.ViewGroup;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.finance.pages.BaseFinanceFragment;
 
+import javax.inject.Inject;
+
 public class CalendarFragment extends BaseFinanceFragment implements CalendarMvpView {
+
+    @Inject
+    CalendarPresenter calendarPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -20,7 +25,9 @@ public class CalendarFragment extends BaseFinanceFragment implements CalendarMvp
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return container;
+        View view = initializeRecyclerLayout(inflater, container);
+        calendarPresenter.attachView(this);
+        return view;
     }
 
 }

@@ -31,7 +31,7 @@ public class BaseFinanceFragment extends BaseProgressFragment implements BaseFin
 
     @Override
     public void setSelectedPanelDate(Calendar calendar) {
-
+        showProgressDialog(R.string.loading_finances);
     }
 
     @Override

@@ -7,8 +7,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 
-import java.io.ByteArrayOutputStream;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 

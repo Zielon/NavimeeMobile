@@ -1,13 +1,9 @@
 package org.pl.android.drively.util;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
 import org.pl.android.drively.R;
 import org.pl.android.drively.ui.chat.ChatFragment;
 import org.pl.android.drively.ui.finance.FinanceFragment;
 import org.pl.android.drively.ui.hotspot.HotSpotFragment;
-import org.pl.android.drively.ui.main.MainActivity;
 import org.pl.android.drively.ui.planner.events.EventsFragment;
 
 import java.util.Arrays;
