@@ -99,7 +99,8 @@
 
         <service android:name=".services.GeoLocationUpdateService" />
 
-        <activity android:name=".ui.finance.add.AddFinanceActivity"></activity>
+        <activity android:name=".ui.finance.form.add.AddFinanceActivity"></activity>
+        <activity android:name=".ui.finance.form.edit.EditFinanceActivity"></activity>
     </application>
 
 </manifest>

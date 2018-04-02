@@ -264,4 +264,13 @@
     <string name="attachment_label">Załącznik</string>
     <string name="add_attachment">Dodaj załącznik</string>
     <string name="no_category_selected">Nie wybrano jeszcze kategorii.</string>
+    <string name="no_category">Brak kategorii</string>
+    <string name="expenses">Wydatki</string>
+    <string name="finances_load_failed">Nie udało się wczytać finansów</string>
+    <string name="loading_finances">Ładowanie wydatków</string>
+    <string name="select_picture">Wybierz zdjęcie</string>
+    <string name="too_large_file">Zbyt duży plik! Maksymalnie 5MB!</string>
+    <string name="incorrect_file">Niepoprawny plik!</string>
+    <string name="edit_finance">EDYTUJ</string>
+    <string name="back_finances">POWRÓT</string>
 </resources>

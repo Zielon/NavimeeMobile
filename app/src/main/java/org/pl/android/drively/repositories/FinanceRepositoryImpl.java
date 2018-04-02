@@ -1,22 +1,31 @@
 package org.pl.android.drively.repositories;
 
+import android.graphics.Bitmap;
+
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
 
 import org.pl.android.drively.contracts.repositories.FinanceRepository;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.Finance;
+import org.pl.android.drively.util.BitmapUtils;
+import org.pl.android.drively.util.rx.SchedulerProvider;
 
 import java.util.Date;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+
 public class FinanceRepositoryImpl<T extends Finance> implements FinanceRepository<T> {
 
-    protected DataManager dataManager;
+    protected final DataManager dataManager;
+
+    protected final SchedulerProvider schedulerProvider;
 
     private final String country;
 
@@ -25,8 +34,9 @@ public class FinanceRepositoryImpl<T extends Finance> implements FinanceReposito
     protected CollectionReference collectionReference;
 
     @Inject
-    public FinanceRepositoryImpl(DataManager dataManager) {
+    public FinanceRepositoryImpl(DataManager dataManager, SchedulerProvider schedulerProvider) {
         this.dataManager = dataManager;
+        this.schedulerProvider = schedulerProvider;
         this.country = dataManager.getPreferencesHelper().getCountry();
     }
 
@@ -45,6 +55,36 @@ public class FinanceRepositoryImpl<T extends Finance> implements FinanceReposito
     }
 
     @Override
+    public Disposable saveWithBitmap(T t, final Bitmap bitmap, SuccessCallback successCallback, FailureCallback failureCallback) {
+        DocumentReference financeReference;
+        if (t.getId() != null) {
+            financeReference = collectionReference.document(t.getId());
+        } else {
+            financeReference = collectionReference.document();
+            t.setId(financeReference.getId());
+        }
+        t.setAttachmentPath(buildPathByFinance(t.getId()));
+        return Observable.just(t)
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe(finance -> {
+                            FirebaseStorage.getInstance().getReference()
+                                    .child(finance.getAttachmentPath())
+                                    .putBytes(BitmapUtils.parseBitmapIntoBytes(bitmap));
+                            financeReference.set(finance)
+                                    .addOnCompleteListener(task -> successCallback.onSuccess());
+                        },
+                        error -> failureCallback.onFailure()
+                );
+    }
+
+    @Override
+    public String buildPathByFinance(String id) {
+        return baseFirestorePath + "/"
+                + dataManager.getFirebaseService().getFirebaseAuth().getCurrentUser().getUid() + "/" + id;
+    }
+
+    @Override
     public Task<Void> remove(T t) {
         return collectionReference.document(t.getId()).delete();
     }
@@ -55,12 +95,22 @@ public class FinanceRepositoryImpl<T extends Finance> implements FinanceReposito
     }
 
     @Override
-    public Task<QuerySnapshot> findAll() {
-        return collectionReference.orderBy("date", Query.Direction.DESCENDING).get();
+    public CollectionReference findAll() {
+        return collectionReference;
     }
 
     @Override
     public Task<QuerySnapshot> findAllByDateRange(Date from, Date to) {
         return null;
+    }
+
+    @FunctionalInterface
+    public interface SuccessCallback {
+        void onSuccess();
+    }
+
+    @FunctionalInterface
+    public interface FailureCallback {
+        void onFailure();
     }
 }

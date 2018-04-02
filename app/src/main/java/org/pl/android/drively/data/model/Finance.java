@@ -1,5 +1,7 @@
 package org.pl.android.drively.data.model;
 
+import org.pl.android.drively.util.DoubleUtil;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,8 +29,8 @@ public class Finance {
 
     private String attachmentPath;
 
-    public Map<String, Object> toMap(){
-        Map<String, Object> financeData = new HashMap<>();
+    public Map<String, java.lang.Object> toMap() {
+        Map<String, java.lang.Object> financeData = new HashMap<>();
         financeData.put("id", id);
         financeData.put("amount", amount.toString());
         financeData.put("description", description);
@@ -38,4 +40,10 @@ public class Finance {
         financeData.put("attachmentPath", attachmentPath);
         return financeData;
     }
+
+    public Double getAmountWithoutCurrency() {
+        return DoubleUtil.getDoubleFromAmountWithCurrency(amount);
+    }
+
+
 }

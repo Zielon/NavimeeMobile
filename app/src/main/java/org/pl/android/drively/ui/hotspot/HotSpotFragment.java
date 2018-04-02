@@ -200,6 +200,7 @@ public class HotSpotFragment extends BaseTabFragment implements
         if (actionBar != null && actionBar.getCustomView() != null) {
             TextView text = (TextView) actionBar.getCustomView().findViewById(R.id.app_bar_text);
             text.setText("");
+            actionBar.show();
         }
 
         if (mHotspotPresenter.checkLogin() != null)

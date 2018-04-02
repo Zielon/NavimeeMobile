@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="org.pl.android.drively.ui.finance.form.add.AddFinanceActivity">
+
+    <include layout="@layout/finance_form" />
+
+    <mehdi.sakout.fancybuttons.FancyButton
+        android:id="@+id/edit_finance_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/small_margin"
+        android:layout_marginTop="@dimen/big_margin"
+        android:elevation="@dimen/base_elevation"
+        android:padding="@dimen/medium_padding"
+        app:layout_constraintBottom_toTopOf="@+id/back_finance_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1"
+        fancy:fb_defaultColor="@color/button_background"
+        fancy:fb_focusColor="@color/semi_transparent_white"
+        fancy:fb_fontIconResource="&#xf044;"
+        fancy:fb_iconPaddingLeft="16dp"
+        fancy:fb_iconPosition="right"
+        fancy:fb_radius="@dimen/base_radius"
+        fancy:fb_text="@string/edit_finance"
+        fancy:fb_textColor="@color/white"
+        fancy:fb_textSize="@dimen/base_font_size"
+        tools:targetApi="lollipop" />
+
+    <mehdi.sakout.fancybuttons.FancyButton
+        android:id="@+id/back_finance_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/big_margin"
+        android:layout_marginTop="@dimen/big_margin"
+        android:elevation="@dimen/base_elevation"
+        android:padding="@dimen/medium_padding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1"
+        fancy:fb_defaultColor="@color/button_background"
+        fancy:fb_focusColor="@color/semi_transparent_white"
+        fancy:fb_fontIconResource="&#xf060;"
+        fancy:fb_iconPaddingLeft="16dp"
+        fancy:fb_iconPosition="right"
+        fancy:fb_radius="@dimen/base_radius"
+        fancy:fb_text="@string/back_finances"
+        fancy:fb_textColor="@color/white"
+        fancy:fb_textSize="@dimen/base_font_size"
+        tools:targetApi="lollipop" />
+
+</android.support.constraint.ConstraintLayout>

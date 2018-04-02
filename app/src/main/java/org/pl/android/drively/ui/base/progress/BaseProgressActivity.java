@@ -1,12 +1,8 @@
 package org.pl.android.drively.ui.base.progress;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.Toast;
 
-import org.pl.android.drively.R;
 import org.pl.android.drively.ui.base.BaseActivity;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -23,8 +19,6 @@ public class BaseProgressActivity extends BaseActivity implements BaseProgressMv
     }
 
     private void initializeProgressDialog() {
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.loading_indicator, null);
         progressDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
         progressDialog.setCancelable(false);
     }
@@ -47,7 +41,7 @@ public class BaseProgressActivity extends BaseActivity implements BaseProgressMv
 
     @Override
     public void hideProgressDialog() {
-        Optional.ofNullable(progressDialog).ifPresent(SweetAlertDialog::dismissWithAnimation);
+        Optional.ofNullable(progressDialog).ifPresent(SweetAlertDialog::dismiss);
     }
 
     @Override

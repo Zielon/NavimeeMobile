@@ -61,6 +61,7 @@ public class ChatFragment extends BaseTabFragment implements ChatMvpView {
         if (actionBar != null && actionBar.getCustomView() != null) {
             TextView text = (TextView) actionBar.getCustomView().findViewById(R.id.app_bar_text);
             text.setText(getResources().getString(R.string.chat));
+            actionBar.show();
         }
     }
 

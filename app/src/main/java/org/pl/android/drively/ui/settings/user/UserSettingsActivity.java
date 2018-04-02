@@ -3,14 +3,11 @@ package org.pl.android.drively.ui.settings.user;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.OpenableColumns;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +34,7 @@ import org.pl.android.drively.data.model.User;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
 import org.pl.android.drively.ui.main.MainActivity;
+import org.pl.android.drively.util.GalleryUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,6 +47,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static org.pl.android.drively.util.Const.FILE_MAX_SIZE_5_MB;
 import static org.pl.android.drively.util.ConstIntents.ACTION;
 import static org.pl.android.drively.util.ConstIntents.DELETE_USER;
 
@@ -72,7 +71,6 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
     private Bundle savedInstanceState;
     private int PICK_IMAGE_REQUEST = 1;
     private int CHANGE_SETTINGS = 2;
-    private long FILE_MAX_SIZE_5_MB = 5000000;
     private ProgressDialog progressDialog;
 
     @Override
@@ -124,7 +122,7 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
             if (action != null && action.equals(DELETE_USER)) showDeleteUserPopup();
 
             if (requestCode == PICK_IMAGE_REQUEST && data.getData() != null) {
-                if (checkSize(data.getData())) {
+                if (GalleryUtil.checkSize(this, data.getData(), FILE_MAX_SIZE_5_MB)) {
                     Bitmap bitmap = null;
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
@@ -133,7 +131,7 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
                     }
 
                     if (bitmap == null) {
-                        Toast.makeText(getBaseContext(), "An incorrect file!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getBaseContext(), getString(R.string.incorrect_file), Toast.LENGTH_LONG).show();
                         return;
                     }
 
@@ -147,19 +145,6 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
                 initDrawer();
         }
         drawer.setSelection(-1);
-    }
-
-    private boolean checkSize(Uri returnUri) {
-        Cursor returnCursor =
-                getContentResolver().query(returnUri, null, null, null, null);
-
-        int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
-        returnCursor.moveToFirst();
-        if (returnCursor.getLong(sizeIndex) > FILE_MAX_SIZE_5_MB) {
-            Toast.makeText(getBaseContext(), "The file is too big!", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        return true;
     }
 
     @Override
@@ -190,10 +175,7 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsCh
 
     @OnClick(R.id.avatar_layout)
     public void changeAvatar() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+        GalleryUtil.startPickingPhoto(this, PICK_IMAGE_REQUEST);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)

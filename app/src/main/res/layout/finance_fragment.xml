@@ -2,40 +2,147 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:layout_editor_absoluteY="81dp">
 
-    <View
-        android:id="@+id/app_bar_skeleton"
-        android:layout_width="wrap_content"
-        android:layout_height="?attr/actionBarSize"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/finance_recycler_view"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/finance_bar"
+        android:layout_width="0dp"
+        android:layout_marginTop="@dimen/big_margin"
+        android:layout_marginBottom="@dimen/small_margin"
+        android:layout_marginStart="@dimen/medium_margin"
+        android:layout_marginEnd="@dimen/medium_margin"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/finance_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/app_bar_skeleton"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/left_panel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:id="@+id/previous_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toStartOf="@+id/date_change_label"
+                app:layout_constraintStart_toStartOf="parent"
+                fancy:fb_defaultColor="@color/transparent"
+                fancy:fb_focusColor="@color/semi_transparent_white"
+                fancy:fb_fontIconResource="&#xf053;"
+                fancy:fb_text=""
+                fancy:fb_textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/date_change_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="mar 2018"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/next_button"
+                app:layout_constraintStart_toEndOf="@id/previous_button"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:id="@+id/next_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/date_change_label"
+                fancy:fb_defaultColor="@color/transparent"
+                fancy:fb_focusColor="@color/semi_transparent_white"
+                fancy:fb_fontIconResource="&#xf054;"
+                fancy:fb_text=""
+                fancy:fb_textColor="@color/white" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/right_panel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/finance_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/expenses"
+                app:layout_constraintBottom_toTopOf="@+id/finance_sum"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/finance_sum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/md_red_700"
+                android:text="1111,1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/finance_label"/>
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <com.gigamole.navigationtabstrip.NavigationTabStrip
+        android:id="@+id/finance_navigation"
         android:layout_width="0dp"
-        android:layout_height="0dp" />
+        android:layout_height="@dimen/finance_navigation_height"
+        app:layout_constraintBottom_toTopOf="@+id/frame_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/finance_bar"
+        app:nts_active_color="@color/white"
+        app:nts_animation_duration="500"
+        app:nts_color="@color/button_background"
+        app:nts_corners_radius="1.5dp"
+        app:nts_factor="2.5"
+        app:nts_gravity="bottom"
+        app:nts_inactive_color="#c4c4c4"
+        app:nts_size="12sp"
+        app:nts_titles="@array/financeNavbar"
+        app:nts_type="line"
+        app:nts_weight="3dp" />
+
+    <FrameLayout
+        android:id="@+id/frame_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/finance_navigation" />
 
     <TextView
         android:id="@+id/no_data_label"
         android:layout_width="wrap_content"
-        android:visibility="gone"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/base_margin"
-        android:textSize="@dimen/medium_font_size"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:textColor="@color/white"
         android:text="@string/no_finance_added"
-        app:layout_constraintVertical_bias="0.5" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/medium_font_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone" />
 
     <mehdi.sakout.fancybuttons.FancyButton
         android:id="@+id/add_finance_button"
@@ -52,17 +159,20 @@
         fancy:fb_defaultColor="@color/button_background"
         fancy:fb_focusColor="@color/semi_transparent_white"
         fancy:fb_fontIconResource="&#xf067;"
+        fancy:fb_fontIconSize="@dimen/big_font_size"
         fancy:fb_radius="@dimen/add_finance_fab_size"
-        fancy:fb_fontIconSize="@dimen/medium_font_size"
         fancy:fb_text=""
-        fancy:fb_textColor="@color/white" />
+        fancy:fb_textColor="@color/white"
+        tools:layout_editor_absoluteX="312dp"
+        tools:layout_editor_absoluteY="439dp" />
 
     <org.pl.android.drively.common.SheetLayout
         android:id="@+id/reveal_animation_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom"
-        android:elevation="2dp"
+        android:layout_marginBottom="648dp"
+        android:elevation="10dp"
         app:ft_color="@color/button_background"
         app:ft_container_gravity="center" />
 

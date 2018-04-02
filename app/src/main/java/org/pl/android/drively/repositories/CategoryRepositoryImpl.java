@@ -13,16 +13,19 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
     private final DataManager dataManager;
 
+    private String country;
+
     @Inject
     public CategoryRepositoryImpl(DataManager dataManager) {
         this.dataManager = dataManager;
+        this.country = dataManager.getPreferencesHelper().getCountry();
     }
 
     @Override
     public Task<DocumentSnapshot> findAll() {
         return dataManager.getFirebaseService().getFirebaseFirestore()
                 .collection(FirebasePaths.EXPENSES)
-                .document(FirebasePaths.CATEGORIES)
+                .document(country)
                 .get();
     }
 }

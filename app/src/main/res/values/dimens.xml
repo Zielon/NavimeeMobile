@@ -27,4 +27,7 @@
     <dimen name="small_font_size">11sp</dimen>
     <dimen name="small_margin">8dp</dimen>
     <dimen name="big_font_size">26sp</dimen>
+    <dimen name="finance_navigation_height">50dp</dimen>
+    <dimen name="divider_height">1dp</dimen>
+    <dimen name="add_finance_image_thumbnail">32dp</dimen>
 </resources>

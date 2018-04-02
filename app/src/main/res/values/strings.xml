@@ -268,4 +268,13 @@
     <string name="attachment_label">Attachment</string>
     <string name="add_attachment">Add attachment</string>
     <string name="no_category_selected">No category selected</string>
+    <string name="no_category">No category</string>
+    <string name="expenses">Expenses</string>
+    <string name="finances_load_failed">Loading finances failed</string>
+    <string name="loading_finances">Loading finances</string>
+    <string name="select_picture">Select picture</string>
+    <string name="too_large_file">Too large file! Maximum 5MB!</string>
+    <string name="incorrect_file">Incorrect file!</string>
+    <string name="edit_finance">EDIT</string>
+    <string name="back_finances">BACK</string>
 </resources>

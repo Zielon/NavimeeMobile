@@ -6,6 +6,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 
+import java.io.ByteArrayOutputStream;
+
 public class BitmapUtils {
 
     public static Bitmap getCircular(Bitmap bitmap) {
@@ -35,4 +37,11 @@ public class BitmapUtils {
                         targetHeight), paint);
         return targetBitmap;
     }
+
+    public static byte[] parseBitmapIntoBytes(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        return baos.toByteArray();
+    }
+
 }

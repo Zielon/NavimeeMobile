@@ -16,7 +16,8 @@ import lombok.Setter;
 
 public class FinanceAdapter extends RecyclerView.Adapter<FinanceAdapter.ViewHolder> {
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private List<? extends Finance> finances;
 
     public class ViewHolder extends RecyclerView.ViewHolder {

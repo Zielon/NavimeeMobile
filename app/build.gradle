@@ -210,7 +210,6 @@ dependencies {
     compile 'com.yarolegovich:lovely-dialog:1.0.7'
     compile 'de.hdodenhof:circleimageview:2.2.0'
     compile 'com.rm:rmswitch:1.2.2'
-    compile 'com.rilixtech:fontawesome-typeface:4.7.0.4'
     compile 'com.github.medyo:fancybuttons:1.8.4'
     compile 'com.rilixtech:materialfancybuttons:1.8.7'
     compile 'com.github.coyarzun89:fabtransitionactivity:0.2.0'
@@ -220,12 +219,20 @@ dependencies {
     compile 'com.github.tylersuehr7:chips-input-layout:2.2'
     compile 'com.wdullaer:materialdatetimepicker:3.5.1'
     compile 'com.zaihuishou:expandablerecycleradapter-databinding:1.0.0'
+    compile 'com.github.oliveiradev:image-zoom:0.4.0'
+    compile 'com.meetic.marypopup:marypopup:1.0.0'
+    compile 'com.meetic.dragueur:dragueur:1.0.3'
+    compile 'com.github.BlacKCaT27:CurrencyEditText:2.0.2'
+    compile 'com.github.devlight.navigationtabstrip:navigationtabstrip:1.0.4'
+    compile 'com.ogaclejapan.smarttablayout:library:1.6.1@aar'
+    compile 'com.daimajia.easing:library:2.0@aar'
+    compile 'com.daimajia.androidanimations:library:2.3@aar'
+    compile 'com.android.support:support-compat:25.1.1'
     //google map
     compile 'com.github.jd-alexander:library:1.1.0'
     compile 'com.google.maps.android:android-maps-utils:0.4+'
     //facebook
     compile 'com.facebook.android:facebook-login:[4,5)'
-    compile 'com.github.BlacKCaT27:CurrencyEditText:2.0.2'
     // Google Sign In SDK (only required for Google Sign In)
     compile "com.google.android.gms:play-services-auth:$PLAY_SERVICES_VERSION"
 
