@@ -134,7 +134,7 @@ public abstract class BaseFinanceFormActivity extends BaseProgressActivity imple
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_REQUEST && data.getData() != null) {
+        if (requestCode == PICK_IMAGE_REQUEST && data != null && data.getData() != null) {
             if (GalleryUtil.checkSize(this, data.getData(), FILE_MAX_SIZE_5_MB)) {
                 financeBitmap = null;
                 try {
