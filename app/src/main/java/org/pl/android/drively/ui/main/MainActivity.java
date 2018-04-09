@@ -31,7 +31,7 @@ import org.pl.android.drively.data.model.eventbus.NotificationEvent;
 import org.pl.android.drively.ui.base.BaseActivityFragment;
 import org.pl.android.drively.ui.base.tab.BaseTabFragment;
 import org.pl.android.drively.ui.chat.ChatFragment;
-import org.pl.android.drively.ui.chat.finance.FinanceFragment;
+import org.pl.android.drively.ui.finance.FinanceFragment;
 import org.pl.android.drively.ui.hotspot.HotSpotFragment;
 import org.pl.android.drively.ui.intro.IntroActivity;
 import org.pl.android.drively.ui.planner.PlannerFragment;

@@ -19,4 +19,7 @@ public class FirebasePaths {
     public static final String CITIES = "CITIES";
     public static final String NOT_AVAILABLE_CITIES = "NOT_AVAILABLE_CITIES";
     public static final String UBER = "UBER";
+    public static final String EXPENSES = "EXPENSES";
+    public static final String INCOMES = "INCOMES";
+    public static final String CATEGORIES = "CATEGORIES";
 }

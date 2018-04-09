@@ -13,5 +13,12 @@
         <item>iTaxi</item>
         <item>Taxi</item>
     </string-array>
+    <string-array name="financeNavbar">
+        <item>Daily</item>
+        <item>Weekly</item>
+        <item>Monthly</item>
+        <item>Yearly</item>
+        <item>Calendar</item>
+    </string-array>
 
 </resources>

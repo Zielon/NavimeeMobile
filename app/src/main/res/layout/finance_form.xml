@@ -1,0 +1,291 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/light_primary"
+    android:paddingTop="@dimen/base_padding">
+
+    <TextView
+        android:id="@+id/category_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/medium_margin"
+        android:layout_marginTop="@dimen/medium_margin"
+        android:text="@string/no_category_selected"
+        android:textColor="@color/white"
+        android:textSize="@dimen/base_font_size" />
+
+    <TextView
+        android:id="@+id/category_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/medium_margin"
+        android:text="@string/category_label"
+        android:textColor="@color/semi_transparent_white"
+        android:textSize="@dimen/small_font_size"
+        android:layout_below="@id/category_input"/>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/date_label_input_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/date_icon"
+        android:layout_below="@id/category_label"
+        android:layout_marginTop="@dimen/big_margin"
+        android:textColor="@color/semi_transparent_white">
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/base_margin"
+            android:layout_marginStart="@dimen/base_margin"
+            android:text="01 sty 2018"
+            android:textSize="@dimen/base_font_size"
+            app:layout_constraintBottom_toTopOf="@+id/date_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/date_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/date"
+            android:textColor="@color/semi_transparent_white"
+            android:textSize="@dimen/small_font_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="@id/date"
+            app:layout_constraintTop_toBottomOf="@id/date" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/date_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/big_margin"
+        android:layout_marginEnd="@dimen/base_margin"
+        android:layout_below="@id/category_label"
+        android:layout_marginStart="@dimen/medium_margin"
+        android:src="@drawable/ic_today_white_24dp"
+        android:text="01 sty 2018"
+        android:textSize="@dimen/medium_font_size" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/amount_layout"
+        android:layout_width="match_parent"
+        android:layout_below="@id/date_icon"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/big_margin">
+
+        <android.support.constraint.Guideline
+            android:id="@+id/amount_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="80dp" />
+
+        <TextView
+            android:id="@+id/amount_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:text="@string/amount_label"
+            android:textColor="@color/white"
+            android:textSize="@dimen/base_font_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.blackcat.currencyedittext.CurrencyEditText
+            android:id="@+id/finance_amount_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:hint="@string/write_finance_amount"
+            android:inputType="numberDecimal"
+            android:maxLines="1"
+            android:textSize="@dimen/base_font_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/amount_guideline" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/description_layout"
+        android:layout_width="match_parent"
+        android:layout_below="@id/amount_layout"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/big_margin">
+
+        <android.support.constraint.Guideline
+            android:id="@+id/description_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="80dp" />
+
+        <TextView
+            android:id="@+id/description_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:text="@string/description_label"
+            android:textColor="@color/white"
+            android:textSize="@dimen/base_font_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/finance_description_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:hint="@string/description_label"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textSize="@dimen/base_font_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/description_guideline" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/note_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/description_layout"
+        android:layout_marginTop="@dimen/big_margin">
+
+        <android.support.constraint.Guideline
+            android:id="@+id/note_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="80dp" />
+
+        <TextView
+            android:id="@+id/note_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:text="@string/note_label"
+            android:textColor="@color/white"
+            android:textSize="@dimen/base_font_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/finance_note_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:hint="@string/note_label"
+            android:inputType="text"
+            app:layout_constraintTop_toTopOf="parent"
+            android:maxLines="1"
+            android:textSize="@dimen/base_font_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/note_guideline" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/attachment_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/medium_margin"
+        android:layout_below="@id/note_layout"
+        android:layout_marginTop="@dimen/medium_margin">
+
+        <TextView
+            android:id="@+id/attachment_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:text="@string/attachment_label"
+            android:textColor="@color/white"
+            android:textSize="@dimen/base_font_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:id="@+id/attachment_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/attachment_label"
+            app:layout_constraintTop_toTopOf="parent"
+            fancy:fb_defaultColor="@color/transparent"
+            fancy:fb_focusColor="@color/semi_transparent_white"
+            fancy:fb_text="@string/add_attachment"
+            fancy:fb_textColor="@color/md_light_blue_600"
+            fancy:fb_textSize="@dimen/base_font_size" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/finance_photo"
+            android:layout_width="@dimen/add_finance_image_thumbnail"
+            android:layout_height="@dimen/add_finance_image_thumbnail"
+            app:civ_border_width="2dp"
+            app:civ_border_color="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/attachment_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+        <ProgressBar
+            android:id="@+id/finance_photo_loading"
+            android:layout_width="@dimen/add_finance_image_thumbnail"
+            android:layout_height="@dimen/add_finance_image_thumbnail"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/attachment_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:indeterminate="true" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <com.rm.rmswitch.RMSwitch
+        android:id="@+id/finance_type_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/small_margin"
+        android:visibility="gone"
+        app:checked="false"
+        app:switchBkgCheckedColor="@color/md_light_green_200"
+        app:switchBkgNotCheckedColor="@color/md_red_200"
+        app:switchDesign="slim"
+        app:switchToggleCheckedColor="@color/md_light_green_500"
+        app:switchToggleCheckedImage="@drawable/ic_people_white"
+        app:switchToggleNotCheckedColor="@color/md_red_500"
+        app:switchToggleNotCheckedImage="@drawable/ic_delete_white_24dp" />
+
+</RelativeLayout>

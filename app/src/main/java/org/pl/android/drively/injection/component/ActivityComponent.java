@@ -10,9 +10,16 @@ import org.pl.android.drively.injection.module.ServicesModule;
 import org.pl.android.drively.ui.chat.ChatFragment;
 import org.pl.android.drively.ui.chat.addgroup.AddGroupActivity;
 import org.pl.android.drively.ui.chat.chatview.ChatViewActivity;
-import org.pl.android.drively.ui.chat.finance.FinanceFragment;
 import org.pl.android.drively.ui.chat.friends.FriendsFragment;
 import org.pl.android.drively.ui.chat.group.GroupFragment;
+import org.pl.android.drively.ui.finance.FinanceFragment;
+import org.pl.android.drively.ui.finance.form.add.AddFinanceActivity;
+import org.pl.android.drively.ui.finance.form.edit.EditFinanceActivity;
+import org.pl.android.drively.ui.finance.pages.calendar.CalendarFragment;
+import org.pl.android.drively.ui.finance.pages.daily.DailyFragment;
+import org.pl.android.drively.ui.finance.pages.monthly.MonthlyFragment;
+import org.pl.android.drively.ui.finance.pages.weekly.WeeklyFragment;
+import org.pl.android.drively.ui.finance.pages.yearly.YearlyFragment;
 import org.pl.android.drively.ui.hotspot.HotSpotFragment;
 import org.pl.android.drively.ui.main.MainActivity;
 import org.pl.android.drively.ui.planner.dayschedule.DayScheduleFragment;
@@ -52,6 +59,20 @@ public interface ActivityComponent {
     void inject(ChatViewActivity chatViewActivity);
 
     void inject(AddGroupActivity addGroupActivity);
+
+    void inject(AddFinanceActivity addFinanceActivity);
+
+    void inject(EditFinanceActivity editFinanceActivity);
+
+    void inject(DailyFragment dailyFragment);
+
+    void inject(WeeklyFragment weeklyFragment);
+
+    void inject(MonthlyFragment MonthlyFragment);
+
+    void inject(YearlyFragment yearlyFragment);
+
+    void inject(CalendarFragment calendarFragment);
 
     @ActivityContext
     Context provideContext();

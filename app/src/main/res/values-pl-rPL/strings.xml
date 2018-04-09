@@ -237,7 +237,7 @@
     <string name="events">Kalendarz</string>
     <string name="day_schedule">Plan Dnia</string>
     <string name="hotspot">Hotspot</string>
-    <string name="finance">Wydatki</string>
+    <string name="finance">Finanse</string>
     <string name="save">Zapisz</string>
 
     <string name="user_exists">Taki użytkownik już istnieje</string>
@@ -247,4 +247,30 @@
     <string name="continueWith">lub kontynuuj z</string>
     <string name="emailAlreadyInUse">Podany adres e-mail jest już używany przez inne konto.</string>
 
+    <!--FINANCE-->
+    <string name="add_finance">ZAPISZ</string>
+    <string name="no_finance_added">Nie dodano żadnych finansów.</string>
+    <string name="finance_adding">Aktualizowanie finansów.</string>
+    <string name="finance_type_label">Rodzaj finansu</string>
+    <string name="write_finance_amount">Wpisz kwotę</string>
+    <string name="finance_failed_to_add">Nie udało się dodać finansu.</string>
+    <string name="enter_category">Wprowadź kategorię</string>
+    <string name="date">Data</string>
+    <string name="time">Czas</string>
+    <string name="amount_label">Kwota</string>
+    <string name="category_label">Kategoria</string>
+    <string name="description_label">Opis</string>
+    <string name="note_label">Notatka</string>
+    <string name="attachment_label">Załącznik</string>
+    <string name="add_attachment">Dodaj załącznik</string>
+    <string name="no_category_selected">Nie wybrano jeszcze kategorii.</string>
+    <string name="no_category">Brak kategorii</string>
+    <string name="expenses">Wydatki</string>
+    <string name="finances_load_failed">Nie udało się wczytać finansów</string>
+    <string name="loading_finances">Ładowanie wydatków</string>
+    <string name="select_picture">Wybierz zdjęcie</string>
+    <string name="too_large_file">Zbyt duży plik! Maksymalnie 5MB!</string>
+    <string name="incorrect_file">Niepoprawny plik!</string>
+    <string name="edit_finance">EDYTUJ</string>
+    <string name="back_finances">POWRÓT</string>
 </resources>

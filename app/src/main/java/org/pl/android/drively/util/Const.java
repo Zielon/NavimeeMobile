@@ -1,13 +1,9 @@
 package org.pl.android.drively.util;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
 import org.pl.android.drively.R;
 import org.pl.android.drively.ui.chat.ChatFragment;
-import org.pl.android.drively.ui.chat.finance.FinanceFragment;
+import org.pl.android.drively.ui.finance.FinanceFragment;
 import org.pl.android.drively.ui.hotspot.HotSpotFragment;
-import org.pl.android.drively.ui.main.MainActivity;
 import org.pl.android.drively.ui.planner.events.EventsFragment;
 
 import java.util.Arrays;
@@ -58,6 +54,11 @@ public class Const {
     public static long TIME_TO_OFFLINE = 2 * 60 * 1000;
     public static long TIME_TO_DROP_NOTIFICATION = 5 * 60 * 1000;
     public static long FIVE_MEGABYTE = 5 * 1024 * 1024;
+    public static int FINANCE_VIEW_PAGER_COUNT = 5;
+
+    public static List<String> FINANCE_CATEGORIES = Arrays.asList("Okukubambo", "Brak mi stodoły", "Watykan", "Rodzynki w czekoladzie", "Chiki briki");
+
+    public static long FILE_MAX_SIZE_5_MB = 5000000;
 
     public enum HotSpotType {
         EVENT,

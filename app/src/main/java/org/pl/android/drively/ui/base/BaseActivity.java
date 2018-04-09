@@ -24,7 +24,7 @@ import timber.log.Timber;
  * creation of Dagger components and makes sure that instances of ConfigPersistentComponent survive
  * across configuration changes.
  */
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends AppCompatActivity implements MvpView {
 
     static final int SETTINGS_REQUEST = 1;  // The request code
     private static final String KEY_ACTIVITY_ID = "KEY_ACTIVITY_ID";
@@ -48,6 +48,7 @@ public class BaseActivity extends AppCompatActivity {
 
         mActivityComponent = getConfigPersistentComponent().activityComponent(new ActivityModule(this));
     }
+
 
     private ConfigPersistentComponent getConfigPersistentComponent() {
         ConfigPersistentComponent configPersistentComponent = sComponentsMap.get(mActivityId, null);
@@ -90,6 +91,4 @@ public class BaseActivity extends AppCompatActivity {
     public boolean hasPermission(String perm) {
         return (PackageManager.PERMISSION_GRANTED == checkSelfPermission(perm));
     }
-
-
 }

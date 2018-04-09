@@ -41,6 +41,13 @@ public class BitmapUtils {
         return targetBitmap;
     }
 
+    public static byte[] parseBitmapIntoBytes(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        return baos.toByteArray();
+    }
+
+
     public static Bitmap scaleDown(Bitmap realImage, float maxImageSize, int quality) {
         float ratio = Math.min(maxImageSize / realImage.getWidth(), maxImageSize / realImage.getHeight());
         int width = Math.round(ratio * realImage.getWidth());
