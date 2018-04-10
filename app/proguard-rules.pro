@@ -64,6 +64,7 @@
 -dontwarn com.google.firebase.database.DatabaseReference
 -dontwarn build.IgnoreJava8API
 -dontwarn lombok.**
+-dontwarn com.beloo.widget.chipslayoutmanager.**
 
 -keepattributes *Annotation*,EnclosingMethod,Signature
 -keepnames class com.fasterxml.jackson.** { *; }
