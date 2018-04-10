@@ -39,7 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/small_margin"
-        android:background="@color/white"
+        android:background="@color/semi_transparent_white"
         />
 
 </android.support.constraint.ConstraintLayout>

@@ -1,6 +1,7 @@
 package org.pl.android.drively.ui.base.progress;
 
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.widget.Toast;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -45,12 +46,20 @@ public class BaseProgressFragment extends Fragment implements BaseProgressMvp {
 
     @Override
     public void showMessage(String content) {
-        Toast.makeText(getActivity(), content, Toast.LENGTH_SHORT).show();
+        try {
+            Toast.makeText(getActivity(), content, Toast.LENGTH_SHORT).show();
+        } catch (IllegalStateException e) {
+            Log.d("Showing message failed.", e.getMessage());
+        }
     }
 
     @Override
     public void showMessage(int stringResId) {
-        Toast.makeText(getActivity(), getString(stringResId), Toast.LENGTH_SHORT).show();
+        try {
+            Toast.makeText(getActivity(), getString(stringResId), Toast.LENGTH_SHORT).show();
+        } catch (IllegalStateException e) {
+            Log.d("Showing message failed.", e.getMessage());
+        }
     }
 
 }

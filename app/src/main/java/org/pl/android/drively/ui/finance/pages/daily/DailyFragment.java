@@ -14,7 +14,9 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 
 import org.pl.android.drively.R;
+import org.pl.android.drively.data.model.Expense;
 import org.pl.android.drively.data.model.Finance;
+import org.pl.android.drively.data.model.Income;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.finance.FinanceMvpView;
 import org.pl.android.drively.ui.finance.form.edit.EditFinanceActivity;
@@ -98,6 +100,7 @@ public class DailyFragment extends BaseFinanceFragment implements DailyMvpView {
     public void startEditingFinance(Finance finance) {
         Intent intent = new Intent(getActivity(), EditFinanceActivity.class);
         intent.putExtra(EditFinanceActivity.FINANCE_INTENT, new Gson().toJson(finance));
+        intent.putExtra(EditFinanceActivity.FINANCE_TYPE, finance instanceof Expense ? Expense.class.getName() : Income.class.getName());
         startActivity(intent);
     }
 }

@@ -1,8 +1,10 @@
 package org.pl.android.drively.ui.finance.form.edit;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import org.pl.android.drively.R;
 import org.pl.android.drively.contracts.repositories.CategoryRepository;
 import org.pl.android.drively.contracts.repositories.ExpenseRepository;
 import org.pl.android.drively.contracts.repositories.IncomeRepository;
@@ -34,4 +36,22 @@ public class EditFinancePresenter extends BaseFinanceFormPresenter<EditFinanceMv
         return FirebaseStorage.getInstance().getReference().child(expenseRepository.buildPathByFinance(finance.getId()));
     }
 
+    public void deleteExpense(String id) {
+        attachRemoveListener(expenseRepository.remove(id));
+    }
+
+    private void attachRemoveListener(Task<Void> removeTask) {
+        removeTask.addOnCompleteListener(task -> {
+            if(task.isSuccessful()) {
+                getMvpView().hideProgressDialog();
+                getMvpView().goBackToFinances();
+            } else {
+                getMvpView().showMessage(R.string.deleting_failure);
+            }
+        });
+    }
+
+    public void deleteIncome(String id) {
+        attachRemoveListener(incomeRepository.remove(id));
+    }
 }

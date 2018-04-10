@@ -3,6 +3,7 @@ package org.pl.android.drively.ui.finance;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
@@ -15,13 +16,11 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.gigamole.navigationtabstrip.NavigationTabStrip;
 
 import org.pl.android.drively.R;
-import org.pl.android.drively.common.SheetLayout;
 import org.pl.android.drively.data.model.Finance;
 import org.pl.android.drively.ui.base.BaseActivity;
 import org.pl.android.drively.ui.base.tab.BaseTabFragment;
 import org.pl.android.drively.ui.finance.form.add.AddFinanceActivity;
 import org.pl.android.drively.ui.finance.pages.BaseFinanceFragment;
-import org.pl.android.drively.ui.finance.pages.calendar.CalendarFragment;
 import org.pl.android.drively.ui.finance.pages.daily.DailyFragment;
 import org.pl.android.drively.ui.finance.pages.monthly.MonthlyFragment;
 import org.pl.android.drively.ui.finance.pages.weekly.WeeklyFragment;
@@ -39,7 +38,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import java8.util.Optional;
 import lombok.Getter;
-import mehdi.sakout.fancybuttons.FancyButton;
 
 import static org.pl.android.drively.ui.finance.pages.TopLeftPanelHelper.determineDateElementToChange;
 import static org.pl.android.drively.ui.finance.pages.TopLeftPanelHelper.determineLeftPanelLabel;
@@ -63,10 +61,7 @@ public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
     TextView noDataLabel;
 
     @BindView(R.id.add_finance_button)
-    FancyButton addFinanceButton;
-
-    @BindView(R.id.reveal_animation_sheet)
-    SheetLayout revealAnimation;
+    FloatingActionButton addFinanceButton;
 
     @BindView(R.id.finance_navigation)
     NavigationTabStrip navigationTabStrip;
@@ -94,7 +89,9 @@ public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
         ((BaseActivity) getActivity()).activityComponent().inject(this);
         ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
         if (actionBar != null && actionBar.getCustomView() != null) {
-            actionBar.hide();
+            TextView text = (TextView) actionBar.getCustomView().findViewById(R.id.app_bar_text);
+            text.setText(getResources().getString(R.string.finance));
+            actionBar.show();
         }
         context = (MainActivity) this.getActivity();
         alreadyLoadedData = new TreeSet<>((finance1, finance2) -> finance1.getDate().compareTo(finance2.getDate()));
@@ -107,7 +104,6 @@ public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
         ButterKnife.bind(this, fragmentView);
         financePresenter.attachView(this);
         initializeView();
-        initializeRevealAnimation();
         determineFragmentReplacement(0);
         return fragmentView;
     }
@@ -150,10 +146,6 @@ public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
                 selectedFragment = new YearlyFragment();
                 break;
             }
-            case 4: {
-                selectedFragment = new CalendarFragment();
-                break;
-            }
             default: {
                 selectedFragment = new DailyFragment();
                 break;
@@ -165,25 +157,10 @@ public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
         initializePanel();
     }
 
-    private void initializeRevealAnimation() {
-        revealAnimation.setFab(addFinanceButton);
-        revealAnimation.setFabAnimationEndListener(() -> {
-            Intent intent = new Intent(context, AddFinanceActivity.class);
-            startActivityForResult(intent, ADD_FINANCE_REQUEST_CODE);
-        });
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ADD_FINANCE_REQUEST_CODE) {
-            revealAnimation.contractFab();
-        }
-    }
-
     @OnClick(R.id.add_finance_button)
     public void addFinanceButtonClick() {
-        revealAnimation.expandFab();
+        Intent intent = new Intent(context, AddFinanceActivity.class);
+        startActivityForResult(intent, ADD_FINANCE_REQUEST_CODE);
     }
 
     @OnClick(R.id.next_button)

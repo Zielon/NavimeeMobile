@@ -16,6 +16,8 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.common.DateTimePickerHelper;
+import org.pl.android.drively.common.DialogHelper;
+import org.pl.android.drively.data.model.Expense;
 import org.pl.android.drively.data.model.Finance;
 import org.pl.android.drively.ui.finance.form.BaseFinanceFormActivity;
 import org.pl.android.drively.util.AnimationUtil;
@@ -33,8 +35,12 @@ import mehdi.sakout.fancybuttons.FancyButton;
 public class EditFinanceActivity extends BaseFinanceFormActivity implements EditFinanceMvpView, DatePickerDialog.OnDateSetListener {
 
     public static final String FINANCE_INTENT = "FINANCE_INTENT";
+    public static final String FINANCE_TYPE = "FINANCE_TYPE";
+
     @Inject
     EditFinancePresenter editFinancePresenter;
+
+    Finance finance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +56,7 @@ public class EditFinanceActivity extends BaseFinanceFormActivity implements Edit
     }
 
     private void getFinanceFromIntentAndSetData() {
-        Finance finance = new Gson().fromJson(getIntent().getStringExtra(FINANCE_INTENT), Finance.class);
+        finance = new Gson().fromJson(getIntent().getStringExtra(FINANCE_INTENT), Finance.class);
         categoryInput.setText(finance.getCategory());
         selectedCategory = finance.getCategory();
         amountInput.setText(finance.getAmount());
@@ -111,5 +117,23 @@ public class EditFinanceActivity extends BaseFinanceFormActivity implements Edit
                         financePhoto.setImageBitmap(resource);
                     }
                 });
+    }
+
+    @OnClick(R.id.delete_finance_button)
+    public void deleteFinanceButtonClick(View view) {
+        DialogHelper.showConfirmationDialog(this, getString(R.string.delete_finance_confirmation),
+                () -> {
+                    showProgressDialog(R.string.deleting);
+                    if (getIntent().getStringExtra(FINANCE_TYPE).equals(Expense.class.getName())) {
+                        editFinancePresenter.deleteExpense(finance.getId());
+                    } else {
+                        editFinancePresenter.deleteIncome(finance.getId());
+                    }
+                });
+    }
+
+    @Override
+    public void goBackToFinances() {
+        onBackPressed();
     }
 }

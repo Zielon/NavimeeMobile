@@ -273,4 +273,10 @@
     <string name="incorrect_file">Niepoprawny plik!</string>
     <string name="edit_finance">EDYTUJ</string>
     <string name="back_finances">POWRÓT</string>
+    <string name="wrong_amount">Wprowadzono błędną kwotę</string>
+    <string name="confirm_operation">Potwierdź operację</string>
+    <string name="delete_finance_confirmation">Czy napewno chcesz usunąć ten wpis?</string>
+    <string name="confirm_text">Potwierdź</string>
+    <string name="cancel_text">Powrót</string>
+    <string name="deleting_failure">Usuwanie nie powiodło się</string>
 </resources>

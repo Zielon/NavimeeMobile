@@ -85,8 +85,8 @@ public class FinanceRepositoryImpl<T extends Finance> implements FinanceReposito
     }
 
     @Override
-    public Task<Void> remove(T t) {
-        return collectionReference.document(t.getId()).delete();
+    public Task<Void> remove(String id) {
+        return collectionReference.document(id).delete();
     }
 
     @Override

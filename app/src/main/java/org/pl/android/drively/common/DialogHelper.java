@@ -21,8 +21,23 @@ public class DialogHelper {
                 .show();
     }
 
+    public static void showConfirmationDialog(Context context, String message, ConfirmCallback callback) {
+        new MaterialDialog.Builder(context)
+                .title(R.string.confirm_operation)
+                .content(message)
+                .positiveText(R.string.confirm_text)
+                .negativeText(R.string.cancel_text)
+                .onNegative((dialog, which) -> dialog.dismiss())
+                .onPositive((dialog, which) -> callback.onConfirm())
+                .show();
+    }
+
     public interface CheckboxCallback {
         void checkboxCallback(String output);
+    }
+
+    public interface ConfirmCallback {
+        void onConfirm();
     }
 
 }

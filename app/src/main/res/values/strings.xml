@@ -277,4 +277,10 @@
     <string name="incorrect_file">Incorrect file!</string>
     <string name="edit_finance">EDIT</string>
     <string name="back_finances">BACK</string>
+    <string name="wrong_amount">Wrong value</string>
+    <string name="confirm_operation">Confirm</string>
+    <string name="delete_finance_confirmation">Are you sure you want to do this?</string>
+    <string name="confirm_text">Confirm</string>
+    <string name="cancel_text">Cancel</string>
+    <string name="deleting_failure">Deleting failed.</string>
 </resources>
