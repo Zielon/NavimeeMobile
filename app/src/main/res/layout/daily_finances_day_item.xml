@@ -7,7 +7,7 @@
     android:elevation="8dp"
     android:layout_marginStart="@dimen/medium_margin"
     android:layout_marginTop="@dimen/base_margin"
-    android:background="@drawable/rounded_corner_white">
+    android:background="@drawable/rounded_corner_dark">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/labels_layout"
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/small_margin"
             android:text="1"
-            android:textColor="@color/md_black_1000"
+            android:textColor="@color/white"
             android:textSize="@dimen/big_font_size"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -48,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="01.2018"
-                android:textColor="@color/md_black_1000"
+                android:textColor="@color/white"
                 android:textSize="@dimen/small_font_size"
                 app:layout_constraintBottom_toTopOf="@+id/day_name_label"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -60,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Monday"
-                android:textColor="@color/md_black_1000"
+                android:textColor="@color/white"
                 android:textSize="@dimen/small_font_size"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

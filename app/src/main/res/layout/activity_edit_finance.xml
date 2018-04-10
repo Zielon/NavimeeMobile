@@ -7,27 +7,6 @@
     android:layout_height="match_parent"
     tools:context="org.pl.android.drively.ui.finance.form.add.AddFinanceActivity">
 
-    <mehdi.sakout.fancybuttons.FancyButton
-        android:id="@+id/delete_finance_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/small_margin"
-        android:padding="@dimen/medium_padding"
-        app:layout_constraintHorizontal_bias="1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0"
-        fancy:fb_defaultColor="@color/transparent"
-        fancy:fb_focusColor="@color/semi_transparent_white"
-        fancy:fb_fontIconResource="&#xf00d;"
-        fancy:fb_radius="@dimen/base_radius"
-        fancy:fb_text=""
-        fancy:fb_textColor="@color/white"
-        fancy:fb_textSize="@dimen/base_font_size"
-        tools:targetApi="lollipop" />
-
     <include layout="@layout/finance_form" />
 
     <mehdi.sakout.fancybuttons.FancyButton
@@ -80,6 +59,27 @@
         fancy:fb_text="@string/back_finances"
         fancy:fb_textColor="@color/white"
         fancy:fb_textSize="@dimen/base_font_size"
+        tools:targetApi="lollipop" />
+
+    <mehdi.sakout.fancybuttons.FancyButton
+        android:id="@+id/delete_finance_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/small_margin"
+        android:padding="@dimen/medium_padding"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0"
+        fancy:fb_defaultColor="@color/light_primary"
+        fancy:fb_focusColor="@color/semi_transparent_white"
+        fancy:fb_fontIconResource="&#xf00d;"
+        fancy:fb_radius="@dimen/base_radius"
+        fancy:fb_text="@string/delete"
+        fancy:fb_textColor="@color/white"
+        fancy:fb_textSize="@dimen/medium_font_size"
         tools:targetApi="lollipop" />
 
 </android.support.constraint.ConstraintLayout>

@@ -18,8 +18,7 @@
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:textColor="@color/gray_font"
-        />
+        android:textColor="@color/white" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/description_note_layout"
@@ -39,7 +38,7 @@
             android:maxLength="25"
             android:ellipsize="marquee"
             android:textStyle="bold"
-            android:textColor="@color/md_black_1000"
+            android:textColor="@color/white"
             android:textSize="@dimen/small_font_size"
             app:layout_constraintBottom_toTopOf="@+id/note"
             app:layout_constraintEnd_toEndOf="parent"
@@ -53,7 +52,7 @@
             android:text="Paliwo"
             android:maxLength="25"
             android:ellipsize="marquee"
-            android:textColor="@color/md_black_1000"
+            android:textColor="@color/white"
             android:textSize="@dimen/small_font_size"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
