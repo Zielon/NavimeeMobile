@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.ui.base.BaseActivity;
@@ -31,6 +32,9 @@ public class MonthlyFragment extends BaseFinanceFragment implements MonthlyMvpVi
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
+
+    @BindView(R.id.no_data_label)
+    TextView noDataLabel;
 
     private MonthAdapter monthAdapter;
 
@@ -67,6 +71,17 @@ public class MonthlyFragment extends BaseFinanceFragment implements MonthlyMvpVi
     @Override
     public void setData(Map<Integer, Double> monthFinances) {
         monthAdapter.setData(monthFinances);
-        getActivity().runOnUiThread(() -> monthAdapter.notifyDataSetChanged());
+        Optional.ofNullable(getActivity()).ifPresent(activity -> activity.runOnUiThread(() -> monthAdapter.notifyDataSetChanged()));
     }
+
+    @Override
+    public void hideProgressDialog() {
+        super.hideProgressDialog();
+        if(monthAdapter.getMonthlyFinances().isEmpty()) {
+            Optional.of(getActivity()).ifPresent(activity-> activity.runOnUiThread(() -> noDataLabel.setVisibility(View.VISIBLE)));
+        } else {
+            Optional.of(getActivity()).ifPresent(activity-> activity.runOnUiThread(() -> noDataLabel.setVisibility(View.GONE)));
+        }
+    }
+
 }

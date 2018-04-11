@@ -49,9 +49,14 @@ public class FinanceRepositoryImpl<T extends Finance> implements FinanceReposito
 
     @Override
     public Task<Void> save(T t) {
-        DocumentReference newFinanceReference = collectionReference.document();
-        t.setId(newFinanceReference.getId());
-        return newFinanceReference.set(t.toMap());
+        DocumentReference financeReference;
+        if (t.getId() != null) {
+            financeReference = collectionReference.document(t.getId());
+        } else {
+            financeReference = collectionReference.document();
+            t.setId(financeReference.getId());
+        }
+        return financeReference.set(t.toMap());
     }
 
     @Override
@@ -87,11 +92,6 @@ public class FinanceRepositoryImpl<T extends Finance> implements FinanceReposito
     @Override
     public Task<Void> remove(String id) {
         return collectionReference.document(id).delete();
-    }
-
-    @Override
-    public Task<Void> edit(T t) {
-        return null;
     }
 
     @Override

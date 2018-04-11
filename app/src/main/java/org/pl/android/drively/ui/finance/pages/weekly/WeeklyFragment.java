@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.ui.base.BaseActivity;
@@ -31,6 +32,9 @@ public class WeeklyFragment extends BaseFinanceFragment implements WeeklyMvpView
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
+
+    @BindView(R.id.no_data_label)
+    TextView noDataLabel;
 
     private WeeklyAdapter weeklyAdapter;
 
@@ -68,7 +72,17 @@ public class WeeklyFragment extends BaseFinanceFragment implements WeeklyMvpView
     @Override
     public void setData(Map<String, Double> weeklyFinances) {
         weeklyAdapter.setData(weeklyFinances);
-        getActivity().runOnUiThread(() -> weeklyAdapter.notifyDataSetChanged());
+        Optional.ofNullable(getActivity()).ifPresent(activity -> activity.runOnUiThread(() -> weeklyAdapter.notifyDataSetChanged()));
+    }
+
+    @Override
+    public void hideProgressDialog() {
+        super.hideProgressDialog();
+        if(weeklyAdapter.getWeeklyFinances().isEmpty()) {
+            Optional.of(getActivity()).ifPresent(activity-> activity.runOnUiThread(() -> noDataLabel.setVisibility(View.VISIBLE)));
+        } else {
+            Optional.of(getActivity()).ifPresent(activity-> activity.runOnUiThread(() -> noDataLabel.setVisibility(View.GONE)));
+        }
     }
 
 }

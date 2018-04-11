@@ -95,7 +95,7 @@ public abstract class BaseFinanceFormActivity extends BaseProgressActivity imple
                     .description(descriptionInput.getText().toString())
                     .note(noteInput.getText().toString())
                     .build();
-            if(editingId != null) {
+            if (editingId != null) {
                 expense.setId(editingId);
             }
             baseFinanceFormPresenter.saveExpenseWithBitmap(expense, financeBitmap);
@@ -115,6 +115,9 @@ public abstract class BaseFinanceFormActivity extends BaseProgressActivity imple
                     .description(descriptionInput.getText().toString())
                     .note(noteInput.getText().toString())
                     .build();
+            if (editingId != null) {
+                income.setId(editingId);
+            }
             baseFinanceFormPresenter.saveIncomeWithBitmap(income, financeBitmap);
         } catch (ParseException e) {
             hideProgressDialog();

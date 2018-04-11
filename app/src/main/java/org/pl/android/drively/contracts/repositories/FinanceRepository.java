@@ -18,7 +18,6 @@ public interface FinanceRepository<T extends Finance> {
     Disposable saveWithBitmap(T t, final Bitmap bitmap,
                               FinanceRepositoryImpl.SuccessCallback successCallback, FinanceRepositoryImpl.FailureCallback failureCallback);
     Task<Void> remove(String id);
-    Task<Void> edit(T t);
     CollectionReference findAll();
     Task<QuerySnapshot> findAllByDateRange(Date from, Date to);
     String buildPathByFinance(String id);

@@ -17,7 +17,6 @@ import butterknife.ButterKnife;
 
 public class BaseFinanceFragment extends BaseProgressFragment implements BaseFinanceMvp {
 
-
     protected View initializeRecyclerLayout(LayoutInflater inflater, @Nullable ViewGroup container) {
         View fragmentView = inflater.inflate(R.layout.finances_recycler_view, container, false);
         ButterKnife.bind(this, fragmentView);

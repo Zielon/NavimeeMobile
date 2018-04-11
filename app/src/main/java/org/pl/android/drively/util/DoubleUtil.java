@@ -1,7 +1,6 @@
 package org.pl.android.drively.util;
 
 import java.text.NumberFormat;
-import java.util.Currency;
 import java.util.Locale;
 
 public class DoubleUtil {
@@ -13,7 +12,7 @@ public class DoubleUtil {
     }
 
     public static String getStringWithCurrencyFromDouble(Double amount) {
-        return NumberFormat.getInstance().format(amount) + " " + Currency.getInstance(Locale.getDefault()).getSymbol();
+        return  NumberFormat.getCurrencyInstance(Locale.getDefault()).format(amount);
     }
 
 }

@@ -1,19 +1,31 @@
 package org.pl.android.drively.ui.base.progress;
 
+import android.app.ProgressDialog;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.widget.Toast;
 
-import cn.pedant.SweetAlert.SweetAlertDialog;
+import org.pl.android.drively.R;
+
 import java8.util.Optional;
 import timber.log.Timber;
 
 public class BaseProgressFragment extends Fragment implements BaseProgressMvp {
 
-    private SweetAlertDialog progressDialog;
+    private ProgressDialog progressDialog;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initializeProgressDialog();
+    }
 
     protected void initializeProgressDialog() {
-        progressDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
+        progressDialog = new ProgressDialog(getActivity(), R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setTitle(getString(R.string.loading));
         progressDialog.setCancelable(false);
     }
 
@@ -21,7 +33,7 @@ public class BaseProgressFragment extends Fragment implements BaseProgressMvp {
     public void showProgressDialog(String content) {
         Optional.ofNullable(progressDialog).ifPresent(progressDialog -> {
             Timber.d("okukubambo, showing progress");
-            progressDialog.setTitleText(content);
+            progressDialog.setMessage(content);
             progressDialog.show();
         });
     }
@@ -30,7 +42,7 @@ public class BaseProgressFragment extends Fragment implements BaseProgressMvp {
     public void showProgressDialog(int stringResId) {
         Optional.ofNullable(progressDialog).ifPresent(progressDialog -> {
             Timber.d("okukubambo, showing progress");
-            progressDialog.setTitleText(getString(stringResId));
+            progressDialog.setMessage(getString(stringResId));
             progressDialog.show();
         });
     }
@@ -38,10 +50,10 @@ public class BaseProgressFragment extends Fragment implements BaseProgressMvp {
     @Override
     public void hideProgressDialog() {
         Optional.ofNullable(progressDialog).ifPresent(sweetAlertDialog ->
-                getActivity().runOnUiThread(() -> {
+                Optional.ofNullable(getActivity()).ifPresent(activity -> activity.runOnUiThread(() ->  {
                     sweetAlertDialog.dismiss();
                     Timber.d("okukubambo, hiding progress");
-                }));
+                })));
     }
 
     @Override

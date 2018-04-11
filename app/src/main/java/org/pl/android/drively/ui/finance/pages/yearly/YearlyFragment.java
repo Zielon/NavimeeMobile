@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import org.pl.android.drively.R;
 import org.pl.android.drively.ui.base.BaseActivity;
@@ -31,6 +32,9 @@ public class YearlyFragment extends BaseFinanceFragment implements YearlyMvpView
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
+
+    @BindView(R.id.no_data_label)
+    TextView noDataLabel;
 
     private YearAdapter yearAdapter;
 
@@ -68,7 +72,17 @@ public class YearlyFragment extends BaseFinanceFragment implements YearlyMvpView
     @Override
     public void setData(Map<String, Double> yearlyFinances) {
         yearAdapter.setData(yearlyFinances);
-        getActivity().runOnUiThread(() -> yearAdapter.notifyDataSetChanged());
+        Optional.ofNullable(getActivity()).ifPresent(activity -> activity.runOnUiThread(() -> yearAdapter.notifyDataSetChanged()));
+    }
+
+    @Override
+    public void hideProgressDialog() {
+        super.hideProgressDialog();
+        if(yearAdapter.getYearlyFinances().isEmpty()) {
+            Optional.of(getActivity()).ifPresent(activity-> activity.runOnUiThread(() -> noDataLabel.setVisibility(View.VISIBLE)));
+        } else {
+            Optional.of(getActivity()).ifPresent(activity-> activity.runOnUiThread(() -> noDataLabel.setVisibility(View.GONE)));
+        }
     }
 
 }

@@ -1,16 +1,17 @@
 package org.pl.android.drively.ui.base.progress;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import org.pl.android.drively.R;
 import org.pl.android.drively.ui.base.BaseActivity;
 
-import cn.pedant.SweetAlert.SweetAlertDialog;
 import java8.util.Optional;
 
 public class BaseProgressActivity extends BaseActivity implements BaseProgressMvp {
 
-    private SweetAlertDialog progressDialog;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,15 +19,17 @@ public class BaseProgressActivity extends BaseActivity implements BaseProgressMv
         initializeProgressDialog();
     }
 
-    private void initializeProgressDialog() {
-        progressDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+    protected void initializeProgressDialog() {
+        progressDialog = new ProgressDialog(this, R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setTitle(getString(R.string.loading));
         progressDialog.setCancelable(false);
     }
 
     @Override
     public void showProgressDialog(String content) {
         Optional.ofNullable(progressDialog).ifPresent(progressDialog -> {
-            progressDialog.setTitleText(content);
+            progressDialog.setMessage(content);
             progressDialog.show();
         });
     }
@@ -34,14 +37,14 @@ public class BaseProgressActivity extends BaseActivity implements BaseProgressMv
     @Override
     public void showProgressDialog(int stringResId) {
         Optional.ofNullable(progressDialog).ifPresent(progressDialog -> {
-            progressDialog.setTitleText(getString(stringResId));
+            progressDialog.setMessage(getString(stringResId));
             progressDialog.show();
         });
     }
 
     @Override
     public void hideProgressDialog() {
-        Optional.ofNullable(progressDialog).ifPresent(SweetAlertDialog::dismiss);
+        Optional.ofNullable(progressDialog).ifPresent(ProgressDialog::dismiss);
     }
 
     @Override

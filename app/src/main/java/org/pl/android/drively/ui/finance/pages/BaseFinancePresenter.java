@@ -17,6 +17,7 @@ import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
+import java8.util.Optional;
 import timber.log.Timber;
 
 public abstract class BaseFinancePresenter<V extends BaseFinanceMvp> extends BasePresenter<V> implements Presenter<V> {
@@ -75,7 +76,7 @@ public abstract class BaseFinancePresenter<V extends BaseFinanceMvp> extends Bas
                     }
                     getMvpView().addAlreadyLoadedData(newFinances);
                     getMvpView().hideProgressDialog();
-                })
+                }, error -> Optional.ofNullable(getMvpView()).ifPresent(mvpView -> mvpView.showMessage(R.string.something_went_wrong)))
         );
     }
 
@@ -86,8 +87,8 @@ public abstract class BaseFinancePresenter<V extends BaseFinanceMvp> extends Bas
 
     @Override
     public void detachView() {
-        super.detachView();
         compositeDisposable.dispose();
+        super.detachView();
     }
 
 }

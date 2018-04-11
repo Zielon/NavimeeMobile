@@ -104,7 +104,8 @@ public abstract class BaseFinanceFormPresenter<M extends BaseFinanceFormMvp> ext
 
     @Override
     public void detachView() {
-        super.detachView();
         compositeDisposable.dispose();
+        super.detachView();
     }
+
 }
