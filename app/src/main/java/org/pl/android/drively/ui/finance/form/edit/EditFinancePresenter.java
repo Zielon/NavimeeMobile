@@ -10,12 +10,14 @@ import org.pl.android.drively.contracts.repositories.ExpenseRepository;
 import org.pl.android.drively.contracts.repositories.IncomeRepository;
 import org.pl.android.drively.data.DataManager;
 import org.pl.android.drively.data.model.Finance;
+import org.pl.android.drively.ui.base.progress.BaseProgressMvp;
 import org.pl.android.drively.ui.finance.form.BaseFinanceFormPresenter;
 import org.pl.android.drively.util.rx.SchedulerProvider;
 
 import javax.inject.Inject;
 
 import io.reactivex.disposables.CompositeDisposable;
+import java8.util.Optional;
 
 public class EditFinancePresenter extends BaseFinanceFormPresenter<EditFinanceMvpView> {
 
@@ -28,8 +30,8 @@ public class EditFinancePresenter extends BaseFinanceFormPresenter<EditFinanceMv
 
     @Override
     public void detachView() {
-        super.detachView();
         compositeDisposable.dispose();
+        super.detachView();
     }
 
     public StorageReference getFinanceImageReference(Finance finance) {
@@ -43,10 +45,10 @@ public class EditFinancePresenter extends BaseFinanceFormPresenter<EditFinanceMv
     private void attachRemoveListener(Task<Void> removeTask) {
         removeTask.addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
-                getMvpView().hideProgressDialog();
-                getMvpView().goBackToFinances();
+                Optional.ofNullable(getMvpView()).ifPresent(BaseProgressMvp::hideProgressDialog);
+                Optional.ofNullable(getMvpView()).ifPresent(EditFinanceMvpView::goBackToFinances);
             } else {
-                getMvpView().showMessage(R.string.deleting_failure);
+                Optional.ofNullable(getMvpView()).ifPresent(mvpView -> mvpView.showMessage(R.string.deleting_failure));
             }
         });
     }

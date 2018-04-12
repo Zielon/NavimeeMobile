@@ -8,8 +8,10 @@ import android.widget.EditText;
 
 import com.annimon.stream.Stream;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.signature.MediaStoreSignature;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.gson.Gson;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -109,6 +111,9 @@ public class EditFinanceActivity extends BaseFinanceFormActivity implements Edit
                 .using(new FirebaseImageLoader())
                 .load(editFinancePresenter.getFinanceImageReference(finance))
                 .asBitmap()
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .signature(new MediaStoreSignature("", System.currentTimeMillis(), 0))
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
