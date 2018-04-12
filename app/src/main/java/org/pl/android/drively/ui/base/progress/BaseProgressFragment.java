@@ -32,7 +32,6 @@ public class BaseProgressFragment extends Fragment implements BaseProgressMvp {
     @Override
     public void showProgressDialog(String content) {
         Optional.ofNullable(progressDialog).ifPresent(progressDialog -> {
-            Timber.d("okukubambo, showing progress");
             progressDialog.setMessage(content);
             progressDialog.show();
         });
@@ -41,7 +40,6 @@ public class BaseProgressFragment extends Fragment implements BaseProgressMvp {
     @Override
     public void showProgressDialog(int stringResId) {
         Optional.ofNullable(progressDialog).ifPresent(progressDialog -> {
-            Timber.d("okukubambo, showing progress");
             progressDialog.setMessage(getString(stringResId));
             progressDialog.show();
         });
