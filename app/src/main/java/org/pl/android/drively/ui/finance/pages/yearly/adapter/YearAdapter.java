@@ -23,17 +23,6 @@ public class YearAdapter extends RecyclerView.Adapter<YearAdapter.MyViewHolder> 
 
     private List<String> categoryKeys;
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView infoLabel;
-        TextView amountLabel;
-
-        MyViewHolder(View view) {
-            super(view);
-            infoLabel = (TextView) view.findViewById(R.id.info_label);
-            amountLabel = (TextView) view.findViewById(R.id.amount_label);
-        }
-    }
-
     public YearAdapter(Map<String, Double> finances) {
         this.updateData(finances);
     }
@@ -66,6 +55,17 @@ public class YearAdapter extends RecyclerView.Adapter<YearAdapter.MyViewHolder> 
     @Override
     public int getItemCount() {
         return yearlyFinances.size();
+    }
+
+    class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView infoLabel;
+        TextView amountLabel;
+
+        MyViewHolder(View view) {
+            super(view);
+            infoLabel = (TextView) view.findViewById(R.id.info_label);
+            amountLabel = (TextView) view.findViewById(R.id.amount_label);
+        }
     }
 
 }

@@ -38,48 +38,33 @@ import static org.pl.android.drively.util.Const.FILE_MAX_SIZE_5_MB;
 public abstract class BaseFinanceFormActivity extends BaseProgressActivity implements BaseFinanceFormMvp, DatePickerDialog.OnDateSetListener {
 
     protected static final int PICK_IMAGE_REQUEST = 8742;
-
-    @Setter
-    BaseFinanceFormPresenter baseFinanceFormPresenter;
-
     @BindView(R.id.finance_type_switch)
     protected RMSwitch financeTypeSwitch;
-
     @BindView(R.id.date)
     protected TextView date;
-
     @BindView(R.id.finance_amount_input)
     protected CurrencyEditText amountInput;
-
     @BindView(R.id.finance_description_input)
     protected EditText descriptionInput;
-
     @BindView(R.id.finance_note_input)
     protected EditText noteInput;
-
     @BindView(R.id.category_input)
     protected TextView categoryInput;
-
     @BindView(R.id.category_label)
     protected TextView categoryLabel;
-
     @BindView(R.id.finance_photo)
     protected CircleImageView financePhoto;
-
     @BindView(R.id.date_icon)
     protected ImageView dateIcon;
-
     @BindView(R.id.attachment_button)
     protected FancyButton attachmentButton;
-
     @BindView(R.id.finance_photo_loading)
     protected ProgressBar financePhotoLoading;
-
     protected String selectedCategory;
-
     protected Bitmap financeBitmap;
-
     protected String editingId;
+    @Setter
+    BaseFinanceFormPresenter baseFinanceFormPresenter;
 
     protected void initializeView() {
         date.setText(DateTimePickerHelper.getStringFromDate(new Date()));

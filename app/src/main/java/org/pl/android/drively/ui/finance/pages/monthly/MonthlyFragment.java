@@ -77,10 +77,10 @@ public class MonthlyFragment extends BaseFinanceFragment implements MonthlyMvpVi
     @Override
     public void hideProgressDialog() {
         super.hideProgressDialog();
-        if(monthAdapter.getMonthlyFinances().isEmpty()) {
-            Optional.of(getActivity()).ifPresent(activity-> activity.runOnUiThread(() -> noDataLabel.setVisibility(View.VISIBLE)));
+        if (monthAdapter.getMonthlyFinances().isEmpty()) {
+            Optional.of(getActivity()).ifPresent(activity -> activity.runOnUiThread(() -> noDataLabel.setVisibility(View.VISIBLE)));
         } else {
-            Optional.of(getActivity()).ifPresent(activity-> activity.runOnUiThread(() -> noDataLabel.setVisibility(View.GONE)));
+            Optional.of(getActivity()).ifPresent(activity -> activity.runOnUiThread(() -> noDataLabel.setVisibility(View.GONE)));
         }
     }
 

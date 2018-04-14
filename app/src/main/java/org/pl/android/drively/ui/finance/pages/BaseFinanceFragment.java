@@ -25,7 +25,7 @@ public class BaseFinanceFragment extends BaseProgressFragment implements BaseFin
 
     @Override
     public void addAlreadyLoadedData(List<? extends Finance> finances) {
-        ((FinanceMvpView)getParentFragment()).getAlreadyLoadedData().addAll(finances);
+        ((FinanceMvpView) getParentFragment()).getAlreadyLoadedData().addAll(finances);
     }
 
     @Override
@@ -35,6 +35,6 @@ public class BaseFinanceFragment extends BaseProgressFragment implements BaseFin
 
     @Override
     public void setPanelAmount(String amount) {
-        ((FinanceMvpView)getParentFragment()).setPanelAmount(amount);
+        ((FinanceMvpView) getParentFragment()).setPanelAmount(amount);
     }
 }

@@ -24,23 +24,6 @@ public class DayFinanceAdapter extends RecyclerView.Adapter<DayFinanceAdapter.My
 
     private DailyMvpView dailyMvpView;
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView category;
-        TextView description;
-        TextView note;
-        TextView amountLabel;
-        ConstraintLayout itemLayout;
-
-        MyViewHolder(View view) {
-            super(view);
-            category = (TextView) view.findViewById(R.id.category);
-            description = (TextView) view.findViewById(R.id.description);
-            note = (TextView) view.findViewById(R.id.note);
-            amountLabel = (TextView) view.findViewById(R.id.amount_label);
-            itemLayout = (ConstraintLayout) view.findViewById(R.id.item_layout);
-        }
-    }
-
     public DayFinanceAdapter(DailyMvpView dailyMvpView, List<? extends Finance> finances) {
         this.finances = finances;
         this.dailyMvpView = dailyMvpView;
@@ -66,6 +49,23 @@ public class DayFinanceAdapter extends RecyclerView.Adapter<DayFinanceAdapter.My
     @Override
     public int getItemCount() {
         return finances.size();
+    }
+
+    class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView category;
+        TextView description;
+        TextView note;
+        TextView amountLabel;
+        ConstraintLayout itemLayout;
+
+        MyViewHolder(View view) {
+            super(view);
+            category = (TextView) view.findViewById(R.id.category);
+            description = (TextView) view.findViewById(R.id.description);
+            note = (TextView) view.findViewById(R.id.note);
+            amountLabel = (TextView) view.findViewById(R.id.amount_label);
+            itemLayout = (ConstraintLayout) view.findViewById(R.id.item_layout);
+        }
     }
 
 }

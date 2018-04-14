@@ -14,7 +14,7 @@ public class Income extends Finance {
 
     @Builder
     public Income(String id, String amount, String description, String note,
-                   String category, Date date, String attachmentPath) {
+                  String category, Date date, String attachmentPath) {
         super(id, amount, description, note, category, date, attachmentPath);
     }
 

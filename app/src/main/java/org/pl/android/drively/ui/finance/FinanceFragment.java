@@ -45,43 +45,31 @@ import static org.pl.android.drively.ui.finance.pages.TopLeftPanelHelper.determi
 public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
 
     private static final int ADD_FINANCE_REQUEST_CODE = 997;
-
+    @Getter
+    protected Calendar selectedPanelDate;
     @Inject
     FinancePresenter financePresenter;
-
+    @BindView(R.id.no_data_label)
+    TextView noDataLabel;
+    @BindView(R.id.add_finance_button)
+    FloatingActionButton addFinanceButton;
+    @BindView(R.id.finance_navigation)
+    NavigationTabStrip navigationTabStrip;
+    @BindView(R.id.frame_layout)
+    FrameLayout frameLayout;
+    @BindView(R.id.date_change_label)
+    TextView dateChangeLabel;
+    @BindView(R.id.finance_sum)
+    TextView financeSum;
+    BaseFinanceFragment selectedFragment;
     private MaterialDialog popup;
-
     private MainActivity context;
+    @Getter
+    private Set<Finance> alreadyLoadedData;
 
     public static FinanceFragment newInstance() {
         return new FinanceFragment();
     }
-
-    @BindView(R.id.no_data_label)
-    TextView noDataLabel;
-
-    @BindView(R.id.add_finance_button)
-    FloatingActionButton addFinanceButton;
-
-    @BindView(R.id.finance_navigation)
-    NavigationTabStrip navigationTabStrip;
-
-    @BindView(R.id.frame_layout)
-    FrameLayout frameLayout;
-
-    @BindView(R.id.date_change_label)
-    TextView dateChangeLabel;
-
-    @BindView(R.id.finance_sum)
-    TextView financeSum;
-
-    BaseFinanceFragment selectedFragment;
-
-    @Getter
-    private Set<Finance> alreadyLoadedData;
-
-    @Getter
-    protected Calendar selectedPanelDate;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

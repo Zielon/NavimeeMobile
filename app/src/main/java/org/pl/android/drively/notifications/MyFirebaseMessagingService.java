@@ -112,9 +112,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         avatars.put(fcm.getIdSender(), bitmap);
                         sendNotificationFromChatWithIcon(fcm, bitmap, isGroup);
                     }).addOnFailureListener(exception -> {
-                        Bitmap bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.default_avatar);
-                        avatars.put(fcm.getIdSender(), bitmap);
-                        sendNotificationFromChatWithIcon(fcm, bitmap, isGroup);
+                Bitmap bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.default_avatar);
+                avatars.put(fcm.getIdSender(), bitmap);
+                sendNotificationFromChatWithIcon(fcm, bitmap, isGroup);
             });
     }
 

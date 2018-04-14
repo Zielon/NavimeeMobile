@@ -25,17 +25,6 @@ public class MonthAdapter extends RecyclerView.Adapter<MonthAdapter.MyViewHolder
 
     private List<Integer> monthKeys;
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView infoLabel;
-        TextView amountLabel;
-
-        MyViewHolder(View view) {
-            super(view);
-            infoLabel = (TextView) view.findViewById(R.id.info_label);
-            amountLabel = (TextView) view.findViewById(R.id.amount_label);
-        }
-    }
-
     public MonthAdapter(Map<Integer, Double> finances) {
         this.updateData(finances);
     }
@@ -72,6 +61,17 @@ public class MonthAdapter extends RecyclerView.Adapter<MonthAdapter.MyViewHolder
     @Override
     public int getItemCount() {
         return monthlyFinances.size();
+    }
+
+    class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView infoLabel;
+        TextView amountLabel;
+
+        MyViewHolder(View view) {
+            super(view);
+            infoLabel = (TextView) view.findViewById(R.id.info_label);
+            amountLabel = (TextView) view.findViewById(R.id.amount_label);
+        }
     }
 
 }

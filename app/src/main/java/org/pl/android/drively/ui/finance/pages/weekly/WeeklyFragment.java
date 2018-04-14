@@ -78,10 +78,10 @@ public class WeeklyFragment extends BaseFinanceFragment implements WeeklyMvpView
     @Override
     public void hideProgressDialog() {
         super.hideProgressDialog();
-        if(weeklyAdapter.getWeeklyFinances().isEmpty()) {
-            Optional.of(getActivity()).ifPresent(activity-> activity.runOnUiThread(() -> noDataLabel.setVisibility(View.VISIBLE)));
+        if (weeklyAdapter.getWeeklyFinances().isEmpty()) {
+            Optional.of(getActivity()).ifPresent(activity -> activity.runOnUiThread(() -> noDataLabel.setVisibility(View.VISIBLE)));
         } else {
-            Optional.of(getActivity()).ifPresent(activity-> activity.runOnUiThread(() -> noDataLabel.setVisibility(View.GONE)));
+            Optional.of(getActivity()).ifPresent(activity -> activity.runOnUiThread(() -> noDataLabel.setVisibility(View.GONE)));
         }
     }
 

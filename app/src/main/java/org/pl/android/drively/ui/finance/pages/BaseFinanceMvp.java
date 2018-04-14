@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface BaseFinanceMvp extends BaseProgressMvp {
     void addAlreadyLoadedData(List<? extends Finance> finances);
+
     void setSelectedPanelDate(Calendar calendar);
+
     void setPanelAmount(String amount);
 }

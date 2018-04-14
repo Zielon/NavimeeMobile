@@ -29,6 +29,11 @@ public class WeeklyPresenter extends BaseFinancePresenter<WeeklyMvpView> {
         super(expenseRepository, compositeDisposable, schedulerProvider);
     }
 
+    public static Date getDateValueFromWeeklyString(String key) {
+        String[] splittedDayAndMonth = key.split("~")[0].trim().split("\\.");
+        return new Date(0, Integer.valueOf(splittedDayAndMonth[1]) - 1, Integer.valueOf(splittedDayAndMonth[0]));
+    }
+
     @Override
     protected Object mapFinances(List<? extends Finance> finances, Date from, Date to) {
         Map<String, List<Finance>> dailyFinances = StreamSupport.stream(finances)
@@ -54,11 +59,6 @@ public class WeeklyPresenter extends BaseFinancePresenter<WeeklyMvpView> {
             sortedMap.put(entry.getKey(), entry.getValue());
         }
         return sortedMap;
-    }
-
-    public static Date getDateValueFromWeeklyString(String key) {
-        String[] splittedDayAndMonth = key.split("~")[0].trim().split("\\.");
-        return new Date(0, Integer.valueOf(splittedDayAndMonth[1]) - 1, Integer.valueOf(splittedDayAndMonth[0]));
     }
 
     @Override

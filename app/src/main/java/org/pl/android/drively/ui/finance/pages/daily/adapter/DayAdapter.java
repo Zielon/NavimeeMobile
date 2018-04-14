@@ -26,32 +26,12 @@ import lombok.Getter;
 
 public class DayAdapter extends RecyclerView.Adapter<DayAdapter.MyViewHolder> {
 
-    @Getter
-    private Map<Date, List<? extends Finance>> dailyFinances;
-
-    private List<Date> dateKeys;
-
     @ApplicationContext
     Context context;
-
+    @Getter
+    private Map<Date, List<? extends Finance>> dailyFinances;
+    private List<Date> dateKeys;
     private DailyMvpView dailyMvpView;
-
-    class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView dayNumberLabel;
-        TextView monthYearLabel;
-        TextView dayNameLabel;
-        TextView amountLabel;
-        RecyclerView financesDetailRecyclerView;
-
-        MyViewHolder(View view) {
-            super(view);
-            dayNumberLabel = (TextView) view.findViewById(R.id.day_number_label);
-            monthYearLabel = (TextView) view.findViewById(R.id.month_year_label);
-            dayNameLabel = (TextView) view.findViewById(R.id.day_name_label);
-            amountLabel = (TextView) view.findViewById(R.id.amount_label);
-            financesDetailRecyclerView = (RecyclerView) view.findViewById(R.id.finances_detail_recycler_view);
-        }
-    }
 
     public DayAdapter(DailyMvpView dailyMvpView, Map<Date, List<? extends Finance>> dailyFinances) {
         updateData(dailyFinances);
@@ -100,5 +80,22 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.MyViewHolder> {
     private Double getFinancesSum(List<? extends Finance> finances) {
         return StreamSupport.stream(finances)
                 .mapToDouble(Finance::getAmountWithoutCurrency).sum();
+    }
+
+    class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView dayNumberLabel;
+        TextView monthYearLabel;
+        TextView dayNameLabel;
+        TextView amountLabel;
+        RecyclerView financesDetailRecyclerView;
+
+        MyViewHolder(View view) {
+            super(view);
+            dayNumberLabel = (TextView) view.findViewById(R.id.day_number_label);
+            monthYearLabel = (TextView) view.findViewById(R.id.month_year_label);
+            dayNameLabel = (TextView) view.findViewById(R.id.day_name_label);
+            amountLabel = (TextView) view.findViewById(R.id.amount_label);
+            financesDetailRecyclerView = (RecyclerView) view.findViewById(R.id.finances_detail_recycler_view);
+        }
     }
 }

@@ -30,16 +30,16 @@ public abstract class BaseFinancePresenter<V extends BaseFinanceMvp> extends Bas
 
     protected final SchedulerProvider schedulerProvider;
 
-    protected abstract Object mapFinances(List<? extends Finance> finances, Date from, Date to);
-
-    protected abstract void setData(Object object);
-
     public BaseFinancePresenter(ExpenseRepository expenseRepository,
                                 CompositeDisposable compositeDisposable, SchedulerProvider schedulerProvider) {
         this.expenseRepository = expenseRepository;
         this.compositeDisposable = compositeDisposable;
         this.schedulerProvider = schedulerProvider;
     }
+
+    protected abstract Object mapFinances(List<? extends Finance> finances, Date from, Date to);
+
+    protected abstract void setData(Object object);
 
     public void getFinances(Date from, Date to) {
         getMvpView().showProgressDialog(R.string.loading_finances);

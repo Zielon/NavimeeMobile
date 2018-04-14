@@ -78,10 +78,10 @@ public class YearlyFragment extends BaseFinanceFragment implements YearlyMvpView
     @Override
     public void hideProgressDialog() {
         super.hideProgressDialog();
-        if(yearAdapter.getYearlyFinances().isEmpty()) {
-            Optional.of(getActivity()).ifPresent(activity-> activity.runOnUiThread(() -> noDataLabel.setVisibility(View.VISIBLE)));
+        if (yearAdapter.getYearlyFinances().isEmpty()) {
+            Optional.of(getActivity()).ifPresent(activity -> activity.runOnUiThread(() -> noDataLabel.setVisibility(View.VISIBLE)));
         } else {
-            Optional.of(getActivity()).ifPresent(activity-> activity.runOnUiThread(() -> noDataLabel.setVisibility(View.GONE)));
+            Optional.of(getActivity()).ifPresent(activity -> activity.runOnUiThread(() -> noDataLabel.setVisibility(View.GONE)));
         }
     }
 

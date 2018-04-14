@@ -8,6 +8,7 @@ import lombok.NonNull;
 @Data
 public class FinancePanelChange {
 
-    @NonNull Date date;
+    @NonNull
+    Date date;
 
 }

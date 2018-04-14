@@ -1,9 +1,10 @@
 package org.pl.android.drively.data.model;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.pl.android.drively.util.DoubleUtil;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
@@ -29,21 +30,12 @@ public class Finance {
 
     private String attachmentPath;
 
-    public Map<String, java.lang.Object> toMap() {
-        Map<String, java.lang.Object> financeData = new HashMap<>();
-        financeData.put("id", id);
-        financeData.put("amount", amount.toString());
-        financeData.put("description", description);
-        financeData.put("note", note);
-        financeData.put("category", category);
-        financeData.put("date", date);
-        financeData.put("attachmentPath", attachmentPath);
-        return financeData;
+    public Map toMap() {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.convertValue(this, Map.class);
     }
 
     public Double getAmountWithoutCurrency() {
         return DoubleUtil.getDoubleFromAmountWithCurrency(amount);
     }
-
-
 }

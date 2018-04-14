@@ -8,6 +8,8 @@ import java.util.Set;
 
 public interface FinanceMvpView extends TabMvpView {
     Calendar getSelectedPanelDate();
+
     void setPanelAmount(String amount);
+
     Set<Finance> getAlreadyLoadedData();
 }

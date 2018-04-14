@@ -15,10 +15,15 @@ import io.reactivex.disposables.Disposable;
 
 public interface FinanceRepository<T extends Finance> {
     Task<Void> save(T t);
+
     Disposable saveWithBitmap(T t, final Bitmap bitmap,
                               FinanceRepositoryImpl.SuccessCallback successCallback, FinanceRepositoryImpl.FailureCallback failureCallback);
+
     Task<Void> remove(String id);
+
     CollectionReference findAll();
+
     Task<QuerySnapshot> findAllByDateRange(Date from, Date to);
+
     String buildPathByFinance(String id);
 }

@@ -29,20 +29,13 @@ public class SheetLayout extends FrameLayout {
 
     private static final int FAB_CIRCLE = 0;
     private static final int FAB_EXPAND = 1;
-
-    @IntDef({FAB_CIRCLE, FAB_EXPAND})
-    private @interface Fab {
-    }
-
-    private LinearLayout mFabExpandLayout;
-    private View mFab;
-
     int mFabType = FAB_CIRCLE;
     boolean mAnimatingFab = false;
+    com.github.fabtransitionactivity.SheetLayout.OnFabAnimationEndListener mListener;
+    private LinearLayout mFabExpandLayout;
+    private View mFab;
     private int animationDuration;
     private int mFabSize;
-
-    com.github.fabtransitionactivity.SheetLayout.OnFabAnimationEndListener mListener;
 
     public SheetLayout(Context context) {
         super(context);
@@ -323,13 +316,13 @@ public class SheetLayout extends FrameLayout {
         toolbarContractAnim.start();
     }
 
-    private void expandAnimationEnd(){
+    private void expandAnimationEnd() {
         mAnimatingFab = false;
         if (mListener != null)
             mListener.onFabAnimationEnd();
     }
 
-    private void contractAnimationEnd(){
+    private void contractAnimationEnd() {
         mFab.setAlpha(1f);
         mFabExpandLayout.setAlpha(0f);
 
@@ -338,7 +331,7 @@ public class SheetLayout extends FrameLayout {
         mFabExpandLayout.setAlpha(1f);
     }
 
-    private float calculateStartRadius(int x, int y){
+    private float calculateStartRadius(int x, int y) {
         return (float) Math.hypot(
                 Math.max(x, mFabExpandLayout.getWidth() - x),
                 Math.max(y, mFabExpandLayout.getHeight() - y));
@@ -357,11 +350,15 @@ public class SheetLayout extends FrameLayout {
         return ViewCompat.getY(view) + view.getHeight() / 2f;
     }
 
-    public interface OnFabAnimationEndListener {
-        void onFabAnimationEnd();
-    }
-
     public void setFabAnimationEndListener(com.github.fabtransitionactivity.SheetLayout.OnFabAnimationEndListener eventListener) {
         mListener = eventListener;
+    }
+
+    @IntDef({FAB_CIRCLE, FAB_EXPAND})
+    private @interface Fab {
+    }
+
+    public interface OnFabAnimationEndListener {
+        void onFabAnimationEnd();
     }
 }

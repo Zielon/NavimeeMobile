@@ -9,5 +9,6 @@ import java.util.Map;
 
 public interface DailyMvpView extends BaseFinanceMvp {
     void setData(Map<Date, List<? extends Finance>> dailyFinances);
+
     void startEditingFinance(Finance finance);
 }

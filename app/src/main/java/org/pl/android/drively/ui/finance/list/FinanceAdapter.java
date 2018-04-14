@@ -20,17 +20,6 @@ public class FinanceAdapter extends RecyclerView.Adapter<FinanceAdapter.ViewHold
     @Setter
     private List<? extends Finance> finances;
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView amountLabel, categoryLabel;
-
-        public ViewHolder(View view) {
-            super(view);
-            amountLabel = (TextView) view.findViewById(R.id.amount_label);
-            categoryLabel = (TextView) view.findViewById(R.id.category_label);
-        }
-    }
-
-
     public FinanceAdapter(List<? extends Finance> finances) {
         this.finances = finances;
     }
@@ -53,6 +42,16 @@ public class FinanceAdapter extends RecyclerView.Adapter<FinanceAdapter.ViewHold
     @Override
     public int getItemCount() {
         return finances.size();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView amountLabel, categoryLabel;
+
+        public ViewHolder(View view) {
+            super(view);
+            amountLabel = (TextView) view.findViewById(R.id.amount_label);
+            categoryLabel = (TextView) view.findViewById(R.id.category_label);
+        }
     }
 
 }

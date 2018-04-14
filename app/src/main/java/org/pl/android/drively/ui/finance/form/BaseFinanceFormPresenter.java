@@ -18,7 +18,7 @@ import java.util.List;
 import io.reactivex.disposables.CompositeDisposable;
 import lombok.Getter;
 
-public abstract class BaseFinanceFormPresenter<M extends BaseFinanceFormMvp> extends BasePresenter<M>{
+public abstract class BaseFinanceFormPresenter<M extends BaseFinanceFormMvp> extends BasePresenter<M> {
 
     protected final IncomeRepository incomeRepository;
 

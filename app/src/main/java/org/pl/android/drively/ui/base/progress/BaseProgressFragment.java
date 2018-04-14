@@ -48,7 +48,7 @@ public class BaseProgressFragment extends Fragment implements BaseProgressMvp {
     @Override
     public void hideProgressDialog() {
         Optional.ofNullable(progressDialog).ifPresent(sweetAlertDialog ->
-                Optional.ofNullable(getActivity()).ifPresent(activity -> activity.runOnUiThread(() ->  {
+                Optional.ofNullable(getActivity()).ifPresent(activity -> activity.runOnUiThread(() -> {
                     sweetAlertDialog.dismiss();
                     Timber.d("okukubambo, hiding progress");
                 })));

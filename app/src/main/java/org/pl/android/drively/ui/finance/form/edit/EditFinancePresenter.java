@@ -44,7 +44,7 @@ public class EditFinancePresenter extends BaseFinanceFormPresenter<EditFinanceMv
 
     private void attachRemoveListener(Task<Void> removeTask) {
         removeTask.addOnCompleteListener(task -> {
-            if(task.isSuccessful()) {
+            if (task.isSuccessful()) {
                 Optional.ofNullable(getMvpView()).ifPresent(BaseProgressMvp::hideProgressDialog);
                 Optional.ofNullable(getMvpView()).ifPresent(EditFinanceMvpView::goBackToFinances);
             } else {

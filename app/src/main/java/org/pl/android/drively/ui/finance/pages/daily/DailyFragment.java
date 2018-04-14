@@ -60,7 +60,7 @@ public class DailyFragment extends BaseFinanceFragment implements DailyMvpView {
         View view = initializeRecyclerLayout(inflater, container);
         initializeRecyclerView();
         dailyPresenter.attachView(this);
-        dailyPresenter.getMonthFinances(((FinanceMvpView)getParentFragment()).getSelectedPanelDate());
+        dailyPresenter.getMonthFinances(((FinanceMvpView) getParentFragment()).getSelectedPanelDate());
         return view;
     }
 
@@ -89,10 +89,10 @@ public class DailyFragment extends BaseFinanceFragment implements DailyMvpView {
     @Override
     public void hideProgressDialog() {
         super.hideProgressDialog();
-        if(dayAdapter.getDailyFinances().isEmpty()) {
-            Optional.of(getActivity()).ifPresent(activity-> activity.runOnUiThread(() -> noDataLabel.setVisibility(View.VISIBLE)));
+        if (dayAdapter.getDailyFinances().isEmpty()) {
+            Optional.of(getActivity()).ifPresent(activity -> activity.runOnUiThread(() -> noDataLabel.setVisibility(View.VISIBLE)));
         } else {
-            Optional.of(getActivity()).ifPresent(activity-> activity.runOnUiThread(() -> noDataLabel.setVisibility(View.GONE)));
+            Optional.of(getActivity()).ifPresent(activity -> activity.runOnUiThread(() -> noDataLabel.setVisibility(View.GONE)));
         }
     }
 

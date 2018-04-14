@@ -25,17 +25,6 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.MyViewHold
 
     private List<String> weeklyKeys;
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView infoLabel;
-        TextView amountLabel;
-
-        MyViewHolder(View view) {
-            super(view);
-            infoLabel = (TextView) view.findViewById(R.id.info_label);
-            amountLabel = (TextView) view.findViewById(R.id.amount_label);
-        }
-    }
-
     public WeeklyAdapter(Map<String, Double> finances) {
         this.updateData(finances);
     }
@@ -69,6 +58,17 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.MyViewHold
     @Override
     public int getItemCount() {
         return weeklyFinances.size();
+    }
+
+    class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView infoLabel;
+        TextView amountLabel;
+
+        MyViewHolder(View view) {
+            super(view);
+            infoLabel = (TextView) view.findViewById(R.id.info_label);
+            amountLabel = (TextView) view.findViewById(R.id.amount_label);
+        }
     }
 
 }
