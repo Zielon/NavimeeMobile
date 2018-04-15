@@ -189,8 +189,10 @@
     <string name="popup_chat_preference_info">Your preferences can be changed in the Settings</string>
 
     <!--FINANCE-->
-    <string name="popup_finance_title">New feature on its way! Now, all your expenses become manageable in one place!</string>
-    <string name="popup_finance_info"> Here, you will be able to control all the costs and expenses you bear, so no more paper work!</string>
+    <string name="popup_finance_title">Start managing your expenses now!</string>
+    <string name="popup_finance_info">Finance enables to manage and track all your expenses and cost effortlessly.
+    Now you can add new expenses with ease and check historical ones whenever you want to.
+    Begin using Finance and see how see it is.</string>
     <string name="popup_finance_contact_us">TELL US WHAT YOU THINK</string>
 
     <!--SETTINGS MAIN SCREEN-->
@@ -253,12 +255,12 @@
 
     <!--FINANCE-->
     <string name="add_finance">SAVE</string>
-    <string name="no_finance_added">No finance data available.</string>
+    <string name="no_finance_added">Add your expenses here.</string>
     <string name="finance_adding">Updating your finances.</string>
-    <string name="finance_type_label">Finance type: </string>
+    <string name="finance_type_label">Category: </string>
     <string name="write_finance_amount">Amount</string>
-    <string name="finance_failed_to_add">Adding finance failed.</string>
-    <string name="enter_category">Enter category</string>
+    <string name="finance_failed_to_add">Adding an expense failed.</string>
+    <string name="enter_category">Enter a category</string>
     <string name="date">Date</string>
     <string name="time">Time</string>
     <string name="amount_label">Amount</string>
@@ -270,16 +272,16 @@
     <string name="no_category_selected">No category selected</string>
     <string name="no_category">No category</string>
     <string name="expenses">Expenses</string>
-    <string name="finances_load_failed">Loading finances failed</string>
-    <string name="loading_finances">Loading finances</string>
+    <string name="finances_load_failed">Loading Finances failed</string>
+    <string name="loading_finances">Loading Finances</string>
     <string name="select_picture">Select picture</string>
     <string name="too_large_file">Too large file! Maximum 5MB!</string>
-    <string name="incorrect_file">Incorrect file!</string>
+    <string name="incorrect_file">Something went wrong, try to use different file!</string>
     <string name="edit_finance">EDIT</string>
     <string name="back_finances">BACK</string>
-    <string name="wrong_amount">Wrong value</string>
+    <string name="wrong_amount">Incorrect value</string>
     <string name="confirm_operation">Confirm</string>
-    <string name="delete_finance_confirmation">Are you sure you want to do this?</string>
+    <string name="delete_finance_confirmation">Are you sure you want to delete this?</string>
     <string name="confirm_text">Confirm</string>
     <string name="cancel_text">Cancel</string>
     <string name="deleting_failure">Deleting failed.</string>
