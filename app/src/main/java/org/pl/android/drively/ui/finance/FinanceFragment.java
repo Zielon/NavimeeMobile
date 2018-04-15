@@ -1,10 +1,12 @@
 package org.pl.android.drively.ui.finance;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -176,6 +178,17 @@ public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
 
     @Override
     public void showInstructionPopup() {
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.finance_popup_instruction, null);
+        preparePopupLayout(view);
+        popup = new MaterialDialog.Builder(getActivity())
+                .customView(view, false)
+                .backgroundColor(ContextCompat.getColor(getActivity(), R.color.transparent))
+                .show();
+    }
+
+    private void preparePopupLayout(View rootView) {
+        rootView.findViewById(R.id.popup_finance_contact_us_button).setOnClickListener(view -> popup.dismiss());
     }
 
     @Override

@@ -50,7 +50,8 @@ public class AddFinanceActivity extends BaseFinanceFormActivity implements AddFi
 
     private boolean isFormValid() {
         boolean isValid = true;
-        if (amountInput.getText().toString().substring(0, 1).equals("0")) {
+        if (amountInput.getText().toString()
+                .replaceAll("[^\\d.]", "").matches("0+((\\.0+)|(-0+)*)")) {
             amountInput.setError(getString(R.string.wrong_amount));
             isValid = false;
         }

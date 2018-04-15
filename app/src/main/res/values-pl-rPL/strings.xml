@@ -192,7 +192,7 @@
         <string name="popup_finance_info">Finanse to prosty sposób, aby zarządzać swoimi wydatkami i
             mieć szybki podgląd na poniesione koszty. Teraz bez trudu dodasz rachunek za paliwo czy myjnie i sprawdzisz dane historyczne.
         Zacznij korzystać z Finansów już dziś, a sam zobaczysz jakie to proste.</string>
-    <string name="popup_finance_contact_us">NAPISZ CO O TYM MYŚLISZ!</string>
+    <string name="popup_finance_contact_us">ROZUMIEM</string>
 
     <!--SETTINGS MAIN SCREEN-->
     <string name="choose_app">Wybierz aplikację</string>

@@ -10,7 +10,6 @@ import android.widget.Toast;
 import org.pl.android.drively.R;
 
 import java8.util.Optional;
-import timber.log.Timber;
 
 public class BaseProgressFragment extends Fragment implements BaseProgressMvp {
 
@@ -48,10 +47,7 @@ public class BaseProgressFragment extends Fragment implements BaseProgressMvp {
     @Override
     public void hideProgressDialog() {
         Optional.ofNullable(progressDialog).ifPresent(sweetAlertDialog ->
-                Optional.ofNullable(getActivity()).ifPresent(activity -> activity.runOnUiThread(() -> {
-                    sweetAlertDialog.dismiss();
-                    Timber.d("okukubambo, hiding progress");
-                })));
+                Optional.ofNullable(getActivity()).ifPresent(activity -> activity.runOnUiThread(sweetAlertDialog::dismiss)));
     }
 
     @Override

@@ -65,6 +65,7 @@ public abstract class BaseFinanceFormPresenter<M extends BaseFinanceFormMvp> ext
             if (documentReference.isSuccessful()) {
                 getMvpView().finishActivity();
             } else {
+                getMvpView().hideProgressDialog();
                 getMvpView().showMessage(R.string.finance_failed_to_add);
             }
         });

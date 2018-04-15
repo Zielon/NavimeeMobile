@@ -48,6 +48,7 @@ public class EditFinancePresenter extends BaseFinanceFormPresenter<EditFinanceMv
                 Optional.ofNullable(getMvpView()).ifPresent(BaseProgressMvp::hideProgressDialog);
                 Optional.ofNullable(getMvpView()).ifPresent(EditFinanceMvpView::goBackToFinances);
             } else {
+                Optional.ofNullable(getMvpView()).ifPresent(BaseProgressMvp::hideProgressDialog);
                 Optional.ofNullable(getMvpView()).ifPresent(mvpView -> mvpView.showMessage(R.string.deleting_failure));
             }
         });

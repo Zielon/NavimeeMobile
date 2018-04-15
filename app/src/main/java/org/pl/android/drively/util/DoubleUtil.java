@@ -6,7 +6,7 @@ import java.util.Locale;
 public class DoubleUtil {
 
     public static Double getDoubleFromAmountWithCurrency(String amount) {
-        return Double.valueOf(amount.replace(",", ".")
+        return Double.valueOf(amount.replace(",", "\\s")
                 .replaceAll("[^0-9.]", "")
         );
     }

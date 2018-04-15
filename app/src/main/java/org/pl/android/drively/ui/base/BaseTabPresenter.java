@@ -24,9 +24,7 @@ public class BaseTabPresenter<T extends TabMvpView> extends BasePresenter<T> {
                 .getValue(sharedPreferenceConst);
         if (!wasFirstStartPopup) {
             getMvpView().showInstructionPopup();
-            if (!getMvpView().getClass().getSimpleName().equals("FinanceFragment")) {
-                mDataManager.getPreferencesHelper().setValue(sharedPreferenceConst, true);
-            }
+            mDataManager.getPreferencesHelper().setValue(sharedPreferenceConst, true);
         }
     }
 

@@ -31,8 +31,9 @@ public class Finance {
     private String attachmentPath;
 
     public Map toMap() {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.convertValue(this, Map.class);
+        Map convertedMap = new ObjectMapper().convertValue(this, Map.class);
+        convertedMap.put("date", date);
+        return convertedMap;
     }
 
     public Double getAmountWithoutCurrency() {
