@@ -2,6 +2,13 @@
 <tabs>
     <tab
         activeColor="@color/settings_switch_color"
+        icon="@drawable/finance_24dp"
+        id="@+id/tab_finance"
+        inActiveColor="@color/colorLine"
+        title="@string/finance" />
+
+    <tab
+        activeColor="@color/settings_switch_color"
         icon="@drawable/ic_action_whatshot_black_24dp"
         id="@+id/tab_hotspot"
         inActiveColor="@color/colorLine"
@@ -16,17 +23,8 @@
 
     <tab
         activeColor="@color/settings_switch_color"
-        icon="@drawable/finance_24dp"
-        id="@+id/tab_finance"
-        inActiveColor="@color/colorLine"
-        title="@string/finance" />
-
-    <tab
-        activeColor="@color/settings_switch_color"
         icon="@drawable/ic_chat_black_24dp"
         id="@+id/tab_chat"
         inActiveColor="@color/colorLine"
         title="@string/chat" />
-
-
 </tabs>

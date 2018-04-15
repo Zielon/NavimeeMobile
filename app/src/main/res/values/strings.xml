@@ -4,6 +4,9 @@
     <string name="fb_login_protocol_scheme">fb490316121339159</string>
 
     <!-- Translations -->
+
+    <string name="something_gone_wrong">Something went wrong!</string>
+
     <!-- App name -->
     <string name="app_name">Drively</string>
     <!-- onboarding (it's turned off) -->
