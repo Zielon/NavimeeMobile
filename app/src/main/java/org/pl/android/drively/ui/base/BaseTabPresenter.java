@@ -24,7 +24,7 @@ public class BaseTabPresenter<T extends TabMvpView> extends BasePresenter<T> {
                 .getValue(sharedPreferenceConst);
         if (!wasFirstStartPopup) {
             getMvpView().showInstructionPopup();
-            mDataManager.getPreferencesHelper().setValue(sharedPreferenceConst, true);
+            mDataManager.getPreferencesHelper().setValue(sharedPreferenceConst, false);
         }
     }
 
