@@ -64,6 +64,7 @@ public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
     @BindView(R.id.finance_sum)
     TextView financeSum;
     BaseFinanceFragment selectedFragment;
+
     private MaterialDialog popup;
     private MainActivity context;
     @Getter
@@ -174,6 +175,11 @@ public class FinanceFragment extends BaseTabFragment implements FinanceMvpView {
     @Override
     public void setPanelAmount(String amount) {
         financeSum.setText(amount);
+    }
+
+    @Override
+    public boolean isPopupShown() {
+        return popup != null && popup.isShowing();
     }
 
     @Override

@@ -20,6 +20,9 @@ public class BaseFinanceFragment extends BaseProgressFragment implements BaseFin
     protected View initializeRecyclerLayout(LayoutInflater inflater, @Nullable ViewGroup container) {
         View fragmentView = inflater.inflate(R.layout.finances_recycler_view, container, false);
         ButterKnife.bind(this, fragmentView);
+        if (!((FinanceMvpView) getParentFragment()).isPopupShown()) {
+            showProgressDialog(R.string.loading_finances);
+        }
         return fragmentView;
     }
 

@@ -12,4 +12,6 @@ public interface FinanceMvpView extends TabMvpView {
     void setPanelAmount(String amount);
 
     Set<Finance> getAlreadyLoadedData();
+
+    boolean isPopupShown();
 }

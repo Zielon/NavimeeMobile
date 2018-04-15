@@ -42,7 +42,6 @@ public abstract class BaseFinancePresenter<V extends BaseFinanceMvp> extends Bas
     protected abstract void setData(Object object);
 
     public void getFinances(Date from, Date to) {
-        getMvpView().showProgressDialog(R.string.loading_finances);
         expenseRepository.findAll().orderBy(DATE_FIELD, Query.Direction.DESCENDING)
                 .whereGreaterThanOrEqualTo(DATE_FIELD, from)
                 .whereLessThanOrEqualTo(DATE_FIELD, to)
