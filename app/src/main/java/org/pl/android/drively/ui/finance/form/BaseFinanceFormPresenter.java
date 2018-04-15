@@ -96,9 +96,9 @@ public abstract class BaseFinanceFormPresenter<M extends BaseFinanceFormMvp> ext
     }
 
     public void loadCategories() {
-        categoryRepository.findAll().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                categories = (List<String>) task.getResult().getData().get("categories");
+        categoryRepository.findAll().addOnSuccessListener(task -> {
+            if (task.exists()) {
+                categories = (List<String>) task.getData().get("categories");
             }
         });
     }
