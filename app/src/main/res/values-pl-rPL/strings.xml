@@ -281,5 +281,6 @@
     <string name="deleting_failure">Usuwanie nie powiodło się</string>
     <string name="something_gone_wrong">Coś poszło nie tak!</string>
     <string name="loading">Ładowanie...</string>
+    <string name="category_not_selected">Nie wybrałeś kategorii!</string>
 
 </resources>

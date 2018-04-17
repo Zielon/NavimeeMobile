@@ -19,6 +19,7 @@
     <dimen name="medium_margin">16dp</dimen>
     <dimen name="base_radius">4dp</dimen>
     <dimen name="base_font_size">14sp</dimen>
+    <dimen name="moderate_font_size">17sp</dimen>
     <dimen name="medium_font_size">20sp</dimen>
     <dimen name="big_margin">24dp</dimen>
     <dimen name="big_padding">20dp</dimen>

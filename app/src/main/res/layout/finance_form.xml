@@ -15,7 +15,7 @@
         android:layout_marginTop="@dimen/medium_margin"
         android:text="@string/no_category_selected"
         android:textColor="@color/white"
-        android:textSize="@dimen/base_font_size" />
+        android:textSize="@dimen/moderate_font_size" />
 
     <TextView
         android:id="@+id/category_label"

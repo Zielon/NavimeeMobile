@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.provider.MediaStore;
+import android.support.v7.app.ActionBar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -69,6 +70,7 @@ public abstract class BaseFinanceFormActivity extends BaseProgressActivity imple
     protected void initializeView() {
         date.setText(DateTimePickerHelper.getStringFromDate(new Date()));
         baseFinanceFormPresenter.loadCategories();
+        initializeActionBar();
     }
 
     protected void addExpense() {
@@ -107,6 +109,15 @@ public abstract class BaseFinanceFormActivity extends BaseProgressActivity imple
         } catch (ParseException e) {
             hideProgressDialog();
             showMessage(R.string.finance_failed_to_add);
+        }
+    }
+
+    protected void initializeActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null && actionBar.getCustomView() != null) {
+            TextView text = (TextView) actionBar.getCustomView().findViewById(R.id.app_bar_text);
+            text.setText(getResources().getString(R.string.expenses));
+            actionBar.hide();
         }
     }
 
