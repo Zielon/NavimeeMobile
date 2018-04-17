@@ -31,6 +31,7 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
+import java8.util.Optional;
 import lombok.Setter;
 import mehdi.sakout.fancybuttons.FancyButton;
 
@@ -114,11 +115,7 @@ public abstract class BaseFinanceFormActivity extends BaseProgressActivity imple
 
     protected void initializeActionBar() {
         ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null && actionBar.getCustomView() != null) {
-            TextView text = (TextView) actionBar.getCustomView().findViewById(R.id.app_bar_text);
-            text.setText(getResources().getString(R.string.expenses));
-            actionBar.hide();
-        }
+        Optional.ofNullable(actionBar).ifPresent(actionBar1 -> actionBar1.setTitle(R.string.expenses));
     }
 
     protected void showCheckboxDialog() {
