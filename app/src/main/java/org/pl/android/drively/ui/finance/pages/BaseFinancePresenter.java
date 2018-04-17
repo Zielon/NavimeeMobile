@@ -74,7 +74,7 @@ public abstract class BaseFinancePresenter<V extends BaseFinanceMvp> extends Bas
                         Timber.d("Mapping finances failed due to: " + e.getMessage());
                     }
                     getMvpView().addAlreadyLoadedData(newFinances);
-                    getMvpView().hideProgressDialog();
+                    getMvpView().hideRefreshing();
                 }, error -> Optional.ofNullable(getMvpView()).ifPresent(mvpView -> mvpView.showMessage(R.string.something_went_wrong)))
         );
     }

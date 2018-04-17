@@ -30,4 +30,8 @@ public class CalendarFragment extends BaseFinanceFragment implements CalendarMvp
         return view;
     }
 
+    @Override
+    public void onRefresh() {
+
+    }
 }

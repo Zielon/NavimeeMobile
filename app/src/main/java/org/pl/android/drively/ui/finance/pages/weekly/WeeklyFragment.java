@@ -65,8 +65,14 @@ public class WeeklyFragment extends BaseFinanceFragment implements WeeklyMvpView
     }
 
     @Override
+    public void onRefresh() {
+        Optional.ofNullable(weeklyPresenter).ifPresent(weeklyPresenter -> weeklyPresenter.getYearFinances(((FinanceMvpView)getParentFragment()).getSelectedPanelDate()));
+    }
+
+    @Override
     public void setSelectedPanelDate(Calendar calendar) {
-        Optional.ofNullable(weeklyPresenter).ifPresent(yearlyPresenter -> yearlyPresenter.getYearFinances(calendar));
+        super.setSelectedPanelDate(calendar);
+        Optional.ofNullable(weeklyPresenter).ifPresent(weeklyPresenter -> weeklyPresenter.getYearFinances(calendar));
     }
 
     @Override

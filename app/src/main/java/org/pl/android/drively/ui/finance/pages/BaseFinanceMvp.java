@@ -12,4 +12,8 @@ public interface BaseFinanceMvp extends BaseProgressMvp {
     void setSelectedPanelDate(Calendar calendar);
 
     void setPanelAmount(String amount);
+
+    void showRefreshing();
+
+    void hideRefreshing();
 }

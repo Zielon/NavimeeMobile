@@ -64,7 +64,13 @@ public class MonthlyFragment extends BaseFinanceFragment implements MonthlyMvpVi
     }
 
     @Override
+    public void onRefresh() {
+        Optional.ofNullable(monthlyPresenter).ifPresent(monthlyPresenter -> monthlyPresenter.getYearFinances(((FinanceMvpView)getParentFragment()).getSelectedPanelDate()));
+    }
+
+    @Override
     public void setSelectedPanelDate(Calendar calendar) {
+        super.setSelectedPanelDate(calendar);
         Optional.ofNullable(monthlyPresenter).ifPresent(monthlyPresenter -> monthlyPresenter.getYearFinances(calendar));
     }
 

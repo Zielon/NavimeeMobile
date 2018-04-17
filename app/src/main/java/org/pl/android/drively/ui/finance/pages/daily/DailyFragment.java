@@ -80,15 +80,19 @@ public class DailyFragment extends BaseFinanceFragment implements DailyMvpView {
     }
 
     @Override
+    public void onRefresh() {
+        Optional.ofNullable(dailyPresenter).ifPresent(dailyPresenter -> dailyPresenter.getMonthFinances(((FinanceMvpView)getParentFragment()).getSelectedPanelDate()));
+    }
+
+    @Override
     public void setSelectedPanelDate(Calendar calendar) {
-        showProgressDialog(R.string.loading_finances);
         super.setSelectedPanelDate(calendar);
         Optional.ofNullable(dailyPresenter).ifPresent(dailyPresenter -> dailyPresenter.getMonthFinances(calendar));
     }
 
     @Override
-    public void hideProgressDialog() {
-        super.hideProgressDialog();
+    public void hideRefreshing() {
+        super.hideRefreshing();
         if (dayAdapter.getDailyFinances().isEmpty()) {
             Optional.of(getActivity()).ifPresent(activity -> activity.runOnUiThread(() -> noDataLabel.setVisibility(View.VISIBLE)));
         } else {
