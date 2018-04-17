@@ -2,7 +2,6 @@ package org.pl.android.drively.ui.finance.form.add;
 
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -47,20 +46,6 @@ public class AddFinanceActivity extends BaseFinanceFormActivity implements AddFi
         } else {
             addExpense();
         }
-    }
-
-    private boolean isFormValid() {
-        boolean isValid = true;
-        if (amountInput.getText().toString()
-                .replaceAll("[^\\d.]", "").matches("0+((\\.0+)|(-0+)*)")) {
-            amountInput.setError(getString(R.string.wrong_amount));
-            isValid = false;
-        }
-        if (TextUtils.isEmpty(selectedCategory)) {
-            isValid = false;
-            showMessage(R.string.category_not_selected);
-        }
-        return isValid;
     }
 
     @OnClick(R.id.category_input)

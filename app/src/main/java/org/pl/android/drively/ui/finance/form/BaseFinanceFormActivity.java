@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -116,6 +117,20 @@ public abstract class BaseFinanceFormActivity extends BaseProgressActivity imple
     protected void initializeActionBar() {
         ActionBar actionBar = getSupportActionBar();
         Optional.ofNullable(actionBar).ifPresent(actionBar1 -> actionBar1.setTitle(R.string.expenses));
+    }
+
+    protected boolean isFormValid() {
+        boolean isValid = true;
+        if (amountInput.getText().toString()
+                .replaceAll("[^\\d.]", "").matches("0+((\\.0+)|(-0+)*)")) {
+            amountInput.setError(getString(R.string.wrong_amount));
+            isValid = false;
+        }
+        if (TextUtils.isEmpty(selectedCategory)) {
+            isValid = false;
+            showMessage(R.string.category_not_selected);
+        }
+        return isValid;
     }
 
     protected void showCheckboxDialog() {

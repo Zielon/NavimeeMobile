@@ -75,8 +75,10 @@ public class EditFinanceActivity extends BaseFinanceFormActivity implements Edit
     @OnClick(R.id.edit_finance_button)
     public void editFinanceButtonClick(View view) {
         if (((FancyButton) view).getText().equals(getString(R.string.add_finance))) {
-            showProgressDialog(R.string.finance_adding);
-            addExpense();
+            if (isFormValid()) {
+                showProgressDialog(R.string.finance_adding);
+                addExpense();
+            }
         } else {
             AnimationUtil.animateFadeOutWithEndCallback(view, () -> {
                 ((FancyButton) view).setText(getString(R.string.add_finance));
