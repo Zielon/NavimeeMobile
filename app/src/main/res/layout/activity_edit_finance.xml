@@ -112,5 +112,4 @@
         fancy:fb_textColor="@color/white"
         fancy:fb_textSize="@dimen/base_font_size"
         tools:targetApi="lollipop" />
-
 </android.support.constraint.ConstraintLayout>

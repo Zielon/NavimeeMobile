@@ -4,12 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.pl.android.drively.util.DoubleUtil;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import timber.log.Timber;
 
 @Data
 @AllArgsConstructor
@@ -37,6 +39,11 @@ public class Finance {
     }
 
     public Double getAmountWithoutCurrency() {
-        return DoubleUtil.getDoubleFromAmountWithCurrency(amount);
+        try {
+            return DoubleUtil.getDoubleFromAmountWithCurrency(amount);
+        } catch (ParseException e) {
+            Timber.d("Parsing failed", e);
+            return 0d;
+        }
     }
 }

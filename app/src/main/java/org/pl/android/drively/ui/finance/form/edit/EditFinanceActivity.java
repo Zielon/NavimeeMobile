@@ -102,11 +102,6 @@ public class EditFinanceActivity extends BaseFinanceFormActivity implements Edit
         }
     }
 
-    @OnClick(R.id.back_finance_button)
-    public void backFinanceButtonClick(View view) {
-        finishActivity();
-    }
-
     public void setBitmap(Finance finance) {
         financePhoto.setVisibility(View.VISIBLE);
         Glide.with(this)

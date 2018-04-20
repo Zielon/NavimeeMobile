@@ -184,4 +184,9 @@ public abstract class BaseFinanceFormActivity extends BaseProgressActivity imple
         GalleryUtil.zoomInImageView(this, view, new BitmapDrawable(getResources(), financeBitmap));
     }
 
+    @OnClick(R.id.back_finance_button)
+    public void backFinanceButtonClick(View view) {
+        onBackPressed();
+    }
+
 }
