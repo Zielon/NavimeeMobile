@@ -8,7 +8,7 @@ import java.util.Locale;
 
 public class DoubleUtil {
 
-    public static Double getDoubleFromAmountWithCurrency(String amount) throws ParseException{
+    public static Double getDoubleFromAmountWithCurrency(String amount) throws ParseException {
         return parse(amount, Locale.getDefault()).doubleValue();
     }
 
@@ -21,7 +21,7 @@ public class DoubleUtil {
         if (format instanceof DecimalFormat) {
             ((DecimalFormat) format).setParseBigDecimal(true);
         }
-        return (BigDecimal) format.parse(amount.replaceAll("[^\\d.,]",""));
+        return (BigDecimal) format.parse(amount.replaceAll("[^\\d.,]", ""));
     }
 
 }

@@ -67,7 +67,7 @@ public class YearlyFragment extends BaseFinanceFragment implements YearlyMvpView
     @Override
     public void onRefresh() {
         Optional.ofNullable(yearlyPresenter)
-                .ifPresent(yearlyPresenter -> yearlyPresenter.getYearFinances(((FinanceMvpView)getParentFragment()).getSelectedPanelDate()));
+                .ifPresent(yearlyPresenter -> yearlyPresenter.getYearFinances(((FinanceMvpView) getParentFragment()).getSelectedPanelDate()));
     }
 
     @Override

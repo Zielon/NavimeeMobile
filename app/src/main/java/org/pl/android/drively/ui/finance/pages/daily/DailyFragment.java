@@ -81,7 +81,7 @@ public class DailyFragment extends BaseFinanceFragment implements DailyMvpView {
 
     @Override
     public void onRefresh() {
-        Optional.ofNullable(dailyPresenter).ifPresent(dailyPresenter -> dailyPresenter.getMonthFinances(((FinanceMvpView)getParentFragment()).getSelectedPanelDate()));
+        Optional.ofNullable(dailyPresenter).ifPresent(dailyPresenter -> dailyPresenter.getMonthFinances(((FinanceMvpView) getParentFragment()).getSelectedPanelDate()));
     }
 
     @Override
