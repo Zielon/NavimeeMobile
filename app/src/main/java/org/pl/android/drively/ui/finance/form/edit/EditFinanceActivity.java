@@ -95,6 +95,7 @@ public class EditFinanceActivity extends BaseFinanceFormActivity implements Edit
             categoryInput.setOnClickListener(view -> showCheckboxDialog());
             categoryLabel.setOnClickListener(view -> showCheckboxDialog());
             dateIcon.setOnClickListener(view -> DateTimePickerHelper.showDatePicker(this, getFragmentManager(), ContextCompat.getColor(this, R.color.button_background)));
+            dateDescription.setOnClickListener(view -> DateTimePickerHelper.showDatePicker(this, getFragmentManager(), ContextCompat.getColor(this, R.color.button_background)));
             attachmentButton.setOnClickListener(view -> GalleryUtil.startPickingPhoto(this, PICK_IMAGE_REQUEST));
             attachmentButton.setVisibility(View.VISIBLE);
         } else {

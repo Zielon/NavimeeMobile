@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.provider.MediaStore;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.View;
@@ -59,6 +60,8 @@ public abstract class BaseFinanceFormActivity extends BaseProgressActivity imple
     protected CircleImageView financePhoto;
     @BindView(R.id.date_icon)
     protected ImageView dateIcon;
+    @BindView(R.id.date_label_input_layout)
+    protected ConstraintLayout dateDescription;
     @BindView(R.id.attachment_button)
     protected FancyButton attachmentButton;
     @BindView(R.id.finance_photo_loading)

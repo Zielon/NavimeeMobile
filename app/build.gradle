@@ -32,7 +32,7 @@ android {
         targetSdkVersion 25
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         versionCode 1012
-        versionName '1.1.1'
+        versionName '1.1.2'
         multiDexEnabled true
     }
 
