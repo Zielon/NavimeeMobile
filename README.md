@@ -1,4 +1,4 @@
-# NavimeeMobile
+# Navimee Mobile
 
 Drively application. A driver assistant.
 
