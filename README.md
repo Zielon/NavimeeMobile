@@ -8,6 +8,8 @@ Drively application. A driver assistant.
   - managing events
   - adding and managing expenses
   
+[Play store](https://play.google.com/store/apps/details?id=org.pl.android.drively)
+
 <div>
   <br />
   <p align="center"> Screenshots</p>
